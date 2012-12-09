@@ -1,0 +1,38 @@
+﻿using GammaJul.ReSharper.ForTea.Tree;
+using JetBrains.ProjectModel;
+using JetBrains.ReSharper.Psi.CSharp.CodeStyle;
+using JetBrains.ReSharper.Psi.CSharp.Impl.CodeStyle;
+using JetBrains.ReSharper.Psi.CSharp.Tree;
+using JetBrains.ReSharper.Psi.Tree;
+
+namespace GammaJul.ReSharper.ForTea.Psi.CodeStyle {
+
+	[ProjectFileType(typeof(T4ProjectFileType))]
+	public class T4CSharpCustomFormattingInfoProvider : DummyCSharpCustomFormattingInfoProvider {
+
+		public override bool CanModifyInsideNodeRange(ITreeNode leftElement, ITreeNode rightElement) {
+			var leftBlock = leftElement.GetT4ContainerFromCSharpNode<IT4CodeBlock>();
+			if (leftBlock != null)
+				return !(leftBlock.Parent is IT4Include);
+
+			var rightBlock = rightElement.GetT4ContainerFromCSharpNode<IT4CodeBlock>();
+			return rightBlock != null && !(rightBlock.Parent is IT4Include);
+		}
+
+		public override SpaceType GetBlockSpaceType(CSharpFmtStageContext context) {
+			ITreeNode leftChild = context.LeftChild;
+			if (leftChild is ICommentNode
+			&& leftChild.GetText() == T4CSharpCodeGenerator.CodeCommentStart
+			&& !leftChild.HasLineFeedsTo(context.RightChild))
+				return context.Parent is IClassBody ? SpaceType.Vertical : SpaceType.Horizontal;
+
+			if (context.RightChild is ICommentNode
+			&& context.RightChild.GetText() == T4CSharpCodeGenerator.CodeCommentEnd)
+				return context.Parent is IClassBody || leftChild.HasLineFeedsTo(context.RightChild) ? SpaceType.Vertical : SpaceType.Horizontal;
+
+			return SpaceType.Default;
+		}
+
+	}
+
+}

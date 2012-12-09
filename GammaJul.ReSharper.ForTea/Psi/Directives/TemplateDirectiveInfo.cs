@@ -1,0 +1,98 @@
+﻿using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using JetBrains.Annotations;
+
+namespace GammaJul.ReSharper.ForTea.Psi.Directives {
+
+	public class TemplateDirectiveInfo : DirectiveInfo {
+
+		private readonly DirectiveAttributeInfo _languageAttribute;
+		private readonly DirectiveAttributeInfo _hostSpecificAttribute;
+		private readonly DirectiveAttributeInfo _debugAttribute;
+		private readonly DirectiveAttributeInfo _inheritsAttribute;
+		private readonly DirectiveAttributeInfo _cultureAttribute;
+		private readonly DirectiveAttributeInfo _compilerOptionsAttribute;
+		private readonly DirectiveAttributeInfo _linePragmasAttribute;
+		private readonly DirectiveAttributeInfo _visibilityAttribute;
+		private readonly ReadOnlyCollection<DirectiveAttributeInfo> _supportedAttributes;
+
+		[NotNull]
+		public DirectiveAttributeInfo CompilerOptionsAttribute {
+			get { return _compilerOptionsAttribute; }
+		}
+
+		[NotNull]
+		public DirectiveAttributeInfo CultureAttribute {
+			get { return _cultureAttribute; }
+		}
+
+		[NotNull]
+		public DirectiveAttributeInfo DebugAttribute {
+			get { return _debugAttribute; }
+		}
+
+		[NotNull]
+		public DirectiveAttributeInfo HostSpecificAttribute {
+			get { return _hostSpecificAttribute; }
+		}
+
+		[NotNull]
+		public DirectiveAttributeInfo InheritsAttribute {
+			get { return _inheritsAttribute; }
+		}
+
+		[NotNull]
+		public DirectiveAttributeInfo LanguageAttribute {
+			get { return _languageAttribute; }
+		}
+
+		[NotNull]
+		public DirectiveAttributeInfo LinePragmasAttribute {
+			get { return _linePragmasAttribute; }
+		}
+
+		[NotNull]
+		public DirectiveAttributeInfo VisibilityAttribute {
+			get { return _visibilityAttribute; }
+		}
+
+		public override ReadOnlyCollection<DirectiveAttributeInfo> SupportedAttributes {
+			get { return _supportedAttributes; }
+		}
+
+		public TemplateDirectiveInfo([NotNull] T4Environment environment)
+			: base("template") {
+
+			bool isAtLeastVs11 = environment.VsVersion2.Major >= 11;
+
+			_languageAttribute = new EnumDirectiveAttributeInfo("language", DirectiveAttributeOptions.None, "C#", "VB");
+			_hostSpecificAttribute = isAtLeastVs11
+				? new EnumDirectiveAttributeInfo("hostspecific",DirectiveAttributeOptions.None, "true", "false", "trueFromBase")
+				: new BooleanDirectiveAttributeInfo("hostspecific", DirectiveAttributeOptions.None);
+			_debugAttribute = new BooleanDirectiveAttributeInfo("debug", DirectiveAttributeOptions.None);
+			_inheritsAttribute = new DirectiveAttributeInfo("inherits", DirectiveAttributeOptions.None);
+			_cultureAttribute = new CultureDirectiveAttributeInfo("culture", DirectiveAttributeOptions.None);
+			_compilerOptionsAttribute = new DirectiveAttributeInfo("compilerOptions", DirectiveAttributeOptions.None);
+			_linePragmasAttribute = new BooleanDirectiveAttributeInfo("linePragmas", DirectiveAttributeOptions.None);
+			_visibilityAttribute = new EnumDirectiveAttributeInfo("visibility", DirectiveAttributeOptions.None, "public", "internal");
+
+			var attributes = new List<DirectiveAttributeInfo>(8) {
+				_languageAttribute,
+				_hostSpecificAttribute,
+				_debugAttribute,
+				_inheritsAttribute,
+				_cultureAttribute,
+				_compilerOptionsAttribute
+			};
+
+			if (isAtLeastVs11) {
+				attributes.Add(_linePragmasAttribute);
+				attributes.Add(_visibilityAttribute);
+			}
+
+			_supportedAttributes = attributes.AsReadOnly();
+		}
+
+	}
+
+}

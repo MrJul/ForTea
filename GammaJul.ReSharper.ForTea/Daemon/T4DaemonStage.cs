@@ -1,0 +1,39 @@
+using System.Collections.Generic;
+using GammaJul.ReSharper.ForTea.Psi;
+using GammaJul.ReSharper.ForTea.Tree;
+using JetBrains.Annotations;
+using JetBrains.Application.Settings;
+using JetBrains.ReSharper.Daemon;
+using JetBrains.ReSharper.Psi;
+using JetBrains.Util;
+
+namespace GammaJul.ReSharper.ForTea.Daemon {
+
+    /// <summary>
+    /// Base class for every T4 daemon stage.
+    /// </summary>
+    public abstract class T4DaemonStage : IDaemonStage {
+
+	    /// <summary>
+	    /// Creates a code analysis process corresponding to this stage for analysing a file.
+	    /// </summary>
+	    /// <returns>Code analysis process to be executed or <c>null</c> if this stage is not available for this file.</returns>
+	    public IEnumerable<IDaemonStageProcess> CreateProcess(IDaemonProcess process, IContextBoundSettingsStore settings, DaemonProcessKind processKind) {
+		    var t4File = process.SourceFile.GetNonInjectedPsiFile<T4Language>() as IT4File;
+			if (t4File == null)
+				return EmptyList<IDaemonStageProcess>.InstanceList;
+
+		    return new[] { CreateProcess(process, t4File) };
+	    }
+
+	    [NotNull]
+	    protected abstract IDaemonStageProcess CreateProcess([NotNull] IDaemonProcess process, [NotNull] IT4File file);
+
+	    /// <summary>
+	    /// Check the error stripe indicator necessity for this stage after processing given <paramref name="sourceFile"/>
+	    /// </summary>
+	    public abstract ErrorStripeRequest NeedsErrorStripe(IPsiSourceFile sourceFile, IContextBoundSettingsStore settingsStore);
+
+    }
+
+}
