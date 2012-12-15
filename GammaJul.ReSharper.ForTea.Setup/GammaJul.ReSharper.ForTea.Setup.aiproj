@@ -1,0 +1,61 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">All</Configuration>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>429dee89-8631-4f76-94a0-1695cfba6631</ProjectGuid>
+    <OutputType>msi</OutputType>
+    <ProjectHome>.</ProjectHome>
+    <StartupFile>GammaJul.ReSharper.ForTea.Setup.aip</StartupFile>
+    <SearchPath>
+    </SearchPath>
+    <WorkingDirectory>.</WorkingDirectory>
+    <IsWindowsApplication>True</IsWindowsApplication>
+    <AssemblyName>GammaJul.ReSharper.ForTea.Setup</AssemblyName>
+    <Name>GammaJul.ReSharper.ForTea.Setup</Name>
+    <RootNamespace>GammaJul.ReSharper.ForTea.Setup</RootNamespace>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)' == 'All' ">
+    <DebugSymbols>false</DebugSymbols>
+    <OutputPath>msi\</OutputPath>
+    <EnableUnmanagedDebugging>true</EnableUnmanagedDebugging>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)' == 'DefaultBuild' " />
+  <!--Search foe the AI path in the registry. If the AI version used to create the project is not present, use the latest version-->
+  <Choose>
+    <When Condition="Exists('$(registry:HKEY_CURRENT_USER\SOFTWARE\Caphyon\Advanced Installer\Extension for VS@9.7)bin\x86\AdvancedInstaller.com')">
+      <PropertyGroup>
+        <AiComPath>$(registry:HKEY_CURRENT_USER\SOFTWARE\Caphyon\Advanced Installer\Extension for VS@9.7)bin\x86\AdvancedInstaller.com</AiComPath>
+      </PropertyGroup>
+    </When>
+    <Otherwise>
+      <PropertyGroup>
+        <AiComPath>$(registry:HKEY_LOCAL_MACHINE\SOFTWARE\Caphyon\Advanced Installer@Advanced Installer Path)bin\x86\AdvancedInstaller.com</AiComPath>
+      </PropertyGroup>
+    </Otherwise>
+  </Choose>
+  <ItemGroup>
+    <Compile Include="GammaJul.ReSharper.ForTea.Setup.aip">
+      <SubType>Code</SubType>
+    </Compile>
+  </ItemGroup>
+  <Target Name="Build">
+    <!--Create the output directory-->
+    <!-- <MakeDir Directories="$(OutputPath)"  Condition="!Exists('$(OutputPath)')" /> -->
+    <!-- Run the advanced installer on the .aip project - build -->
+    <!-- Path to the Advanced Installer version used to build .aip is specified in the registry HKEY_CURRENT_USER\SOFTWARE\Caphyon\Advanced Installer\Extension for VS -->
+    <Exec Condition="Exists(%(Compile.Identity)) AND '$(Configuration)'=='All'" Command="&quot;$(AiComPath)&quot; /build &quot;%(Compile.Identity)&quot;" />
+    <Exec Condition="Exists(%(Compile.Identity)) AND '$(Configuration)'!='All'" Command="&quot;$(AiComPath)&quot; /build &quot;%(Compile.Identity)&quot; -buildslist $(Configuration)" />
+  </Target>
+  <Target Name="Rebuild">
+    <!--Create the output directory-->
+    <!-- MakeDir Directories="$(OutputPath)"  Condition="!Exists('$(OutputPath)')" /> -->
+    <!-- Run the advanced installer on the .aip project - rebuild -->
+    <Exec Condition="Exists(%(Compile.Identity)) AND '$(Configuration)'=='All'" Command="&quot;$(AiComPath)&quot; /rebuild &quot;%(Compile.Identity)&quot;" />
+    <Exec Condition="Exists(%(Compile.Identity)) AND '$(Configuration)'!='All'" Command="&quot;$(AiComPath)&quot; /rebuild &quot;%(Compile.Identity)&quot; -buildslist $(Configuration)" />
+  </Target>
+  <Target Name="Clean">
+  </Target>
+  <Target Name="ResolveAssemblyReferences">
+  </Target>
+</Project>
