@@ -5,6 +5,7 @@ using JetBrains.Application;
 using JetBrains.ProjectModel;
 using JetBrains.Util;
 using JetBrains.VsIntegration.Application;
+using Microsoft.VisualStudio.Shell.Interop;
 using Microsoft.Win32;
 using PlatformID = JetBrains.ProjectModel.PlatformID;
 
@@ -17,6 +18,7 @@ namespace GammaJul.ReSharper.ForTea {
 	public class T4Environment {
 
 		private readonly IVsEnvironmentInformation _vsEnvironmentInformation;
+		private readonly IVsSolution _vsSolution;
 		private readonly PlatformID _platformID;
 		private readonly string[] _textTemplatingAssemblyNames;
 		private readonly bool _isSupported;
@@ -30,6 +32,9 @@ namespace GammaJul.ReSharper.ForTea {
 			get { return _vsEnvironmentInformation.VsVersion2; }
 		}
 
+		/// <summary>
+		/// Gets the platform ID (.NET 4.0 under VS2010, .NET 4.5 under VS2012).
+		/// </summary>
 		[NotNull]
 		public PlatformID PlatformID {
 			get {
@@ -39,6 +44,9 @@ namespace GammaJul.ReSharper.ForTea {
 			}
 		}
 
+		/// <summary>
+		/// Gets the default included assemblies.
+		/// </summary>
 		[NotNull]
 		public IEnumerable<string> TextTemplatingAssemblyNames {
 			get {
@@ -48,10 +56,16 @@ namespace GammaJul.ReSharper.ForTea {
 			}
 		}
 
+		/// <summary>
+		/// Gets whether the current environment is supported. VS2005 and VS2008 aren't.
+		/// </summary>
 		public bool IsSupported {
 			get { return _isSupported; }
 		}
 
+		/// <summary>
+		/// Gets the common include paths from the registry.
+		/// </summary>
 		[NotNull]
 		public IEnumerable<FileSystemPath> IncludePaths {
 			get {
@@ -90,7 +104,7 @@ namespace GammaJul.ReSharper.ForTea {
 
 		public T4Environment([NotNull] IVsEnvironmentInformation vsEnvironmentInformation) {
 			_vsEnvironmentInformation = vsEnvironmentInformation;
-			
+
 			int vsMajorVersion = vsEnvironmentInformation.VsVersion2.Major;
 			if (vsMajorVersion == 10) {
 				_platformID = new PlatformID(FrameworkIdentifier.NetFramework, new Version(4, 0));

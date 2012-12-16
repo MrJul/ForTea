@@ -9,6 +9,9 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 	EndProjectSection
 EndProject
 Project("{840C416C-B8F3-42BC-B0DD-F6BB14C9F8CB}") = "GammaJul.ReSharper.ForTea.Setup", "GammaJul.ReSharper.ForTea.Setup\GammaJul.ReSharper.ForTea.Setup.aiproj", "{429DEE89-8631-4F76-94A0-1695CFBA6631}"
+	ProjectSection(ProjectDependencies) = postProject
+		{EA095A20-2A80-43BB-97B7-C8FC2B419B53} = {EA095A20-2A80-43BB-97B7-C8FC2B419B53}
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -33,6 +36,7 @@ Global
 		{429DEE89-8631-4F76-94A0-1695CFBA6631}.All|x86.ActiveCfg = All|x86
 		{429DEE89-8631-4F76-94A0-1695CFBA6631}.All|x86.Build.0 = All|x86
 		{429DEE89-8631-4F76-94A0-1695CFBA6631}.Debug|Any CPU.ActiveCfg = All|x86
+		{429DEE89-8631-4F76-94A0-1695CFBA6631}.Debug|Any CPU.Build.0 = All|x86
 		{429DEE89-8631-4F76-94A0-1695CFBA6631}.Debug|x86.ActiveCfg = All|x86
 		{429DEE89-8631-4F76-94A0-1695CFBA6631}.Debug|x86.Build.0 = All|x86
 		{429DEE89-8631-4F76-94A0-1695CFBA6631}.Release|Any CPU.ActiveCfg = All|x86

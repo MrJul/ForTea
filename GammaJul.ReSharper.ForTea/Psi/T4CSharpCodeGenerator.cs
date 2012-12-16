@@ -171,6 +171,7 @@ namespace GammaJul.ReSharper.ForTea.Psi {
 			var result = new GenerationResult(_file);
 			StringBuilder builder = result.Builder;
 			//builder.AppendLine("namespace T4 {");
+			builder.AppendLine("using System;");
 			result.Append(_usingsResult);
 			builder.AppendFormat("[{0}]", PsiManager.SyntheticAttribute);
 			builder.AppendLine();
