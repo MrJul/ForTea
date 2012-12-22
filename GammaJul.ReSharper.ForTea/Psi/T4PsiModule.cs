@@ -213,6 +213,7 @@ namespace GammaJul.ReSharper.ForTea.Psi {
 			_shellLocks.AssertWriteAccessAllowed();
 
 			bool hasChanges = false;
+			bool hasFileChanges = false;
 
 			// removes the assembly references from the old assembly directives
 			foreach (string removedAssembly in dataDiff.RemovedAssemblies) {
@@ -243,6 +244,7 @@ namespace GammaJul.ReSharper.ForTea.Psi {
 				}
 
 				hasChanges = true;
+				hasFileChanges = true;
 
 				string value;
 				bool succeeded = HResultHelpers.SUCCEEDED(vsBuildMacroInfo.GetBuildMacroValue(addedMacro, out value)) && !String.IsNullOrEmpty(value);
@@ -260,11 +262,14 @@ namespace GammaJul.ReSharper.ForTea.Psi {
 			// tells the world the module has changed
 			var changeBuilder = new PsiModuleChangeBuilder();
 			changeBuilder.AddModuleChange(this, PsiModuleChange.ChangeType.MODIFIED);
+
+			if (hasFileChanges)
+				GetPsiServices().MarkAsDirty(_sourceFile);
+			
 			_shellLocks.ExecuteOrQueue("T4PsiModuleChange",
 				() => _changeManager.ExecuteAfterChange(
 					() => _shellLocks.ExecuteWithWriteLock(
-						() => _changeManager.OnProviderChanged(this, changeBuilder.Result, SimpleTaskExecutor.Instance)
-					)
+						() => _changeManager.OnProviderChanged(this, changeBuilder.Result, SimpleTaskExecutor.Instance))
 				)
 			);
 		}
