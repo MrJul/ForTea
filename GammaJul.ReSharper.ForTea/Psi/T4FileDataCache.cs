@@ -25,24 +25,6 @@ namespace GammaJul.ReSharper.ForTea.Psi {
 		}
 
 		/// <summary>
-		/// Initializes a new instance of the <see cref="T4FileDataCache"/> class.
-		/// </summary>
-		/// <param name="lifetime">The lifetime of this class.</param>
-		/// <param name="psiManager">The PSI manager.</param>
-		/// <param name="directiveInfoManager">An instance of <see cref="DirectiveInfoManager"/>.</param>
-		public T4FileDataCache([NotNull] Lifetime lifetime, [NotNull] PsiManager psiManager, [NotNull] DirectiveInfoManager directiveInfoManager) {
-			_directiveInfoManager = directiveInfoManager;
-			_fileDataChanged = new Signal<Pair<IPsiSourceFile, T4FileDataDiff>>(lifetime, "T4FileDataCache.FileDataChanged");
-			lifetime.AddBracket(
-				() => psiManager.PsiFileCreated += OnPsiFileChanged,
-				() => psiManager.PsiFileCreated -= OnPsiFileChanged);
-			lifetime.AddBracket(
-				() => psiManager.PhysicalPsiChanged += OnPhysicalPsiChanged,
-				() => psiManager.PhysicalPsiChanged -= OnPhysicalPsiChanged);
-			lifetime.AddDispose(_fileDataBySourceFile);
-		}
-
-		/// <summary>
 		/// Called when a PSI file changes.
 		/// </summary>
 		/// <param name="treeNode">The tree node that changed.</param>
@@ -77,6 +59,25 @@ namespace GammaJul.ReSharper.ForTea.Psi {
 			T4FileDataDiff diff = newData.DiffWith(existingData);
 			if (diff != null)
 				_fileDataChanged.Fire(Pair.Of(sourceFile, diff));
+		}
+
+		/// <summary>
+		/// Initializes a new instance of the <see cref="T4FileDataCache"/> class.
+		/// </summary>
+		/// <param name="lifetime">The lifetime of this class.</param>
+		/// <param name="psiManager">The PSI manager.</param>
+		/// <param name="directiveInfoManager">An instance of <see cref="DirectiveInfoManager"/>.</param>
+		public T4FileDataCache([NotNull] Lifetime lifetime, [NotNull] PsiManager psiManager, [NotNull] DirectiveInfoManager directiveInfoManager) {
+			_directiveInfoManager = directiveInfoManager;
+			_fileDataChanged = new Signal<Pair<IPsiSourceFile, T4FileDataDiff>>(lifetime, "T4FileDataCache.FileDataChanged");
+
+			lifetime.AddBracket(
+				() => psiManager.PsiFileCreated += OnPsiFileChanged,
+				() => psiManager.PsiFileCreated -= OnPsiFileChanged);
+			lifetime.AddBracket(
+				() => psiManager.PhysicalPsiChanged += OnPhysicalPsiChanged,
+				() => psiManager.PhysicalPsiChanged -= OnPhysicalPsiChanged);
+			lifetime.AddDispose(_fileDataBySourceFile);
 		}
 
 	}

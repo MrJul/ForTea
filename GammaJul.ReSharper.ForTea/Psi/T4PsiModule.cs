@@ -5,6 +5,7 @@ using JetBrains.Application;
 using JetBrains.Application.Progress;
 using JetBrains.DataFlow;
 using JetBrains.DocumentManagers;
+using JetBrains.Interop.WinApi;
 using JetBrains.Metadata.Utils;
 using JetBrains.ProjectModel;
 using JetBrains.ProjectModel.Model2.Assemblies.Interfaces;
@@ -15,6 +16,8 @@ using JetBrains.ReSharper.Psi.Impl;
 using JetBrains.ReSharper.Psi.Web.Impl.PsiModules;
 using JetBrains.Threading;
 using JetBrains.Util;
+using JetBrains.VsIntegration.ProjectModel;
+using Microsoft.VisualStudio.Shell.Interop;
 
 namespace GammaJul.ReSharper.ForTea.Psi {
 
@@ -25,6 +28,7 @@ namespace GammaJul.ReSharper.ForTea.Psi {
 		private const string Prefix = "[T4] ";
 		
 		private readonly Dictionary<string, IAssemblyCookie> _assemblyReferences = new Dictionary<string, IAssemblyCookie>(StringComparer.OrdinalIgnoreCase);
+		private readonly Dictionary<string, string> _resolvedMacros = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
 		private readonly Lifetime _lifetime;
 		private readonly PsiModuleManager _psiModuleManager;
 		private readonly DocumentManager _documentManager;
@@ -172,6 +176,23 @@ namespace GammaJul.ReSharper.ForTea.Psi {
 			return null;
 		}
 
+		/// <summary>
+		/// The <see cref="IVsHierarchy"/> representing the project file normally implements <see cref="IVsBuildMacroInfo"/>.
+		/// </summary>
+		/// <returns>An instance of <see cref="IVsBuildMacroInfo"/> if found.</returns>
+		[CanBeNull]
+		private IVsBuildMacroInfo TryGetVsBuildMacroInfo() {
+			var synchronizer = _solution.TryGetComponent<ProjectModelSynchronizer>();
+			if (synchronizer == null)
+				return null;
+
+			VsHierarchyItem hierarchyItem = synchronizer.TryGetHierarchyItemByProjectItem(_project, false);
+			if (hierarchyItem == null)
+				return null;
+
+			return hierarchyItem.Hierarchy as IVsBuildMacroInfo;
+		}
+
 		private void OnDataFileChanged(Pair<IPsiSourceFile, T4FileDataDiff> pair) {
 			if (pair.First != _sourceFile)
 				return;
@@ -193,6 +214,7 @@ namespace GammaJul.ReSharper.ForTea.Psi {
 
 			bool hasChanges = false;
 
+			// removes the assembly references from the old assembly directives
 			foreach (string removedAssembly in dataDiff.RemovedAssemblies) {
 				IAssemblyCookie cookie;
 				if (!_assemblyReferences.TryGetValue(removedAssembly, out cookie))
@@ -202,6 +224,7 @@ namespace GammaJul.ReSharper.ForTea.Psi {
 				cookie.Dispose();
 			}
 
+			// adds assembly references from the new assembly directives
 			foreach (string addedAssembly in dataDiff.AddedAssemblies) {
 				if (_assemblyReferences.ContainsKey(addedAssembly))
 					continue;
@@ -210,9 +233,31 @@ namespace GammaJul.ReSharper.ForTea.Psi {
 					hasChanges = true;
 			}
 
+			// resolves new VS macros, like $(SolutionDir), found in include directives
+			IVsBuildMacroInfo vsBuildMacroInfo = null;
+			foreach (string addedMacro in dataDiff.AddedMacros) {
+				if (vsBuildMacroInfo == null) {
+					vsBuildMacroInfo = TryGetVsBuildMacroInfo();
+					if (vsBuildMacroInfo == null)
+						break;
+				}
+
+				hasChanges = true;
+
+				string value;
+				bool succeeded = HResultHelpers.SUCCEEDED(vsBuildMacroInfo.GetBuildMacroValue(addedMacro, out value)) && !String.IsNullOrEmpty(value);
+				lock (_resolvedMacros) {
+					if (succeeded)
+						_resolvedMacros[addedMacro] = value;
+					else
+						_resolvedMacros.Remove(addedMacro);
+				}
+			}
+
 			if (!hasChanges)
 				return;
 
+			// tells the world the module has changed
 			var changeBuilder = new PsiModuleChangeBuilder();
 			changeBuilder.AddModuleChange(this, PsiModuleChange.ChangeType.MODIFIED);
 			_shellLocks.ExecuteOrQueue("T4PsiModuleChange",
@@ -240,6 +285,15 @@ namespace GammaJul.ReSharper.ForTea.Psi {
 					references.Add(new PsiModuleReference(psiModule));
 			}
 			return references.GetReferences();
+		}
+
+		[NotNull]
+		public IDictionary<string, string> GetResolvedMacros() {
+			lock (_resolvedMacros) {
+				return _resolvedMacros.Count != 0
+					? new Dictionary<string, string>(_resolvedMacros)
+					: EmptyDictionary<string, string>.Instance;
+			}
 		}
 
 		/// <summary>

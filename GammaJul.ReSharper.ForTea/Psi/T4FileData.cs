@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using GammaJul.ReSharper.ForTea.Psi.Directives;
 using GammaJul.ReSharper.ForTea.Tree;
 using JetBrains.Annotations;
@@ -15,10 +16,15 @@ namespace GammaJul.ReSharper.ForTea.Psi {
 
 		private readonly DirectiveInfoManager _directiveInfoManager;
 		private readonly JetHashSet<string> _referencedAssemblies = new JetHashSet<string>(StringComparer.OrdinalIgnoreCase);
+		private readonly JetHashSet<string> _macros = new JetHashSet<string>(StringComparer.OrdinalIgnoreCase);
 
-		private void HandleAssemblyDirectives([NotNull] IT4DirectiveOwner directiveOwner) {
-			foreach (IT4Directive directive in directiveOwner.GetDirectives(_directiveInfoManager.Assembly))
-				HandleAssemblyDirective(directive);
+		private void HandleDirectives([NotNull] IT4DirectiveOwner directiveOwner) {
+			foreach (IT4Directive directive in directiveOwner.GetDirectives()) {
+				if (directive.IsSpecificDirective(_directiveInfoManager.Assembly))
+					HandleAssemblyDirective(directive);
+				else if (directive.IsSpecificDirective(_directiveInfoManager.Include))
+					HandleIncludeDirective(directive);
+			}
 		}
 
 		/// <summary>
@@ -34,6 +40,14 @@ namespace GammaJul.ReSharper.ForTea.Psi {
 		}
 
 		/// <summary>
+		/// Handles an include directive.
+		/// </summary>
+		/// <param name="directive">The directive containing a potential macro.</param>
+		private void HandleIncludeDirective([NotNull] IT4Directive directive) {
+			VsBuildMacroHelper.GetMacros(directive.GetAttributeValue(_directiveInfoManager.Include.FileAttribute.Name), _macros);
+		}
+
+		/// <summary>
 		/// Computes a difference between this data and another one.
 		/// </summary>
 		/// <param name="oldData">The old data.</param>
@@ -45,17 +59,20 @@ namespace GammaJul.ReSharper.ForTea.Psi {
 		internal T4FileDataDiff DiffWith([CanBeNull] T4FileData oldData) {
 
 			if (oldData == null) {
-				if (_referencedAssemblies.Count == 0)
+				if (_referencedAssemblies.Count == 0 && _macros.Count == 0)
 					return null;
-				return new T4FileDataDiff(_referencedAssemblies, EmptyList<string>.InstanceList);
+				return new T4FileDataDiff(_referencedAssemblies, EmptyList<string>.InstanceList, _macros);
 			}
+
+			string[] addedMacros = _macros.Except(oldData._macros).ToArray();
 
 			JetHashSet<string> addedAssemblies;
 			JetHashSet<string> removedAssemblies;
 			oldData._referencedAssemblies.Compare(_referencedAssemblies, out addedAssemblies, out removedAssemblies);
-			if (addedAssemblies.Count == 0 && removedAssemblies.Count == 0)
+			
+			if (addedMacros.Length == 0 && addedAssemblies.Count == 0 && removedAssemblies.Count == 0)
 				return null;
-			return new T4FileDataDiff(addedAssemblies, removedAssemblies);
+			return new T4FileDataDiff(addedAssemblies, removedAssemblies, addedMacros);
 		}
 
 		/// <summary>
@@ -63,12 +80,12 @@ namespace GammaJul.ReSharper.ForTea.Psi {
 		/// </summary>
 		/// <param name="t4File">The T4 file that will be scanned for data.</param>
 		/// <param name="directiveInfoManager">An instance of <see cref="DirectiveInfoManager"/>.</param>
-		internal T4FileData([NotNull] IT4File t4File, DirectiveInfoManager directiveInfoManager) {
+		internal T4FileData([NotNull] IT4File t4File, [NotNull] DirectiveInfoManager directiveInfoManager) {
 			_directiveInfoManager = directiveInfoManager;
-
-			HandleAssemblyDirectives(t4File);
+			
+			HandleDirectives(t4File);
 			foreach (IT4Include include in t4File.GetRecursiveIncludes())
-				HandleAssemblyDirectives(include);
+				HandleDirectives(include);
 		}
 
 	}

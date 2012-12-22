@@ -10,8 +10,9 @@ namespace GammaJul.ReSharper.ForTea.Psi {
 
 		private readonly IEnumerable<string> _addedAssemblies;
 		private readonly IEnumerable<string> _removedAssemblies;
+		private readonly IEnumerable<string> _addedMacros;
 
-		/// <summary>
+			/// <summary>
 		/// Gets an enumeration of all added assemblies.
 		/// </summary>
 		[NotNull]
@@ -27,9 +28,19 @@ namespace GammaJul.ReSharper.ForTea.Psi {
 			get { return _removedAssemblies; }
 		}
 
-		public T4FileDataDiff([NotNull] IEnumerable<string> addedAssemblies, [NotNull] IEnumerable<string> removedAssemblies) {
+		/// <summary>
+		/// Gets en enumeration of all added macros.
+		/// </summary>
+		[NotNull]
+		public IEnumerable<string> AddedMacros {
+			get { return _addedMacros; }
+		}
+
+		public T4FileDataDiff([NotNull] IEnumerable<string> addedAssemblies, [NotNull] IEnumerable<string> removedAssemblies,
+			[NotNull] IEnumerable<string> addedMacros) {
 			_addedAssemblies = addedAssemblies;
 			_removedAssemblies = removedAssemblies;
+			_addedMacros = addedMacros;
 		}
 
 	}

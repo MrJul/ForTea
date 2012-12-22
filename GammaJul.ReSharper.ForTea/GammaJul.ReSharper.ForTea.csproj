@@ -59,6 +59,7 @@
     <Compile Include="Daemon\T4DaemonStageProcess.cs" />
     <Compile Include="Daemon\Highlightings\T4Highlighting.cs" />
     <Compile Include="Daemon\Highlightings\VsPredefinedHighlighterIds.cs" />
+    <Compile Include="Psi\VsBuildMacroHelper.cs" />
     <Compile Include="Psi\CodeStyle\T4CSharpCustomFormattingInfoProvider.cs" />
     <Compile Include="Psi\Directives\DirectiveAttributeOptions.cs" />
     <Compile Include="Psi\Directives\DirectiveInfoManager.cs" />

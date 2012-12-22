@@ -1,12 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Globalization;
-using System.Text.RegularExpressions;
 using GammaJul.ReSharper.ForTea.Psi;
 using GammaJul.ReSharper.ForTea.Psi.Directives;
 using GammaJul.ReSharper.ForTea.Tree;
 using JetBrains.Annotations;
-using JetBrains.Interop.WinApi;
 using JetBrains.ProjectModel;
 using JetBrains.ReSharper.Psi;
 using JetBrains.ReSharper.Psi.ExtensionsAPI.Tree;
@@ -14,8 +12,6 @@ using JetBrains.ReSharper.Psi.Impl;
 using JetBrains.ReSharper.Psi.Parsing;
 using JetBrains.ReSharper.Psi.Tree;
 using JetBrains.Util;
-using JetBrains.VsIntegration.ProjectModel;
-using Microsoft.VisualStudio.Shell.Interop;
 
 namespace GammaJul.ReSharper.ForTea.Parsing {
 
@@ -24,7 +20,6 @@ namespace GammaJul.ReSharper.ForTea.Parsing {
 	/// </summary>
 	internal sealed partial class T4TreeBuilder {
 
-		private static readonly Regex _vsMacroRegEx = new Regex(@"\$\((\w+)\)", RegexOptions.Compiled | RegexOptions.IgnorePatternWhitespace);
 		private readonly List<IT4Include> _includes = new List<IT4Include>();
 		private readonly T4Environment _t4Environment;
 		private readonly DirectiveInfoManager _directiveInfoManager;
@@ -33,7 +28,6 @@ namespace GammaJul.ReSharper.ForTea.Parsing {
 		private readonly ISolution _solution;
 		private readonly HashSet<FileSystemPath> _existingIncludePaths;
 		private List<T4Directive> _notClosedDirectives;
-		private IVsBuildMacroInfo _vsBuildMacroInfo;
 
 		/// <summary>
 		/// Advances the lexer to the next token.
@@ -368,50 +362,15 @@ namespace GammaJul.ReSharper.ForTea.Parsing {
 		}
 
 		/// <summary>
-		/// The <see cref="IVsHierarchy"/> representing the project file normally implements <see cref="IVsBuildMacroInfo"/>.
-		/// </summary>
-		/// <returns>An instance of <see cref="IVsBuildMacroInfo"/> if found.</returns>
-		[CanBeNull]
-		private IVsBuildMacroInfo TryGetVsBuildMacroInfo() {
-			IProjectFile projectFile = _sourceFile.ToProjectFile();
-			if (projectFile == null)
-				return null;
-
-			var synchronizer = _solution.TryGetComponent<ProjectModelSynchronizer>();
-			if (synchronizer == null)
-				return null;
-
-			
-			VsHierarchyItem hierarchyItem = synchronizer.GetHierarchyItemByProjectItem(projectFile, false);
-			return hierarchyItem.Hierarchy as IVsBuildMacroInfo;
-		}
-
-		/// <summary>
 		/// Expands the Visual Studio macros inside a filename, eg $(SolutionDir).
 		/// </summary>
 		/// <param name="fileName">The file name to expand.</param>
 		/// <returns><paramref name="fileName"/> with expanded macros.</returns>
 		[NotNull]
 		private string ExpandVisualStudioMacros([NotNull] string fileName) {
-			if (!fileName.Contains("$("))
-				return fileName;
-
-			if (_vsBuildMacroInfo == null) {
-				_vsBuildMacroInfo = TryGetVsBuildMacroInfo();
-				if (_vsBuildMacroInfo == null)
-					return fileName;
-			}
-
-			// Resolve the macro
-			return _vsMacroRegEx.Replace(fileName, m => {
-				Group group = m.Groups[1];
-				string macroValue;
-				if (group.Success
-				&& HResultHelpers.SUCCEEDED(_vsBuildMacroInfo.GetBuildMacroValue(group.Value, out macroValue))
-				&& !String.IsNullOrEmpty(macroValue))
-					return macroValue;
-				return m.Value;
-			});
+			return _sourceFile != null
+				? VsBuildMacroHelper.ResolveMacros(fileName, _sourceFile.PsiModule as T4PsiModule)
+				: fileName;
 		}
 
 		/// <summary>

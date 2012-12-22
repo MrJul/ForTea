@@ -5,7 +5,6 @@ using JetBrains.Application;
 using JetBrains.ProjectModel;
 using JetBrains.Util;
 using JetBrains.VsIntegration.Application;
-using Microsoft.VisualStudio.Shell.Interop;
 using Microsoft.Win32;
 using PlatformID = JetBrains.ProjectModel.PlatformID;
 
@@ -18,12 +17,11 @@ namespace GammaJul.ReSharper.ForTea {
 	public class T4Environment {
 
 		private readonly IVsEnvironmentInformation _vsEnvironmentInformation;
-		private readonly IVsSolution _vsSolution;
 		private readonly PlatformID _platformID;
 		private readonly string[] _textTemplatingAssemblyNames;
 		private readonly bool _isSupported;
 		private IList<FileSystemPath> _includePaths;
-
+		
 		/// <summary>
 		/// Gets the version of the Visual Studio we're running under, two components only, <c>Major.Minor</c>. Example: “8.0”.
 		/// </summary>
