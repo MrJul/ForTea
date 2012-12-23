@@ -23,7 +23,7 @@
 					<Description>An upgrade for ForTea is available.</Description>
 
 					<DownloadUri>
-						<xsl:value-of select="concat('https://github.com/downloads/MrJul/ForTea/ForTea-', $ReleaseMajor, '.', $ReleaseMinor, '.', $ReleaseBuild, '.msi')" />
+						<xsl:value-of select="concat('http://download.flynware.com/ForTea/ForTea-', $ReleaseMajor, '.', $ReleaseMinor, '.', $ReleaseBuild, '.msi')" />
 					</DownloadUri>
 					<CompanyName>Julien Lebosquain</CompanyName>
 					<ProductName>ForTea</ProductName>
