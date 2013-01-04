@@ -37,8 +37,7 @@ namespace GammaJul.ReSharper.ForTea.Psi {
 		}
 
 		public void OnProjectFileChanged(IProjectFile projectFile, PsiModuleChange.ChangeType changeType, PsiModuleChangeBuilder changeBuilder) {
-			if (projectFile.LanguageType.Is<T4ProjectFileType>())
-				_t4PsiModuleProvider.OnProjectFileChanged(projectFile, changeType, changeBuilder);
+			_t4PsiModuleProvider.OnProjectFileChanged(projectFile, ref changeType, changeBuilder);
 		}
 
 		public void Dispose() {

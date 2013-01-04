@@ -206,7 +206,7 @@ namespace GammaJul.ReSharper.ForTea.Psi {
 		}
 
 		public void HandleRemoveStatementsRange(IPsiServices psiServices, ITreeRange treeRange, Action action) {
-			// TODO: HandleRemoveStatementsRange
+			action();
 		}
 
 		public ITreeRange HandleChangeStatements(IPsiServices psiServices, ITreeRange rangeBeforeChange, Func<ITreeRange> changeAction, bool strict) {
@@ -264,7 +264,10 @@ namespace GammaJul.ReSharper.ForTea.Psi {
 		/// <param name="action">The action to execute to remove the node.</param>
 		public void HandleRemoveTypeMember(IPsiServices psiServices, ITreeNode node, Action action) {
 			action();
+			RemoveContainingBlockIfEmpty(node);
+		}
 
+		private static void RemoveContainingBlockIfEmpty([CanBeNull] ITreeNode node) {
 			var block = node.GetT4ContainerFromCSharpNode<IT4CodeBlock>();
 			if (block == null)
 				return;

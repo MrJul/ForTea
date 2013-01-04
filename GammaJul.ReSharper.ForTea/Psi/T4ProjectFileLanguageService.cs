@@ -1,4 +1,5 @@
 ﻿#region License
+
 //    Copyright 2012 Julien Lebosquain
 // 
 //    Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,12 +13,10 @@
 //    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 //    See the License for the specific language governing permissions and
 //    limitations under the License.
+
 #endregion
-using GammaJul.ReSharper.ForTea.Parsing;
 using JetBrains.ProjectModel;
 using JetBrains.ReSharper.Psi;
-using JetBrains.ReSharper.Psi.Parsing;
-using JetBrains.Text;
 using JetBrains.UI.Icons;
 
 namespace GammaJul.ReSharper.ForTea.Psi {
@@ -27,10 +26,11 @@ namespace GammaJul.ReSharper.ForTea.Psi {
 	/// </summary>
 	[ProjectFileType(typeof(T4ProjectFileType))]
 	public sealed class T4ProjectFileLanguageService : MixedProjectFileLanguageService {
+
 		private readonly T4Environment _t4Environment;
 
 		/// <summary>
-		/// Gets the PSI language type, <see cref="T4Language"/>.
+		/// Gets the PSI language type, <see cref="T4Language" />.
 		/// </summary>
 		protected override PsiLanguageType PsiLanguageType {
 			get { return T4Language.Instance; }
@@ -52,7 +52,7 @@ namespace GammaJul.ReSharper.ForTea.Psi {
 		}
 
 		/// <summary>
-		/// Initializes a new instance of the <see cref="T4ProjectFileLanguageService"/> class.
+		/// Initializes a new instance of the <see cref="T4ProjectFileLanguageService" /> class.
 		/// </summary>
 		/// <param name="t4ProjectFileType">Type of the T4 project file.</param>
 		/// <param name="t4Environment">The host environment.</param>

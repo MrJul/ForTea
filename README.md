@@ -1,17 +1,17 @@
-ForTea
+![ForTea Logo](https://raw.github.com/MrJul/ForTea/master/Logo/ForTea%2032x32.png "ForTea Logo") ForTea
 ======
 
 What's ForTea?
 --------------
-
-ForTea is a a plugin for ReSharper 7.1 that adds support for editing T4 (.tt) files.  
+ForTea is a a plugin for JetBrains ReSharper 7.1 that adds support for editing T4 (.tt) files.  
 This project corresponds to the issue [RSRP-191807](http://youtrack.jetbrains.com/issue/RSRP-191807) in JetBrains bug tracker.
 
 Installation
 ------------
 Visual Studio 2010 or Visual Studio 2012 is required.  
 [ReSharper 7.1.x](http://www.jetbrains.com/resharper/) must be installed.  
-Grab the latest binary version of ForTea (1.0.0) [here](http://download.flynware.com/ForTea/ForTea-1.0.0.msi).
+Grab the latest binary version of ForTea (1.0.0) [here](http://download.flynware.com/ForTea/ForTea-1.0.0.msi).  
+Note that the software is currently in beta phase. Don't hesitate to [open an issue](https://github.com/MrJul/ForTea/issues) if you encounter any problem.
 
 What's supported
 ----------------
@@ -42,7 +42,9 @@ You can use code cleanup on .tt files and the C# formatting rules configured in 
 will be used automatically. However, there is currently no way to overwrite them, and there are no
 rules for T4 specific elements, such as placement of opening and closing blocks.
 
-Visual Basic T4 files aren't supported.  
+Visual Basic T4 files aren't supported yet.  
+Custom T4 directives aren't supported yet.  
+File structure is read-only.  
 If you have the T4 editor from Tangible, you must uninstall it. For technical reasons, ForTea will never be compatible with it.
 
-Licensed under [Apache 2.0 License](http://www.apache.org/licenses/LICENSE-2.0)
+Licensed under [Apache License 2.0](http://www.apache.org/licenses/LICENSE-2.0)

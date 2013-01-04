@@ -22,6 +22,7 @@ using JetBrains.Application;
 using JetBrains.DataFlow;
 using JetBrains.DocumentManagers;
 using JetBrains.ProjectModel;
+using JetBrains.ProjectModel.Transaction;
 using JetBrains.ProjectModel.model2.Assemblies.Interfaces;
 using JetBrains.ReSharper.Psi;
 using JetBrains.Util;
@@ -33,12 +34,13 @@ namespace GammaJul.ReSharper.ForTea.Psi {
 	/// Contains common implementation for <see cref="T4ProjectPsiModuleHandler"/> and <see cref="T4MiscFilesProjectPsiModuleProvider"/>.
 	/// </summary>
 	[SolutionComponent]
-	public sealed class T4PsiModuleProvider : IDisposable {
+	public sealed class T4PsiModuleProvider : IDisposable, IChangeProvider {
 		private readonly Dictionary<IProjectFile, ModuleWrapper> _modules = new Dictionary<IProjectFile, ModuleWrapper>();
 		private readonly Lifetime _lifetime;
 		private readonly IShellLocks _shellLocks;
 		private readonly ChangeManager _changeManager;
 		private readonly T4Environment _t4Environment;
+		private readonly ISolution _solution;
 
 		private struct ModuleWrapper {
 			internal readonly T4PsiModule Module;
@@ -80,31 +82,57 @@ namespace GammaJul.ReSharper.ForTea.Psi {
 		/// <param name="projectFile">The project file.</param>
 		/// <param name="changeType">Type of the change.</param>
 		/// <param name="changeBuilder">The change builder used to populate changes.</param>
-		internal void OnProjectFileChanged(IProjectFile projectFile, PsiModuleChange.ChangeType changeType, PsiModuleChangeBuilder changeBuilder) {
-			if (!_t4Environment.IsSupported)
-				return;
+		/// <returns>Whether the provider has handled the file change.</returns>
+		internal bool OnProjectFileChanged(IProjectFile projectFile, ref PsiModuleChange.ChangeType changeType, PsiModuleChangeBuilder changeBuilder) {
+			if (!_t4Environment.IsSupported || !projectFile.LanguageType.Is<T4ProjectFileType>())
+				return false;
 
 			_shellLocks.AssertWriteAccessAllowed();
 			ModuleWrapper moduleWrapper;
-
+			
 			switch (changeType) {
 
 				case PsiModuleChange.ChangeType.ADDED:
-					if (projectFile.LanguageType.Is<T4ProjectFileType>())
+					// Preprocessed .tt files should be handled by R# itself as if it's a normal project file,
+					// so that it has access to the current project types.
+					if (!projectFile.IsPreprocessedT4Template()) {
 						AddFile(projectFile, changeBuilder);
+						return true;
+					}
 					break;
 
 				case PsiModuleChange.ChangeType.REMOVED:
-					if (_modules.TryGetValue(projectFile, out moduleWrapper))
+					if (_modules.TryGetValue(projectFile, out moduleWrapper)) {
 						RemoveFile(projectFile, changeBuilder, moduleWrapper);
+						return true;
+					}
 					break;
 
 				case PsiModuleChange.ChangeType.MODIFIED:
-					if (_modules.TryGetValue(projectFile, out moduleWrapper))
-						ModifyFile(changeBuilder, moduleWrapper);
+					if (_modules.TryGetValue(projectFile, out moduleWrapper)) {
+						if (!projectFile.IsPreprocessedT4Template()) {
+							ModifyFile(changeBuilder, moduleWrapper);
+							return true;
+						}
+
+						// The T4 file went from Transformed to Preprocessed, it doesn't need a T4PsiModule anymore.
+						RemoveFile(projectFile, changeBuilder, moduleWrapper);
+						changeType = PsiModuleChange.ChangeType.ADDED;
+						return false;
+					}
+
+					// The T4 file went from Preprocessed to Transformed, it now needs a T4PsiModule.
+					if (!projectFile.IsPreprocessedT4Template()) {
+						AddFile(projectFile, changeBuilder);
+						changeType = PsiModuleChange.ChangeType.REMOVED;
+						return false;
+					}
+
 					break;
 
 			}
+
+			return false;
 		}
 
 		private void AddFile([NotNull] IProjectFile projectFile, [NotNull] PsiModuleChangeBuilder changeBuilder) {
@@ -158,6 +186,25 @@ namespace GammaJul.ReSharper.ForTea.Psi {
 			}
 		}
 
+		public object Execute(IChangeMap changeMap) {
+			var change = changeMap.GetChange<ProjectModelChange>(_solution);
+			if (change != null && _solution.IsValid())
+				change.Accept(new Abc());
+
+			return null;
+		}
+
+		private class Abc : RecursiveProjectModelChangeDeltaVisitor {
+
+			public override void VisitItemDelta(ProjectItemChange change) {
+				base.VisitItemDelta(change);
+				var projectFile = change.ProjectItem as IProjectFile;
+				if (projectFile != null && change.ContainsChangeType(ProjectModelChangeType.PROPERTIES)) {
+				}
+			}
+
+		}
+
 		/// <summary>
 		/// Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
 		/// </summary>
@@ -169,11 +216,16 @@ namespace GammaJul.ReSharper.ForTea.Psi {
 			}
 		}
 
-		public T4PsiModuleProvider([NotNull] Lifetime lifetime, [NotNull] IShellLocks shellLocks, [NotNull] ChangeManager changeManager, [NotNull] T4Environment t4Environment) {
+		public T4PsiModuleProvider([NotNull] Lifetime lifetime, [NotNull] IShellLocks shellLocks, [NotNull] ChangeManager changeManager,
+			[NotNull] T4Environment t4Environment, [NotNull] ISolution solution) {
 			_lifetime = lifetime;
 			_shellLocks = shellLocks;
 			_changeManager = changeManager;
 			_t4Environment = t4Environment;
+			_solution = solution;
+
+			changeManager.RegisterChangeProvider(lifetime, this);
+			changeManager.AddDependency(lifetime, this, solution);
 		}
 
 	}

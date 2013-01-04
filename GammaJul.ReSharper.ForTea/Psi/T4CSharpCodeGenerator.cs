@@ -19,6 +19,7 @@ using GammaJul.ReSharper.ForTea.Psi.Directives;
 using GammaJul.ReSharper.ForTea.Tree;
 using JetBrains.Annotations;
 using JetBrains.Application;
+using JetBrains.ProjectModel;
 using JetBrains.ReSharper.Psi;
 using JetBrains.ReSharper.Psi.Tree;
 using JetBrains.Util;
@@ -170,7 +171,27 @@ namespace GammaJul.ReSharper.ForTea.Psi {
 			if (expressionBlock != null)
 				result.Builder.AppendLine("));");
 		}
-		
+
+		/// <summary>
+		/// Gets the namespace of the current T4 file. This is always <c>null</c> for a standard (non-preprocessed) file.
+		/// </summary>
+		/// <returns>A namespace, or <c>null</c>.</returns>
+		[CanBeNull]
+		private string GetNamespace() {
+			IPsiSourceFile sourceFile = _file.GetSourceFile();
+			if (sourceFile == null)
+				return null;
+			IProjectFile projectFile = sourceFile.ToProjectFile();
+			if (projectFile == null || !projectFile.IsPreprocessedT4Template())
+				return null;
+			
+			string ns = projectFile.GetProperties().CustomToolNamespace;
+			if (!String.IsNullOrEmpty(ns))
+				return ns;
+
+			return sourceFile.Properties.GetDefaultNamespace();
+		}
+
 		/// <summary>
 		/// Generates a new C# code behind.
 		/// </summary>
@@ -185,7 +206,13 @@ namespace GammaJul.ReSharper.ForTea.Psi {
 
 			var result = new GenerationResult(_file);
 			StringBuilder builder = result.Builder;
-			//builder.AppendLine("namespace T4 {");
+
+			string ns = GetNamespace();
+			bool hasNamespace = !String.IsNullOrEmpty(ns);
+			if (hasNamespace) {
+				builder.AppendFormat("namespace {0} {{", ns);
+				builder.AppendLine();
+			}
 			builder.AppendLine("using System;");
 			result.Append(_usingsResult);
 			builder.AppendFormat("[{0}]", PsiManager.SyntheticAttribute);
@@ -203,7 +230,8 @@ namespace GammaJul.ReSharper.ForTea.Psi {
 			builder.AppendLine("}");
 			result.Append(_featureResult);
 			builder.AppendLine("}");
-			//builder.AppendLine("}");
+			if (hasNamespace)
+				builder.AppendLine("}");
 			return result;
 		}
 

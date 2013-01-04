@@ -13,6 +13,7 @@
 //    See the License for the specific language governing permissions and
 //    limitations under the License.
 #endregion
+using System;
 using System.Linq;
 using JetBrains.Annotations;
 using JetBrains.ProjectModel;
@@ -34,6 +35,11 @@ namespace GammaJul.ReSharper.ForTea.Psi {
 				.FirstOrDefault();
 
 			return includeProjectfile != null ? includeProjectfile.ToSourceFile() : null;
+		}
+
+		internal static bool IsPreprocessedT4Template([CanBeNull] this IProjectFile projectFile) {
+			return projectFile != null
+				&& "TextTemplatingFilePreprocessor".Equals(projectFile.GetProperties().CustomTool, StringComparison.OrdinalIgnoreCase);
 		}
 
 	}

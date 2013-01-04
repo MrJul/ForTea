@@ -297,6 +297,7 @@ namespace GammaJul.ReSharper.ForTea.Psi {
 			_shellLocks.AssertReadAccessAllowed();
 			
 			var references = new PsiModuleReferenceAccumulator();
+			
 			foreach (IAssemblyCookie cookie in _assemblyReferences.Values) {
 				if (cookie.Assembly == null)
 					continue;
@@ -304,6 +305,7 @@ namespace GammaJul.ReSharper.ForTea.Psi {
 				if (psiModule != null)
 					references.Add(new PsiModuleReference(psiModule));
 			}
+
 			return references.GetReferences();
 		}
 

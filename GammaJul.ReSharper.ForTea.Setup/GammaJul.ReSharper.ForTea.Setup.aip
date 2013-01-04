@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<DOCUMENT Type="Advanced Installer" CreateVersion="8.2" version="9.7" Modules="professional" RootPath="." Language="en" Id="{380AE56C-C72F-4A9D-8574-952686B32D88}">
+<DOCUMENT Type="Advanced Installer" CreateVersion="8.2" version="9.8" Modules="professional" RootPath="." Language="en" Id="{380AE56C-C72F-4A9D-8574-952686B32D88}">
   <COMPONENT cid="caphyon.advinst.msicomp.ProjectOptionsComponent">
     <ROW Name="HiddenItems" Value="DigCertStoreComponent;UpdaterComponent;SerValComponent;PreReqComponent;MsiExtComponent;MsiAssemblyComponent;MsiServInstComponent;MsiOrgComponent;ActSyncAppComponent;MsiThemeComponent;BackgroundImagesComponent;DictionaryComponent;CPLAppletComponent;MsiClassComponent;WebApplicationsComponent;MsiOdbcDataSrcComponent;MsiInstExSeqComponent"/>
   </COMPONENT>
@@ -16,10 +16,10 @@
     <ROW Property="ARPURLINFOABOUT" Value="https://github.com/MrJul/ForTea"/>
     <ROW Property="MSIFASTINSTALL" MultiBuildValue="DefaultBuild:3"/>
     <ROW Property="Manufacturer" Value="Julien Lebosquain" ValueLocId="*"/>
-    <ROW Property="ProductCode" Value="1033:{86F8DE94-A6D8-41E1-A9CA-D3E2C80D09F4} " Type="16"/>
+    <ROW Property="ProductCode" Value="1033:{CAE33163-0DF6-4313-89AB-671051FC85D4} " Type="16"/>
     <ROW Property="ProductLanguage" Value="1033"/>
     <ROW Property="ProductName" Value="ForTea for ReSharper" ValueLocId="*"/>
-    <ROW Property="ProductVersion" Value="1.0.0" Type="32"/>
+    <ROW Property="ProductVersion" Value="1.0.1" Type="32"/>
     <ROW Property="SecureCustomProperties" Value="OLDPRODUCTS;AI_NEWERPRODUCTFOUND"/>
     <ROW Property="UpgradeCode" Value="{501ADDDA-F122-4414-B633-0150564B03F7}"/>
     <ROW Property="WindowsType9X" MultiBuildValue="DefaultBuild:Windows 9x/ME" ValueLocId="-"/>
