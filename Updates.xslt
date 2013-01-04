@@ -5,7 +5,7 @@
 
 	<xsl:variable name="ReleaseMajor" select="1" />
 	<xsl:variable name="ReleaseMinor" select="0" />
-	<xsl:variable name="ReleaseBuild" select="0" />
+	<xsl:variable name="ReleaseBuild" select="1" />
 
 	<xsl:template match="/RootInfo">
 		<UpdateInfos>
@@ -16,11 +16,11 @@
 			<xsl:if
 				test="($InstalledMajor &lt; $ReleaseMajor) or ($InstalledMajor = $ReleaseMajor and $InstalledMinor &lt; $ReleaseMinor) or ($InstalledMajor = $ReleaseMajor and $InstalledMinor = $ReleaseMinor and $InstalledBuild &lt; $ReleaseBuild)">
 				<UpdateInfo>
-					<InformationUri>https://github.com/MrJul/ForTea</InformationUri>
+					<InformationUri>https://github.com/MrJul/ForTea/wiki/Release-Notes</InformationUri>
 					<Title>
 						<xsl:value-of select="concat('ForTea ', $ReleaseMajor, '.', $ReleaseMinor, '.', $ReleaseBuild)" />
 					</Title>
-					<Description>An upgrade for ForTea is available.</Description>
+					<Description>A minor upgrade for ForTea is available.</Description>
 
 					<DownloadUri>
 						<xsl:value-of select="concat('http://download.flynware.com/ForTea/ForTea-', $ReleaseMajor, '.', $ReleaseMinor, '.', $ReleaseBuild, '.msi')" />
