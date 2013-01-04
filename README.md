@@ -10,7 +10,7 @@ Installation
 ------------
 Visual Studio 2010 or Visual Studio 2012 is required.  
 [ReSharper 7.1.x](http://www.jetbrains.com/resharper/) must be installed.  
-Grab the latest binary version of ForTea (1.0.0) [here](http://download.flynware.com/ForTea/ForTea-1.0.0.msi).  
+Grab the latest binary version of ForTea (1.0.1) [here](http://download.flynware.com/ForTea/ForTea-1.0.1.msi).  
 Note that the software is currently in beta phase. Don't hesitate to [open an issue](https://github.com/MrJul/ForTea/issues) if you encounter any problem.
 
 What's supported
@@ -28,6 +28,7 @@ What's supported
  - Extending selection
  - T4 error highlightings and quick fixes
  - Auto update support
+ - Both classic templates and runtime (aka preprocessed) templates.
 
 Things to know
 --------------
