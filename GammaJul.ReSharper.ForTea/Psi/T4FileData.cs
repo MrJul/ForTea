@@ -48,9 +48,15 @@ namespace GammaJul.ReSharper.ForTea.Psi {
 		/// <param name="directive">The directive containing a potential assembly reference.</param>
 		private void HandleAssemblyDirective([NotNull] IT4Directive directive) {
 			string assemblyNameOrFile = directive.GetAttributeValue(_directiveInfoManager.Assembly.NameAttribute.Name);
-			if (assemblyNameOrFile == null || (assemblyNameOrFile = assemblyNameOrFile.Trim()).Length == 0)
-				return;
+			if (assemblyNameOrFile == null || (assemblyNameOrFile = assemblyNameOrFile.Trim()).Length == 0) {
 
+				// Handle <#@ assembly name="" completion="someassembly" #>, which is a ForTea-specific way
+				// to get completion for an implicit assembly (for example, added by a custom directive).
+				assemblyNameOrFile = directive.GetAttributeValue("completion");
+				if (assemblyNameOrFile == null || (assemblyNameOrFile = assemblyNameOrFile.Trim()).Length == 0)
+					return;
+			}
+			
 			VsBuildMacroHelper.GetMacros(assemblyNameOrFile, _macros);
 			_referencedAssemblies.Add(assemblyNameOrFile);
 		}

@@ -217,7 +217,7 @@ namespace GammaJul.ReSharper.ForTea.Psi {
 			result.Append(_usingsResult);
 			builder.AppendFormat("[{0}]", PsiManager.SyntheticAttribute);
 			builder.AppendLine();
-			builder.AppendLine("public class GeneratedTransformation : Microsoft.VisualStudio.TextTemplating.TextTransformation {");
+			builder.AppendLine("public class Generated\x200CTransformation : Microsoft.VisualStudio.TextTemplating.TextTransformation {");
 			builder.AppendFormat("[{0}] private static string __\x200CToString(object value) {{ return null; }}", PsiManager.SyntheticAttribute);
 			builder.AppendLine();
 			if (_hasHost)
