@@ -43,15 +43,31 @@ namespace GammaJul.ReSharper.ForTea.Psi {
 			|| stringWithMacros.IndexOf("$(", StringComparison.Ordinal) < 0)
 				return stringWithMacros;
 
-			IDictionary<string, string> macros = t4PsiModule.GetResolvedMacros();
-			if (macros.Count == 0)
+			IDictionary<string, string> macroValues = t4PsiModule.GetResolvedMacros();
+			if (macroValues.Count == 0)
 				return stringWithMacros;
 
+			return RemplaceMacros(stringWithMacros, macroValues);
+		}
+
+		[NotNull]
+		internal static string ResolveMacros([NotNull] string stringWithMacros, [CanBeNull] IDictionary<string, string> macroValues) {
+			if (String.IsNullOrEmpty(stringWithMacros)
+			|| macroValues == null
+			|| macroValues.Count == 0
+			|| stringWithMacros.IndexOf("$(", StringComparison.Ordinal) < 0)
+				return stringWithMacros;
+
+			return RemplaceMacros(stringWithMacros, macroValues);
+		}
+
+		[NotNull]
+		private static string RemplaceMacros([NotNull] string stringWithMacros, [NotNull] IDictionary<string, string> macroValues) {
 			return _vsMacroRegEx.Replace(stringWithMacros, match => {
 				Group group = match.Groups[1];
-				string macro = group.Value;
+				string macro = @group.Value;
 				string value;
-				return group.Success && macros.TryGetValue(macro, out value) ? value : macro;
+				return @group.Success && macroValues.TryGetValue(macro, out value) ? value : macro;
 			});
 		}
 

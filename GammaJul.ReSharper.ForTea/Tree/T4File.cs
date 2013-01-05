@@ -244,16 +244,6 @@ namespace GammaJul.ReSharper.ForTea.Tree {
 			}
 		}
 
-		/// <summary>
-		/// Finds the smallest element containing the specified text range
-		/// </summary>
-		/// <param name="treeTextRange">Text range in this element</param>
-		/// <returns/>
-		public override ITreeNode FindNodeAt(TreeTextRange textRange) {
-			ITreeNode node = base.FindNodeAt(textRange);
-			return node;
-		}
-
 	}
 
 }

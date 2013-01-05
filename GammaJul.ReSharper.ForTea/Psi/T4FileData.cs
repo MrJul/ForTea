@@ -47,11 +47,12 @@ namespace GammaJul.ReSharper.ForTea.Psi {
 		/// </summary>
 		/// <param name="directive">The directive containing a potential assembly reference.</param>
 		private void HandleAssemblyDirective([NotNull] IT4Directive directive) {
-			string assemblyName = directive.GetAttributeValue(_directiveInfoManager.Assembly.NameAttribute.Name);
-			if (assemblyName == null || (assemblyName = assemblyName.Trim()).Length == 0)
+			string assemblyNameOrFile = directive.GetAttributeValue(_directiveInfoManager.Assembly.NameAttribute.Name);
+			if (assemblyNameOrFile == null || (assemblyNameOrFile = assemblyNameOrFile.Trim()).Length == 0)
 				return;
 
-			_referencedAssemblies.Add(assemblyName);
+			VsBuildMacroHelper.GetMacros(assemblyNameOrFile, _macros);
+			_referencedAssemblies.Add(assemblyNameOrFile);
 		}
 
 		/// <summary>

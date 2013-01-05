@@ -155,18 +155,30 @@ namespace GammaJul.ReSharper.ForTea.Psi {
 		/// <summary>
 		/// Creates a new <see cref="IAssemblyCookie"/> from an assembly full name.
 		/// </summary>
-		/// <param name="assemblyFullName">The assembly full name.</param>
+		/// <param name="assemblyNameOrFile">The assembly full name.</param>
 		/// <returns>An instance of <see cref="IAssemblyCookie"/>, or <c>null</c> if none could be created.</returns>
 		[CanBeNull]
-		private IAssemblyCookie CreateCookie(string assemblyFullName) {
-			if (assemblyFullName == null || (assemblyFullName = assemblyFullName.Trim()).Length == 0)
+		private IAssemblyCookie CreateCookie(string assemblyNameOrFile) {
+			if (assemblyNameOrFile == null || (assemblyNameOrFile = assemblyNameOrFile.Trim()).Length == 0)
 				return null;
 
-			var nameInfo = AssemblyNameInfo.TryParse(assemblyFullName);
-			if (nameInfo == null)
-				return null;
+			AssemblyReferenceTarget target = null;
 
-			var target = new AssemblyReferenceTarget(nameInfo, FileSystemPath.Empty);
+			// assembly path
+			FileSystemPath path = FileSystemPath.TryParse(assemblyNameOrFile);
+			if (!path.IsEmpty && path.IsAbsolute)
+				target = new AssemblyReferenceTarget(AssemblyNameInfo.Empty, path);
+			
+			// assembly name
+			else {
+				AssemblyNameInfo nameInfo = AssemblyNameInfo.TryParse(assemblyNameOrFile);
+				if (nameInfo != null)
+					target = new AssemblyReferenceTarget(nameInfo, FileSystemPath.Empty);
+			}
+
+			if (target == null)
+				return null;
+			
 			AssemblyReferenceResolveResult result = ResolveManager.Resolve(target, _resolveProject);
 			if (result == null)
 				return null;
@@ -177,13 +189,13 @@ namespace GammaJul.ReSharper.ForTea.Psi {
 		/// <summary>
 		/// Try to add an assembly reference to the list of assemblies.
 		/// </summary>
-		/// <param name="assemblyFullName"></param>
+		/// <param name="assemblyNameOrFile"></param>
 		/// <remarks>Does not refresh references, simply add a cookie to the cookies list.</remarks>
 		[CanBeNull]
-		private IAssemblyCookie TryAddReference([NotNull] string assemblyFullName) {
-			var cookie = CreateCookie(assemblyFullName);
+		private IAssemblyCookie TryAddReference([NotNull] string assemblyNameOrFile) {
+			var cookie = CreateCookie(assemblyNameOrFile);
 			if (cookie != null)
-				_assemblyReferences.Add(assemblyFullName, cookie);
+				_assemblyReferences.Add(assemblyNameOrFile, cookie);
 			return cookie;
 		}
 
@@ -227,50 +239,34 @@ namespace GammaJul.ReSharper.ForTea.Psi {
 		private void OnDataFileChanged([NotNull] T4FileDataDiff dataDiff) {
 			_shellLocks.AssertWriteAccessAllowed();
 
-			bool hasChanges = false;
-			bool hasFileChanges = false;
+			bool hasFileChanges = ResolveMacros(dataDiff.AddedMacros);
+			bool hasChanges = hasFileChanges;
 
+			IDictionary<string, string> resolvedMacros = GetResolvedMacros();
+			
 			// removes the assembly references from the old assembly directives
 			foreach (string removedAssembly in dataDiff.RemovedAssemblies) {
+				string assembly = VsBuildMacroHelper.ResolveMacros(removedAssembly, resolvedMacros);
 				IAssemblyCookie cookie;
-				if (!_assemblyReferences.TryGetValue(removedAssembly, out cookie))
+				if (!_assemblyReferences.TryGetValue(assembly, out cookie))
 					continue;
-				_assemblyReferences.Remove(removedAssembly);
+
+				_assemblyReferences.Remove(assembly);
 				hasChanges = true;
 				cookie.Dispose();
 			}
 
 			// adds assembly references from the new assembly directives
 			foreach (string addedAssembly in dataDiff.AddedAssemblies) {
-				if (_assemblyReferences.ContainsKey(addedAssembly))
+				string assembly = VsBuildMacroHelper.ResolveMacros(addedAssembly, resolvedMacros);
+				if (_assemblyReferences.ContainsKey(assembly))
 					continue;
-				IAssemblyCookie cookie = TryAddReference(addedAssembly);
+
+				IAssemblyCookie cookie = TryAddReference(assembly);
 				if (cookie != null)
 					hasChanges = true;
 			}
-
-			// resolves new VS macros, like $(SolutionDir), found in include directives
-			IVsBuildMacroInfo vsBuildMacroInfo = null;
-			foreach (string addedMacro in dataDiff.AddedMacros) {
-				if (vsBuildMacroInfo == null) {
-					vsBuildMacroInfo = TryGetVsBuildMacroInfo();
-					if (vsBuildMacroInfo == null)
-						break;
-				}
-
-				hasChanges = true;
-				hasFileChanges = true;
-
-				string value;
-				bool succeeded = HResultHelpers.SUCCEEDED(vsBuildMacroInfo.GetBuildMacroValue(addedMacro, out value)) && !String.IsNullOrEmpty(value);
-				lock (_resolvedMacros) {
-					if (succeeded)
-						_resolvedMacros[addedMacro] = value;
-					else
-						_resolvedMacros.Remove(addedMacro);
-				}
-			}
-
+			
 			if (!hasChanges)
 				return;
 
@@ -287,6 +283,36 @@ namespace GammaJul.ReSharper.ForTea.Psi {
 						() => _changeManager.OnProviderChanged(this, changeBuilder.Result, SimpleTaskExecutor.Instance))
 				)
 			);
+		}
+
+		/// <summary>
+		/// Resolves new VS macros, like $(SolutionDir), found in include or assembly directives.
+		/// </summary>
+		/// <param name="macros">The list of macro names (eg SolutionDir) to resolve.</param>
+		/// <returns>Whether at least one macro has been processed.</returns>
+		private bool ResolveMacros([NotNull] IEnumerable<string> macros) {
+			bool hasChanges = false;
+
+			IVsBuildMacroInfo vsBuildMacroInfo = null;
+			foreach (string addedMacro in macros) {
+				if (vsBuildMacroInfo == null) {
+					vsBuildMacroInfo = TryGetVsBuildMacroInfo();
+					if (vsBuildMacroInfo == null)
+						break;
+				}
+
+				hasChanges = true;
+
+				string value;
+				bool succeeded = HResultHelpers.SUCCEEDED(vsBuildMacroInfo.GetBuildMacroValue(addedMacro, out value)) && !String.IsNullOrEmpty(value);
+				lock (_resolvedMacros) {
+					if (succeeded)
+						_resolvedMacros[addedMacro] = value;
+					else
+						_resolvedMacros.Remove(addedMacro);
+				}
+			}
+			return hasChanges;
 		}
 
 		/// <summary>
