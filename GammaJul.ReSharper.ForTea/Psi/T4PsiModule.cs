@@ -308,8 +308,10 @@ namespace GammaJul.ReSharper.ForTea.Psi {
 				lock (_resolvedMacros) {
 					if (succeeded)
 						_resolvedMacros[addedMacro] = value;
-					else
+					else {
+						Logger.LogError("Woops, couldn't resolve " + addedMacro);
 						_resolvedMacros.Remove(addedMacro);
+					}
 				}
 			}
 			return hasChanges;

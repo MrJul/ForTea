@@ -41,6 +41,7 @@ namespace GammaJul.ReSharper.ForTea.Parsing {
 		private readonly PsiBuilderLexer _builderLexer;
 		private readonly IPsiSourceFile _sourceFile;
 		private readonly ISolution _solution;
+		private readonly T4PsiModule _macroResolveModule;
 		private readonly HashSet<FileSystemPath> _existingIncludePaths;
 		private List<T4Directive> _notClosedDirectives;
 
@@ -303,12 +304,13 @@ namespace GammaJul.ReSharper.ForTea.Parsing {
 			// or create a new one if the include file is outside the solution
 			IPsiSourceFile includeSourceFile = includePath.FindSourceFileInSolution(_solution) ?? CreateIncludeSourceFile(includePath);
 			if (includeSourceFile == null) {
+				Logger.LogError("Include failed: " + includePath);
 				fileAttr.ValueError = "No current solution";
 				return;
 			}
 
 			ILexer includeLexer = CreateLexer(includeSourceFile);
-			var builder = new T4TreeBuilder(_t4Environment, _directiveInfoManager, includeLexer, includeSourceFile, _existingIncludePaths, _solution);
+			var builder = new T4TreeBuilder(_t4Environment, _directiveInfoManager, includeLexer, includeSourceFile, _existingIncludePaths, _solution, _macroResolveModule);
 			T4Include include = builder.CreateIncludeT4Tree();
 			include.Path = includePath;
 			_includes.Add(include);
@@ -384,7 +386,7 @@ namespace GammaJul.ReSharper.ForTea.Parsing {
 		[NotNull]
 		private string ExpandVisualStudioMacros([NotNull] string fileName) {
 			return _sourceFile != null
-				? VsBuildMacroHelper.ResolveMacros(fileName, _sourceFile.PsiModule as T4PsiModule)
+				? VsBuildMacroHelper.ResolveMacros(fileName, _macroResolveModule)
 				: fileName;
 		}
 
@@ -410,19 +412,26 @@ namespace GammaJul.ReSharper.ForTea.Parsing {
 			return sourceFile != null ? sourceFile.GetSolution() : null;
 		}
 
+		[CanBeNull]
+		private static T4PsiModule GetSourceModule([CanBeNull] IPsiSourceFile sourceFile) {
+			return sourceFile != null ? sourceFile.PsiModule as T4PsiModule : null;
+		}
+
 		internal T4TreeBuilder([NotNull] T4Environment t4Environment, [NotNull] DirectiveInfoManager directiveInfoManager, [NotNull] ILexer lexer,
 			[CanBeNull] IPsiSourceFile sourceFile = null)
-			: this(t4Environment, directiveInfoManager, lexer, sourceFile, new HashSet<FileSystemPath>(), GetSourceSolution(sourceFile)) {
+			: this(t4Environment, directiveInfoManager, lexer, sourceFile, new HashSet<FileSystemPath>(), GetSourceSolution(sourceFile), GetSourceModule(sourceFile)) {
 		}
 
 		private T4TreeBuilder([NotNull] T4Environment t4Environment, [NotNull] DirectiveInfoManager directiveInfoManager, [NotNull] ILexer lexer,
-			[CanBeNull] IPsiSourceFile sourceFile, [NotNull] HashSet<FileSystemPath> existingIncludePaths, [CanBeNull] ISolution solution) {
+			[CanBeNull] IPsiSourceFile sourceFile, [NotNull] HashSet<FileSystemPath> existingIncludePaths, [CanBeNull] ISolution solution,
+			[CanBeNull] T4PsiModule macroResolveModule) {
 			_t4Environment = t4Environment;
 			_directiveInfoManager = directiveInfoManager;
 			_builderLexer = new PsiBuilderLexer(lexer, tnt => tnt.IsWhitespace);
 			_existingIncludePaths = existingIncludePaths;
 			_sourceFile = sourceFile;
 			_solution = solution;
+			_macroResolveModule = macroResolveModule;
 		}
 
 	}

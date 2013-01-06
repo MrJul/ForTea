@@ -39,7 +39,7 @@ namespace GammaJul.ReSharper.ForTea.Intentions.QuickFixes {
 			var file = statementBlock.GetContainingFile() as IT4File;
 			Assertion.AssertNotNull(file, "file != null");
 
-			T4FeatureBlock feature = file.GetFeatureBlocks().Last();
+			T4FeatureBlock feature = file.GetFeatureBlocks().First();
 
 			ITreeNode featureBlock;
 			using (file.CreateWriteLock()) {
@@ -63,7 +63,7 @@ namespace GammaJul.ReSharper.ForTea.Intentions.QuickFixes {
 		}
 
 		public override string Text {
-			get { return "Move statement block before last class feature block"; }
+			get { return "Move statement block before first class feature block"; }
 		}
 
 		public override bool IsAvailable(IUserDataHolder cache) {

@@ -47,7 +47,7 @@ namespace GammaJul.ReSharper.ForTea.Psi {
 			if (macroValues.Count == 0)
 				return stringWithMacros;
 
-			return RemplaceMacros(stringWithMacros, macroValues);
+			return ReplaceMacros(stringWithMacros, macroValues);
 		}
 
 		[NotNull]
@@ -58,11 +58,11 @@ namespace GammaJul.ReSharper.ForTea.Psi {
 			|| stringWithMacros.IndexOf("$(", StringComparison.Ordinal) < 0)
 				return stringWithMacros;
 
-			return RemplaceMacros(stringWithMacros, macroValues);
+			return ReplaceMacros(stringWithMacros, macroValues);
 		}
 
 		[NotNull]
-		private static string RemplaceMacros([NotNull] string stringWithMacros, [NotNull] IDictionary<string, string> macroValues) {
+		private static string ReplaceMacros([NotNull] string stringWithMacros, [NotNull] IDictionary<string, string> macroValues) {
 			return _vsMacroRegEx.Replace(stringWithMacros, match => {
 				Group group = match.Groups[1];
 				string macro = @group.Value;
