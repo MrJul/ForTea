@@ -36,14 +36,8 @@ namespace GammaJul.ReSharper.ForTea.Psi {
 		/// </summary>
 		public new const string Name = T4Language.Name;
 
-		/// <summary>
-		/// Gets the default extension of T4 files.
-		/// </summary>
-		public const string TtExtension = ".tt";
-		public const string TtIncludeExtension = ".ttinclude";
-
 		private T4ProjectFileType()
-			: base(Name, Name, new[] { TtExtension, TtIncludeExtension }) {
+			: base(Name, Name, new[] { ".tt", ".ttinclude", ".t4" }) {
 		}
 
 		protected T4ProjectFileType([NotNull] string name, [NotNull] string presentableName, [NotNull] IEnumerable<string> extensions)

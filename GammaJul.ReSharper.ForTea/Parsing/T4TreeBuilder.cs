@@ -304,7 +304,6 @@ namespace GammaJul.ReSharper.ForTea.Parsing {
 			// or create a new one if the include file is outside the solution
 			IPsiSourceFile includeSourceFile = includePath.FindSourceFileInSolution(_solution) ?? CreateIncludeSourceFile(includePath);
 			if (includeSourceFile == null) {
-				Logger.LogError("Include failed: " + includePath);
 				fileAttr.ValueError = "No current solution";
 				return;
 			}
