@@ -22,9 +22,9 @@ using JetBrains.Application;
 using JetBrains.DataFlow;
 using JetBrains.DocumentManagers;
 using JetBrains.ProjectModel;
-using JetBrains.ProjectModel.Transaction;
 using JetBrains.ProjectModel.model2.Assemblies.Interfaces;
 using JetBrains.ReSharper.Psi;
+using JetBrains.ReSharper.Psi.Impl;
 using JetBrains.Util;
 
 namespace GammaJul.ReSharper.ForTea.Psi {
@@ -149,7 +149,8 @@ namespace GammaJul.ReSharper.ForTea.Psi {
 				_shellLocks,
 				projectFile,
 				solution.GetComponent<T4FileDataCache>(),
-				_t4Environment);
+				_t4Environment,
+				solution.GetComponent<OutputAssembliesCache>());
 			_modules[projectFile] = new ModuleWrapper(psiModule, lifetimeDefinition);
 			changeBuilder.AddModuleChange(psiModule, PsiModuleChange.ChangeType.ADDED);
 			changeBuilder.AddFileChange(psiModule.SourceFile, PsiModuleChange.ChangeType.ADDED);

@@ -169,7 +169,8 @@ namespace GammaJul.ReSharper.ForTea.Psi {
 			result.Builder.Append(CodeCommentEnd);
 
 			if (expressionBlock != null)
-				result.Builder.AppendLine("));");
+				result.Builder.Append("));");
+			result.Builder.AppendLine();
 		}
 
 		/// <summary>

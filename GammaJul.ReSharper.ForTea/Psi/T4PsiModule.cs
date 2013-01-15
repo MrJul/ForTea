@@ -54,6 +54,7 @@ namespace GammaJul.ReSharper.ForTea.Psi {
 		private readonly ISolution _solution;
 		private readonly IProjectFile _projectFile;
 		private readonly T4Environment _t4Environment;
+		private readonly OutputAssembliesCache _outputAssembliesCache;
 		private readonly IPsiSourceFile _sourceFile;
 		private readonly T4ResolveProject _resolveProject;
 		private IModuleReferenceResolveManager _resolveManager;
@@ -327,9 +328,21 @@ namespace GammaJul.ReSharper.ForTea.Psi {
 			foreach (IAssemblyCookie cookie in _assemblyReferences.Values) {
 				if (cookie.Assembly == null)
 					continue;
+
 				IPsiModule psiModule = _psiModuleManager.GetPrimaryPsiModule(cookie.Assembly);
+
+				// Normal assembly.
 				if (psiModule != null)
 					references.Add(new PsiModuleReference(psiModule));
+
+				// Assembly that is the output of a current project: reference the project instead.
+				else {
+					foreach (IProject project in _outputAssembliesCache.GetProjectsByAssembly(cookie.Assembly)) {
+						psiModule = _psiModuleManager.GetPrimaryPsiModule(project);
+						if (psiModule != null)
+							references.Add(new PsiModuleReference(psiModule));
+					}
+				}
 			}
 
 			return references.GetReferences();
@@ -366,7 +379,8 @@ namespace GammaJul.ReSharper.ForTea.Psi {
 
 		internal T4PsiModule([NotNull] Lifetime lifetime, [NotNull] PsiModuleManager psiModuleManager, [NotNull] DocumentManager documentManager,
 			[NotNull] ChangeManager changeManager, [NotNull] IAssemblyFactory assemblyFactory, [NotNull] IShellLocks shellLocks,
-			[NotNull] IProjectFile projectFile, [NotNull] T4FileDataCache fileDataCache, T4Environment t4Environment) {
+			[NotNull] IProjectFile projectFile, [NotNull] T4FileDataCache fileDataCache, [NotNull] T4Environment t4Environment,
+			[NotNull] OutputAssembliesCache outputAssembliesCache) {
 
 			_lifetime = lifetime;
 			lifetime.AddAction(Dispose);
@@ -386,6 +400,7 @@ namespace GammaJul.ReSharper.ForTea.Psi {
 			_solution = _project.GetSolution();
 			
 			_t4Environment = t4Environment;
+			_outputAssembliesCache = outputAssembliesCache;
 			_resolveProject = new T4ResolveProject(_solution, _shellLocks, t4Environment.PlatformID, _project);
 
 			_sourceFile = new PsiProjectFile(
