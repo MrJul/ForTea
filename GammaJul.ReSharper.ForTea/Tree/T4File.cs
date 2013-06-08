@@ -142,7 +142,7 @@ namespace GammaJul.ReSharper.ForTea.Tree {
 		public IT4Directive AddDirective(IT4Directive directive) {
 			if (directive == null)
 				throw new ArgumentNullException("directive");
-			
+
 			IT4Directive anchor = GetDirectives().LastOrDefault();
 			if (anchor != null)
 				return AddDirectiveAfter(directive, anchor);
@@ -236,7 +236,8 @@ namespace GammaJul.ReSharper.ForTea.Tree {
 				// but the TokenBuffer is null because there was an uncommitted modification.
 				// The base implementation of CachingLexer will create a TokenBuffer from the whole file,
 				// including T4Includes which aren't normally included in the token buffer:
-				// the next reparse will just be totally wrong. See if JetBrains can help me understand.
+				// the next reparse will just be totally wrong.
+				// See http://youtrack.jetbrains.com/issue/RSRP-331994 for a similar problem.
 				TokenBuffer tokenBuffer = TokenBuffer;
 				if (tokenBuffer != null)
 					return tokenBuffer.CreateLexer();

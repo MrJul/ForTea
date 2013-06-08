@@ -29,6 +29,7 @@ namespace GammaJul.ReSharper.ForTea.Daemon {
 	/// </summary>
 	/// <remarks></remarks>
 	internal abstract class T4DaemonStageProcess : IDaemonStageProcess, IRecursiveElementProcessor {
+
 		private readonly IDaemonProcess _daemonProcess;
 		private readonly IT4File _file;
 		private readonly List<HighlightingInfo> _highlightings = new List<HighlightingInfo>();

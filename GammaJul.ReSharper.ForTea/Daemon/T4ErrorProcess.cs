@@ -26,6 +26,8 @@ using JetBrains.ReSharper.Psi.Parsing;
 using JetBrains.ReSharper.Psi.Tree;
 using System.Linq;
 using JetBrains.Util;
+using JetBrains.ReSharper.Psi;
+using GammaJul.ReSharper.ForTea.Psi;
 
 namespace GammaJul.ReSharper.ForTea.Daemon {
 
@@ -135,6 +137,7 @@ namespace GammaJul.ReSharper.ForTea.Daemon {
 			if (directiveInfo == null)
 				return;
 
+			// Notify of missing required attributes.
 			IEnumerable<string> attributeNames = directive.GetAttributes().SelectNotNull(attr => attr.GetName());
 			var hashSet = new JetHashSet<string>(attributeNames, StringComparer.OrdinalIgnoreCase);
 			foreach (DirectiveAttributeInfo attributeInfo in directiveInfo.SupportedAttributes) {
@@ -142,6 +145,11 @@ namespace GammaJul.ReSharper.ForTea.Daemon {
 					AddHighlighting(new HighlightingInfo(nameToken.GetHighlightingRange(),
 						new MissingRequiredAttributeHighlighting(nameToken, attributeInfo.Name)));
 				}
+			}
+
+			// Assembly attributes in preprocessed templates are useless.
+			if (directiveInfo == _directiveInfoManager.Assembly && DaemonProcess.SourceFile.ToProjectFile().IsPreprocessedT4Template()) {
+				AddHighlighting(new HighlightingInfo(directive.GetHighlightingRange(), new IgnoredAssemblyDirectiveHighlighting(directive)));
 			}
 		}
 

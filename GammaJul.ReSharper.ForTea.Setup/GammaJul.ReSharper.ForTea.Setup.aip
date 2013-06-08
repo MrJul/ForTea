@@ -16,10 +16,10 @@
     <ROW Property="ARPURLINFOABOUT" Value="https://github.com/MrJul/ForTea"/>
     <ROW Property="MSIFASTINSTALL" MultiBuildValue="DefaultBuild:3"/>
     <ROW Property="Manufacturer" Value="Julien Lebosquain" ValueLocId="*"/>
-    <ROW Property="ProductCode" Value="1033:{09BF8379-B4D9-4A0E-8548-56A373E87970} " Type="16"/>
+    <ROW Property="ProductCode" Value="1033:{FF3AB6C1-4A95-4A62-BDD5-848B4B4F1186} " Type="16"/>
     <ROW Property="ProductLanguage" Value="1033"/>
     <ROW Property="ProductName" Value="ForTea for ReSharper" ValueLocId="*"/>
-    <ROW Property="ProductVersion" Value="1.0.2" Type="32"/>
+    <ROW Property="ProductVersion" Value="1.0.3" Type="32"/>
     <ROW Property="SecureCustomProperties" Value="OLDPRODUCTS;AI_NEWERPRODUCTFOUND"/>
     <ROW Property="UpgradeCode" Value="{501ADDDA-F122-4414-B633-0150564B03F7}"/>
     <ROW Property="WindowsType9X" MultiBuildValue="DefaultBuild:Windows 9x/ME" ValueLocId="-"/>

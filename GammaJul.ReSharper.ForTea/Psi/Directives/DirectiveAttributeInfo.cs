@@ -14,12 +14,15 @@
 //    limitations under the License.
 #endregion
 using System.Collections.Generic;
+using GammaJul.ReSharper.ForTea.Parsing;
+using GammaJul.ReSharper.ForTea.Tree;
 using JetBrains.Annotations;
 using JetBrains.Util;
 
 namespace GammaJul.ReSharper.ForTea.Psi.Directives {
 
 	public class DirectiveAttributeInfo {
+
 		private readonly string _name;
 		private readonly DirectiveAttributeOptions _options;
 
@@ -43,6 +46,11 @@ namespace GammaJul.ReSharper.ForTea.Psi.Directives {
 		[NotNull]
 		public virtual IEnumerable<string> IntelliSenseValues {
 			get { return EmptyList<string>.InstanceList; }
+		}
+
+		[NotNull]
+		public IT4DirectiveAttribute CreateDirectiveAttribute([CanBeNull] string value) {
+			return T4ElementFactory.Instance.CreateDirectiveAttribute(Name, value);
 		}
 
 		public DirectiveAttributeInfo([NotNull] string name, DirectiveAttributeOptions options) {

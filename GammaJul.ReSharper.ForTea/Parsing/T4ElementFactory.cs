@@ -13,6 +13,9 @@
 //    See the License for the specific language governing permissions and
 //    limitations under the License.
 #endregion
+
+
+using System.Linq;
 using System.Text;
 using GammaJul.ReSharper.ForTea.Psi;
 using GammaJul.ReSharper.ForTea.Tree;
@@ -81,6 +84,18 @@ namespace GammaJul.ReSharper.ForTea.Parsing {
 			}
 			builder.Append(" #>");
 			return (T4Directive) CreateTreeAndGetFirstChild(builder.ToString());
+		}
+
+		/// <summary>
+		/// Creates a new directive attribute.
+		/// </summary>
+		/// <param name="name">The name of the attribute.</param>
+		/// <param name="value">The value of the attribute.</param>
+		/// <returns>A new instance of <see cref="IT4DirectiveAttribute"/>.</returns>
+		[NotNull]
+		public IT4DirectiveAttribute CreateDirectiveAttribute([CanBeNull] string name, [CanBeNull] string value) {
+			T4Directive directive = CreateDirective("dummy", Pair.Of(name, value));
+			return directive.GetAttributes().First();
 		}
 
 		[NotNull]

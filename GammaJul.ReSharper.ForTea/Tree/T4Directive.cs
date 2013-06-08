@@ -17,7 +17,10 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using GammaJul.ReSharper.ForTea.Parsing;
+using JetBrains.Annotations;
 using JetBrains.ReSharper.Psi.ExtensionsAPI.Tree;
+using JetBrains.ReSharper.Psi.Tree;
+using JetBrains.Util;
 
 namespace GammaJul.ReSharper.ForTea.Tree {
 
@@ -98,6 +101,44 @@ namespace GammaJul.ReSharper.ForTea.Tree {
 			return String.IsNullOrEmpty(name)
 				? null
 				: GetAttributes().FirstOrDefault(att => name.Equals(att.GetName(), StringComparison.OrdinalIgnoreCase));
+		}
+
+		private static bool IsEndNode([NotNull] ITreeNode node) {
+			if (node.GetTokenType() == T4TokenNodeTypes.BlockEnd)
+				return true;
+			var missingTokenErrorElement = node as MissingTokenErrorElement;
+			return missingTokenErrorElement != null && missingTokenErrorElement.MissingTokenType == MissingTokenType.BlockEnd;
+		}
+
+		/// <summary>
+		/// Adds a new attribute to this directive.
+		/// </summary>
+		/// <param name="attribute">The attribute to add.</param>
+		/// <returns>A new instance of <see cref="IT4DirectiveAttribute"/>, representing <paramref name="attribute"/> in the T4 file.</returns>
+		public IT4DirectiveAttribute AddAttribute(IT4DirectiveAttribute attribute) {
+			if (attribute == null)
+				throw new ArgumentNullException("attribute");
+
+			using (this.CreateWriteLock()) {
+
+				ITreeNode lastNode = LastChild;
+				Assertion.AssertNotNull(lastNode, "lastNode != null");
+
+				ITreeNode anchor = IsEndNode(lastNode) ? lastNode.PrevSibling : lastNode;
+				Assertion.AssertNotNull(anchor, "anchor != null");
+				bool addSpaceAfter = anchor.GetTokenType() == T4TokenNodeTypes.Space;
+				bool addSpaceBefore = !addSpaceAfter;
+
+				if (addSpaceBefore)
+					anchor = ModificationUtil.AddChildAfter(anchor, T4TokenNodeTypes.Space.CreateLeafElement());
+
+				IT4DirectiveAttribute result = ModificationUtil.AddChildAfter(anchor, attribute);
+
+				if (addSpaceAfter)
+					ModificationUtil.AddChildAfter(result, T4TokenNodeTypes.Space.CreateLeafElement());
+
+				return result;
+			}
 		}
 
 		public override string ToString() {

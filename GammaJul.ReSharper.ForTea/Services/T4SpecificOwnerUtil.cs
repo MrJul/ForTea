@@ -36,10 +36,7 @@ namespace GammaJul.ReSharper.ForTea.Services {
 			return !typeElement.IsSynthetic();
 		}
 
-		public override bool SuperClassCanBeChanged(ITypeDeclaration typeElement) {
-			// TODO: handle template inherits attribute
-			return !typeElement.IsSynthetic();
-		}
+
 
 		public override bool HasUglyName(ITypeDeclaration declaration) {
 			return declaration.IsSynthetic();

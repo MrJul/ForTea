@@ -32,7 +32,7 @@ using JetBrains.ReSharper.Psi.Tree;
 namespace GammaJul.ReSharper.ForTea.Intentions.QuickFixes {
 
 	[QuickFix]
-	public class ChangeAttributeValueFix : QuickFixBase {
+	public class ChangeAttributeValueQuickFix : QuickFixBase {
 		private readonly InvalidAttributeValueHighlighting _highlighting;
 
 		protected override Action<ITextControl> ExecutePsiTransaction(ISolution solution, IProgressIndicator progress) {
@@ -62,7 +62,7 @@ namespace GammaJul.ReSharper.ForTea.Intentions.QuickFixes {
 			return _highlighting.IsValid() && _highlighting.DirectiveAttributeInfo != null;
 		}
 
-		public ChangeAttributeValueFix([NotNull] InvalidAttributeValueHighlighting highlighting) {
+		public ChangeAttributeValueQuickFix([NotNull] InvalidAttributeValueHighlighting highlighting) {
 			_highlighting = highlighting;
 		}
 

@@ -188,6 +188,25 @@ namespace GammaJul.ReSharper.ForTea.Tree {
 			
 		}
 
+		/// <summary>
+		/// Adds a directive to a <see cref="IT4File"/> at an optimal location in the directive list.
+		/// </summary>
+		/// <param name="t4File">The <see cref="IT4File"/> to add the directive to.</param>
+		/// <param name="directive">The directive to add.</param>
+		/// <param name="directiveInfoManager">A <see cref="DirectiveInfoManager"/> used to determine the best location of the directive.</param>
+		/// <returns>A new instance of <see cref="IT4Directive"/>, representing <paramref name="directive"/> in the T4 file.</returns>
+		[NotNull]
+		public static IT4Directive AddDirective([NotNull] this IT4File t4File, [NotNull] IT4Directive directive, [NotNull] DirectiveInfoManager directiveInfoManager) {
+			Pair<IT4Directive, BeforeOrAfter> anchor = directive.FindAnchor(t4File.GetDirectives().ToArray(), directiveInfoManager);
+
+			if (anchor.First == null)
+				return t4File.AddDirective(directive);
+
+			return anchor.Second == BeforeOrAfter.Before
+				? t4File.AddDirectiveBefore(directive, anchor.First)
+				: t4File.AddDirectiveAfter(directive, anchor.First);
+		}
+
 	}
 
 }

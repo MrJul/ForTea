@@ -69,12 +69,12 @@ namespace GammaJul.ReSharper.ForTea.Psi {
 			Action action = () => {
 
 				// add assembly directive
-				AddDirective(t4File, _directiveInfoManager.Assembly.CreateDirective(assembly.FullAssemblyName));
+				t4File.AddDirective(_directiveInfoManager.Assembly.CreateDirective(assembly.FullAssemblyName), _directiveInfoManager);
 
 				// add import directive if necessary
 				if (!String.IsNullOrEmpty(ns)
 				&& !t4File.GetDirectives(_directiveInfoManager.Import).Any(d => String.Equals(ns, d.GetAttributeValue(_directiveInfoManager.Import.NamespaceAttribute.Name), StringComparison.Ordinal)))
-					AddDirective(t4File, _directiveInfoManager.Import.CreateDirective(ns));
+					t4File.AddDirective(_directiveInfoManager.Import.CreateDirective(ns), _directiveInfoManager);
 
 			};
 
@@ -84,19 +84,6 @@ namespace GammaJul.ReSharper.ForTea.Psi {
 				return true;
 			}
 			return psiManager.DoTransaction(action, "T4 Assembly Reference").Succeded;
-		}
-
-		private void AddDirective([NotNull] IT4File t4File, [NotNull] IT4Directive directive) {
-			Pair<IT4Directive, BeforeOrAfter> anchor = directive.FindAnchor(t4File.GetDirectives().ToArray(), _directiveInfoManager);
-
-			if (anchor.First != null) {
-				if (anchor.Second == BeforeOrAfter.Before)
-					t4File.AddDirectiveBefore(directive, anchor.First);
-				else
-					t4File.AddDirectiveAfter(directive, anchor.First);
-			}
-			else
-				t4File.AddDirective(directive);
 		}
 
 		public T4ModuleReferencer([NotNull] T4Environment environment, [NotNull] DirectiveInfoManager directiveInfoManager) {

@@ -37,6 +37,7 @@
       <EmbedInteropTypes>False</EmbedInteropTypes>
     </Reference>
     <Reference Include="Microsoft.VisualStudio.Shell.Interop.8.0, Version=8.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
+    <Reference Include="PresentationCore" />
     <Reference Include="System" />
     <Reference Include="System.Drawing" />
     <Reference Include="System.Xml" />
@@ -44,11 +45,15 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Daemon\Highlightings\AfterLastFeatureHighlighting.cs" />
+    <Compile Include="Daemon\Highlightings\IgnoredAssemblyDirectiveHighlighting.cs" />
     <Compile Include="Daemon\Highlightings\InvalidAttributeValueHighlighting.cs" />
     <Compile Include="Daemon\Highlightings\MissingRequiredAttributeHighlighting.cs" />
+    <Compile Include="Daemon\Highlightings\MissingTransformTextMethodHighlighting.cs" />
     <Compile Include="Daemon\Highlightings\StatementAfterFeatureHighlighting.cs" />
     <Compile Include="Daemon\Highlightings\PredefinedHighlighting.cs" />
     <Compile Include="Daemon\Highlightings\MissingTokenHighlighting.cs" />
+    <Compile Include="Daemon\T4CSharpErrorProcess.cs" />
+    <Compile Include="Daemon\T4CSharpErrorStage.cs" />
     <Compile Include="Daemon\T4CSharpHighlightingProcess.cs" />
     <Compile Include="Daemon\T4CSharpHighlightingStage.cs" />
     <Compile Include="Daemon\T4ErrorProcess.cs" />
@@ -59,12 +64,14 @@
     <Compile Include="Daemon\T4DaemonStageProcess.cs" />
     <Compile Include="Daemon\Highlightings\T4Highlighting.cs" />
     <Compile Include="Daemon\Highlightings\VsPredefinedHighlighterIds.cs" />
+    <Compile Include="Intentions\QuickFixes\CreateTransformTextMethodQuickFix.cs" />
+    <Compile Include="Intentions\QuickFixes\RemoveDirectiveQuickFix.cs" />
     <Compile Include="Psi\VsBuildMacroHelper.cs" />
     <Compile Include="Psi\CodeStyle\T4CSharpCustomFormattingInfoProvider.cs" />
     <Compile Include="Psi\Directives\DirectiveAttributeOptions.cs" />
     <Compile Include="Psi\Directives\DirectiveInfoManager.cs" />
     <Compile Include="Intentions\QuickFixes\AddMissingTokenQuickFix.cs" />
-    <Compile Include="Intentions\QuickFixes\ChangeAttributeValueFix.cs" />
+    <Compile Include="Intentions\QuickFixes\ChangeAttributeValueQuickFix.cs" />
     <Compile Include="Intentions\QuickFixes\MoveStatementBlockQuickFix.cs" />
     <Compile Include="Intentions\QuickFixes\RemoveStatementBlockQuickFix.cs" />
     <Compile Include="Intentions\QuickFixes\RemoveToEndQuickFix.cs" />
@@ -175,7 +182,7 @@
     <Compile Include="Tree\T4TokenRole.cs" />
     <Compile Include="Tree\T4TreeExtensions.cs" />
     <Compile Include="Updates\RootUpdateInfo.cs" />
-    <Compile Include="Updates\UpdatesForTeaCategoryOwner.cs" />
+    <Compile Include="Updates\UpdatesNotifier.cs" />
   </ItemGroup>
   <ItemGroup>
     <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />

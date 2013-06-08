@@ -14,6 +14,7 @@
 //    limitations under the License.
 #endregion
 using System;
+using System.Linq;
 using System.Reflection;
 using JetBrains.Annotations;
 using JetBrains.Application;
@@ -26,7 +27,7 @@ using JetBrains.VSIntegration.Updates;
 namespace GammaJul.ReSharper.ForTea.Updates {
 
 	[ShellComponent]
-	public class UpdatesForTeaCategoryOwner {
+	public class UpdatesNotifier {
 
 		private readonly UpdatesCategory _category;
 
@@ -42,7 +43,7 @@ namespace GammaJul.ReSharper.ForTea.Updates {
 		}
 
 		private static void FillPlugInInfo([NotNull] UpdateLocalEnvironmentInfo.ProductSubInfo info) {
-			Assembly assembly = typeof(UpdatesForTeaCategoryOwner).Assembly;
+			Assembly assembly = typeof(UpdatesNotifier).Assembly;
 			Version version = assembly.GetName().Version;
 			info.CompanyName = assembly.GetCustomAttribute<PluginVendorAttribute>(false).Text;
 			info.Name = assembly.GetCustomAttribute<PluginTitleAttribute>(false).Text;
@@ -50,9 +51,23 @@ namespace GammaJul.ReSharper.ForTea.Updates {
 			info.FullName = info.Name + " " + version.ToString(3);
 		}
 
-		public UpdatesForTeaCategoryOwner([NotNull] Lifetime lifetime, [NotNull] UpdatesManager updatesManager) {
+		/// <summary>
+		/// From resharper-nuget plugin:
+		/// ReSharper downloads and evaluates the xslt on a regular basis (every 24 hours),
+		/// but doesn't re-evaluate it after an install (it doesn't know when something is
+		/// installed!) so if there's a reminder to download this or an older version, remove it.
+		/// </summary>
+		private void RemoveStaleUpdateNotification() {
+			Version thisVersion = typeof(UpdatesNotifier).Assembly.GetName().Version;
+			var updateInfo = _category.UpdateInfos.FirstOrDefault(c => new Version(c.Data.ProductVersion) <= thisVersion);
+			if (updateInfo != null)
+				_category.UpdateInfos.Remove(updateInfo);
+		}
+
+		public UpdatesNotifier([NotNull] Lifetime lifetime, [NotNull] UpdatesManager updatesManager) {
 			_category = updatesManager.Categories.AddOrActivate("ForTea", new Uri("https://raw.github.com/MrJul/ForTea/master/Updates.xslt"));
 			_category.CustomizeLocalEnvironmentInfo.Advise(lifetime, CustomizeLocalEnvironmentInfo);
+			RemoveStaleUpdateNotification();
 		}
 
 	}

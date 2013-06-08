@@ -84,7 +84,7 @@ namespace GammaJul.ReSharper.ForTea.Psi {
 			if (anchor != null)
 				directive = before ? t4File.AddDirectiveBefore(directive, anchor) : t4File.AddDirectiveAfter(directive, anchor);
 			else
-				directive = t4File.AddDirective(directive);
+				directive = t4File.AddDirective(directive, _directiveInfoManager);
 
 			return directive.GetAttributeValueToken(_directiveInfoManager.Import.NamespaceAttribute.Name).GetTreeTextRange();
 		}
@@ -147,22 +147,36 @@ namespace GammaJul.ReSharper.ForTea.Psi {
 		}
 
 
-		/// <summary>
-		/// Always throws. Adding a base class is not supported by T4 files.
-		/// </summary>
 		protected override void AddSuperClassDirectiveToOriginalFile(IFile originalFile, ITreeNode anchor, ITreeNode superClassGeneratedNode) {
-			// TODO: handle template inherits attribute
-			throw new FailPsiTransactionException("A T4 file cannot have an explicit base class.");
+			var t4File = (IT4File) originalFile;
+			IT4Directive directive = t4File.GetDirectives(_directiveInfoManager.Template).FirstOrDefault();
+			IT4DirectiveAttribute attribute;
+			string superClassName = superClassGeneratedNode.GetText();
+
+			if (directive == null) {
+				directive = _directiveInfoManager.Template.CreateDirective(Pair.Of(_directiveInfoManager.Template.InheritsAttribute.Name, superClassName));
+				directive = t4File.AddDirective(directive, _directiveInfoManager);
+				attribute = directive.GetAttributes().First();
+			}
+			else {
+				attribute = directive.AddAttribute(_directiveInfoManager.Template.InheritsAttribute.CreateDirectiveAttribute(superClassName));
+			}
+
+			superClassGeneratedNode.GetRangeTranslator().AddProjectionItem(
+				new TreeTextRange<Generated>(superClassGeneratedNode.GetTreeTextRange()),
+				new TreeTextRange<Original>(attribute.GetValueToken().GetTreeTextRange()));
 		}
 
-		/// <summary>
-		/// Always throws. Base classes are not supported by T4 files.
-		/// </summary>
 		protected override ITreeNode GetSuperClassNodeFromOriginalFile(IFile originalFile) {
-			// TODO: handle template inherits attribute
-			throw new FailPsiTransactionException("A T4 file cannot have an explicit base class.");
+			var t4File = (IT4File) originalFile;
+			foreach (IT4Directive templateDirective in t4File.GetDirectives(_directiveInfoManager.Template)) {
+				IT4Token inheritsToken = templateDirective.GetAttributeValueToken(_directiveInfoManager.Template.InheritsAttribute.Name);
+				if (inheritsToken != null)
+					return inheritsToken;
+			}
+			return null;
 		}
-		
+
 		/// <summary>
 		/// Determines whether a specified C# using directive can be removed.
 		/// </summary>

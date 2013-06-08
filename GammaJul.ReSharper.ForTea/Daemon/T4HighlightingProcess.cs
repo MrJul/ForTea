@@ -43,11 +43,6 @@ namespace GammaJul.ReSharper.ForTea.Daemon {
 			if (tokenType == null)
 				return null;
 			
-			/*TODO: reenable; maybe make a real VS language service only for T4 coloring (leaving the C# to ReSharper)?
-			 * currently the background flickers on each keystroke */
-			/*if (tokenType == T4TokenNodeTypes.Code)
-				AddHighlighting(new HighlightingInfo(element.GetHighlightingRange(), T4CodeHighlighting.Instance));
-			else*/
 			if (tokenType.IsTag)
 				return VsPredefinedHighlighterIds.HtmlServerSideScript;
 			if (tokenType == T4TokenNodeTypes.Equal)

@@ -21,6 +21,7 @@ namespace GammaJul.ReSharper.ForTea.Tree {
 	/// Implementation of <see cref="ErrorElement"/> for a missing block end tag.
 	/// </summary>
 	public class MissingTokenErrorElement : ErrorElement {
+
 		private readonly MissingTokenType _missingTokenType;
 
 		public MissingTokenType MissingTokenType {

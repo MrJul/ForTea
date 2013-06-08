@@ -33,6 +33,9 @@ namespace GammaJul.ReSharper.ForTea.Psi {
 
 		internal const string CodeCommentStart = "/*_T4\x200CCodeStart_*/";
 		internal const string CodeCommentEnd = "/*_T4\x200CCodeEnd_*/";
+		internal const string ClassName = "Generated\x200CTransformation";
+		internal const string DefaultBaseClassName = "Microsoft.VisualStudio.TextTemplating.TextTransformation";
+		internal const string TransformTextMethodName = "TransformText";
 
 		private readonly IT4File _file;
 		private readonly DirectiveInfoManager _directiveInfoManager;
@@ -40,6 +43,7 @@ namespace GammaJul.ReSharper.ForTea.Psi {
 		private bool _rootFeatureStarted;
 		private GenerationResult _usingsResult;
 		private GenerationResult _parametersResult;
+		private GenerationResult _inheritsResult;
 		private GenerationResult _transformTextResult;
 		private GenerationResult _featureResult;
 		private bool _hasHost;
@@ -106,12 +110,16 @@ namespace GammaJul.ReSharper.ForTea.Psi {
 		}
 
 		/// <summary>
-		/// Handles a template directive, determining if we should output a Host property.
+		/// Handles a template directive, determining if we should output a Host property and use a base class.
 		/// </summary>
 		/// <param name="directive">The template directive.</param>
 		private void HandleTemplateDirective([NotNull] IT4Directive directive) {
 			string value = directive.GetAttributeValue(_directiveInfoManager.Template.HostSpecificAttribute.Name);
 			_hasHost = Boolean.TrueString.Equals(value, StringComparison.OrdinalIgnoreCase);
+
+			Pair<IT4Token, string> className = directive.GetAttributeValueIgnoreOnlyWhitespace(_directiveInfoManager.Template.InheritsAttribute.Name);
+			if (className.First != null && className.Second != null)
+				_inheritsResult.AppendMapped(className.Second, className.First.GetTreeTextRange());
 		}
 
 		/// <summary>
@@ -201,6 +209,7 @@ namespace GammaJul.ReSharper.ForTea.Psi {
 		internal GenerationResult Generate() {
 			_usingsResult = new GenerationResult(_file);
 			_parametersResult = new GenerationResult(_file);
+			_inheritsResult = new GenerationResult(_file);
 			_transformTextResult = new GenerationResult(_file);
 			_featureResult = new GenerationResult(_file);
 			_file.ProcessDescendants(this);
@@ -218,13 +227,22 @@ namespace GammaJul.ReSharper.ForTea.Psi {
 			result.Append(_usingsResult);
 			builder.AppendFormat("[{0}]", PsiManager.SyntheticAttribute);
 			builder.AppendLine();
-			builder.AppendLine("public class Generated\x200CTransformation : Microsoft.VisualStudio.TextTemplating.TextTransformation {");
+
+			builder.AppendFormat("public class {0} : ", ClassName);
+			if (_inheritsResult.Builder.Length == 0)
+				builder.Append(DefaultBaseClassName);
+			else {
+				result.Append(_inheritsResult);
+			}
+			builder.AppendLine(" {");
+			
 			builder.AppendFormat("[{0}] private static string __\x200CToString(object value) {{ return null; }}", PsiManager.SyntheticAttribute);
 			builder.AppendLine();
 			if (_hasHost)
 				builder.AppendLine("public virtual Microsoft.VisualStudio.TextTemplating.ITextTemplatingEngineHost Host { get; set; }");
 			result.Append(_parametersResult);
-			builder.AppendLine("[System.CodeDom.Compiler.GeneratedCodeAttribute] public override string TransformText() {");
+			builder.AppendFormat("[System.CodeDom.Compiler.GeneratedCodeAttribute] public override string {0}() {{", TransformTextMethodName);
+			builder.AppendLine();
 			result.Append(_transformTextResult);
 			builder.AppendLine();
 			builder.AppendLine("return GenerationEnvironment.ToString();");

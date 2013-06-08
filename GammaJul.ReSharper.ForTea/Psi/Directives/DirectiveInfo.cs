@@ -14,9 +14,11 @@
 //    limitations under the License.
 #endregion
 using System;
-using System.Collections.ObjectModel;
 using System.Linq;
+using GammaJul.ReSharper.ForTea.Parsing;
+using GammaJul.ReSharper.ForTea.Tree;
 using JetBrains.Annotations;
+using JetBrains.Util;
 
 namespace GammaJul.ReSharper.ForTea.Psi.Directives {
 
@@ -32,13 +34,18 @@ namespace GammaJul.ReSharper.ForTea.Psi.Directives {
 			get { return _name; }
 		}
 
-		public abstract ReadOnlyCollection<DirectiveAttributeInfo> SupportedAttributes { get; }
+		public abstract System.Collections.ObjectModel.ReadOnlyCollection<DirectiveAttributeInfo> SupportedAttributes { get; }
 
 		[CanBeNull]
 		public DirectiveAttributeInfo GetAttributeByName([CanBeNull] string attributeName) {
 			if (String.IsNullOrEmpty(attributeName))
 				return null;
 			return SupportedAttributes.FirstOrDefault(di => di.Name.Equals(attributeName, StringComparison.OrdinalIgnoreCase));
+		}
+
+		[NotNull]
+		public IT4Directive CreateDirective([CanBeNull] params Pair<string, string>[] attributes) {
+			return T4ElementFactory.Instance.CreateDirective(Name, attributes);
 		}
 
 		protected DirectiveInfo([NotNull] string name) {

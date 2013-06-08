@@ -16,6 +16,7 @@
 using GammaJul.ReSharper.ForTea.Daemon.Highlightings;
 using JetBrains.Annotations;
 using JetBrains.Application.Settings;
+using JetBrains.DocumentModel;
 using JetBrains.ReSharper.Daemon;
 using JetBrains.ReSharper.Daemon.CSharp.Stages;
 using JetBrains.ReSharper.Daemon.Stages;
@@ -80,9 +81,13 @@ namespace GammaJul.ReSharper.ForTea.Daemon {
 
 		public override void VisitNode(ITreeNode node, IHighlightingConsumer context) {
 			base.VisitNode(node, context);
+			
+			DocumentRange highlightingRange = node.GetHighlightingRange();
+			//context.AddHighlighting(new PredefinedHighlighting(VsPredefinedHighlighterIds.RazorCode), highlightingRange);
+
 			string attributeId = GetHighlightingAttributeId(node);
 			if (attributeId != null)
-				context.AddHighlighting(new PredefinedHighlighting(attributeId), node.GetHighlightingRange());
+				context.AddHighlighting(new PredefinedHighlighting(attributeId), highlightingRange);
 		}
 
 		[CanBeNull]

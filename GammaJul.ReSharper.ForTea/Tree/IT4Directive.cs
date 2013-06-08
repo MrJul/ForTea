@@ -37,6 +37,14 @@ namespace GammaJul.ReSharper.ForTea.Tree {
 		[CanBeNull]
 		IT4DirectiveAttribute GetAttribute([CanBeNull] string name);
 
+		/// <summary>
+		/// Adds a new attribute to this directive.
+		/// </summary>
+		/// <param name="attribute">The attribute to add.</param>
+		/// <returns>A new instance of <see cref="IT4DirectiveAttribute"/>, representing <paramref name="attribute"/> in the T4 file.</returns>
+		[NotNull]
+		IT4DirectiveAttribute AddAttribute([NotNull] IT4DirectiveAttribute attribute);
+
 	}
 
 }
