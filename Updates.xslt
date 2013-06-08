@@ -5,7 +5,7 @@
 
 	<xsl:variable name="ReleaseMajor" select="1" />
 	<xsl:variable name="ReleaseMinor" select="0" />
-	<xsl:variable name="ReleaseBuild" select="2" />
+	<xsl:variable name="ReleaseBuild" select="3" />
 
 	<xsl:template match="/RootInfo">
 		<UpdateInfos>
