@@ -189,7 +189,23 @@ namespace GammaJul.ReSharper.ForTea.Psi {
         [NotNull]
         private string GetClassName() {
             IPsiSourceFile sourceFile = _file.GetSourceFile();
+
+            return GetClassName(sourceFile);
+        }
+
+	    /// <summary>
+	    /// Gets the class name of the T4 source file. This is always <c>DefaultClassName</c> for a standard (non-preprocessed) file.
+	    /// </summary>
+	    /// <param name="sourceFile"></param>
+	    /// <returns>A class name.</returns>
+	    [NotNull]
+        internal static string GetClassName(IPsiSourceFile sourceFile)
+        {
             if (sourceFile == null)
+                return DefaultClassName;
+
+            IProjectFile projectFile = sourceFile.ToProjectFile();
+            if (projectFile == null || !projectFile.IsPreprocessedT4Template())
                 return DefaultClassName;
 
             return Path.GetFileNameWithoutExtension(sourceFile.Name) ?? DefaultClassName;
