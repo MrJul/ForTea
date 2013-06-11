@@ -36,7 +36,7 @@ namespace GammaJul.ReSharper.ForTea.Daemon {
 			base.VisitClassDeclaration(classDeclarationParam, context);
 
 			if (!classDeclarationParam.IsSynthetic()
-			|| !T4CSharpCodeGenerator.ClassName.Equals(classDeclarationParam.DeclaredName, StringComparison.Ordinal))
+			|| !T4CSharpCodeGenerator.DefaultClassName.Equals(classDeclarationParam.DeclaredName, StringComparison.Ordinal))
 				return;
 
 			IDeclaredTypeUsage superTypeUsage = classDeclarationParam.SuperTypeUsageNodes.FirstOrDefault();

@@ -14,6 +14,7 @@
 //    limitations under the License.
 #endregion
 using System;
+using System.IO;
 using System.Text;
 using GammaJul.ReSharper.ForTea.Psi.Directives;
 using GammaJul.ReSharper.ForTea.Tree;
@@ -33,7 +34,7 @@ namespace GammaJul.ReSharper.ForTea.Psi {
 
 		internal const string CodeCommentStart = "/*_T4\x200CCodeStart_*/";
 		internal const string CodeCommentEnd = "/*_T4\x200CCodeEnd_*/";
-		internal const string ClassName = "Generated\x200CTransformation";
+		internal const string DefaultClassName = "Generated\x200CTransformation";
 		internal const string DefaultBaseClassName = "Microsoft.VisualStudio.TextTemplating.TextTransformation";
 		internal const string TransformTextMethodName = "TransformText";
 
@@ -181,6 +182,19 @@ namespace GammaJul.ReSharper.ForTea.Psi {
 			result.Builder.AppendLine();
 		}
 
+        /// <summary>
+        /// Gets the class name of the current T4 file. This is always <c>DefaultClassName</c> for a standard (non-preprocessed) file.
+        /// </summary>
+        /// <returns>A class name.</returns>
+        [NotNull]
+        private string GetClassName() {
+            IPsiSourceFile sourceFile = _file.GetSourceFile();
+            if (sourceFile == null)
+                return DefaultClassName;
+
+            return Path.GetFileNameWithoutExtension(sourceFile.Name) ?? DefaultClassName;
+        }
+
 		/// <summary>
 		/// Gets the namespace of the current T4 file. This is always <c>null</c> for a standard (non-preprocessed) file.
 		/// </summary>
@@ -228,7 +242,8 @@ namespace GammaJul.ReSharper.ForTea.Psi {
 			builder.AppendFormat("[{0}]", PsiManager.SyntheticAttribute);
 			builder.AppendLine();
 
-			builder.AppendFormat("public class {0} : ", ClassName);
+		    var className = GetClassName();
+		    builder.AppendFormat("public partial class {0} : ", className);
 			if (_inheritsResult.Builder.Length == 0)
 				builder.Append(DefaultBaseClassName);
 			else {
@@ -254,7 +269,7 @@ namespace GammaJul.ReSharper.ForTea.Psi {
 			return result;
 		}
 
-		/// <summary>
+	    /// <summary>
 		/// Initializes a new instance of the <see cref="T4CSharpCodeGenerator"/> class.
 		/// </summary>
 		/// <param name="file">The associated T4 file whose C# code behind will be generated.</param>
