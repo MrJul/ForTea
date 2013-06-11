@@ -273,7 +273,9 @@ namespace GammaJul.ReSharper.ForTea.Psi {
 			if (_hasHost)
 				builder.AppendLine("public virtual Microsoft.VisualStudio.TextTemplating.ITextTemplatingEngineHost Host { get; set; }");
 			result.Append(_parametersResult);
-			builder.AppendFormat("[System.CodeDom.Compiler.GeneratedCodeAttribute] public override string {0}() {{", TransformTextMethodName);
+            //TODO: check if already generated on disk
+			//builder.AppendFormat("[System.CodeDom.Compiler.GeneratedCodeAttribute] public override string {0}() {{", TransformTextMethodName);
+            builder.AppendFormat("[System.CodeDom.Compiler.GeneratedCodeAttribute] public string __\x200C{0}() {{", TransformTextMethodName);
 			builder.AppendLine();
 			result.Append(_transformTextResult);
 			builder.AppendLine();
