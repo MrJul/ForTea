@@ -24,6 +24,7 @@ using JetBrains.ProjectModel;
 using JetBrains.ReSharper.Psi;
 using JetBrains.ReSharper.Psi.Tree;
 using JetBrains.Util;
+using JetBrains.ProjectModel.Properties;
 
 namespace GammaJul.ReSharper.ForTea.Psi {
 
@@ -228,7 +229,7 @@ namespace GammaJul.ReSharper.ForTea.Psi {
 			if (!String.IsNullOrEmpty(ns))
 				return ns;
 
-			return sourceFile.Properties.GetDefaultNamespace();
+			return projectFile.CalculateExpectedNamespace();
 		}
 
 		/// <summary>
