@@ -183,34 +183,34 @@ namespace GammaJul.ReSharper.ForTea.Psi {
 			result.Builder.AppendLine();
 		}
 
-        /// <summary>
-        /// Gets the class name of the current T4 file. This is always <c>DefaultClassName</c> for a standard (non-preprocessed) file.
-        /// </summary>
-        /// <returns>A class name.</returns>
-        [NotNull]
-        private string GetClassName() {
-            IPsiSourceFile sourceFile = _file.GetSourceFile();
+		/// <summary>
+		/// Gets the class name of the current T4 file. This is always <c>DefaultClassName</c> for a standard (non-preprocessed) file.
+		/// </summary>
+		/// <returns>A class name.</returns>
+		[NotNull]
+		private string GetClassName() {
+			IPsiSourceFile sourceFile = _file.GetSourceFile();
 
-            return GetClassName(sourceFile);
-        }
+			return GetClassName(sourceFile);
+		}
 
-	    /// <summary>
-	    /// Gets the class name of the T4 source file. This is always <c>DefaultClassName</c> for a standard (non-preprocessed) file.
-	    /// </summary>
-	    /// <param name="sourceFile"></param>
-	    /// <returns>A class name.</returns>
-	    [NotNull]
-        internal static string GetClassName(IPsiSourceFile sourceFile)
-        {
-            if (sourceFile == null)
-                return DefaultClassName;
+		/// <summary>
+		/// Gets the class name of the T4 source file. This is always <c>DefaultClassName</c> for a standard (non-preprocessed) file.
+		/// </summary>
+		/// <param name="sourceFile"></param>
+		/// <returns>A class name.</returns>
+		[NotNull]
+		internal static string GetClassName(IPsiSourceFile sourceFile)
+		{
+			if (sourceFile == null)
+				return DefaultClassName;
 
-            IProjectFile projectFile = sourceFile.ToProjectFile();
-            if (projectFile == null || !projectFile.IsPreprocessedT4Template())
-                return DefaultClassName;
+			IProjectFile projectFile = sourceFile.ToProjectFile();
+			if (projectFile == null || !projectFile.IsPreprocessedT4Template())
+				return DefaultClassName;
 
-            return Path.GetFileNameWithoutExtension(sourceFile.Name) ?? DefaultClassName;
-        }
+			return Path.GetFileNameWithoutExtension(sourceFile.Name) ?? DefaultClassName;
+		}
 
 		/// <summary>
 		/// Gets the namespace of the current T4 file. This is always <c>null</c> for a standard (non-preprocessed) file.
@@ -259,8 +259,8 @@ namespace GammaJul.ReSharper.ForTea.Psi {
 			builder.AppendFormat("[{0}]", PsiManager.SyntheticAttribute);
 			builder.AppendLine();
 
-		    var className = GetClassName();
-		    builder.AppendFormat("public partial class {0} : ", className);
+			var className = GetClassName();
+			builder.AppendFormat("public partial class {0} : ", className);
 			if (_inheritsResult.Builder.Length == 0)
 				builder.Append(DefaultBaseClassName);
 			else {
@@ -273,9 +273,9 @@ namespace GammaJul.ReSharper.ForTea.Psi {
 			if (_hasHost)
 				builder.AppendLine("public virtual Microsoft.VisualStudio.TextTemplating.ITextTemplatingEngineHost Host { get; set; }");
 			result.Append(_parametersResult);
-            //TODO: check if already generated on disk
+			//TODO: check if already generated on disk
 			//builder.AppendFormat("[System.CodeDom.Compiler.GeneratedCodeAttribute] public override string {0}() {{", TransformTextMethodName);
-            builder.AppendFormat("[System.CodeDom.Compiler.GeneratedCodeAttribute] public string __\x200C{0}() {{", TransformTextMethodName);
+			builder.AppendFormat("[System.CodeDom.Compiler.GeneratedCodeAttribute] public string __\x200C{0}() {{", TransformTextMethodName);
 			builder.AppendLine();
 			result.Append(_transformTextResult);
 			builder.AppendLine();
@@ -288,7 +288,7 @@ namespace GammaJul.ReSharper.ForTea.Psi {
 			return result;
 		}
 
-	    /// <summary>
+		/// <summary>
 		/// Initializes a new instance of the <see cref="T4CSharpCodeGenerator"/> class.
 		/// </summary>
 		/// <param name="file">The associated T4 file whose C# code behind will be generated.</param>

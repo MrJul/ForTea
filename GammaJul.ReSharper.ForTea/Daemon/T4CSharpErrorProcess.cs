@@ -35,9 +35,9 @@ namespace GammaJul.ReSharper.ForTea.Daemon {
 		public override void VisitClassDeclaration(IClassDeclaration classDeclarationParam, IHighlightingConsumer context) {
 			base.VisitClassDeclaration(classDeclarationParam, context);
 
-		    IPsiSourceFile sourceFile = classDeclarationParam.GetSourceFile();
-		    string generatedClassName = T4CSharpCodeGenerator.GetClassName(sourceFile);
-		    if (!classDeclarationParam.IsSynthetic()
+			IPsiSourceFile sourceFile = classDeclarationParam.GetSourceFile();
+			string generatedClassName = T4CSharpCodeGenerator.GetClassName(sourceFile);
+			if (!classDeclarationParam.IsSynthetic()
 			|| !generatedClassName.Equals(classDeclarationParam.DeclaredName, StringComparison.Ordinal))
 				return;
 
