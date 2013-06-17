@@ -44,6 +44,7 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Daemon\DisableRuntimeT4CodeBehindAnalysis.cs" />
     <Compile Include="Daemon\Highlightings\AfterLastFeatureHighlighting.cs" />
     <Compile Include="Daemon\Highlightings\IgnoredAssemblyDirectiveHighlighting.cs" />
     <Compile Include="Daemon\Highlightings\InvalidAttributeValueHighlighting.cs" />
