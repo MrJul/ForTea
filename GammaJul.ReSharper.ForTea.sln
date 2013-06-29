@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2012
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GammaJul.ReSharper.ForTea", "GammaJul.ReSharper.ForTea\GammaJul.ReSharper.ForTea.csproj", "{EA095A20-2A80-43BB-97B7-C8FC2B419B53}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GammaJul.ReSharper.ForTea.7.x", "GammaJul.ReSharper.ForTea\GammaJul.ReSharper.ForTea.7.x.csproj", "{EA095A20-2A80-43BB-97B7-C8FC2B419B53}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{3EF83234-454C-41FC-982A-DDAA57E2EB86}"
 	ProjectSection(SolutionItems) = preProject
@@ -12,6 +12,8 @@ Project("{840C416C-B8F3-42BC-B0DD-F6BB14C9F8CB}") = "GammaJul.ReSharper.ForTea.S
 	ProjectSection(ProjectDependencies) = postProject
 		{EA095A20-2A80-43BB-97B7-C8FC2B419B53} = {EA095A20-2A80-43BB-97B7-C8FC2B419B53}
 	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GammaJul.ReSharper.ForTea.8.x", "GammaJul.ReSharper.ForTea\GammaJul.ReSharper.ForTea.8.x.csproj", "{8835E089-5908-43EE-892F-924E70CBF07E}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -44,9 +46,21 @@ Global
 		{429DEE89-8631-4F76-94A0-1695CFBA6631}.Release|Any CPU.Build.0 = DefaultBuild
 		{429DEE89-8631-4F76-94A0-1695CFBA6631}.Release|x86.ActiveCfg = DefaultBuild
 		{429DEE89-8631-4F76-94A0-1695CFBA6631}.Release|x86.Build.0 = DefaultBuild
+		{8835E089-5908-43EE-892F-924E70CBF07E}.All|Any CPU.ActiveCfg = Release|Any CPU
+		{8835E089-5908-43EE-892F-924E70CBF07E}.All|Any CPU.Build.0 = Release|Any CPU
+		{8835E089-5908-43EE-892F-924E70CBF07E}.All|x86.ActiveCfg = Release|Any CPU
+		{8835E089-5908-43EE-892F-924E70CBF07E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8835E089-5908-43EE-892F-924E70CBF07E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8835E089-5908-43EE-892F-924E70CBF07E}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{8835E089-5908-43EE-892F-924E70CBF07E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8835E089-5908-43EE-892F-924E70CBF07E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8835E089-5908-43EE-892F-924E70CBF07E}.Release|x86.ActiveCfg = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{8835E089-5908-43EE-892F-924E70CBF07E} = {3EF83234-454C-41FC-982A-DDAA57E2EB86}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		VisualSVNWorkingCopyRoot = .
