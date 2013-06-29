@@ -27,7 +27,7 @@ using JetBrains.Util;
 namespace GammaJul.ReSharper.ForTea.Psi {
 
 	/// <summary>
-	/// This class generates a code-behind file from C# embedded statements and directive in the T4 file.
+	/// This class generates a code-behind file from C# embedded statements and directives in the T4 file.
 	/// </summary>
 	internal sealed class T4CSharpCodeGenerator : IRecursiveElementProcessor {
 

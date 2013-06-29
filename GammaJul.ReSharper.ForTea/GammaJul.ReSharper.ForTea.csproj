@@ -90,7 +90,7 @@
     <Compile Include="Psi\Directives\DirectiveInfo.cs" />
     <Compile Include="Parsing\T4ElementFactory.cs" />
     <Compile Include="Parsing\T4FilteringLexer.cs" />
-    <Compile Include="Parsing\T4TokenNodeFlags.cs" />
+    <Compile Include="Parsing\T4TokenNodeFlag.cs" />
     <Compile Include="Parsing\T4TokenNodeTypes.cs" />
     <Compile Include="Psi\CodeStyle\T4CodeFormatter.cs" />
     <Compile Include="Psi\PsiExtensions.cs" />

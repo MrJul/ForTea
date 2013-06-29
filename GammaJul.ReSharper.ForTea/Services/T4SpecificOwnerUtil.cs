@@ -35,9 +35,7 @@ namespace GammaJul.ReSharper.ForTea.Services {
 		public override bool CanHaveConstructors(ITypeDeclaration typeElement) {
 			return !typeElement.IsSynthetic();
 		}
-
-
-
+		
 		public override bool HasUglyName(ITypeDeclaration declaration) {
 			return declaration.IsSynthetic();
 		}

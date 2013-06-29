@@ -188,22 +188,7 @@ namespace GammaJul.ReSharper.ForTea.Psi {
 		}
 
 		public object Execute(IChangeMap changeMap) {
-			var change = changeMap.GetChange<ProjectModelChange>(_solution);
-			if (change != null && _solution.IsValid())
-				change.Accept(new Abc());
-
 			return null;
-		}
-
-		private class Abc : RecursiveProjectModelChangeDeltaVisitor {
-
-			public override void VisitItemDelta(ProjectItemChange change) {
-				base.VisitItemDelta(change);
-				var projectFile = change.ProjectItem as IProjectFile;
-				if (projectFile != null && change.ContainsChangeType(ProjectModelChangeType.PROPERTIES)) {
-				}
-			}
-
 		}
 
 		/// <summary>
