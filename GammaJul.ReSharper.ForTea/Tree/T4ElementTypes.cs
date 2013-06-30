@@ -22,13 +22,13 @@ namespace GammaJul.ReSharper.ForTea.Tree {
 	/// </summary>
 	public static class T4ElementTypes {
 
-		public static readonly CompositeNodeType T4File = new T4CompositeNodeType<T4File>();
-		public static readonly CompositeNodeType T4StatementBlock = new T4CompositeNodeType<T4StatementBlock>();
-		public static readonly CompositeNodeType T4ExpressionBlock = new T4CompositeNodeType<T4ExpressionBlock>();
-		public static readonly CompositeNodeType T4FeatureBlock = new T4CompositeNodeType<T4FeatureBlock>();
-		public static readonly CompositeNodeType T4Directive = new T4CompositeNodeType<T4Directive>();
-		public static readonly CompositeNodeType T4DirectiveAttribute = new T4CompositeNodeType<T4DirectiveAttribute>();
-		public static readonly CompositeNodeType T4Include = new T4CompositeNodeType<T4Include>();
+		public static readonly CompositeNodeType T4File = new T4CompositeNodeType<T4File>(2001);
+		public static readonly CompositeNodeType T4StatementBlock = new T4CompositeNodeType<T4StatementBlock>(2002);
+		public static readonly CompositeNodeType T4ExpressionBlock = new T4CompositeNodeType<T4ExpressionBlock>(2003);
+		public static readonly CompositeNodeType T4FeatureBlock = new T4CompositeNodeType<T4FeatureBlock>(2004);
+		public static readonly CompositeNodeType T4Directive = new T4CompositeNodeType<T4Directive>(2005);
+		public static readonly CompositeNodeType T4DirectiveAttribute = new T4CompositeNodeType<T4DirectiveAttribute>(2006);
+		public static readonly CompositeNodeType T4Include = new T4CompositeNodeType<T4Include>(2007);
 
 		private class T4CompositeNodeType<T> : CompositeNodeType
 		where T : CompositeElement, new() {
@@ -37,8 +37,13 @@ namespace GammaJul.ReSharper.ForTea.Tree {
 				return new T();
 			}
 
-			internal T4CompositeNodeType()
+			// ReSharper disable once UnusedParameter.Local
+			internal T4CompositeNodeType(int index)
+#if SDK80
+				: base(typeof(T).Name, index) {
+#else
 				: base(typeof(T).Name) {
+#endif
 			}
 
 		}

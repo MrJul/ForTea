@@ -21,6 +21,11 @@ using JetBrains.ProjectModel;
 using JetBrains.ReSharper.Psi;
 using JetBrains.ReSharper.Psi.Tree;
 using JetBrains.Util;
+#if SDK80
+using JetBrains.ReSharper.Psi.Files;
+#else
+using PsiFiles = JetBrains.ReSharper.Psi.PsiManager;
+#endif
 
 namespace GammaJul.ReSharper.ForTea.Psi {
 
@@ -28,25 +33,15 @@ namespace GammaJul.ReSharper.ForTea.Psi {
 	/// Cache holding <see cref="T4FileData"/> for each T4 file.
 	/// </summary>
 	[PsiComponent]
-	public sealed class T4FileDataCache {
+	public sealed partial class T4FileDataCache {
 
-		private readonly DirectiveInfoManager _directiveInfoManager;
 		private readonly WeakToStrongDictionary<IPsiSourceFile, T4FileData> _fileDataBySourceFile = new WeakToStrongDictionary<IPsiSourceFile, T4FileData>();
+		private readonly DirectiveInfoManager _directiveInfoManager;
 		private readonly Signal<Pair<IPsiSourceFile, T4FileDataDiff>> _fileDataChanged;
 
 		[NotNull]
 		public Signal<Pair<IPsiSourceFile, T4FileDataDiff>> FileDataChanged {
 			get { return _fileDataChanged; }
-		}
-
-		/// <summary>
-		/// Called when a PSI file changes.
-		/// </summary>
-		/// <param name="treeNode">The tree node that changed.</param>
-		/// <param name="psiChangedElementType">The type of the PSI change.</param>
-		private void OnPhysicalPsiChanged(ITreeNode treeNode, PsiChangedElementType psiChangedElementType) {
-			if (treeNode != null && psiChangedElementType == PsiChangedElementType.CONTENTS_CHANGED)
-				OnPsiFileChanged(treeNode.GetContainingFile());
 		}
 
 		/// <summary>
@@ -80,18 +75,16 @@ namespace GammaJul.ReSharper.ForTea.Psi {
 		/// Initializes a new instance of the <see cref="T4FileDataCache"/> class.
 		/// </summary>
 		/// <param name="lifetime">The lifetime of this class.</param>
-		/// <param name="psiManager">The PSI manager.</param>
+		/// <param name="psiFiles">The PSI manager.</param>
 		/// <param name="directiveInfoManager">An instance of <see cref="DirectiveInfoManager"/>.</param>
-		public T4FileDataCache([NotNull] Lifetime lifetime, [NotNull] PsiManager psiManager, [NotNull] DirectiveInfoManager directiveInfoManager) {
+		public T4FileDataCache([NotNull] Lifetime lifetime, [NotNull] PsiFiles psiFiles, [NotNull] DirectiveInfoManager directiveInfoManager) {
 			_directiveInfoManager = directiveInfoManager;
 			_fileDataChanged = new Signal<Pair<IPsiSourceFile, T4FileDataDiff>>(lifetime, "T4FileDataCache.FileDataChanged");
 
 			lifetime.AddBracket(
-				() => psiManager.PsiFileCreated += OnPsiFileChanged,
-				() => psiManager.PsiFileCreated -= OnPsiFileChanged);
-			lifetime.AddBracket(
-				() => psiManager.PhysicalPsiChanged += OnPhysicalPsiChanged,
-				() => psiManager.PhysicalPsiChanged -= OnPhysicalPsiChanged);
+				() => psiFiles.PsiFileCreated += OnPsiFileChanged,
+				() => psiFiles.PsiFileCreated -= OnPsiFileChanged);
+			RegisterPsiChanged(lifetime, psiFiles);
 			lifetime.AddDispose(_fileDataBySourceFile);
 		}
 

@@ -13,33 +13,30 @@
 //    See the License for the specific language governing permissions and
 //    limitations under the License.
 #endregion
-using System;
-using System.Linq;
+
+
 using JetBrains.Annotations;
 using JetBrains.ProjectModel;
 using JetBrains.ReSharper.Psi;
-using JetBrains.Util;
+using JetBrains.ReSharper.Psi.Tree;
 
 namespace GammaJul.ReSharper.ForTea.Psi {
-	
-	internal static partial class PsiExtensions {
+
+	internal partial class PsiExtensions {
 
 		[CanBeNull]
-		internal static IPsiSourceFile FindSourceFileInSolution([CanBeNull] this FileSystemPath includePath, [CanBeNull] ISolution solution) {
-			if (includePath == null || includePath.IsEmpty || solution == null)
-				return null;
-
-			IProjectFile includeProjectfile = solution
-				.FindProjectItemsByLocation(includePath)
-				.OfType<IProjectFile>()
-				.FirstOrDefault();
-
-			return includeProjectfile != null ? includeProjectfile.ToSourceFile() : null;
+		internal static string GetCustomTool([CanBeNull] this IProjectFile projectFile) {
+			return projectFile != null ? projectFile.GetProperties().CustomTool : null;
 		}
 
-		internal static bool IsPreprocessedT4Template([CanBeNull] this IProjectFile projectFile) {
-			string customTool = projectFile.GetCustomTool();
-			return "TextTemplatingFilePreprocessor".Equals(customTool, StringComparison.OrdinalIgnoreCase);
+		[CanBeNull]
+		internal static string GetCustomToolNamespace([CanBeNull] this IProjectFile projectFile) {
+			return projectFile != null ? projectFile.GetProperties().CustomToolNamespace : null;
+		}
+
+		[NotNull]
+		internal static PredefinedType GetPredefinedType([NotNull] this ITreeNode node) {
+			return node.GetPsiModule().GetPredefinedType();
 		}
 
 	}

@@ -68,7 +68,15 @@
     <Compile Include="Daemon\Highlightings\T4Highlighting.cs" />
     <Compile Include="Daemon\Highlightings\VsPredefinedHighlighterIds.cs" />
     <Compile Include="Intentions\QuickFixes\CreateTransformTextMethodQuickFix.cs" />
+    <Compile Include="Intentions\QuickFixes\HotspotHelper.v7.cs" />
     <Compile Include="Intentions\QuickFixes\RemoveDirectiveQuickFix.cs" />
+    <Compile Include="Psi\CodeStyle\T4CodeFormatter.v7.cs" />
+    <Compile Include="Psi\PsiExtensions.v7.cs" />
+    <Compile Include="Psi\SyntheticAttribute.v7.cs" />
+    <Compile Include="Psi\T4CSharpCustomModificationHandler.v7.cs" />
+    <Compile Include="Psi\T4FileDataCache.v7.cs" />
+    <Compile Include="Psi\T4PsiModule.v7.cs" />
+    <Compile Include="Psi\T4SecondaryDocumentGenerationResult.v7.cs" />
     <Compile Include="Psi\VsBuildMacroHelper.cs" />
     <Compile Include="Psi\CodeStyle\T4CSharpCustomFormattingInfoProvider.cs" />
     <Compile Include="Psi\Directives\DirectiveAttributeOptions.cs" />
@@ -127,7 +135,6 @@
     <Compile Include="Psi\T4ResolveProject.cs" />
     <Compile Include="Psi\T4PsiModule.cs" />
     <Compile Include="Psi\T4MiscFilesProjectPsiModuleProvider.cs" />
-    <Compile Include="Psi\T4SecondaryDocumentGenerationResult.cs" />
     <Compile Include="Psi\T4SecondaryLexingProcess.cs" />
     <Compile Include="Services\CodeCompletion\AutopopupInDirective.cs" />
     <Compile Include="Services\CodeCompletion\CodeCompletionExtensions.cs" />

@@ -20,6 +20,7 @@ using GammaJul.ReSharper.ForTea.Tree;
 using JetBrains.Annotations;
 using JetBrains.Application;
 using JetBrains.Application.Progress;
+using JetBrains.DocumentModel;
 using JetBrains.ProjectModel;
 using JetBrains.ReSharper.Feature.Services.Bulbs;
 using JetBrains.ReSharper.Feature.Services.LiveTemplates.Hotspots;
@@ -76,7 +77,8 @@ namespace GammaJul.ReSharper.ForTea.Intentions.QuickFixes {
 			// create a hotspot around a directive name or value, with basic completion invoked
 			return textControl => {
 
-				int startOffset = file.GetDocumentRange(modifiedRange.StartOffset).TextRange.StartOffset;
+				DocumentRange initialRange = file.GetDocumentRange(modifiedRange.StartOffset);
+				int startOffset = initialRange.TextRange.StartOffset;
 				var finalRange = new TextRange(startOffset + hotspotRange.StartOffset, startOffset + hotspotRange.EndOffset);
 				string fieldName = textControl.Document.GetText(finalRange);
 
@@ -87,9 +89,7 @@ namespace GammaJul.ReSharper.ForTea.Intentions.QuickFixes {
 						TextRange.InvalidRange,
 						textControl,
 						LiveTemplatesManager.EscapeAction.LeaveTextAndCaret,
-						new HotspotInfo(
-							new TemplateField(fieldName, new MacroCallExpression(new BasicCompletionMacro()), 0),
-							finalRange))
+						HotspotHelper.CreateBasicCompletionHotspotInfo(fieldName, new DocumentRange(initialRange.Document, finalRange)))
 					.Execute();
 			};
 		}

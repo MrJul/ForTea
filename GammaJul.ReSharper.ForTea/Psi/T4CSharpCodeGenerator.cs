@@ -193,8 +193,8 @@ namespace GammaJul.ReSharper.ForTea.Psi {
 			IProjectFile projectFile = sourceFile.ToProjectFile();
 			if (projectFile == null || !projectFile.IsPreprocessedT4Template())
 				return null;
-			
-			string ns = projectFile.GetProperties().CustomToolNamespace;
+
+			string ns = projectFile.GetCustomToolNamespace();
 			if (!String.IsNullOrEmpty(ns))
 				return ns;
 
@@ -225,7 +225,7 @@ namespace GammaJul.ReSharper.ForTea.Psi {
 			}
 			builder.AppendLine("using System;");
 			result.Append(_usingsResult);
-			builder.AppendFormat("[{0}]", PsiManager.SyntheticAttribute);
+			builder.AppendFormat("[{0}]", SyntheticAttribute.Name);
 			builder.AppendLine();
 
 			builder.AppendFormat("public class {0} : ", ClassName);
@@ -236,7 +236,7 @@ namespace GammaJul.ReSharper.ForTea.Psi {
 			}
 			builder.AppendLine(" {");
 			
-			builder.AppendFormat("[{0}] private static string __\x200CToString(object value) {{ return null; }}", PsiManager.SyntheticAttribute);
+			builder.AppendFormat("[{0}] private static string __\x200CToString(object value) {{ return null; }}", SyntheticAttribute.Name);
 			builder.AppendLine();
 			if (_hasHost)
 				builder.AppendLine("public virtual Microsoft.VisualStudio.TextTemplating.ITextTemplatingEngineHost Host { get; set; }");

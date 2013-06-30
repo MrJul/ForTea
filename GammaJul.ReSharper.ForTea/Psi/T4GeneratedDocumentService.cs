@@ -27,6 +27,9 @@ using JetBrains.ReSharper.Psi.Impl.Shared;
 using JetBrains.ReSharper.Psi.Parsing;
 using JetBrains.ReSharper.Psi.Web.Generation;
 using JetBrains.Util;
+#if SDK80
+using JetBrains.ReSharper.Psi.Files;
+#endif
 
 namespace GammaJul.ReSharper.ForTea.Psi {
 

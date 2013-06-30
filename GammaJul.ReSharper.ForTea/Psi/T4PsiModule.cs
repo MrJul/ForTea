@@ -33,30 +33,35 @@ using JetBrains.Threading;
 using JetBrains.Util;
 using JetBrains.VsIntegration.ProjectModel;
 using Microsoft.VisualStudio.Shell.Interop;
+#if SDK80
+using JetBrains.ProjectModel.Build;
+using JetBrains.ReSharper.Psi.Modules;
+#else
+using PsiModules = JetBrains.ReSharper.Psi.PsiModuleManager;
+using OutputAssemblies = JetBrains.ReSharper.Psi.Impl.OutputAssembliesCache;
+#endif
 
 namespace GammaJul.ReSharper.ForTea.Psi {
 
 	/// <summary>
 	/// PSI module managing a single T4 file.
 	/// </summary>
-	internal sealed class T4PsiModule : IProjectPsiModule, IChangeProvider {
+	internal sealed partial class T4PsiModule : IProjectPsiModule, IChangeProvider {
 		private const string Prefix = "[T4] ";
 		
 		private readonly Dictionary<string, IAssemblyCookie> _assemblyReferences = new Dictionary<string, IAssemblyCookie>(StringComparer.OrdinalIgnoreCase);
 		private readonly Dictionary<string, string> _resolvedMacros = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
 		private readonly Lifetime _lifetime;
-		private readonly PsiModuleManager _psiModuleManager;
-		private readonly DocumentManager _documentManager;
+		private readonly PsiModules _psiModules;
 		private readonly ChangeManager _changeManager;
 		private readonly IAssemblyFactory _assemblyFactory;
 		private readonly IShellLocks _shellLocks;
 		private readonly IProject _project;
 		private readonly ISolution _solution;
-		private readonly IProjectFile _projectFile;
 		private readonly T4Environment _t4Environment;
-		private readonly OutputAssembliesCache _outputAssembliesCache;
 		private readonly IPsiSourceFile _sourceFile;
 		private readonly T4ResolveProject _resolveProject;
+		private readonly OutputAssemblies _outputAssemblies;
 		private IModuleReferenceResolveManager _resolveManager;
 		private bool _isValid;
 		
@@ -149,10 +154,6 @@ namespace GammaJul.ReSharper.ForTea.Psi {
 			return Prefix + _sourceFile.GetPersistentID();
 		}
 
-		IList<PreProcessingDirective> IPsiModule.GetAllDefines() {
-			return EmptyList<PreProcessingDirective>.InstanceList;
-		}
-
 		/// <summary>
 		/// Creates a new <see cref="IAssemblyCookie"/> from an assembly full name.
 		/// </summary>
@@ -180,13 +181,9 @@ namespace GammaJul.ReSharper.ForTea.Psi {
 			if (target == null)
 				return null;
 			
-			AssemblyReferenceResolveResult result = ResolveManager.Resolve(target, _resolveProject);
-			if (result == null)
-				return null;
-
-			return _assemblyFactory.AddRef(result, "T4", _t4Environment.PlatformID);
+			return CreateCookieCore(target);
 		}
-
+		
 		/// <summary>
 		/// Try to add an assembly reference to the list of assemblies.
 		/// </summary>
@@ -273,7 +270,7 @@ namespace GammaJul.ReSharper.ForTea.Psi {
 
 			// tells the world the module has changed
 			var changeBuilder = new PsiModuleChangeBuilder();
-			changeBuilder.AddModuleChange(this, PsiModuleChange.ChangeType.MODIFIED);
+			changeBuilder.AddModuleChange(this, ModifiedChangeType);
 
 			if (hasFileChanges)
 				GetPsiServices().MarkAsDirty(_sourceFile);
@@ -285,7 +282,7 @@ namespace GammaJul.ReSharper.ForTea.Psi {
 				)
 			);
 		}
-
+		
 		/// <summary>
 		/// Resolves new VS macros, like $(SolutionDir), found in include or assembly directives.
 		/// </summary>
@@ -329,7 +326,7 @@ namespace GammaJul.ReSharper.ForTea.Psi {
 				if (cookie.Assembly == null)
 					continue;
 
-				IPsiModule psiModule = _psiModuleManager.GetPrimaryPsiModule(cookie.Assembly);
+				IPsiModule psiModule = _psiModules.GetPrimaryPsiModule(cookie.Assembly);
 
 				// Normal assembly.
 				if (psiModule != null)
@@ -337,8 +334,9 @@ namespace GammaJul.ReSharper.ForTea.Psi {
 
 				// Assembly that is the output of a current project: reference the project instead.
 				else {
-					foreach (IProject project in _outputAssembliesCache.GetProjectsByAssembly(cookie.Assembly)) {
-						psiModule = _psiModuleManager.GetPrimaryPsiModule(project);
+					IProject project = GetProjectByOutputAssembly(cookie.Assembly);
+					if (project != null) {
+						psiModule = _psiModules.GetPrimaryPsiModule(project);
 						if (psiModule != null)
 							references.Add(new PsiModuleReference(psiModule));
 					}
@@ -376,39 +374,31 @@ namespace GammaJul.ReSharper.ForTea.Psi {
 			foreach (string assemblyName in _t4Environment.TextTemplatingAssemblyNames)
 				TryAddReference(assemblyName);
 		}
-
-		internal T4PsiModule([NotNull] Lifetime lifetime, [NotNull] PsiModuleManager psiModuleManager, [NotNull] DocumentManager documentManager,
+		
+		internal T4PsiModule([NotNull] Lifetime lifetime, [NotNull] PsiModules psiModules, [NotNull] DocumentManager documentManager,
 			[NotNull] ChangeManager changeManager, [NotNull] IAssemblyFactory assemblyFactory, [NotNull] IShellLocks shellLocks,
 			[NotNull] IProjectFile projectFile, [NotNull] T4FileDataCache fileDataCache, [NotNull] T4Environment t4Environment,
-			[NotNull] OutputAssembliesCache outputAssembliesCache) {
-
+			[NotNull] OutputAssemblies outputAssemblies) {
 			_lifetime = lifetime;
 			lifetime.AddAction(Dispose);
 			
-			_psiModuleManager = psiModuleManager;
-			_documentManager = documentManager;
+			_psiModules = psiModules;
 			_assemblyFactory = assemblyFactory;
 
 			_changeManager = changeManager;
 			changeManager.RegisterChangeProvider(lifetime, this);
-			changeManager.AddDependency(lifetime, psiModuleManager, this);
+			changeManager.AddDependency(lifetime, psiModules, this);
 			
 			_shellLocks = shellLocks;
-			_projectFile = projectFile;
 			_project = projectFile.GetProject();
 			Assertion.AssertNotNull(_project, "_project != null");
 			_solution = _project.GetSolution();
 			
 			_t4Environment = t4Environment;
-			_outputAssembliesCache = outputAssembliesCache;
+			_outputAssemblies = outputAssemblies;
 			_resolveProject = new T4ResolveProject(_solution, _shellLocks, t4Environment.PlatformID, _project);
 
-			_sourceFile = new PsiProjectFile(
-				this,
-				_projectFile,
-				(pf, sf) => new DefaultPsiProjectFileProperties(pf, sf),
-				JetFunc<IProjectFile, IPsiSourceFile>.True,
-				_documentManager);
+			_sourceFile = CreateSourceFile(projectFile, documentManager);
 
 			_isValid = true;
 			fileDataCache.FileDataChanged.Advise(lifetime, OnDataFileChanged);

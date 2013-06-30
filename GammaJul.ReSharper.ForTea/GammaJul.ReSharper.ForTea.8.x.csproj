@@ -68,7 +68,16 @@
     <Compile Include="Daemon\Highlightings\T4Highlighting.cs" />
     <Compile Include="Daemon\Highlightings\VsPredefinedHighlighterIds.cs" />
     <Compile Include="Intentions\QuickFixes\CreateTransformTextMethodQuickFix.cs" />
+    <Compile Include="Intentions\QuickFixes\HotspotHelper.v8.cs" />
     <Compile Include="Intentions\QuickFixes\RemoveDirectiveQuickFix.cs" />
+    <Compile Include="Parsing\T4TokenNodeFlag.cs" />
+    <Compile Include="Psi\CodeStyle\T4CodeFormatter.v8.cs" />
+    <Compile Include="Psi\T4SecondaryDocumentGenerationResult.v8.cs" />
+    <Compile Include="Psi\PsiExtensions.v8.cs" />
+    <Compile Include="Psi\SyntheticAttribute.v8.cs" />
+    <Compile Include="Psi\T4CSharpCustomModificationHandler.v8.cs" />
+    <Compile Include="Psi\T4FileDataCache.v8.cs" />
+    <Compile Include="Psi\T4PsiModule.v8.cs" />
     <Compile Include="Psi\VsBuildMacroHelper.cs" />
     <Compile Include="Psi\CodeStyle\T4CSharpCustomFormattingInfoProvider.cs" />
     <Compile Include="Psi\Directives\DirectiveAttributeOptions.cs" />
@@ -93,7 +102,6 @@
     <Compile Include="Psi\Directives\DirectiveInfo.cs" />
     <Compile Include="Parsing\T4ElementFactory.cs" />
     <Compile Include="Parsing\T4FilteringLexer.cs" />
-    <Compile Include="Parsing\T4TokenNodeFlags.cs" />
     <Compile Include="Parsing\T4TokenNodeTypes.cs" />
     <Compile Include="Psi\CodeStyle\T4CodeFormatter.cs" />
     <Compile Include="Psi\PsiExtensions.cs" />
@@ -127,7 +135,6 @@
     <Compile Include="Psi\T4ResolveProject.cs" />
     <Compile Include="Psi\T4PsiModule.cs" />
     <Compile Include="Psi\T4MiscFilesProjectPsiModuleProvider.cs" />
-    <Compile Include="Psi\T4SecondaryDocumentGenerationResult.cs" />
     <Compile Include="Psi\T4SecondaryLexingProcess.cs" />
     <Compile Include="Services\CodeCompletion\AutopopupInDirective.cs" />
     <Compile Include="Services\CodeCompletion\CodeCompletionExtensions.cs" />
@@ -193,7 +200,6 @@
   <ItemGroup>
     <Compile Include="Parsing\T4TreeBuilder.DirectiveBuilder.cs" />
   </ItemGroup>
-  <ItemGroup />
   <PropertyGroup>
     <ReSharperSdkTargets Condition=" '$(ReSharperSdkTargets)' == '' ">$(MSBuildExtensionsPath)\JetBrains\ReSharper.SDK\v$(ReSharperSdkVersion)</ReSharperSdkTargets>
   </PropertyGroup>

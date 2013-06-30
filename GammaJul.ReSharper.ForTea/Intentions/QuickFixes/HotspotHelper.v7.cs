@@ -13,28 +13,24 @@
 //    See the License for the specific language governing permissions and
 //    limitations under the License.
 #endregion
-using System.Collections.Generic;
+
+
 using JetBrains.Annotations;
-using JetBrains.ReSharper.Psi.ExtensionsAPI.Tree;
-#if SDK80
-using JetBrains.ReSharper.Psi.Files;
-#else
-using JetBrains.ReSharper.Psi.Impl.PsiManagerImpl;
-#endif
+using JetBrains.DocumentModel;
+using JetBrains.ReSharper.Feature.Services.LiveTemplates.Hotspots;
+using JetBrains.ReSharper.Feature.Services.LiveTemplates.Macros;
+using JetBrains.ReSharper.LiveTemplates;
 
-namespace GammaJul.ReSharper.ForTea.Tree {
+namespace GammaJul.ReSharper.ForTea.Intentions.QuickFixes {
 
-	public interface IT4IncludeOwner : ICompositeElement, IT4TreeNode {
-
-		/// <summary>
-		/// Gets a list of direct includes.
-		/// </summary>
-		/// <returns>A list of <see cref="IT4Include"/>.</returns>
+	internal static class HotspotHelper {
+		
 		[NotNull]
-		IEnumerable<IT4Include> GetIncludes();
-
-		[CanBeNull]
-		IDocumentRangeTranslator DocumentRangeTranslator { get; }
+		internal static HotspotInfo CreateBasicCompletionHotspotInfo([NotNull] string fieldName, DocumentRange range) {
+			return new HotspotInfo(
+				new TemplateField(fieldName, new MacroCallExpression(new BasicCompletionMacro()), 0),
+				range.TextRange);
+		}
 
 	}
 

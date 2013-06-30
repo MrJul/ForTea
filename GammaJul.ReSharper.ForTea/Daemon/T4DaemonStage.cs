@@ -34,7 +34,7 @@ namespace GammaJul.ReSharper.ForTea.Daemon {
 	    /// </summary>
 	    /// <returns>Code analysis process to be executed or <c>null</c> if this stage is not available for this file.</returns>
 	    public IEnumerable<IDaemonStageProcess> CreateProcess(IDaemonProcess process, IContextBoundSettingsStore settings, DaemonProcessKind processKind) {
-		    var t4File = process.SourceFile.GetNonInjectedPsiFile<T4Language>() as IT4File;
+		    var t4File = process.SourceFile.GetTheOnlyPsiFile(T4Language.Instance) as IT4File;
 			if (t4File == null)
 				return EmptyList<IDaemonStageProcess>.InstanceList;
 

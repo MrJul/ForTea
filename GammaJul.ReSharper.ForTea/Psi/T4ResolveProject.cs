@@ -53,7 +53,7 @@ namespace GammaJul.ReSharper.ForTea.Psi {
 			}
 
 			public override ProjectKind ProjectKind {
-				get { return ProjectKind.MISC_FILES_PROJECT; }
+				get { return ProjectKind.UNSUPPORTED; }
 			}
 
 			internal T4ResolveProjectProperties([NotNull] PlatformID platformID)

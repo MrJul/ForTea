@@ -14,7 +14,6 @@
 //    limitations under the License.
 #endregion
 
-
 using System;
 using System.Globalization;
 using System.Linq;
@@ -27,6 +26,8 @@ using JetBrains.ReSharper.Feature.Services.Bulbs;
 using JetBrains.ReSharper.Feature.Services.Intentions;
 using JetBrains.ReSharper.Feature.Services.Intentions.CreateDeclaration;
 using JetBrains.ReSharper.Feature.Services.Intentions.DataProviders;
+using JetBrains.ReSharper.Feature.Services.Intentions.Impl.DeclarationBuilders;
+using JetBrains.ReSharper.Feature.Services.Intentions.Impl.LanguageSpecific;
 using JetBrains.ReSharper.Intentions.Extensibility;
 using JetBrains.ReSharper.Psi;
 using JetBrains.ReSharper.Psi.CSharp;
@@ -61,7 +62,7 @@ namespace GammaJul.ReSharper.ForTea.Intentions.QuickFixes {
 
 			return typeElement.GetDeclarations()
 				.OfType<ITypeDeclaration>()
-				.FirstOrDefault(decl => LanguageManager.Instance.TryGetService<ICreateMethodDeclarationIntention>(decl.Language) != null);
+				.FirstOrDefault(decl => LanguageManager.Instance.TryGetService<IntentionLanguageSpecific>(decl.Language) != null);
 		}
 
 		protected override Action<ITextControl> ExecutePsiTransaction(ISolution solution, IProgressIndicator progress) {
@@ -86,8 +87,7 @@ namespace GammaJul.ReSharper.ForTea.Intentions.QuickFixes {
 				Target = target,
 			};
 
-			var createMethodDeclarationIntention = LanguageManager.Instance.GetService<ICreateMethodDeclarationIntention>(typeDeclaration.Language);
-			IntentionResult intentionResult = createMethodDeclarationIntention.ExecuteEx(context);
+			IntentionResult intentionResult = MethodDeclarationBuilder.Create(context);
 			intentionResult.ExecuteTemplate();
 			return null;
 		}
@@ -95,7 +95,7 @@ namespace GammaJul.ReSharper.ForTea.Intentions.QuickFixes {
 		[NotNull]
 		private static MemberSignature CreateTransformTextSignature([NotNull] ITreeNode node) {
 			var signatureProvider = new MemberSignatureProvider(node.GetPsiServices(), node.Language);
-			PredefinedType predefinedType = node.GetPsiModule().GetPredefinedType();
+			PredefinedType predefinedType = node.GetPredefinedType();
 			return signatureProvider.CreateFromTypes(predefinedType.String, EmptyList<IType>.InstanceList, node.GetSourceFile());
 		}
 

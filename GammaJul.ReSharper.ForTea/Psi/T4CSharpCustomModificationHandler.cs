@@ -13,6 +13,7 @@
 //    See the License for the specific language governing permissions and
 //    limitations under the License.
 #endregion
+
 using System;
 using System.Linq;
 using GammaJul.ReSharper.ForTea.Parsing;
@@ -26,13 +27,15 @@ using JetBrains.ReSharper.Psi.CSharp;
 using JetBrains.ReSharper.Psi.CSharp.Impl.CustomHandlers;
 using JetBrains.ReSharper.Psi.CSharp.Parsing;
 using JetBrains.ReSharper.Psi.CSharp.Tree;
-using JetBrains.ReSharper.Psi.ExtensionsAPI.Resolve;
 using JetBrains.ReSharper.Psi.ExtensionsAPI.Tree;
 using JetBrains.ReSharper.Psi.Impl.Shared;
-using JetBrains.ReSharper.Psi.Resolve;
 using JetBrains.ReSharper.Psi.Tree;
 using JetBrains.ReSharper.Psi.Web.CodeBehindSupport;
 using JetBrains.Util;
+#if SDK80
+using JetBrains.ReSharper.Psi.Modules;
+using JetBrains.ReSharper.Psi.Transactions;
+#endif
 
 namespace GammaJul.ReSharper.ForTea.Psi {
 
@@ -41,7 +44,7 @@ namespace GammaJul.ReSharper.ForTea.Psi {
 	/// (eg: adding a using statement translates to an import directive).
 	/// </summary>
 	[ProjectFileType(typeof(T4ProjectFileType))]
-	public class T4CSharpCustomModificationHandler : CustomModificationHandler<IT4CodeBlock, IT4Directive>, ICSharpCustomModificationHandler {
+	public partial class T4CSharpCustomModificationHandler : CustomModificationHandler<IT4CodeBlock, IT4Directive>, ICSharpCustomModificationHandler {
 
 		private readonly DirectiveInfoManager _directiveInfoManager;
 
@@ -231,15 +234,6 @@ namespace GammaJul.ReSharper.ForTea.Psi {
 			changeAction();
 		}
 
-		public bool PreferQualifiedReference(IQualifiableReference reference) {
-			// TODO: use settings
-			return false;
-		}
-
-		public string GetSpecialElementType(DeclaredElementPresenterStyle presenter, IDeclaredElement declaredElement, ISubstitution substitution) {
-			return null;
-		}
-
 		/// <summary>
 		/// Handles the removal of an import directive.
 		/// </summary>
@@ -255,19 +249,6 @@ namespace GammaJul.ReSharper.ForTea.Psi {
 				TreeTextRange range = namespaceDirective.ImportedSymbolName.GetTreeTextRange();
 				HandleRemoveImportInternal(psiServices, scope, usingDirective, action, CSharpLanguage.Instance, range);
 			}
-		}
-
-		/// <summary>
-		/// Handles the addition of an import directive
-		/// </summary>
-		/// <param name="psiServices">The PSI services.</param>
-		/// <param name="action">The action to perform to add the directive.</param>
-		/// <param name="generatedAnchor">The existing using anchor.</param>
-		/// <param name="before">Whether to add the statements before of after <paramref name="generatedAnchor"/>.</param>
-		/// <param name="generatedFile">The generated file.</param>
-		/// <returns>An instance of <see cref="IUsingDirective"/>.</returns>
-		public IUsingDirective HandleAddImport(IPsiServices psiServices, Func<IUsingDirective> action, IUsingDirective generatedAnchor, bool before, IFile generatedFile) {
-			return (IUsingDirective) HandleAddImportInternal(psiServices, () => action(), generatedAnchor, before, CSharpLanguage.Instance, generatedFile);
 		}
 
 		/// <summary>

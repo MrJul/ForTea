@@ -13,28 +13,15 @@
 //    See the License for the specific language governing permissions and
 //    limitations under the License.
 #endregion
-using System.Collections.Generic;
-using JetBrains.Annotations;
-using JetBrains.ReSharper.Psi.ExtensionsAPI.Tree;
-#if SDK80
-using JetBrains.ReSharper.Psi.Files;
-#else
-using JetBrains.ReSharper.Psi.Impl.PsiManagerImpl;
-#endif
 
-namespace GammaJul.ReSharper.ForTea.Tree {
 
-	public interface IT4IncludeOwner : ICompositeElement, IT4TreeNode {
+using JetBrains.ReSharper.Psi;
 
-		/// <summary>
-		/// Gets a list of direct includes.
-		/// </summary>
-		/// <returns>A list of <see cref="IT4Include"/>.</returns>
-		[NotNull]
-		IEnumerable<IT4Include> GetIncludes();
+namespace GammaJul.ReSharper.ForTea.Psi {
 
-		[CanBeNull]
-		IDocumentRangeTranslator DocumentRangeTranslator { get; }
+	public static class SyntheticAttribute {
+
+		public const string Name = PsiManager.SyntheticAttribute;
 
 	}
 

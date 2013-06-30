@@ -44,7 +44,6 @@ namespace GammaJul.ReSharper.ForTea.Parsing {
 		/// <summary>
 		/// Gets the fixed string representation of the token type if available, <see cref="String.Empty"/> otherwise.
 		/// </summary>
-		[NotNull]
 		public override string TokenRepresentation {
 			get { return _repr; }
 		}
@@ -105,10 +104,16 @@ namespace GammaJul.ReSharper.ForTea.Parsing {
 		/// Initializes a new instance of the <see cref="T4TokenNodeType"/> class.
 		/// </summary>
 		/// <param name="name">The token type name.</param>
+		/// <param name="index">An unique index for this token node type.</param>
 		/// <param name="repr">The static token type representation.</param>
 		/// <param name="flag">The special type of token.</param>
-		internal T4TokenNodeType([NotNull] string name, [CanBeNull] string repr, T4TokenNodeFlag flag)
+		// ReSharper disable once UnusedParameter.Local
+		internal T4TokenNodeType([NotNull] string name, int index, [CanBeNull] string repr, T4TokenNodeFlag flag)
+#if SDK80
+			: base(name, index) {
+#else
 			: base(name) {
+#endif
 			_flag = flag;
 			_repr = repr ?? String.Empty;
 		}
