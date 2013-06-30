@@ -13,7 +13,7 @@
 //    See the License for the specific language governing permissions and
 //    limitations under the License.
 #endregion
-using System;
+
 using System.Collections.Generic;
 using JetBrains.Annotations;
 using JetBrains.IDE;
@@ -21,27 +21,20 @@ using JetBrains.ProjectModel;
 using JetBrains.ReSharper.Feature.Services.Navigation;
 using JetBrains.TextControl;
 using JetBrains.ReSharper.Psi;
+#if SDK80
+using JetBrains.ReSharper.Feature.Services.Navigation.Navigation;
+#endif
 
 namespace GammaJul.ReSharper.ForTea.Services.Navigation {
 
 	[NavigationProvider]
-	public class T4OutsideSolutionNavigationProvider : INavigationProvider {
+	public partial class T4OutsideSolutionNavigationProvider {
 
 		private readonly ISolution _solution;
 		private readonly EditorManager _editorManager;
-
-		public IEnumerable<Type> GetSupportedTargetTypes() {
-			return new[] {
-				typeof(T4OutsideSolutionNavigationInfo)
-			};
-		}
-
-		public IEnumerable<INavigationPoint> CreateNavigationPoints(object target, IEnumerable<INavigationPoint> basePoints) {
-			var navigationInfo = target as T4OutsideSolutionNavigationInfo;
-			if (navigationInfo == null)
-				return basePoints;
-
-			ITextControl textControl = _editorManager.OpenFile(navigationInfo.FileSystemPath, navigationInfo.Activate, navigationInfo.TabOptions);
+		
+		private IEnumerable<INavigationPoint> CreateNavigationPoints([NotNull] T4OutsideSolutionNavigationInfo target, [NotNull] IEnumerable<INavigationPoint> basePoints) {
+			ITextControl textControl = _editorManager.OpenFile(target.FileSystemPath, target.Activate, target.TabOptions);
 			if (textControl == null)
 				return basePoints;
 
@@ -51,12 +44,8 @@ namespace GammaJul.ReSharper.ForTea.Services.Navigation {
 				return basePoints;
 
 			return new INavigationPoint[] {
-				new TextNavigationPoint(sourceFile.ToProjectFile(), navigationInfo.TextRange.StartOffset)
+				new TextNavigationPoint(sourceFile.ToProjectFile(), target.TextRange.StartOffset)
 			};
-		}
-
-		public double Priority {
-			get { return 10000.0; }
 		}
 
 		public T4OutsideSolutionNavigationProvider([NotNull] EditorManager editorManager, [NotNull] ISolution solution) {

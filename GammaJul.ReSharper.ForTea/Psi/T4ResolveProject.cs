@@ -20,7 +20,6 @@ using JetBrains.Annotations;
 using JetBrains.Application;
 using JetBrains.ProjectModel;
 using JetBrains.ProjectModel.Impl;
-using JetBrains.ProjectModel.Model2.References;
 using JetBrains.ProjectModel.Properties;
 using JetBrains.ProjectModel.Properties.Common;
 using JetBrains.Util;
@@ -33,34 +32,13 @@ namespace GammaJul.ReSharper.ForTea.Psi {
 	/// so that the GAC resolver will correctly resolve from the profile we want, which is the full framework.
 	/// TODO: see with JetBrains if that can be changed, this is really ugly
 	/// </summary>
-	internal sealed class T4ResolveProject : IProject {
+	internal sealed partial class T4ResolveProject : IProject {
 
 		private readonly IUserDataHolder _dataHolder;
 		private readonly Guid _guid = Guid.NewGuid();
 		private readonly ISolution _solution;
 		private readonly IShellLocks _shellLocks;
 		private readonly IProjectProperties _projectProperties;
-
-
-		private sealed class T4ResolveProjectProperties : ProjectPropertiesBase {
-
-			public override IBuildSettings BuildSettings {
-				get { return null; }
-			}
-
-			public override ProjectLanguage DefaultLanguage {
-				get { return null; }
-			}
-
-			public override ProjectKind ProjectKind {
-				get { return ProjectKind.UNSUPPORTED; }
-			}
-
-			internal T4ResolveProjectProperties([NotNull] PlatformID platformID)
-				: base(EmptyList<Guid>.InstanceList, platformID, Guid.Empty) {
-			}
-
-		}
 
 		public void PutData<T>(Key<T> key, T val) where T : class {
 			_dataHolder.PutData(key, val);
@@ -155,10 +133,6 @@ namespace GammaJul.ReSharper.ForTea.Psi {
 		ProjectFolderPath IProjectFolder.Path {
 			get { return null; }
 		}
-		
-		ICollection<IModuleToModuleReference> IModule.GetReferences() {
-			return EmptyList<IModuleToModuleReference>.InstanceList;
-		}
 
 		string IModule.Presentation {
 			get { return Name; }
@@ -192,30 +166,6 @@ namespace GammaJul.ReSharper.ForTea.Psi {
 
 		bool IProject.IsOpened { get; set; }
 
-		bool IProject.IsWebProject {
-			get { return false; }
-		}
-
-		bool IProject.IsWebApplication {
-			get { return false; }
-		}
-
-		ProjectKind IProject.ProjectKind {
-			get { return ProjectKind.MISC_FILES_PROJECT; }
-		}
-
-		ProjectLanguage IProject.DefaultLanguage {
-			get { return null; }
-		}
-
-		IBuildSettings IProject.BuildSettings {
-			get { return null; }
-		}
-
-		IProjectConfiguration IProject.ActiveConfiguration {
-			get { return null; }
-		}
-
 		IProjectProperties IProject.ProjectProperties {
 			get { return _projectProperties; }
 		}
@@ -223,8 +173,7 @@ namespace GammaJul.ReSharper.ForTea.Psi {
 		FileSystemPath IProject.ProjectFileLocation {
 			get { return null; }
 		}
-
-
+		
 		internal T4ResolveProject([NotNull] ISolution solution, [NotNull] IShellLocks shellLocks, [NotNull] PlatformID platformID, [NotNull] IUserDataHolder dataHolder) {
 			_shellLocks = shellLocks;
 			_solution = solution;

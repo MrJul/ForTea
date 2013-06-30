@@ -24,6 +24,9 @@ using JetBrains.ReSharper.Feature.Services.SelectEmbracingConstruct;
 using JetBrains.ReSharper.Psi;
 using JetBrains.ReSharper.Psi.Tree;
 using JetBrains.Util;
+#if SDK80
+using JetBrains.ProjectModel.FileTypes;
+#endif
 
 namespace GammaJul.ReSharper.ForTea.Services.Selection {
 
@@ -70,12 +73,12 @@ namespace GammaJul.ReSharper.ForTea.Services.Selection {
 			IT4File primaryFile = null;
 			IFile secondaryFile = null;
 
-			foreach (IFile file in sourceFile.EnumeratePsiFiles(documentRange)) {
-				var t4File = file as IT4File;
+			foreach (Pair<IFile, TreeTextRange> pair in sourceFile.EnumerateIntersectingPsiFiles(documentRange)) {
+				var t4File = pair.First as IT4File;
 				if (t4File != null)
 					primaryFile = t4File;
 				else
-					secondaryFile = file;
+					secondaryFile = pair.First;
 			}
 
 			return Pair.Of(primaryFile, secondaryFile);

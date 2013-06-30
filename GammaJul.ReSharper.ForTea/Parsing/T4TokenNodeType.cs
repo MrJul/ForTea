@@ -26,7 +26,9 @@ namespace GammaJul.ReSharper.ForTea.Parsing {
 	/// <summary>
 	/// Represents a T4 token node type.
 	/// </summary>
-	public sealed class T4TokenNodeType : TokenNodeType {
+	// ReSharper disable once PartialTypeWithSinglePart
+	public sealed partial class T4TokenNodeType : TokenNodeType {
+
 		private readonly T4TokenNodeFlag _flag;
 		private readonly string _repr;
 

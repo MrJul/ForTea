@@ -27,7 +27,7 @@ using JetBrains.ProjectModel.Model2.Assemblies.Interfaces;
 using JetBrains.ProjectModel.Model2.References;
 using JetBrains.ProjectModel.model2.Assemblies.Interfaces;
 using JetBrains.ReSharper.Psi;
-using JetBrains.ReSharper.Psi.Impl;
+
 using JetBrains.ReSharper.Psi.Web.Impl.PsiModules;
 using JetBrains.Threading;
 using JetBrains.Util;
@@ -37,7 +37,8 @@ using Microsoft.VisualStudio.Shell.Interop;
 using JetBrains.ProjectModel.Build;
 using JetBrains.ReSharper.Psi.Modules;
 #else
-using PsiModules = JetBrains.ReSharper.Psi.PsiModuleManager;
+using JetBrains.ReSharper.Psi.Impl;
+using IPsiModules = JetBrains.ReSharper.Psi.PsiModuleManager;
 using OutputAssemblies = JetBrains.ReSharper.Psi.Impl.OutputAssembliesCache;
 #endif
 
@@ -52,7 +53,7 @@ namespace GammaJul.ReSharper.ForTea.Psi {
 		private readonly Dictionary<string, IAssemblyCookie> _assemblyReferences = new Dictionary<string, IAssemblyCookie>(StringComparer.OrdinalIgnoreCase);
 		private readonly Dictionary<string, string> _resolvedMacros = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
 		private readonly Lifetime _lifetime;
-		private readonly PsiModules _psiModules;
+		private readonly IPsiModules _psiModules;
 		private readonly ChangeManager _changeManager;
 		private readonly IAssemblyFactory _assemblyFactory;
 		private readonly IShellLocks _shellLocks;
@@ -375,7 +376,7 @@ namespace GammaJul.ReSharper.ForTea.Psi {
 				TryAddReference(assemblyName);
 		}
 		
-		internal T4PsiModule([NotNull] Lifetime lifetime, [NotNull] PsiModules psiModules, [NotNull] DocumentManager documentManager,
+		internal T4PsiModule([NotNull] Lifetime lifetime, [NotNull] IPsiModules psiModules, [NotNull] DocumentManager documentManager,
 			[NotNull] ChangeManager changeManager, [NotNull] IAssemblyFactory assemblyFactory, [NotNull] IShellLocks shellLocks,
 			[NotNull] IProjectFile projectFile, [NotNull] T4FileDataCache fileDataCache, [NotNull] T4Environment t4Environment,
 			[NotNull] OutputAssemblies outputAssemblies) {

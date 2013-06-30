@@ -20,8 +20,12 @@ using GammaJul.ReSharper.ForTea.Tree;
 using JetBrains.Annotations;
 using JetBrains.ProjectModel.Model2.Assemblies.Interfaces;
 using JetBrains.ReSharper.Psi;
-using JetBrains.ReSharper.Psi.Module;
 using JetBrains.Util;
+#if SDK80
+using JetBrains.ReSharper.Psi.Modules;
+#else
+using JetBrains.ReSharper.Psi.Module;
+#endif
 
 namespace GammaJul.ReSharper.ForTea.Psi {
 
@@ -29,7 +33,7 @@ namespace GammaJul.ReSharper.ForTea.Psi {
 	/// Module referencer that adds an assembly directive to a T4 file.
 	/// </summary>
 	[ModuleReferencer(Priority = 2)]
-	public class T4ModuleReferencer : IModuleReferencer {
+	public partial class T4ModuleReferencer : IModuleReferencer {
 
 		private readonly T4Environment _environment;
 		private readonly DirectiveInfoManager _directiveInfoManager;
@@ -62,7 +66,7 @@ namespace GammaJul.ReSharper.ForTea.Psi {
 			var assembly = (IAssembly) moduleToReference.ContainingProjectModule;
 			Assertion.AssertNotNull(assembly, "assembly != null");
 
-			var t4File = t4PsiModule.SourceFile.GetNonInjectedPsiFile<T4Language>() as IT4File;
+			var t4File = t4PsiModule.SourceFile.GetTheOnlyPsiFile(T4Language.Instance) as IT4File;
 			if (t4File == null)
 				return false;
 
@@ -78,12 +82,7 @@ namespace GammaJul.ReSharper.ForTea.Psi {
 
 			};
 
-			PsiManager psiManager = PsiManager.GetInstance(module.GetSolution());
-			if (psiManager.HasActiveTransaction) {
-				action();
-				return true;
-			}
-			return psiManager.DoTransaction(action, "T4 Assembly Reference").Succeded;
+			return ExecuteTransaction(module, action);
 		}
 
 		public T4ModuleReferencer([NotNull] T4Environment environment, [NotNull] DirectiveInfoManager directiveInfoManager) {

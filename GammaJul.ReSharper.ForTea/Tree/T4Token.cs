@@ -13,6 +13,7 @@
 //    See the License for the specific language governing permissions and
 //    limitations under the License.
 #endregion
+
 using GammaJul.ReSharper.ForTea.Parsing;
 using GammaJul.ReSharper.ForTea.Psi;
 using JetBrains.ReSharper.Psi;
@@ -25,7 +26,8 @@ namespace GammaJul.ReSharper.ForTea.Tree {
 	/// <summary>
 	/// Implementation of <see cref="IT4Token"/>.
 	/// </summary>
-	public class T4Token : BindedToBufferLeafElement, IT4Token {
+	// ReSharper disable once PartialTypeWithSinglePart
+	public partial class T4Token : BindedToBufferLeafElement, IT4Token {
 
 		public override PsiLanguageType Language {
 			get { return T4Language.Instance; }

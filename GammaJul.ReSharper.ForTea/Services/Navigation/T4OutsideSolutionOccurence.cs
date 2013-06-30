@@ -31,17 +31,13 @@ namespace GammaJul.ReSharper.ForTea.Services.Navigation {
 	/// <summary>
 	/// Represents an occurence of text in an include file that is located outside of the solution.
 	/// </summary>
-	public class T4OutsideSolutionOccurence : IOccurence {
+	public partial class T4OutsideSolutionOccurence : IOccurence {
 
 		private readonly List<IOccurence> _mergedItems = new List<IOccurence>();
 		private readonly IRangeMarker _rangeMarker;
 
 		public TextRange TextRange {
 			get { return _rangeMarker.Range; }
-		}
-
-		public ProjectModelElementEnvoy ProjectModelElement {
-			get { return ProjectModelElementEnvoy.Empty; }
 		}
 
 		public DeclaredElementEnvoy<ITypeMember> TypeMember {
@@ -91,9 +87,10 @@ namespace GammaJul.ReSharper.ForTea.Services.Navigation {
 
 			var navigationInfo = new T4OutsideSolutionNavigationInfo(path, _rangeMarker.Range, transferFocus, tabOptions);
 			NavigationOptions navigationOptions = NavigationOptions.FromWindowContext(windowContext, "Navigate to included file", transferFocus, tabOptions);
-			return NavigationManager.GetInstance(solution).Navigate(navigationInfo, navigationOptions);
+			NavigationManager navigationManager = NavigationManager.GetInstance(solution);
+			return NavigateCore(navigationManager, navigationInfo, navigationOptions);
 		}
-
+		
 		public T4OutsideSolutionOccurence([NotNull] IRangeMarker rangeMarker) {
 			_rangeMarker = rangeMarker;
 		}

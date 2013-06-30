@@ -65,6 +65,10 @@ namespace GammaJul.ReSharper.ForTea.Services.CodeCompletion {
 			get { return CodeCompletionType.AutomaticCompletion; }
 		}
 
+		public bool ForceHideCompletion {
+			get { return false; }
+		}
+
 		public AutopopupInDirective([NotNull] ISettingsStore settingsStore) {
 			_settingsEntry = settingsStore.Schema.GetScalarEntry<T4AutopopupSettingsKey, AutopopupType>(key => key.InDirectives);
 		}

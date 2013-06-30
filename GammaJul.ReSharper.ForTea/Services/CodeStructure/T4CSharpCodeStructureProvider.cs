@@ -25,9 +25,13 @@ using JetBrains.ReSharper.Psi;
 using JetBrains.ReSharper.Psi.CSharp;
 using JetBrains.ReSharper.Psi.CSharp.Tree;
 using JetBrains.ReSharper.Psi.ExtensionsAPI.Tree;
-using JetBrains.ReSharper.Psi.Impl.PsiManagerImpl;
 using JetBrains.ReSharper.Psi.Tree;
 using JetBrains.Util;
+#if SDK80
+using JetBrains.ReSharper.Psi.Files;
+#else
+using JetBrains.ReSharper.Psi.Impl.PsiManagerImpl;
+#endif
 
 namespace GammaJul.ReSharper.ForTea.Services.CodeStructure {
 

@@ -25,6 +25,9 @@ using JetBrains.ReSharper.Psi.Tree;
 using JetBrains.TreeModels;
 using JetBrains.UI.TreeView;
 using JetBrains.Util;
+#if SDK80
+using JetBrains.ReSharper.Psi.Pointers;
+#endif
 
 namespace GammaJul.ReSharper.ForTea.Services.CodeStructure {
 

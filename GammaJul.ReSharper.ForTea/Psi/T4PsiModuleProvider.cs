@@ -24,8 +24,15 @@ using JetBrains.DocumentManagers;
 using JetBrains.ProjectModel;
 using JetBrains.ProjectModel.model2.Assemblies.Interfaces;
 using JetBrains.ReSharper.Psi;
-using JetBrains.ReSharper.Psi.Impl;
 using JetBrains.Util;
+#if SDK80
+using JetBrains.ProjectModel.Build;
+using JetBrains.ReSharper.Psi.Modules;
+#else
+using JetBrains.ReSharper.Psi.Impl;
+using IPsiModules = JetBrains.ReSharper.Psi.PsiModuleManager;
+using OutputAssemblies = JetBrains.ReSharper.Psi.Impl.OutputAssembliesCache;
+#endif
 
 namespace GammaJul.ReSharper.ForTea.Psi {
 	
@@ -34,13 +41,13 @@ namespace GammaJul.ReSharper.ForTea.Psi {
 	/// Contains common implementation for <see cref="T4ProjectPsiModuleHandler"/> and <see cref="T4MiscFilesProjectPsiModuleProvider"/>.
 	/// </summary>
 	[SolutionComponent]
-	public sealed class T4PsiModuleProvider : IDisposable, IChangeProvider {
+	public sealed partial class T4PsiModuleProvider : IDisposable, IChangeProvider {
+
 		private readonly Dictionary<IProjectFile, ModuleWrapper> _modules = new Dictionary<IProjectFile, ModuleWrapper>();
 		private readonly Lifetime _lifetime;
 		private readonly IShellLocks _shellLocks;
 		private readonly ChangeManager _changeManager;
 		private readonly T4Environment _t4Environment;
-		private readonly ISolution _solution;
 
 		private struct ModuleWrapper {
 			internal readonly T4PsiModule Module;
@@ -92,7 +99,7 @@ namespace GammaJul.ReSharper.ForTea.Psi {
 			
 			switch (changeType) {
 
-				case PsiModuleChange.ChangeType.ADDED:
+				case AddedChangeType:
 					// Preprocessed .tt files should be handled by R# itself as if it's a normal project file,
 					// so that it has access to the current project types.
 					if (!projectFile.IsPreprocessedT4Template()) {
@@ -101,14 +108,14 @@ namespace GammaJul.ReSharper.ForTea.Psi {
 					}
 					break;
 
-				case PsiModuleChange.ChangeType.REMOVED:
+				case RemovedChangeType:
 					if (_modules.TryGetValue(projectFile, out moduleWrapper)) {
 						RemoveFile(projectFile, changeBuilder, moduleWrapper);
 						return true;
 					}
 					break;
 
-				case PsiModuleChange.ChangeType.MODIFIED:
+				case ModifiedChangeType:
 					if (_modules.TryGetValue(projectFile, out moduleWrapper)) {
 						if (!projectFile.IsPreprocessedT4Template()) {
 							ModifyFile(changeBuilder, moduleWrapper);
@@ -117,14 +124,14 @@ namespace GammaJul.ReSharper.ForTea.Psi {
 
 						// The T4 file went from Transformed to Preprocessed, it doesn't need a T4PsiModule anymore.
 						RemoveFile(projectFile, changeBuilder, moduleWrapper);
-						changeType = PsiModuleChange.ChangeType.ADDED;
+						changeType = AddedChangeType;
 						return false;
 					}
 
 					// The T4 file went from Preprocessed to Transformed, it now needs a T4PsiModule.
 					if (!projectFile.IsPreprocessedT4Template()) {
 						AddFile(projectFile, changeBuilder);
-						changeType = PsiModuleChange.ChangeType.REMOVED;
+						changeType = RemovedChangeType;
 						return false;
 					}
 
@@ -142,7 +149,7 @@ namespace GammaJul.ReSharper.ForTea.Psi {
 			LifetimeDefinition lifetimeDefinition = Lifetimes.Define(_lifetime, "[T4]" + projectFile.Name);
 			var psiModule = new T4PsiModule(
 				lifetimeDefinition.Lifetime,
-				solution.GetComponent<PsiModuleManager>(),
+				solution.GetComponent<IPsiModules>(),
 				solution.GetComponent<DocumentManager>(),
 				_changeManager,
 				solution.GetComponent<IAssemblyFactory>(),
@@ -150,10 +157,10 @@ namespace GammaJul.ReSharper.ForTea.Psi {
 				projectFile,
 				solution.GetComponent<T4FileDataCache>(),
 				_t4Environment,
-				solution.GetComponent<OutputAssembliesCache>());
+				solution.GetComponent<OutputAssemblies>());
 			_modules[projectFile] = new ModuleWrapper(psiModule, lifetimeDefinition);
-			changeBuilder.AddModuleChange(psiModule, PsiModuleChange.ChangeType.ADDED);
-			changeBuilder.AddFileChange(psiModule.SourceFile, PsiModuleChange.ChangeType.ADDED);
+			changeBuilder.AddModuleChange(psiModule, AddedChangeType);
+			changeBuilder.AddFileChange(psiModule.SourceFile, AddedChangeType);
 
 			// Invalidate files that had this specific files as an include,
 			// and whose IPsiSourceFile was previously managed by T4OutsideSolutionSourceFileManager.
@@ -168,14 +175,14 @@ namespace GammaJul.ReSharper.ForTea.Psi {
 
 		private void RemoveFile([NotNull] IProjectFile projectFile, [NotNull] PsiModuleChangeBuilder changeBuilder, ModuleWrapper moduleWrapper) {
 			_modules.Remove(projectFile);
-			changeBuilder.AddFileChange(moduleWrapper.Module.SourceFile, PsiModuleChange.ChangeType.REMOVED);
-			changeBuilder.AddModuleChange(moduleWrapper.Module, PsiModuleChange.ChangeType.REMOVED);
+			changeBuilder.AddFileChange(moduleWrapper.Module.SourceFile, RemovedChangeType);
+			changeBuilder.AddModuleChange(moduleWrapper.Module, RemovedChangeType);
 			InvalidateFilesHavingInclude(projectFile.Location, moduleWrapper.Module.GetPsiServices());
 			moduleWrapper.LifetimeDefinition.Terminate();
 		}
 
 		private static void ModifyFile([NotNull] PsiModuleChangeBuilder changeBuilder, ModuleWrapper moduleWrapper) {
-			changeBuilder.AddFileChange(moduleWrapper.Module.SourceFile, PsiModuleChange.ChangeType.MODIFIED);
+			changeBuilder.AddFileChange(moduleWrapper.Module.SourceFile, ModifiedChangeType);
 		}
 
 		private void InvalidateFilesHavingInclude([NotNull] FileSystemPath includeLocation, [NotNull] IPsiServices psiServices) {
@@ -208,7 +215,6 @@ namespace GammaJul.ReSharper.ForTea.Psi {
 			_shellLocks = shellLocks;
 			_changeManager = changeManager;
 			_t4Environment = t4Environment;
-			_solution = solution;
 
 			changeManager.RegisterChangeProvider(lifetime, this);
 			changeManager.AddDependency(lifetime, this, solution);

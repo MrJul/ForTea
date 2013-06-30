@@ -13,6 +13,7 @@
 //    See the License for the specific language governing permissions and
 //    limitations under the License.
 #endregion
+
 using GammaJul.ReSharper.ForTea.Parsing;
 using GammaJul.ReSharper.ForTea.Psi.Directives;
 using JetBrains.Annotations;
@@ -20,7 +21,9 @@ using JetBrains.ReSharper.Psi;
 using JetBrains.ReSharper.Psi.ExtensionsAPI.Caches2;
 using JetBrains.ReSharper.Psi.Impl;
 using JetBrains.ReSharper.Psi.Parsing;
-using JetBrains.ReSharper.Psi.Tree;
+#if SDK80
+using JetBrains.ReSharper.Psi.Modules;
+#endif
 
 namespace GammaJul.ReSharper.ForTea.Psi {
 
@@ -28,8 +31,8 @@ namespace GammaJul.ReSharper.ForTea.Psi {
 	/// Base, file independent language service for T4.
 	/// </summary>
 	[Language(typeof(T4Language))]
-	public sealed class T4LanguageService : LanguageService {
-		private static readonly T4WordIndexProvider _indexProvider = new T4WordIndexProvider();
+	public sealed partial class T4LanguageService : LanguageService {
+		
 		private readonly T4Environment _t4Environment;
 		private readonly DirectiveInfoManager _directiveInfoManager;
 
@@ -49,14 +52,6 @@ namespace GammaJul.ReSharper.ForTea.Psi {
 		public override ILexerFactory GetPrimaryLexerFactory() {
 			return T4LexerFactory.Instance;
 		}
-
-		/// <summary>
-		/// Gets a word index language provider for T4.
-		/// </summary>
-		/// <returns>An implementation of <see cref="IWordIndexLanguageProvider"/>.</returns>
-		public override IWordIndexLanguageProvider WordIndexLanguageProvider {
-			get { return _indexProvider; }
-		}
 		
 		/// <summary>
 		/// Creates a parser for a given PSI source file.
@@ -67,16 +62,6 @@ namespace GammaJul.ReSharper.ForTea.Psi {
 		/// <returns>A T4 parser that operates onto <paramref name="lexer"/>.</returns>
 		public override IParser CreateParser(ILexer lexer, IPsiModule module, IPsiSourceFile sourceFile) {
 			return new T4Parser(_t4Environment, _directiveInfoManager, lexer, sourceFile);
-		}
-
-		/// <summary>
-		/// Determines whether a given node is filtered.
-		/// </summary>
-		/// <param name="node">The node to check.</param>
-		/// <returns><c>true</c> if <paramref name="node"/> is a whitespace; otherwise, <c>false</c>.</returns>
-		public override bool IsFilteredNode(ITreeNode node) {
-			TokenNodeType nodeType = node.GetTokenType();
-			return nodeType != null && nodeType.IsWhitespace;
 		}
 
 		/// <summary>

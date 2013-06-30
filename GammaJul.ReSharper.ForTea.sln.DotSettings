@@ -14,6 +14,7 @@
    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.&#xD;
    See the License for the specific language governing permissions and&#xD;
    limitations under the License.</s:String>
+	<s:String x:Key="/Default/CodeStyle/Naming/CSharpNaming/Abbreviations/=ID/@EntryIndexedValue">ID</s:String>
 	<s:String x:Key="/Default/Environment/InjectedLayers/FileInjectedLayer/=1606E87B0845714D97007C96BD897263/AbsolutePath/@EntryValue">C:\Flynware\Sources\Flynware.DotSettings</s:String>
 	<s:String x:Key="/Default/Environment/InjectedLayers/FileInjectedLayer/=1606E87B0845714D97007C96BD897263/RelativePath/@EntryValue">..\..\..\..\Flynware\Sources\Flynware.DotSettings</s:String>
 	<s:Boolean x:Key="/Default/Environment/InjectedLayers/FileInjectedLayer/=1606E87B0845714D97007C96BD897263/@KeyIndexDefined">True</s:Boolean>
