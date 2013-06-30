@@ -73,7 +73,7 @@ namespace GammaJul.ReSharper.ForTea.Psi {
 		}
 
 		public override bool SupportTypeMemberCache {
-			get { return true; }
+			get { return false; }
 		}
 
 		/// <summary>

@@ -48,7 +48,7 @@ namespace GammaJul.ReSharper.ForTea.Psi {
 			return new PsiProjectFile(
 				this,
 				projectFile,
-				(pf, sf) => new DefaultPsiProjectFileProperties(pf, sf),
+				(pf, sf) => new T4PsiProjectFileProperties(pf, sf, true), 
 				JetFunc<IProjectFile, IPsiSourceFile>.True,
 				documentManager,
 				projectFile.GetProject().GetResolveContext());
@@ -64,9 +64,7 @@ namespace GammaJul.ReSharper.ForTea.Psi {
 				: null;
 		}
 		
-		private static PsiModuleChange.ChangeType ModifiedChangeType {
-			get { return PsiModuleChange.ChangeType.Modified; }
-		}
+		private const PsiModuleChange.ChangeType ModifiedChangeType = PsiModuleChange.ChangeType.Modified;
 
 	}
 

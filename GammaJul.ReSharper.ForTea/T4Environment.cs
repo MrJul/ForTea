@@ -107,7 +107,7 @@ namespace GammaJul.ReSharper.ForTea {
 					if (String.IsNullOrEmpty(value))
 						continue;
 
-					var path = new FileSystemPath(value);
+					var path = FileSystemPath.TryParse(value);
 					if (!path.IsEmpty && path.IsAbsolute)
 						paths.Add(path);
 				}

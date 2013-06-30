@@ -14,17 +14,18 @@
 //    limitations under the License.
 #endregion
 using System.Reflection;
+using GammaJul.ReSharper.ForTea;
 using JetBrains.Application.PluginSupport;
 
 [assembly: AssemblyTitle("GammaJul.ReSharper.ForTea")]
 [assembly: AssemblyDescription("Provides support for editing T4 (.tt) files.")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("Julien Lebosquain")]
-[assembly: AssemblyProduct("ForTea Plugin for ReSharper")]
+[assembly: AssemblyProduct("ForTea Plugin for ReSharper " + SupportedReSharperVersion.Value)]
 [assembly: AssemblyCopyright("Copyright © Julien Lebosquain, 2012-2013")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
-[assembly: AssemblyVersion("1.0.3.0")]
+[assembly: AssemblyVersion("1.1.0.0")]
 
 // The following information is displayed by ReSharper in the Plugins dialog
 [assembly: PluginTitle("ForTea")]

@@ -346,7 +346,9 @@ namespace GammaJul.ReSharper.ForTea.Parsing {
 				fileName = ExpandVisualStudioMacros(fileName);
 				
 				// absolute file path, nothing to search for
-				var path = new FileSystemPath(fileName);
+				var path = FileSystemPath.TryParse(fileName);
+				if (path.IsEmpty)
+					return FileSystemPath.Empty;
 				if (path.IsAbsolute)
 					return path;
 

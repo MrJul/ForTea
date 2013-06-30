@@ -1,18 +1,18 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
-    <ReSharperSdkVersion>8.0</ReSharperSdkVersion>
+    <ReSharperSdkVersion>7.1</ReSharperSdkVersion>
   </PropertyGroup>
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProductVersion>8.0.30703</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{8835E089-5908-43EE-892F-924E70CBF07E}</ProjectGuid>
+    <ProjectGuid>{EA095A20-2A80-43BB-97B7-C8FC2B419B53}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>GammaJul.ReSharper.ForTea</RootNamespace>
-    <AssemblyName>GammaJul.ReSharper.ForTea</AssemblyName>
+    <AssemblyName>GammaJul.ReSharper.ForTea.v7</AssemblyName>
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <TargetFrameworkProfile />
@@ -22,7 +22,7 @@
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
     <OutputPath>bin\Debug\</OutputPath>
-    <DefineConstants>TRACE;DEBUG;JET_MODE_ASSERT;SDK80</DefineConstants>
+    <DefineConstants>TRACE;DEBUG;JET_MODE_ASSERT</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <UseVSHostingProcess>true</UseVSHostingProcess>
@@ -31,7 +31,7 @@
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
     <OutputPath>bin\Release\</OutputPath>
-    <DefineConstants>TRACE;SDK80</DefineConstants>
+    <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
@@ -68,24 +68,24 @@
     <Compile Include="Daemon\Highlightings\T4Highlighting.cs" />
     <Compile Include="Daemon\Highlightings\VsPredefinedHighlighterIds.cs" />
     <Compile Include="Intentions\QuickFixes\CreateTransformTextMethodQuickFix.cs" />
-    <Compile Include="Intentions\QuickFixes\HotspotHelper.v8.cs" />
+    <Compile Include="Intentions\QuickFixes\HotspotHelper.v7.cs" />
     <Compile Include="Intentions\QuickFixes\RemoveDirectiveQuickFix.cs" />
-    <Compile Include="Parsing\T4TokenNodeType.v8.cs" />
-    <Compile Include="Parsing\T4TokenNodeFlag.cs" />
-    <Compile Include="Psi\CodeStyle\T4CodeFormatter.v8.cs" />
-    <Compile Include="Psi\T4ModuleReferencer.v8.cs" />
-    <Compile Include="Psi\T4GeneratedDocumentService.v8.cs" />
-    <Compile Include="Psi\T4LanguageService.v8.cs" />
-    <Compile Include="Psi\T4MiscFilesProjectPsiModuleProvider.v8.cs" />
-    <Compile Include="Psi\T4OutsideSolutionSourceFileProperties.v8.cs" />
-    <Compile Include="Psi\T4PsiModuleProvider.v8.cs" />
-    <Compile Include="Psi\T4ResolveProject.v8.cs" />
-    <Compile Include="Psi\T4SecondaryDocumentGenerationResult.v8.cs" />
-    <Compile Include="Psi\PsiExtensions.v8.cs" />
-    <Compile Include="Psi\SyntheticAttribute.v8.cs" />
-    <Compile Include="Psi\T4CSharpCustomModificationHandler.v8.cs" />
-    <Compile Include="Psi\T4FileDataCache.v8.cs" />
-    <Compile Include="Psi\T4PsiModule.v8.cs" />
+    <Compile Include="Psi\CodeStyle\T4CodeFormatter.v7.cs" />
+    <Compile Include="Psi\PsiExtensions.v7.cs" />
+    <Compile Include="Psi\SyntheticAttribute.v7.cs" />
+    <Compile Include="Psi\T4CSharpCustomModificationHandler.v7.cs" />
+    <Compile Include="Psi\T4FileDataCache.v7.cs" />
+    <Compile Include="Psi\T4GeneratedDocumentService.v7.cs" />
+    <Compile Include="Psi\T4LanguageService.v7.cs" />
+    <Compile Include="Psi\T4MiscFilesProjectPsiModuleProvider.v7.cs" />
+    <Compile Include="Psi\T4ModuleReferencer.v7.cs" />
+    <Compile Include="Psi\T4OutsideSolutionSourceFile.v7.cs" />
+    <Compile Include="Psi\T4OutsideSolutionSourceFileProperties.v7.cs" />
+    <Compile Include="Psi\T4PsiModule.v7.cs" />
+    <Compile Include="Psi\T4PsiModuleProvider.v7.cs" />
+    <Compile Include="Psi\T4ResolveProject.v7.cs" />
+    <Compile Include="Psi\T4SecondaryDocumentGenerationResult.v7.cs" />
+    <Compile Include="Psi\T4WordIndexProvider.v7.cs" />
     <Compile Include="Psi\VsBuildMacroHelper.cs" />
     <Compile Include="Psi\CodeStyle\T4CSharpCustomFormattingInfoProvider.cs" />
     <Compile Include="Psi\Directives\DirectiveAttributeOptions.cs" />
@@ -110,20 +110,22 @@
     <Compile Include="Psi\Directives\DirectiveInfo.cs" />
     <Compile Include="Parsing\T4ElementFactory.cs" />
     <Compile Include="Parsing\T4FilteringLexer.cs" />
+    <Compile Include="Parsing\T4TokenNodeFlag.cs" />
     <Compile Include="Parsing\T4TokenNodeTypes.cs" />
     <Compile Include="Psi\CodeStyle\T4CodeFormatter.cs" />
     <Compile Include="Psi\PsiExtensions.cs" />
     <Compile Include="Psi\T4CachingLexerService.cs" />
     <Compile Include="Psi\T4DocumentRangeTranslator.cs" />
-    <Compile Include="Services\CodeCompletion\CodeCompletionExtensions.v8.cs" />
+    <Compile Include="Services\CodeCompletion\CodeCompletionExtensions.v7.cs" />
     <Compile Include="Services\CodeStructure\T4CodeStructureElement.cs" />
     <Compile Include="Services\CodeStructure\T4CSharpCodeStructureAspects.cs" />
     <Compile Include="Services\CodeStructure\T4CSharpCodeStructureNamespace.cs" />
     <Compile Include="Services\CodeStructure\T4CSharpCodeStructureDeclaredElement.cs" />
     <Compile Include="Services\CodeStructure\T4CSharpCodeStructureRegion.cs" />
     <Compile Include="Services\CodeStructure\T4CSharpCodeStructureRegionEnd.cs" />
-    <Compile Include="Services\Navigation\T4OutsideSolutionNavigationProvider.v8.cs" />
-    <Compile Include="Services\Navigation\T4OutsideSolutionOccurence.v8.cs" />
+    <Compile Include="Services\Navigation\T4OutsideSolutionNavigationProvider.v7.cs" />
+    <Compile Include="Services\Navigation\T4OutsideSolutionOccurence.v7.cs" />
+    <Compile Include="SupportedReSharperVersion.v7.cs" />
     <Compile Include="T4Environment.cs" />
     <Compile Include="Psi\T4CSharpCodeGenerator.cs" />
     <Compile Include="Psi\T4CSharpCustomModificationHandler.cs" />
@@ -134,8 +136,7 @@
     <Compile Include="Psi\T4ModuleReferencer.cs" />
     <Compile Include="Psi\T4OutsideSolutionExtensions.cs" />
     <Compile Include="Psi\T4OutsideSolutionSourceFileProperties.cs" />
-    <Compile Include="Psi\T4OutsideSolutionSourceFile.cs" />
-    <Compile Include="Psi\T4OutsideSolutionSourceFileManager.cs" />
+    <Compile Include="Psi\T4OutsideSolutionSourceFileManager.v7.cs" />
     <Compile Include="Psi\T4ProjectFileType.cs" />
     <Compile Include="Psi\GenerationResult.cs" />
     <Compile Include="Psi\T4GeneratedDocumentService.cs" />
@@ -199,7 +200,6 @@
     <Compile Include="Tree\T4CodeBlock.cs" />
     <Compile Include="Tree\T4Token.cs" />
     <Compile Include="Parsing\T4TokenNodeType.cs" />
-    <Compile Include="Tree\T4Token.v8.cs" />
     <Compile Include="Tree\T4TokenRole.cs" />
     <Compile Include="Tree\T4TreeExtensions.cs" />
     <Compile Include="Updates\RootUpdateInfo.cs" />
@@ -211,6 +211,7 @@
   <ItemGroup>
     <Compile Include="Parsing\T4TreeBuilder.DirectiveBuilder.cs" />
   </ItemGroup>
+  <ItemGroup />
   <PropertyGroup>
     <ReSharperSdkTargets Condition=" '$(ReSharperSdkTargets)' == '' ">$(MSBuildExtensionsPath)\JetBrains\ReSharper.SDK\v$(ReSharperSdkVersion)</ReSharperSdkTargets>
   </PropertyGroup>
