@@ -18,6 +18,7 @@ using GammaJul.ReSharper.ForTea.Tree;
 using JetBrains.Annotations;
 using JetBrains.Application.Settings;
 using JetBrains.ReSharper.Daemon;
+using JetBrains.ReSharper.Daemon.UsageChecking;
 using JetBrains.ReSharper.Psi;
 
 namespace GammaJul.ReSharper.ForTea.Daemon {
@@ -25,7 +26,7 @@ namespace GammaJul.ReSharper.ForTea.Daemon {
 	/// <summary>
 	/// Daemon stage that creates processes for adding error and warning highlights.
 	/// </summary>
-	[DaemonStage(StagesBefore = new[] { typeof(T4HighlightingStage) })]
+	[DaemonStage(StagesBefore = new[] { typeof(T4HighlightingStage), typeof(CollectUsagesStage) })]
 	public class T4ErrorStage : T4DaemonStage {
 
 		private readonly DirectiveInfoManager _directiveInfoManager;

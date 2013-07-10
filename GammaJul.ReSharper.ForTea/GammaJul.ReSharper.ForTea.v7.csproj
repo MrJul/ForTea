@@ -13,7 +13,7 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>GammaJul.ReSharper.ForTea</RootNamespace>
     <AssemblyName>GammaJul.ReSharper.ForTea.v7</AssemblyName>
-    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <TargetFrameworkProfile />
   </PropertyGroup>
@@ -67,6 +67,7 @@
     <Compile Include="Daemon\T4DaemonStageProcess.cs" />
     <Compile Include="Daemon\Highlightings\T4Highlighting.cs" />
     <Compile Include="Daemon\Highlightings\VsPredefinedHighlighterIds.cs" />
+    <Compile Include="Daemon\T4LanguageSpecificDaemonBehavior.cs" />
     <Compile Include="Intentions\QuickFixes\CreateTransformTextMethodQuickFix.cs" />
     <Compile Include="Intentions\QuickFixes\HotspotHelper.v7.cs" />
     <Compile Include="Intentions\QuickFixes\RemoveDirectiveQuickFix.cs" />

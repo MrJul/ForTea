@@ -24,7 +24,7 @@ using JetBrains.Util.Lazy;
 namespace GammaJul.ReSharper.ForTea.Psi.Directives {
 
 	public class CultureDirectiveAttributeInfo : DirectiveAttributeInfo {
-		private readonly Lazy<JetHashSet<string>> _cultureCodes;
+		private readonly JetBrains.Util.Lazy.Lazy<JetHashSet<string>> _cultureCodes;
 		private ReadOnlyCollection<string> _intellisenseValues;
 
 		[NotNull]

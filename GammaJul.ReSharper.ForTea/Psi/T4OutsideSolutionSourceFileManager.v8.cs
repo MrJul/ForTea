@@ -43,6 +43,7 @@ namespace GammaJul.ReSharper.ForTea.Psi {
 		public IEnumerable<IPsiModule> Modules {
 			get { return new[] { _psiModule }; }
 		}
+
 		public IPsiSourceFile GetOrCreateSourceFile([NotNull] FileSystemPath path) {
 			Assertion.Assert(path.IsAbsolute, "path.IsAbsolute");
 			

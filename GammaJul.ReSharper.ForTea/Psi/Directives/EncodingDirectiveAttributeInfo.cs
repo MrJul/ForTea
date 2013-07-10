@@ -24,7 +24,7 @@ using JetBrains.Util.Lazy;
 namespace GammaJul.ReSharper.ForTea.Psi.Directives {
 
 	public class EncodingDirectiveAttributeInfo : DirectiveAttributeInfo {
-		private readonly Lazy<JetHashSet<string>> _encodings;
+		private readonly JetBrains.Util.Lazy.Lazy<JetHashSet<string>> _encodings;
 		private ReadOnlyCollection<string> _intellisenseValues;
 
 		[NotNull]

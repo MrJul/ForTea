@@ -16,6 +16,9 @@
 using GammaJul.ReSharper.ForTea.Tree;
 using JetBrains.Application.Settings;
 using JetBrains.ReSharper.Daemon;
+using JetBrains.ReSharper.Daemon.CSharp.Stages;
+using JetBrains.ReSharper.Daemon.Stages;
+using JetBrains.ReSharper.Daemon.UsageChecking;
 using JetBrains.ReSharper.Psi;
 
 namespace GammaJul.ReSharper.ForTea.Daemon {
@@ -23,7 +26,9 @@ namespace GammaJul.ReSharper.ForTea.Daemon {
 	/// <summary>
 	/// Daemon stage that creates processes for highlighting tokens.
 	/// </summary>
-	[DaemonStage]
+	[DaemonStage(
+		StagesBefore = new[] { typeof(GlobalFileStructureCollectorStage) },
+		StagesAfter = new[] { typeof(CollectUsagesStage), typeof(IdentifierHighlightingStage) })]
 	public class T4HighlightingStage : T4DaemonStage {
 
 		protected override IDaemonStageProcess CreateProcess(IDaemonProcess process, IT4File file) {

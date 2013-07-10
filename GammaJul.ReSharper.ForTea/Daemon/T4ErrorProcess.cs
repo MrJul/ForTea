@@ -107,6 +107,7 @@ namespace GammaJul.ReSharper.ForTea.Daemon {
 			if (attribute.ValueError != null) {
 				AddHighlighting(new HighlightingInfo(valueNode.GetHighlightingRange(),
 					new InvalidAttributeValueHighlighting(valueNode, null, attribute.ValueError)));
+				return;
 			}
 
 			var directive = attribute.Parent as IT4Directive;

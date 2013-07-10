@@ -11,7 +11,7 @@ namespace GammaJul.ReSharper.ForTea.Psi {
 		}
 
 		public bool IsICacheParticipant {
-			get { return false; }
+			get { return true; }
 		}
 
 	}

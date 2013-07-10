@@ -111,7 +111,7 @@ namespace GammaJul.ReSharper.ForTea.Psi {
 		}
 		
 		IModule IPsiModule.ContainingProjectModule {
-			get { return _project; }
+			get { return null; }
 		}
 
 		IEnumerable<IPsiSourceFile> IPsiModule.SourceFiles {

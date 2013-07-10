@@ -23,6 +23,8 @@ using JetBrains.ReSharper.Psi.Search;
 
 namespace GammaJul.ReSharper.ForTea.Services.Navigation {
 
+	// TODO: remove this class, it's not used for R# 8 since we're using the new NavigateablePsiSourceFileWithLocation
+	// with built-in navigation support rather than a custom ISourceFile.
 	/// <summary>
 	/// An implementation of <see cref="IOccurenceProvider" /> that creates occurences for find results that are
 	/// inside included files that aren't present in the current solution, and thus ignored by ReSharper.

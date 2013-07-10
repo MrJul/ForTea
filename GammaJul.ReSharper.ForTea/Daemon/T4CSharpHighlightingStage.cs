@@ -17,12 +17,18 @@ using GammaJul.ReSharper.ForTea.Psi;
 using JetBrains.Application.Settings;
 using JetBrains.ReSharper.Daemon;
 using JetBrains.ReSharper.Daemon.CSharp.Stages;
+using JetBrains.ReSharper.Daemon.Stages;
+using JetBrains.ReSharper.Daemon.UsageChecking;
 using JetBrains.ReSharper.Psi;
 using JetBrains.ReSharper.Psi.CSharp.Tree;
 
 namespace GammaJul.ReSharper.ForTea.Daemon {
 
-	[DaemonStage(StagesBefore = new[] { typeof(SmartResolverStage) }, StagesAfter = new[] { typeof(IdentifierHighlightingStage) })]
+	// GlobalFileStructureCollectorStage is required before this stage (otherwise there will be an exception in CSharpIncrementalDaemonStageProcessBase).
+	// CollectUsagesStage must come after this stage if we want the highlightings to appear as fast as possible.
+	[DaemonStage(
+		StagesBefore = new[] { typeof(GlobalFileStructureCollectorStage) },
+		StagesAfter = new[] { typeof(CollectUsagesStage), typeof(IdentifierHighlightingStage) })]
 	public class T4CSharpHighlightingStage : CSharpDaemonStageBase {
 
 		protected override bool IsSupported(IPsiSourceFile sourceFile) {
