@@ -40,8 +40,7 @@ namespace GammaJul.ReSharper.ForTea.Psi {
 	/// Manages <see cref="T4PsiModule"/> for T4 files.
 	/// Contains common implementation for <see cref="T4ProjectPsiModuleHandler"/> and <see cref="T4MiscFilesProjectPsiModuleProvider"/>.
 	/// </summary>
-	[SolutionComponent]
-	public sealed partial class T4PsiModuleProvider : IDisposable, IChangeProvider {
+	public sealed partial class T4PsiModuleProvider : IDisposable {
 
 		private readonly Dictionary<IProjectFile, ModuleWrapper> _modules = new Dictionary<IProjectFile, ModuleWrapper>();
 		private readonly Lifetime _lifetime;
@@ -91,7 +90,7 @@ namespace GammaJul.ReSharper.ForTea.Psi {
 		/// <param name="changeBuilder">The change builder used to populate changes.</param>
 		/// <returns>Whether the provider has handled the file change.</returns>
 		internal bool OnProjectFileChanged(IProjectFile projectFile, ref PsiModuleChange.ChangeType changeType, PsiModuleChangeBuilder changeBuilder) {
-			if (!_t4Environment.IsSupported || !projectFile.LanguageType.Is<T4ProjectFileType>())
+			if (!_t4Environment.IsSupported)
 				return false;
 
 			_shellLocks.AssertWriteAccessAllowed();
@@ -102,7 +101,7 @@ namespace GammaJul.ReSharper.ForTea.Psi {
 				case AddedChangeType:
 					// Preprocessed .tt files should be handled by R# itself as if it's a normal project file,
 					// so that it has access to the current project types.
-					if (!projectFile.IsPreprocessedT4Template()) {
+					if (projectFile.LanguageType.Is<T4ProjectFileType>() && !projectFile.IsPreprocessedT4Template()) {
 						AddFile(projectFile, changeBuilder);
 						return true;
 					}
@@ -129,7 +128,7 @@ namespace GammaJul.ReSharper.ForTea.Psi {
 					}
 
 					// The T4 file went from Preprocessed to Transformed, it now needs a T4PsiModule.
-					if (!projectFile.IsPreprocessedT4Template()) {
+					if (projectFile.LanguageType.Is<T4ProjectFileType>() && !projectFile.IsPreprocessedT4Template()) {
 						AddFile(projectFile, changeBuilder);
 						changeType = RemovedChangeType;
 						return false;
@@ -193,11 +192,7 @@ namespace GammaJul.ReSharper.ForTea.Psi {
 					psiServices.MarkAsDirty(sourceFile);
 			}
 		}
-
-		public object Execute(IChangeMap changeMap) {
-			return null;
-		}
-
+		
 		/// <summary>
 		/// Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
 		/// </summary>
@@ -210,14 +205,11 @@ namespace GammaJul.ReSharper.ForTea.Psi {
 		}
 
 		public T4PsiModuleProvider([NotNull] Lifetime lifetime, [NotNull] IShellLocks shellLocks, [NotNull] ChangeManager changeManager,
-			[NotNull] T4Environment t4Environment, [NotNull] ISolution solution) {
+			[NotNull] T4Environment t4Environment) {
 			_lifetime = lifetime;
 			_shellLocks = shellLocks;
 			_changeManager = changeManager;
 			_t4Environment = t4Environment;
-
-			changeManager.RegisterChangeProvider(lifetime, this);
-			changeManager.AddDependency(lifetime, this, solution);
 		}
 
 	}

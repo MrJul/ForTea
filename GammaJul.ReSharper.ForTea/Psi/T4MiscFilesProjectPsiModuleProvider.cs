@@ -15,6 +15,8 @@
 #endregion
 using System.Collections.Generic;
 using JetBrains.Annotations;
+using JetBrains.Application;
+using JetBrains.DataFlow;
 using JetBrains.ProjectModel;
 using JetBrains.ReSharper.Psi;
 #if SDK80
@@ -45,8 +47,9 @@ namespace GammaJul.ReSharper.ForTea.Psi {
 			_t4PsiModuleProvider.Dispose();
 		}
 
-		public T4MiscFilesProjectPsiModuleProvider([NotNull] T4PsiModuleProvider t4PsiModuleProvider) {
-			_t4PsiModuleProvider = t4PsiModuleProvider;
+		public T4MiscFilesProjectPsiModuleProvider([NotNull] Lifetime lifetime, [NotNull] IShellLocks shellLocks,
+			[NotNull] ChangeManager changeManager, [NotNull] T4Environment t4Environment) {
+			_t4PsiModuleProvider = new T4PsiModuleProvider(lifetime, shellLocks, changeManager, t4Environment);
 		}
 
 	}

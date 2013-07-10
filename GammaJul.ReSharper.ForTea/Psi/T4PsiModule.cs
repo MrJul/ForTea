@@ -65,7 +65,7 @@ namespace GammaJul.ReSharper.ForTea.Psi {
 		private readonly OutputAssemblies _outputAssemblies;
 		private IModuleReferenceResolveManager _resolveManager;
 		private bool _isValid;
-		
+
 		/// <summary>
 		/// Returns the source file associated with this PSI module.
 		/// </summary>
@@ -197,11 +197,7 @@ namespace GammaJul.ReSharper.ForTea.Psi {
 				_assemblyReferences.Add(assemblyNameOrFile, cookie);
 			return cookie;
 		}
-
-		object IChangeProvider.Execute(IChangeMap changeMap) {
-			return null;
-		}
-
+		
 		/// <summary>
 		/// The <see cref="IVsHierarchy"/> representing the project file normally implements <see cref="IVsBuildMacroInfo"/>.
 		/// </summary>
@@ -356,6 +352,10 @@ namespace GammaJul.ReSharper.ForTea.Psi {
 			}
 		}
 
+		object IChangeProvider.Execute(IChangeMap changeMap) {
+			return null;
+		}
+
 		/// <summary>
 		/// Disposes this instance.
 		/// </summary>
@@ -385,16 +385,16 @@ namespace GammaJul.ReSharper.ForTea.Psi {
 			
 			_psiModules = psiModules;
 			_assemblyFactory = assemblyFactory;
-
 			_changeManager = changeManager;
-			changeManager.RegisterChangeProvider(lifetime, this);
-			changeManager.AddDependency(lifetime, psiModules, this);
-			
+
 			_shellLocks = shellLocks;
 			_project = projectFile.GetProject();
 			Assertion.AssertNotNull(_project, "_project != null");
 			_solution = _project.GetSolution();
-			
+
+			changeManager.RegisterChangeProvider(lifetime, this);
+			changeManager.AddDependency(lifetime, psiModules, this);		
+
 			_t4Environment = t4Environment;
 			_outputAssemblies = outputAssemblies;
 			_resolveProject = new T4ResolveProject(_solution, _shellLocks, t4Environment.PlatformID, _project);
