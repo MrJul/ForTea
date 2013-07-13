@@ -4,8 +4,8 @@
 What's ForTea?
 --------------
 ForTea is a a plugin for JetBrains [ReSharper](http://www.jetbrains.com/resharper/) 7.1 and 8.0 that adds support for editing T4 (.tt) files.  
-This project corresponds to the issue [RSRP-191807](http://youtrack.jetbrains.com/issue/RSRP-191807) in JetBrains bug tracker.
-Latest version is 1.1.0 (2013-07-13), please see the [Release Notes](https://github.com/MrJul/ForTea/wiki/Release-Notes).
+This project corresponds to the issue [RSRP-191807](http://youtrack.jetbrains.com/issue/RSRP-191807) in JetBrains bug tracker.  
+Latest version is 1.1.0 (2013-07-13), please see the [Release Notes](https://github.com/MrJul/ForTea/wiki/Release-Notes).  
 Don't hesitate to [open an issue](https://github.com/MrJul/ForTea/issues) if you encounter any problem.
 
 Installation
