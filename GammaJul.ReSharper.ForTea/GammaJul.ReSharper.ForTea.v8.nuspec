@@ -10,7 +10,7 @@
 		<iconUrl>https://raw.github.com/MrJul/ForTea/master/Logo/ForTea%20128x128.png</iconUrl>
 		<licenseUrl>http://www.apache.org/licenses/LICENSE-2.0</licenseUrl>
 		<copyright>Copyright &#x00A9; 2012-2013 Julien Lebosquain</copyright>
-		<tags>T4 Text Templating .tt</tags>
+		<tags>T4 Text Templating Template .tt</tags>
 		<dependencies>
 			<dependency id="ReSharper" version="8.0" />
 		</dependencies>
