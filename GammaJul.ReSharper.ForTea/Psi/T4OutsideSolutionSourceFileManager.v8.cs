@@ -50,7 +50,7 @@ namespace GammaJul.ReSharper.ForTea.Psi {
 			lock (_sourceFiles) {
 				IPsiSourceFile sourceFile;
 				if (!_sourceFiles.TryGetValue(path, out sourceFile) || sourceFile == null) {
-					sourceFile = new NavigateablePsiSourceFileWithLocation(
+					sourceFile = new T4OutsideSolutionSourceFile(
 						_projectFileExtensions, _psiProjectFileTypeCoordinator, _psiModule, path,
 						sf => sf.Location.ExistsFile, sf => new T4OutsideSolutionSourceFileProperties(),
 						_documentManager, EmptyResolveContext.Instance);

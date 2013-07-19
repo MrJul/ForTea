@@ -16,10 +16,10 @@
     <ROW Property="ARPURLINFOABOUT" Value="https://github.com/MrJul/ForTea"/>
     <ROW Property="MSIFASTINSTALL" MultiBuildValue="DefaultBuild:3"/>
     <ROW Property="Manufacturer" Value="Julien Lebosquain" ValueLocId="*"/>
-    <ROW Property="ProductCode" Value="1033:{D63245DB-7E43-412C-97D1-353D2DB46663} " Type="16"/>
+    <ROW Property="ProductCode" Value="1033:{8053CC8B-0829-4CF2-B791-405FC6FCF1DF} " Type="16"/>
     <ROW Property="ProductLanguage" Value="1033"/>
     <ROW Property="ProductName" Value="ForTea for ReSharper 7.1" ValueLocId="*"/>
-    <ROW Property="ProductVersion" Value="1.1.0" Type="32"/>
+    <ROW Property="ProductVersion" Value="1.1.1" Type="32"/>
     <ROW Property="SecureCustomProperties" Value="OLDPRODUCTS;AI_NEWERPRODUCTFOUND"/>
     <ROW Property="UpgradeCode" Value="{501ADDDA-F122-4414-B633-0150564B03F7}"/>
     <ROW Property="WindowsType9X" MultiBuildValue="DefaultBuild:Windows 9x/ME" ValueLocId="-"/>
@@ -42,7 +42,7 @@
     <ROW File="GammaJul.ReSharper.ForTea.v7.dll" Component_="GammaJul.ReSharper.ForTea.v7.dll" FileName="GammaJ~1.dll|GammaJul.ReSharper.ForTea.v7.dll" Attributes="0" SourcePath="..\GammaJul.ReSharper.ForTea\bin\Release\GammaJul.ReSharper.ForTea.v7.dll" SelfReg="false"/>
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.BuildComponent">
-    <ROW BuildKey="DefaultBuild" BuildName="DefaultBuild" BuildOrder="1" BuildType="0" Languages="en" InstallationType="4" CabsLocation="1"/>
+    <ROW BuildKey="DefaultBuild" BuildName="DefaultBuild" BuildOrder="1" BuildType="0" Languages="en" InstallationType="4"/>
     <ATTRIBUTE name="CurrentBuild" value="DefaultBuild"/>
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.DictionaryComponent">

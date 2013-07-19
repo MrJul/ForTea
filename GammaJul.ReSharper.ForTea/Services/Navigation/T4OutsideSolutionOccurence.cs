@@ -90,7 +90,7 @@ namespace GammaJul.ReSharper.ForTea.Services.Navigation {
 			NavigationManager navigationManager = NavigationManager.GetInstance(solution);
 			return NavigateCore(navigationManager, navigationInfo, navigationOptions);
 		}
-		
+
 		public T4OutsideSolutionOccurence([NotNull] IRangeMarker rangeMarker) {
 			_rangeMarker = rangeMarker;
 		}

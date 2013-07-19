@@ -21,7 +21,6 @@ using JetBrains.Application;
 using JetBrains.ProjectModel;
 using JetBrains.ProjectModel.Impl;
 using JetBrains.ProjectModel.Properties;
-using JetBrains.ProjectModel.Properties.Common;
 using JetBrains.Util;
 using PlatformID = JetBrains.ProjectModel.PlatformID;
 

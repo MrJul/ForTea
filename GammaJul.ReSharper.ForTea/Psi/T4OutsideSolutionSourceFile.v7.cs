@@ -27,7 +27,7 @@ namespace GammaJul.ReSharper.ForTea.Psi {
 		public FileSystemPath Location {
 			get { return Path; }
 		}
-
+		
 		private sealed class DocumentFactory : IDocumentFactory {
 
 			private readonly IDocumentFactory _underlyingFactory;
