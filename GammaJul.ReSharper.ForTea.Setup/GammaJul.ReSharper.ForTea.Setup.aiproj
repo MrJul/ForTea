@@ -14,7 +14,7 @@
     <AssemblyName>GammaJul.ReSharper.ForTea.Setup</AssemblyName>
     <Name>GammaJul.ReSharper.ForTea.Setup</Name>
     <RootNamespace>GammaJul.ReSharper.ForTea.Setup</RootNamespace>
-    <AdvinstCmdLine>-buildslist DefaultBuild</AdvinstCmdLine>
+    <AdvinstCmdLine>-buildslist All</AdvinstCmdLine>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)' == 'All' ">
     <DebugSymbols>false</DebugSymbols>

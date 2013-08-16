@@ -362,10 +362,17 @@ namespace GammaJul.ReSharper.ForTea.Psi {
 		/// <remarks>Does not implement <see cref="IDisposable"/>, is called when the lifetime is terminated.</remarks>
 		private void Dispose() {
 			_isValid = false;
-			
-			foreach (IAssemblyCookie assemblyCookie in _assemblyReferences.Values)
-				assemblyCookie.Dispose();
-			_assemblyReferences.Clear();
+
+			// Removes the references.
+			IAssemblyCookie[] assemblyCookies = _assemblyReferences.Values.ToArray();
+			if (assemblyCookies.Length > 0) {
+				_shellLocks.ExecuteWithWriteLock(() => {
+					foreach (IAssemblyCookie assemblyCookie in assemblyCookies)
+						assemblyCookie.Dispose();
+				});
+				_assemblyReferences.Clear();
+			}
+
 			_resolveProject.Dispose();
 		}
 

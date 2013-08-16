@@ -51,7 +51,7 @@ namespace GammaJul.ReSharper.ForTea.Psi {
 				(pf, sf) => new T4PsiProjectFileProperties(pf, sf, true), 
 				JetFunc<IProjectFile, IPsiSourceFile>.True,
 				documentManager,
-				projectFile.GetProject().GetResolveContext());
+				UniversalModuleReferenceContext.Instance);
 		}
 
 

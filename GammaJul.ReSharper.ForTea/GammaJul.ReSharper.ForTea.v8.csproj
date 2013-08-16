@@ -225,7 +225,9 @@
     <Compile Include="Parsing\T4TreeBuilder.DirectiveBuilder.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="GammaJul.ReSharper.ForTea.v8.nuspec" />
+    <None Include="GammaJul.ReSharper.ForTea.v8.nuspec">
+      <SubType>Designer</SubType>
+    </None>
   </ItemGroup>
   <PropertyGroup>
     <ReSharperSdkTargets Condition=" '$(ReSharperSdkTargets)' == '' ">$(MSBuildExtensionsPath)\JetBrains\ReSharper.SDK\v$(ReSharperSdkVersion)</ReSharperSdkTargets>
