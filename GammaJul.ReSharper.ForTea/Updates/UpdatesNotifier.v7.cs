@@ -18,7 +18,6 @@ using System.Linq;
 using System.Reflection;
 using JetBrains.Annotations;
 using JetBrains.Application;
-using JetBrains.Application.Extensions;
 using JetBrains.Application.PluginSupport;
 using JetBrains.DataFlow;
 using JetBrains.Extension;
@@ -66,11 +65,7 @@ namespace GammaJul.ReSharper.ForTea.Updates {
 				_category.UpdateInfos.Remove(updateInfo);
 		}
 
-		public UpdatesNotifier([NotNull] Lifetime lifetime, [NotNull] UpdatesManager updatesManager, [NotNull] ExtensionManager extensionManager) {
-			// Let the extension manager handle the update itself.
-			if (extensionManager.IsInstalled(_pluginName))
-				return;
-
+		public UpdatesNotifier([NotNull] Lifetime lifetime, [NotNull] UpdatesManager updatesManager) {
 			_category = updatesManager.Categories.AddOrActivate(_pluginName, new Uri("https://raw.github.com/MrJul/ForTea/master/Updates.xslt"));
 			_category.CustomizeLocalEnvironmentInfo.Advise(lifetime, CustomizeLocalEnvironmentInfo);
 			RemoveStaleUpdateNotification();
