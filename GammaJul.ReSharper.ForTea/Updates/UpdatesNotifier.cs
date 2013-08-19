@@ -18,6 +18,7 @@ using System.Linq;
 using System.Reflection;
 using JetBrains.Annotations;
 using JetBrains.Application;
+using JetBrains.Application.Extensions;
 using JetBrains.Application.PluginSupport;
 using JetBrains.DataFlow;
 using JetBrains.Extension;
@@ -29,9 +30,10 @@ namespace GammaJul.ReSharper.ForTea.Updates {
 	[ShellComponent]
 	public class UpdatesNotifier {
 
+		private readonly string _pluginName = typeof(UpdatesNotifier).Assembly.GetCustomAttribute<PluginTitleAttribute>(false).Text;
 		private readonly UpdatesCategory _category;
 
-		private static void CustomizeLocalEnvironmentInfo([NotNull] OutEventArgs<object> args) {
+		private void CustomizeLocalEnvironmentInfo([NotNull] OutEventArgs<object> args) {
 			var reSharperInfo = args.Out as UpdateLocalEnvironmentInfoVs;
 			if (reSharperInfo == null)
 				args.Out = null;
@@ -42,11 +44,11 @@ namespace GammaJul.ReSharper.ForTea.Updates {
 			}
 		}
 
-		private static void FillPlugInInfo([NotNull] UpdateLocalEnvironmentInfo.ProductSubInfo info) {
+		private void FillPlugInInfo([NotNull] UpdateLocalEnvironmentInfo.ProductSubInfo info) {
 			Assembly assembly = typeof(UpdatesNotifier).Assembly;
 			Version version = assembly.GetName().Version;
 			info.CompanyName = assembly.GetCustomAttribute<PluginVendorAttribute>(false).Text;
-			info.Name = assembly.GetCustomAttribute<PluginTitleAttribute>(false).Text;
+			info.Name = _pluginName;
 			info.Version = new UpdateLocalEnvironmentInfo.VersionSubInfo(version);
 			info.FullName = info.Name + " " + version.ToString(3);
 		}
@@ -64,8 +66,12 @@ namespace GammaJul.ReSharper.ForTea.Updates {
 				_category.UpdateInfos.Remove(updateInfo);
 		}
 
-		public UpdatesNotifier([NotNull] Lifetime lifetime, [NotNull] UpdatesManager updatesManager) {
-			_category = updatesManager.Categories.AddOrActivate("ForTea", new Uri("https://raw.github.com/MrJul/ForTea/master/Updates.xslt"));
+		public UpdatesNotifier([NotNull] Lifetime lifetime, [NotNull] UpdatesManager updatesManager, [NotNull] ExtensionManager extensionManager) {
+			// Let the extension manager handle the update itself.
+			if (extensionManager.IsInstalled(_pluginName))
+				return;
+
+			_category = updatesManager.Categories.AddOrActivate(_pluginName, new Uri("https://raw.github.com/MrJul/ForTea/master/Updates.xslt"));
 			_category.CustomizeLocalEnvironmentInfo.Advise(lifetime, CustomizeLocalEnvironmentInfo);
 			RemoveStaleUpdateNotification();
 		}
