@@ -265,7 +265,7 @@ namespace GammaJul.ReSharper.ForTea.Parsing {
 		}
 
 		private void HandleIncludeDirective([NotNull] IT4Directive directive, [NotNull] CompositeElement parentElement) {
-			var fileAttr = (T4DirectiveAttribute) directive.GetAttribute(_directiveInfoManager.Include.FileAttribute.Name);
+			var fileAttr = directive.GetAttribute(_directiveInfoManager.Include.FileAttribute.Name) as T4DirectiveAttribute;
 			if (fileAttr == null)
 				return;
 
@@ -273,10 +273,16 @@ namespace GammaJul.ReSharper.ForTea.Parsing {
 			if (valueToken == null)
 				return;
 
-			HandleInclude(valueToken.GetText(), fileAttr, parentElement);
+			bool once = false;
+			if (_t4Environment.VsVersion2.Major >= VsVersions.Vs2013) {
+				string onceString = directive.GetAttributeValue(_directiveInfoManager.Include.OnceAttribute.Name);
+				once = Boolean.TrueString.Equals(onceString, StringComparison.OrdinalIgnoreCase);
+			}
+
+			HandleInclude(valueToken.GetText(), fileAttr, parentElement, once);
 		}
 
-		private void HandleInclude([CanBeNull] string includeFileName, [NotNull] T4DirectiveAttribute fileAttr, [NotNull] CompositeElement parentElement) {
+		private void HandleInclude([CanBeNull] string includeFileName, [NotNull] T4DirectiveAttribute fileAttr, [NotNull] CompositeElement parentElement, bool once) {
 			FileSystemPath includePath = ResolveInclude(includeFileName);
 			if (includePath.IsEmpty) {
 				fileAttr.ValueError = String.Format(CultureInfo.InvariantCulture, "Unresolved file \"{0}\"", includePath);
@@ -284,7 +290,8 @@ namespace GammaJul.ReSharper.ForTea.Parsing {
 			}
 
 			if (!_existingIncludePaths.Add(includePath)) {
-				fileAttr.ValueError = String.Format(CultureInfo.InvariantCulture, "Already included file \"{0}\"", includePath);
+				if (!once)
+					fileAttr.ValueError = String.Format(CultureInfo.InvariantCulture, "Already included file \"{0}\"", includePath);
 				return;
 			}
 

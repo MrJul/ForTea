@@ -38,7 +38,7 @@ namespace GammaJul.ReSharper.ForTea.Psi.Directives {
 		public bool IsDisplayedInCodeStructure {
 			get { return (_options & DirectiveAttributeOptions.DisplayInCodeStructure) == DirectiveAttributeOptions.DisplayInCodeStructure; }
 		}
-
+		
 		public virtual bool IsValid(string value) {
 			return true;
 		}

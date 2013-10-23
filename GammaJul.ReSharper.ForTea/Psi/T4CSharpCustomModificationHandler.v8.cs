@@ -1,6 +1,8 @@
 ﻿using System;
+using JetBrains.Application.Settings;
 using JetBrains.ReSharper.Psi;
 using JetBrains.ReSharper.Psi.CSharp;
+using JetBrains.ReSharper.Psi.CSharp.CodeStyle;
 using JetBrains.ReSharper.Psi.CSharp.Tree;
 using JetBrains.ReSharper.Psi.ExtensionsAPI.Resolve;
 using JetBrains.ReSharper.Psi.Resolve;
@@ -20,12 +22,11 @@ namespace GammaJul.ReSharper.ForTea.Psi {
 		/// <param name="generatedFile">The generated file.</param>
 		/// <returns>An instance of <see cref="IUsingDirective"/>.</returns>
 		public IUsingDirective HandleAddImport(IPsiServices psiServices, Func<IUsingDirective> action, ITreeNode generatedAnchor, bool before, IFile generatedFile) {
-			return (IUsingDirective) HandleAddImportInternal(psiServices, () => action(), generatedAnchor, before, CSharpLanguage.Instance, generatedFile);
+			return (IUsingDirective) HandleAddImportInternal(psiServices, action, generatedAnchor, before, CSharpLanguage.Instance, generatedFile);
 		}
 
 		public bool PreferQualifiedReference(IQualifiableReferenceWithGlobalSymbolTable reference) {
-			// TODO: use settings
-			return false;
+			return reference.GetTreeNode().GetSettingsStore().GetValue(CSharpUsingSettingsAccessor.PreferQualifiedReference);
 		}
 
 		public string GetSpecialMethodType(DeclaredElementPresenterStyle presenter, IMethod method, ISubstitution substitution) {

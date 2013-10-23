@@ -205,6 +205,7 @@
     <Compile Include="Tree\T4TreeExtensions.cs" />
     <Compile Include="Updates\RootUpdateInfo.v7.cs" />
     <Compile Include="Updates\UpdatesNotifier.v7.cs" />
+    <Compile Include="VsVersions.cs" />
   </ItemGroup>
   <ItemGroup>
     <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />

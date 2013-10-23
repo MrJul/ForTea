@@ -15,30 +15,39 @@
 #endregion
 using System;
 using System.Collections.ObjectModel;
+using JetBrains.Annotations;
 
 namespace GammaJul.ReSharper.ForTea.Psi.Directives {
 
 	public class IncludeDirectiveInfo : DirectiveInfo {
 
 		private readonly DirectiveAttributeInfo _fileAttribute;
+		private readonly DirectiveAttributeInfo _onceAttribute;
 		private readonly ReadOnlyCollection<DirectiveAttributeInfo> _supportedAttributes;
 
+		[NotNull]
 		public DirectiveAttributeInfo FileAttribute {
 			get { return _fileAttribute; }
+		}
+
+		[NotNull]
+		public DirectiveAttributeInfo OnceAttribute {
+			get { return _onceAttribute; }
 		}
 
 		public override ReadOnlyCollection<DirectiveAttributeInfo> SupportedAttributes {
 			get { return _supportedAttributes; }
 		}
-
-		public IncludeDirectiveInfo()
+		
+		public IncludeDirectiveInfo([NotNull] T4Environment environment)
 			: base("include") {
 
 			_fileAttribute = new DirectiveAttributeInfo("file", DirectiveAttributeOptions.Required | DirectiveAttributeOptions.DisplayInCodeStructure);
+			_onceAttribute = new BooleanDirectiveAttributeInfo("once", DirectiveAttributeOptions.None);
 
-			_supportedAttributes = Array.AsReadOnly(new[] {
-				_fileAttribute
-			});
+			_supportedAttributes = Array.AsReadOnly(environment.VsVersion2.Major >= 12
+				? new[] { _fileAttribute, _onceAttribute }
+				: new[] { _fileAttribute });
 		}
 
 	}

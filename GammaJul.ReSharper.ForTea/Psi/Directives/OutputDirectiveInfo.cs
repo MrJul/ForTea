@@ -15,6 +15,7 @@
 #endregion
 using System;
 using System.Collections.ObjectModel;
+using JetBrains.Annotations;
 
 namespace GammaJul.ReSharper.ForTea.Psi.Directives {
 
@@ -24,10 +25,12 @@ namespace GammaJul.ReSharper.ForTea.Psi.Directives {
 		private readonly DirectiveAttributeInfo _encodingAttribute;
 		private readonly ReadOnlyCollection<DirectiveAttributeInfo> _supportedAttributes;
 
+		[NotNull]
 		public DirectiveAttributeInfo ExtensionAttribute {
 			get { return _extensionAttribute; }
 		}
 
+		[NotNull]
 		public DirectiveAttributeInfo EncodingAttribute {
 			get { return _encodingAttribute; }
 		}

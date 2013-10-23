@@ -26,6 +26,7 @@ namespace GammaJul.ReSharper.ForTea.Psi.Directives {
 		private readonly DirectiveAttributeInfo _namespaceAttribute;
 		private readonly System.Collections.ObjectModel.ReadOnlyCollection<DirectiveAttributeInfo> _supportedAttributes;
 
+		[NotNull]
 		public DirectiveAttributeInfo NamespaceAttribute {
 			get { return _namespaceAttribute; }
 		}

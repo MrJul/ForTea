@@ -78,7 +78,7 @@ namespace GammaJul.ReSharper.ForTea.Psi.Directives {
 			Template = new TemplateDirectiveInfo(environment);
 			Parameter = new ParameterDirectiveInfo();
 			Output = new OutputDirectiveInfo();
-			Include = new IncludeDirectiveInfo();
+			Include = new IncludeDirectiveInfo(environment);
 			Assembly = new AssemblyDirectiveInfo();
 			Import = new ImportDirectiveInfo();
 			AllDirectives = Array.AsReadOnly(new DirectiveInfo[] {

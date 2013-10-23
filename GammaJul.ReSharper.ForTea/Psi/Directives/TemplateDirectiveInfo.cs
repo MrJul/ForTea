@@ -78,10 +78,10 @@ namespace GammaJul.ReSharper.ForTea.Psi.Directives {
 		public TemplateDirectiveInfo([NotNull] T4Environment environment)
 			: base("template") {
 
-			bool isAtLeastVs11 = environment.VsVersion2.Major >= 11;
+			bool isAtLeastVs2012 = environment.VsVersion2.Major >= VsVersions.Vs2012;
 
 			_languageAttribute = new EnumDirectiveAttributeInfo("language", DirectiveAttributeOptions.None, "C#", "VB");
-			_hostSpecificAttribute = isAtLeastVs11
+			_hostSpecificAttribute = isAtLeastVs2012
 				? new EnumDirectiveAttributeInfo("hostspecific",DirectiveAttributeOptions.None, "true", "false", "trueFromBase")
 				: new BooleanDirectiveAttributeInfo("hostspecific", DirectiveAttributeOptions.None);
 			_debugAttribute = new BooleanDirectiveAttributeInfo("debug", DirectiveAttributeOptions.None);
@@ -100,7 +100,7 @@ namespace GammaJul.ReSharper.ForTea.Psi.Directives {
 				_compilerOptionsAttribute
 			};
 
-			if (isAtLeastVs11) {
+			if (isAtLeastVs2012) {
 				attributes.Add(_linePragmasAttribute);
 				attributes.Add(_visibilityAttribute);
 			}

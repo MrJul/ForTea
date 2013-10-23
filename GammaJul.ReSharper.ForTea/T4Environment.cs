@@ -119,7 +119,7 @@ namespace GammaJul.ReSharper.ForTea {
 			_vsEnvironmentInformation = vsEnvironmentInformation;
 
 			int vsMajorVersion = vsEnvironmentInformation.VsVersion2.Major;
-			if (vsMajorVersion == 10) {
+			if (vsMajorVersion == VsVersions.Vs2010) {
 				_platformID = new PlatformID(FrameworkIdentifier.NetFramework, new Version(4, 0));
 				_textTemplatingAssemblyNames = new[] {
 					"Microsoft.VisualStudio.TextTemplating.10.0, Version=10.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a",
@@ -127,10 +127,19 @@ namespace GammaJul.ReSharper.ForTea {
 				};
 				_isSupported = true;
 			}
-			else if (vsMajorVersion == 11) {
+			else if (vsMajorVersion == VsVersions.Vs2012) {
 				_platformID = new PlatformID(FrameworkIdentifier.NetFramework, new Version(4, 5));
 				_textTemplatingAssemblyNames = new[] {
 					"Microsoft.VisualStudio.TextTemplating.11.0, Version=11.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a",
+					"Microsoft.VisualStudio.TextTemplating.Interfaces.11.0, Version=11.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a",
+					"Microsoft.VisualStudio.TextTemplating.Interfaces.10.0, Version=10.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a"
+				};
+				_isSupported = true;
+			}
+			else if (vsMajorVersion == VsVersions.Vs2013) {
+				_platformID = new PlatformID(FrameworkIdentifier.NetFramework, new Version(4, 5));
+				_textTemplatingAssemblyNames = new[] {
+					"Microsoft.VisualStudio.TextTemplating.12.0, Version=12.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a",
 					"Microsoft.VisualStudio.TextTemplating.Interfaces.11.0, Version=11.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a",
 					"Microsoft.VisualStudio.TextTemplating.Interfaces.10.0, Version=10.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a"
 				};

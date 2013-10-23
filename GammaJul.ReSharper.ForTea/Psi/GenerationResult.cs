@@ -27,6 +27,7 @@ namespace GammaJul.ReSharper.ForTea.Psi {
 	/// Holds a generated result for code-behind generation.
 	/// </summary>
 	internal sealed class GenerationResult {
+
 		private readonly StringBuilder _builder = new StringBuilder();
 		private readonly IGeneratedRangeMap _generatedRangeMap;
 

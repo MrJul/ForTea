@@ -34,6 +34,7 @@ namespace GammaJul.ReSharper.ForTea.Psi.Directives {
 			get { return _name; }
 		}
 
+		[NotNull]
 		public abstract System.Collections.ObjectModel.ReadOnlyCollection<DirectiveAttributeInfo> SupportedAttributes { get; }
 
 		[CanBeNull]

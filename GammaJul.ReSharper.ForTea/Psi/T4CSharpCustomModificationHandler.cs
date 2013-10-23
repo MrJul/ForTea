@@ -84,7 +84,7 @@ namespace GammaJul.ReSharper.ForTea.Psi {
 			string ns = GetNamespaceFromUsingDirective(usingDirective);
 			IT4Directive directive = _directiveInfoManager.Import.CreateDirective(ns);
 
-			if (anchor != null)
+			if (anchor != null && anchor.GetContainingNode<IT4Include>() != null)
 				directive = before ? t4File.AddDirectiveBefore(directive, anchor) : t4File.AddDirectiveAfter(directive, anchor);
 			else
 				directive = t4File.AddDirective(directive, _directiveInfoManager);
@@ -186,7 +186,7 @@ namespace GammaJul.ReSharper.ForTea.Psi {
 		/// <param name="document">The document.</param>
 		/// <param name="usingDirective">The using directive.</param>
 		/// <returns><c>true</c> if the specified using directive can be removed; otherwise, <c>false</c>.</returns>
-		/// <remarks>As long as the using is represented as a T4 import directive, it can be removed.</remarks>
+		/// <remarks>As long as the using is represented as a T4 import directive in the root file, it can be removed.</remarks>
 		public bool CanRemoveUsing(IDocument document, IUsingDirective usingDirective) {
 			var namespaceDirective = usingDirective as IUsingNamespaceDirective;
 			if (namespaceDirective == null)
