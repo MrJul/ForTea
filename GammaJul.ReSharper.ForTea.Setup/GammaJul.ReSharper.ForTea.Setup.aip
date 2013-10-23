@@ -31,7 +31,8 @@
   <COMPONENT cid="caphyon.advinst.msicomp.MsiDirsComponent">
     <ROW Directory="APPDIR" Directory_Parent="TARGETDIR" DefaultDir="APPDIR:." IsPseudoRoot="1"/>
     <ROW Directory="ForTea_Dir" Directory_Parent="Plugins_Dir" DefaultDir="ForTea"/>
-    <ROW Directory="Plugins_Dir" Directory_Parent="APPDIR" DefaultDir="Plugins"/>
+    <ROW Directory="Plugins_Dir" Directory_Parent="RESHARPER_INSTALLDIR" DefaultDir="Plugin~1|Plugins"/>
+    <ROW Directory="RESHARPER_INSTALLDIR" Directory_Parent="TARGETDIR" DefaultDir="RESHAR~1|RESHARPER_INSTALLDIR" IsPseudoRoot="1"/>
     <ROW Directory="TARGETDIR" DefaultDir="SourceDir"/>
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.MsiCompsComponent">
