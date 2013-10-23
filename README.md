@@ -10,7 +10,7 @@ Don't hesitate to [open an issue](https://github.com/MrJul/ForTea/issues) if you
 
 Installation
 ------------
-Visual Studio 2010, 2012 or 2013 are supported.  
+Visual Studio 2010, 2012 and 2013 are supported.  
 ReSharper 7.1.x or 8.0 must be installed.  
 To install ForTea in various ReSharper versions:
  - For ReSharper 7.1.x, install ForTea using the MSI installer available on the [Releases](https://github.com/MrJul/ForTea/releases) page.  
