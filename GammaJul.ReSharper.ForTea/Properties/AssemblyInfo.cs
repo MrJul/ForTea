@@ -25,7 +25,7 @@ using JetBrains.Application.PluginSupport;
 [assembly: AssemblyCopyright("Copyright © Julien Lebosquain, 2012-2013")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
-[assembly: AssemblyVersion("1.1.3.0")]
+[assembly: AssemblyVersion("1.1.4.0")]
 
 // The following information is displayed by ReSharper in the Plugins dialog
 [assembly: PluginTitle("ForTea")]

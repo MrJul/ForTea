@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<package xmlns="http://schemas.microsoft.com/packaging/2011/08/nuspec.xsd">
+	<metadata>
+		<id>ForTea</id>
+		<version>1.1.4-EAP-20131119</version>
+		<title>ForTea</title>
+		<authors>Julien Lebosquain</authors>
+		<description>Adds support for editing T4 text templating files (.tt)</description>
+        <releaseNotes>Support for 8.1 EAP</releaseNotes>
+		<projectUrl>https://github.com/MrJul/ForTea/</projectUrl>
+		<iconUrl>https://raw.github.com/MrJul/ForTea/master/Logo/ForTea%20128x128.png</iconUrl>
+		<licenseUrl>http://www.apache.org/licenses/LICENSE-2.0</licenseUrl>
+		<copyright>Copyright &#x00A9; 2012-2013 Julien Lebosquain</copyright>
+		<tags>T4 Text Templating Template .tt</tags>
+		<dependencies>
+			<dependency id="ReSharper" version="8.0" />
+		</dependencies>
+	</metadata>
+	<files>
+		<file src="bin\Release\GammaJul.ReSharper.ForTea.v8.dll" target="ReSharper\v8.0\plugins" />
+		<file src="bin\Release\GammaJul.ReSharper.ForTea.v8.1.dll" target="ReSharper\v8.1\plugins" />
+	</files>
+</package>

@@ -20,11 +20,20 @@ using JetBrains.DocumentModel;
 using JetBrains.IDE;
 using JetBrains.ProjectModel;
 using JetBrains.ReSharper.Feature.Services.Navigation;
+using JetBrains.ReSharper.Feature.Services.Navigation.Search;
 using JetBrains.ReSharper.Feature.Services.Occurences;
 using JetBrains.ReSharper.Feature.Services.Search;
 using JetBrains.ReSharper.Psi;
 using JetBrains.UI.PopupWindowManager;
 using JetBrains.Util;
+
+#region Compatibility namespace declarations
+// Beats having #ifdefs
+// ReSharper disable EmptyNamespace
+namespace JetBrains.ReSharper.Feature.Services.Navigation.Search { }
+namespace JetBrains.ReSharper.Feature.Services.Search { }
+// ReSharper restore EmptyNamespace
+#endregion
 
 namespace GammaJul.ReSharper.ForTea.Services.Navigation {
 

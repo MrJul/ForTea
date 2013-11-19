@@ -1,6 +1,8 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 2012
+# Visual Studio 2013
+VisualStudioVersion = 12.0.21005.1
+MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GammaJul.ReSharper.ForTea.v7", "GammaJul.ReSharper.ForTea\GammaJul.ReSharper.ForTea.v7.csproj", "{EA095A20-2A80-43BB-97B7-C8FC2B419B53}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{3EF83234-454C-41FC-982A-DDAA57E2EB86}"
@@ -14,6 +16,8 @@ Project("{840C416C-B8F3-42BC-B0DD-F6BB14C9F8CB}") = "GammaJul.ReSharper.ForTea.S
 	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GammaJul.ReSharper.ForTea.v8", "GammaJul.ReSharper.ForTea\GammaJul.ReSharper.ForTea.v8.csproj", "{8835E089-5908-43EE-892F-924E70CBF07E}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GammaJul.ReSharper.ForTea.v8.1", "GammaJul.ReSharper.ForTea\GammaJul.ReSharper.ForTea.v8.1.csproj", "{DBC5E830-64CE-4B27-9BB3-D7D743430BF1}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -54,6 +58,15 @@ Global
 		{8835E089-5908-43EE-892F-924E70CBF07E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{8835E089-5908-43EE-892F-924E70CBF07E}.Release|Any CPU.Build.0 = Release|Any CPU
 		{8835E089-5908-43EE-892F-924E70CBF07E}.Release|x86.ActiveCfg = Release|Any CPU
+		{DBC5E830-64CE-4B27-9BB3-D7D743430BF1}.All|Any CPU.ActiveCfg = Release|Any CPU
+		{DBC5E830-64CE-4B27-9BB3-D7D743430BF1}.All|Any CPU.Build.0 = Release|Any CPU
+		{DBC5E830-64CE-4B27-9BB3-D7D743430BF1}.All|x86.ActiveCfg = Release|Any CPU
+		{DBC5E830-64CE-4B27-9BB3-D7D743430BF1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DBC5E830-64CE-4B27-9BB3-D7D743430BF1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DBC5E830-64CE-4B27-9BB3-D7D743430BF1}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{DBC5E830-64CE-4B27-9BB3-D7D743430BF1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DBC5E830-64CE-4B27-9BB3-D7D743430BF1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DBC5E830-64CE-4B27-9BB3-D7D743430BF1}.Release|x86.ActiveCfg = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

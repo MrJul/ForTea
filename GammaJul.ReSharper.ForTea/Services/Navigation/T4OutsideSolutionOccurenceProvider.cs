@@ -17,6 +17,7 @@ using GammaJul.ReSharper.ForTea.Psi;
 using JetBrains.DocumentManagers;
 using JetBrains.DocumentModel;
 using JetBrains.ProjectModel;
+using JetBrains.ReSharper.Feature.Services.Navigation.Search;
 using JetBrains.ReSharper.Feature.Services.Occurences;
 using JetBrains.ReSharper.Feature.Services.Search;
 using JetBrains.ReSharper.Psi.Search;
