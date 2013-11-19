@@ -9,3 +9,5 @@
 /*.user
 /_dotTrace.GammaJul.ReSharper.ForTea
 /GammaJul.ReSharper.ForTea/*.nupkg
+packages/
+Thumbs.db
