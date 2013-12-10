@@ -30,8 +30,8 @@ using JetBrains.ReSharper.Psi.Tree;
 namespace GammaJul.ReSharper.ForTea.Daemon {
 	
 	/// <summary>
-	/// Highlights C# keywords, identifiets, etc.
-	/// Usually, those are colored by Visual Studio C# language service. However, it's not available in T4 files so we have to it ourselves.
+	/// Highlights C# keywords, identifiers, etc.
+	/// Usually, those are colored by Visual Studio C# language service. However, it's not available in T4 files so we have to do it ourselves.
 	/// </summary>
 	internal class T4CSharpHighlightingProcess : CSharpIncrementalDaemonStageProcessBase {
 

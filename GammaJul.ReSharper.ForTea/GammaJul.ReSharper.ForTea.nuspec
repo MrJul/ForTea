@@ -2,7 +2,7 @@
 <package xmlns="http://schemas.microsoft.com/packaging/2011/08/nuspec.xsd">
 	<metadata>
 		<id>ForTea</id>
-		<version>1.1.4-EAP-20131119</version>
+		<version>1.1.4-EAP-20131210</version>
 		<title>ForTea</title>
 		<authors>Julien Lebosquain</authors>
 		<description>Adds support for editing T4 text templating files (.tt)</description>
