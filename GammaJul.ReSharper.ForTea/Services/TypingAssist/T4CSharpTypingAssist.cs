@@ -52,7 +52,7 @@ namespace GammaJul.ReSharper.ForTea.Services.TypingAssist {
 		public override int TextControlToLexer(ITextControl textControl, int offset) {
 			return offset;
 		}
-
+		
 		/// <summary>
 		/// Returns the offset difference between a lexer and a text control.
 		/// </summary>

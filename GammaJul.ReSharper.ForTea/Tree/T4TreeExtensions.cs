@@ -164,7 +164,7 @@ namespace GammaJul.ReSharper.ForTea.Tree {
 		/// Gets a T4 block containing a specified C# node.
 		/// </summary>
 		/// <typeparam name="T">The type of expected T4 container node.</typeparam>
-		/// <param name="cSharpNode">The C# node whose T4 container will be retrived.</param>
+		/// <param name="cSharpNode">The C# node whose T4 container will be retrieved.</param>
 		/// <returns>An instance of <see cref="T"/>, or <c>null</c> if no container for <paramref name="cSharpNode"/> can be found.</returns>
 		[CanBeNull]
 		internal static T GetT4ContainerFromCSharpNode<T>([CanBeNull] this ITreeNode cSharpNode)
