@@ -15,6 +15,7 @@
 #endregion
 
 
+using System.Collections.Generic;
 using JetBrains.Annotations;
 using JetBrains.ProjectModel;
 using JetBrains.ReSharper.Psi;
@@ -37,6 +38,11 @@ namespace GammaJul.ReSharper.ForTea.Psi {
 		[NotNull]
 		internal static PredefinedType GetPredefinedType([NotNull] this ITreeNode node) {
 			return node.GetPsiModule().GetPredefinedType();
+		}
+		
+		[NotNull]
+		internal static IEnumerable<PsiLanguageType> GetLanguages([NotNull] this IPsiSourceFile sourceFile) {
+			return sourceFile.GetAllPossiblePsiLanguages();
 		}
 
 	}

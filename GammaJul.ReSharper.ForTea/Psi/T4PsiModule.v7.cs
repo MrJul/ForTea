@@ -59,7 +59,7 @@ namespace GammaJul.ReSharper.ForTea.Psi {
 		private static PsiModuleChange.ChangeType ModifiedChangeType {
 			get { return PsiModuleChange.ChangeType.MODIFIED; }
 		}
-
+		
 	}
 
 }

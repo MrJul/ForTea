@@ -15,6 +15,7 @@
 #endregion
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using JetBrains.Annotations;
 using JetBrains.Application;
 using JetBrains.Application.Progress;
@@ -27,7 +28,6 @@ using JetBrains.ProjectModel.Model2.Assemblies.Interfaces;
 using JetBrains.ProjectModel.Model2.References;
 using JetBrains.ProjectModel.model2.Assemblies.Interfaces;
 using JetBrains.ReSharper.Psi;
-
 using JetBrains.ReSharper.Psi.Web.Impl.PsiModules;
 using JetBrains.Threading;
 using JetBrains.Util;
@@ -36,6 +36,7 @@ using Microsoft.VisualStudio.Shell.Interop;
 #if SDK80
 using JetBrains.ProjectModel.Build;
 using JetBrains.ReSharper.Psi.Modules;
+using JetBrains.ReSharper.Psi.Files;
 #else
 using JetBrains.ReSharper.Psi.Impl;
 using IPsiModules = JetBrains.ReSharper.Psi.PsiModuleManager;
@@ -97,10 +98,10 @@ namespace GammaJul.ReSharper.ForTea.Psi {
 		}
 
 		/// <summary>
-		/// Gets the language used by this PSI module: always <see cref="T4Language"/>.
+		/// Gets the language used by this PSI module. This should be the code behind language, not the primary language.
 		/// </summary>
 		public PsiLanguageType PsiLanguage {
-			get { return T4Language.Instance; }
+			get { return _sourceFile.GetLanguages().FirstOrDefault(lang => !lang.Is<T4Language>()) ?? UnknownLanguage.Instance; }
 		}
 
 		/// <summary>
