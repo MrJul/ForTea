@@ -56,6 +56,8 @@ namespace GammaJul.ReSharper.ForTea.Psi {
 				if (assemblyNameOrFile == null || (assemblyNameOrFile = assemblyNameOrFile.Trim()).Length == 0)
 					return;
 			}
+
+			assemblyNameOrFile = Environment.ExpandEnvironmentVariables(assemblyNameOrFile);
 			
 			VsBuildMacroHelper.GetMacros(assemblyNameOrFile, _macros);
 			_referencedAssemblies.Add(assemblyNameOrFile);
