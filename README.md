@@ -3,18 +3,18 @@
 
 What's ForTea?
 --------------
-ForTea is a a plugin for [JetBrains ReSharper](http://www.jetbrains.com/resharper/) 7.1 and 8.0 that adds support for editing T4 (.tt) files.  
+ForTea is a a plugin for [JetBrains ReSharper](http://www.jetbrains.com/resharper/) 7.1, 8.0 and 8.1 that adds support for editing T4 (.tt) files.  
 This project corresponds to the issue [RSRP-191807](http://youtrack.jetbrains.com/issue/RSRP-191807) in JetBrains bug tracker.  
-Latest version is 1.1.3 (2013-10-23), please see the [Release Notes](https://github.com/MrJul/ForTea/wiki/Release-Notes).  
+Latest version is 1.1.5 (2014-01-22), please see the [Release Notes](https://github.com/MrJul/ForTea/wiki/Release-Notes).  
 Don't hesitate to [open an issue](https://github.com/MrJul/ForTea/issues) if you encounter any problem.
 
 Installation
 ------------
 Visual Studio 2010, 2012 and 2013 are supported.  
-ReSharper 7.1.x or 8.0 must be installed.  
+ReSharper 7.1, 8.0 or 8.1 must be installed.  
 To install ForTea in various ReSharper versions:
- - For ReSharper 7.1.x, install ForTea using the MSI installer available on the [Releases](https://github.com/MrJul/ForTea/releases) page.  
- - For ReSharper 8.0, install ForTea using the built-in Extension Manager from the ReSharper menu.
+ - For ReSharper 7.1, install ForTea using the MSI installer available on the [Releases](https://github.com/MrJul/ForTea/releases) page.  
+ - For ReSharper 8.0 and later, install ForTea using the built-in Extension Manager from the ReSharper menu.
 
 
 What's supported
@@ -50,6 +50,5 @@ rules for T4 specific elements, such as placement of opening and closing blocks.
 Visual Basic T4 files aren't supported yet.  
 Custom T4 directives aren't supported yet.  
 File structure is read-only.  
-If you have the T4 editor from Tangible, you must uninstall it. For technical reasons, ForTea will never be compatible with it.
 
 Licensed under [Apache License 2.0](http://www.apache.org/licenses/LICENSE-2.0)
