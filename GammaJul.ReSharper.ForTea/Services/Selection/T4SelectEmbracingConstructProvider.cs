@@ -36,6 +36,8 @@ namespace GammaJul.ReSharper.ForTea.Services.Selection {
 	[ProjectFileType(typeof(T4ProjectFileType))]
 	public class T4SelectEmbracingConstructProvider : ISelectEmbracingConstructProvider {
 
+		private readonly PsiProjectFileTypeCoordinator _psiProjectFileTypeCoordinator;
+
 		public bool IsAvailable(IPsiSourceFile sourceFile) {
 			return sourceFile.Properties.ShouldBuildPsi;
 		}
@@ -54,7 +56,7 @@ namespace GammaJul.ReSharper.ForTea.Services.Selection {
 
 			// if the current selection is inside C# code, use the C# extend selection directly
 			if (codeBehindFile != null) {
-				ISelectEmbracingConstructProvider codeBehindProvider = PsiProjectFileTypeCoordinator.Instance
+				ISelectEmbracingConstructProvider codeBehindProvider = _psiProjectFileTypeCoordinator
 					.GetByPrimaryPsiLanguageType(codeBehindFile.Language)
 					.SelectNotNull(fileType => Shell.Instance.GetComponent<IProjectFileTypeServices>().TryGetService<ISelectEmbracingConstructProvider>(fileType))
 					.FirstOrDefault();
@@ -82,6 +84,10 @@ namespace GammaJul.ReSharper.ForTea.Services.Selection {
 			}
 
 			return Pair.Of(primaryFile, secondaryFile);
+		}
+
+		public T4SelectEmbracingConstructProvider([NotNull] PsiProjectFileTypeCoordinator psiProjectFileTypeCoordinator) {
+			_psiProjectFileTypeCoordinator = psiProjectFileTypeCoordinator;
 		}
 
 	}

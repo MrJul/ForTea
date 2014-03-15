@@ -1,13 +1,13 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <Import Project="..\packages\JetBrains.ReSharper.SDK.8.1.555\build\JetBrains.ReSharper.SDK.Props" Condition="Exists('..\packages\JetBrains.ReSharper.SDK.8.1.555\build\JetBrains.ReSharper.SDK.Props')" />
+  <Import Project="..\packages\JetBrains.ReSharper.SDK.8.2.1001-EAP\build\JetBrains.ReSharper.SDK.Props" Condition="Exists('..\packages\JetBrains.ReSharper.SDK.8.2.1001-EAP\build\JetBrains.ReSharper.SDK.Props')" />
   <PropertyGroup>
-    <ProjectGuid>{DBC5E830-64CE-4B27-9BB3-D7D743430BF1}</ProjectGuid>
-    <AssemblyName>GammaJul.ReSharper.ForTea.v8.1</AssemblyName>
+    <ProjectGuid>{1C5D4D50-09F2-406B-B0AE-1014C529EFC9}</ProjectGuid>
+    <AssemblyName>GammaJul.ReSharper.ForTea.v8.2</AssemblyName>
   </PropertyGroup>
   <Import Project="ForTea.props" />
   <PropertyGroup>
-    <DefineConstants>$(DefineConstants);SDK80</DefineConstants>
+	<DefineConstants>$(DefineConstants);SDK80</DefineConstants>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="EnvDTE, Version=8.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
@@ -154,7 +154,7 @@
     <Compile Include="Services\T4SpecificOwnerUtil.cs" />
     <Compile Include="Services\TypingAssist\T4CSharpTypingAssist.cs" />
     <Compile Include="Services\TypingAssist\T4TypingAssist.cs" />
-    <Compile Include="SupportedReSharperVersion.v8.1.cs" />
+    <Compile Include="SupportedReSharperVersion.v8.2.cs" />
     <Compile Include="T4Environment.cs" />
     <Compile Include="Tree\IT4Block.cs" />
     <Compile Include="Tree\IT4CodeBlock.cs" />
@@ -186,8 +186,8 @@
     <Compile Include="VsVersions.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="packages.GammaJul.ReSharper.ForTea.v8.1.config" />
+    <None Include="packages.GammaJul.ReSharper.ForTea.v8.2.config" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
-  <Import Project="..\packages\JetBrains.ReSharper.SDK.8.1.555\build\JetBrains.ReSharper.SDK.Targets" Condition="Exists('..\packages\JetBrains.ReSharper.SDK.8.1.555\build\JetBrains.ReSharper.SDK.Targets')" />
+  <Import Project="..\packages\JetBrains.ReSharper.SDK.8.2.1001-EAP\build\JetBrains.ReSharper.SDK.Targets" Condition="Exists('..\packages\JetBrains.ReSharper.SDK.8.2.1001-EAP\build\JetBrains.ReSharper.SDK.Targets')" />
 </Project>
