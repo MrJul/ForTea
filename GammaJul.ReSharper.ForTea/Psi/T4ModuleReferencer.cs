@@ -32,7 +32,7 @@ namespace GammaJul.ReSharper.ForTea.Psi {
 	/// <summary>
 	/// Module referencer that adds an assembly directive to a T4 file.
 	/// </summary>
-	[ModuleReferencer(Priority = 2)]
+	[ModuleReferencer(Priority = -10)]
 	public partial class T4ModuleReferencer : IModuleReferencer {
 
 		private readonly T4Environment _environment;

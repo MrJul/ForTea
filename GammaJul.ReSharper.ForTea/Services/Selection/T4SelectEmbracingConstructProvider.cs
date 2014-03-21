@@ -13,6 +13,8 @@
 //    See the License for the specific language governing permissions and
 //    limitations under the License.
 #endregion
+
+
 using System.Linq;
 using GammaJul.ReSharper.ForTea.Psi;
 using GammaJul.ReSharper.ForTea.Tree;
@@ -24,6 +26,7 @@ using JetBrains.ReSharper.Feature.Services.SelectEmbracingConstruct;
 using JetBrains.ReSharper.Psi;
 using JetBrains.ReSharper.Psi.Tree;
 using JetBrains.Util;
+using JetBrains.Util.Lazy;
 #if SDK80
 using JetBrains.ProjectModel.FileTypes;
 #endif
@@ -36,7 +39,7 @@ namespace GammaJul.ReSharper.ForTea.Services.Selection {
 	[ProjectFileType(typeof(T4ProjectFileType))]
 	public class T4SelectEmbracingConstructProvider : ISelectEmbracingConstructProvider {
 
-		private readonly PsiProjectFileTypeCoordinator _psiProjectFileTypeCoordinator;
+		private readonly Lazy<PsiProjectFileTypeCoordinator> _psiProjectFileTypeCoordinator;
 
 		public bool IsAvailable(IPsiSourceFile sourceFile) {
 			return sourceFile.Properties.ShouldBuildPsi;
@@ -56,7 +59,7 @@ namespace GammaJul.ReSharper.ForTea.Services.Selection {
 
 			// if the current selection is inside C# code, use the C# extend selection directly
 			if (codeBehindFile != null) {
-				ISelectEmbracingConstructProvider codeBehindProvider = _psiProjectFileTypeCoordinator
+				ISelectEmbracingConstructProvider codeBehindProvider = _psiProjectFileTypeCoordinator.Value
 					.GetByPrimaryPsiLanguageType(codeBehindFile.Language)
 					.SelectNotNull(fileType => Shell.Instance.GetComponent<IProjectFileTypeServices>().TryGetService<ISelectEmbracingConstructProvider>(fileType))
 					.FirstOrDefault();
@@ -86,7 +89,7 @@ namespace GammaJul.ReSharper.ForTea.Services.Selection {
 			return Pair.Of(primaryFile, secondaryFile);
 		}
 
-		public T4SelectEmbracingConstructProvider([NotNull] PsiProjectFileTypeCoordinator psiProjectFileTypeCoordinator) {
+		public T4SelectEmbracingConstructProvider([NotNull] Lazy<PsiProjectFileTypeCoordinator> psiProjectFileTypeCoordinator) {
 			_psiProjectFileTypeCoordinator = psiProjectFileTypeCoordinator;
 		}
 
