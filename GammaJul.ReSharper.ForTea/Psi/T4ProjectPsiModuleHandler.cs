@@ -17,6 +17,7 @@ using System.Collections.Generic;
 using System.Linq;
 using JetBrains.Annotations;
 using JetBrains.Application;
+using JetBrains.Application.Components;
 using JetBrains.DataFlow;
 using JetBrains.ProjectModel;
 using JetBrains.ReSharper.Psi;
@@ -24,6 +25,7 @@ using JetBrains.Util;
 #if SDK80
 using JetBrains.ReSharper.Psi.Modules;
 #endif
+using Microsoft.VisualStudio.TextTemplating;
 
 namespace GammaJul.ReSharper.ForTea.Psi {
 
@@ -50,9 +52,9 @@ namespace GammaJul.ReSharper.ForTea.Psi {
 		}
 		
 		public T4ProjectPsiModuleHandler(Lifetime lifetime, [NotNull] IProjectPsiModuleHandler handler, [NotNull] ChangeManager changeManager,
-			[NotNull] T4Environment t4Environment, [NotNull] IProject project)
+			[NotNull] T4Environment t4Environment, [NotNull] IProject project, Optional<ITextTemplatingEngineHost> ttHost)
 			: base(handler) {
-			_t4PsiModuleProvider = new T4PsiModuleProvider(lifetime, project.Locks, changeManager, t4Environment);
+			_t4PsiModuleProvider = new T4PsiModuleProvider(lifetime, project.Locks, changeManager, t4Environment, ttHost);
 		}
 
 	}

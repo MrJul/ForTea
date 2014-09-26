@@ -19,6 +19,7 @@ using System.Linq;
 using GammaJul.ReSharper.ForTea.Tree;
 using JetBrains.Annotations;
 using JetBrains.Application;
+using JetBrains.Application.Components;
 using JetBrains.DataFlow;
 using JetBrains.DocumentManagers;
 using JetBrains.ProjectModel;
@@ -33,9 +34,10 @@ using JetBrains.ReSharper.Psi.Impl;
 using IPsiModules = JetBrains.ReSharper.Psi.PsiModuleManager;
 using OutputAssemblies = JetBrains.ReSharper.Psi.Impl.OutputAssembliesCache;
 #endif
+using Microsoft.VisualStudio.TextTemplating;
 
 namespace GammaJul.ReSharper.ForTea.Psi {
-	
+
 	/// <summary>
 	/// Manages <see cref="T4PsiModule"/> for T4 files.
 	/// Contains common implementation for <see cref="T4ProjectPsiModuleHandler"/> and <see cref="T4MiscFilesProjectPsiModuleProvider"/>.
@@ -47,6 +49,7 @@ namespace GammaJul.ReSharper.ForTea.Psi {
 		private readonly IShellLocks _shellLocks;
 		private readonly ChangeManager _changeManager;
 		private readonly T4Environment _t4Environment;
+		private readonly Optional<ITextTemplatingEngineHost> _ttHost;
 
 		private struct ModuleWrapper {
 			internal readonly T4PsiModule Module;
@@ -79,7 +82,7 @@ namespace GammaJul.ReSharper.ForTea.Psi {
 			ModuleWrapper wrapper;
 			return projectFile != null && projectFile.IsValid() && _modules.TryGetValue(projectFile, out wrapper) && wrapper.Module.IsValid()
 				? new[] { wrapper.Module.SourceFile }
-			    : EmptyList<IPsiSourceFile>.InstanceList;
+				: EmptyList<IPsiSourceFile>.InstanceList;
 		}
 
 		/// <summary>
@@ -156,7 +159,8 @@ namespace GammaJul.ReSharper.ForTea.Psi {
 				projectFile,
 				solution.GetComponent<T4FileDataCache>(),
 				_t4Environment,
-				solution.GetComponent<OutputAssemblies>());
+				solution.GetComponent<OutputAssemblies>(),
+				_ttHost);
 			_modules[projectFile] = new ModuleWrapper(psiModule, lifetimeDefinition);
 			changeBuilder.AddModuleChange(psiModule, AddedChangeType);
 			changeBuilder.AddFileChange(psiModule.SourceFile, AddedChangeType);
@@ -205,11 +209,12 @@ namespace GammaJul.ReSharper.ForTea.Psi {
 		}
 
 		public T4PsiModuleProvider([NotNull] Lifetime lifetime, [NotNull] IShellLocks shellLocks, [NotNull] ChangeManager changeManager,
-			[NotNull] T4Environment t4Environment) {
+			[NotNull] T4Environment t4Environment, Optional<ITextTemplatingEngineHost> ttHost) {
 			_lifetime = lifetime;
 			_shellLocks = shellLocks;
 			_changeManager = changeManager;
 			_t4Environment = t4Environment;
+			_ttHost = ttHost;
 		}
 
 	}

@@ -14,6 +14,7 @@
       <EmbedInteropTypes>False</EmbedInteropTypes>
     </Reference>
     <Reference Include="Microsoft.VisualStudio.Shell.Interop.8.0, Version=8.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
+    <Reference Include="Microsoft.VisualStudio.TextTemplating.Interfaces.10.0, Version=10.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL" />
     <Reference Include="PresentationCore" />
     <Reference Include="System" />
     <Reference Include="System.Drawing" />
@@ -141,6 +142,7 @@
     <Compile Include="Services\CodeStructure\T4CSharpCodeStructureProvider.cs" />
     <Compile Include="Services\CodeStructure\T4CSharpCodeStructureRegion.cs" />
     <Compile Include="Services\CodeStructure\T4CSharpCodeStructureRegionEnd.cs" />
+    <Compile Include="Services\ExposeTextTemplatingEngineHostService.cs" />
     <Compile Include="Services\Navigation\MyRangeOccurence.cs" />
     <Compile Include="Services\Navigation\T4OutsideSolutionNavigationInfo.cs" />
     <Compile Include="Services\Navigation\T4OutsideSolutionNavigationProvider.cs" />
