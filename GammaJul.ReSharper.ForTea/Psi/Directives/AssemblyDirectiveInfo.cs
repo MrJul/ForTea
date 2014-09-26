@@ -13,58 +13,43 @@
 //    See the License for the specific language governing permissions and
 //    limitations under the License.
 #endregion
+using System;
+using GammaJul.ReSharper.ForTea.Parsing;
+using GammaJul.ReSharper.ForTea.Tree;
+using JetBrains.Annotations;
+using JetBrains.Util;
 
 namespace GammaJul.ReSharper.ForTea.Psi.Directives {
 
-    using System;
+	public class AssemblyDirectiveInfo : DirectiveInfo {
 
-    using GammaJul.ReSharper.ForTea.Parsing;
-    using GammaJul.ReSharper.ForTea.Tree;
+		private readonly DirectiveAttributeInfo _nameAttribute;
+		private readonly System.Collections.ObjectModel.ReadOnlyCollection<DirectiveAttributeInfo> _supportedAttributes;
 
-    using JetBrains.Annotations;
-    using JetBrains.Application.Components;
-    using JetBrains.Util;
+		[NotNull]
+		public DirectiveAttributeInfo NameAttribute {
+			get { return _nameAttribute; }
+		}
 
-    using Microsoft.VisualStudio.TextTemplating;
+		public override System.Collections.ObjectModel.ReadOnlyCollection<DirectiveAttributeInfo> SupportedAttributes {
+			get { return _supportedAttributes; }
+		}
 
-    public class AssemblyDirectiveInfo : DirectiveInfo {
+		[NotNull]
+		public IT4Directive CreateDirective([NotNull] string assemblyName) {
+			return T4ElementFactory.Instance.CreateDirective(Name, Pair.Of(_nameAttribute.Name, assemblyName));
+		}
 
-        private readonly Optional<ITextTemplatingEngineHost> ttHost;
+		public AssemblyDirectiveInfo()
+			: base("assembly") {
 
-        private readonly DirectiveAttributeInfo _nameAttribute;
-        private readonly System.Collections.ObjectModel.ReadOnlyCollection<DirectiveAttributeInfo> _supportedAttributes;
+			_nameAttribute = new DirectiveAttributeInfo("name", DirectiveAttributeOptions.Required | DirectiveAttributeOptions.DisplayInCodeStructure);
 
-        [NotNull]
-        public DirectiveAttributeInfo NameAttribute {
-            get { return _nameAttribute; }
-        }
+			_supportedAttributes = Array.AsReadOnly(new[] {
+				_nameAttribute
+			});
+		}
 
-        public override System.Collections.ObjectModel.ReadOnlyCollection<DirectiveAttributeInfo> SupportedAttributes {
-            get { return _supportedAttributes; }
-        }
+	}
 
-        [NotNull]
-        public IT4Directive CreateDirective([NotNull] string assemblyName) {
-            return T4ElementFactory.Instance.CreateDirective(Name, Pair.Of(_nameAttribute.Name, assemblyName));
-        }
-
-        public AssemblyDirectiveInfo(Optional<ITextTemplatingEngineHost> ttHost)
-            : base("assembly") {
-            this.ttHost = ttHost;
-
-            _nameAttribute = new DirectiveAttributeInfo("name", DirectiveAttributeOptions.Required | DirectiveAttributeOptions.DisplayInCodeStructure);
-
-            _supportedAttributes = Array.AsReadOnly(new[] {
-                _nameAttribute
-            });
-        }
-
-        public string Resolve(string assemblyNameOrFile) {
-            if (this.ttHost.IsNull) {
-                return assemblyNameOrFile;
-            }
-
-            return this.ttHost.NotNull.ResolveAssemblyReference(assemblyNameOrFile);
-        }
-    }
 }
