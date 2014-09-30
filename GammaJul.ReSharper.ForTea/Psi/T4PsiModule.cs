@@ -18,6 +18,7 @@ using System.Collections.Generic;
 using System.Linq;
 using JetBrains.Annotations;
 using JetBrains.Application;
+using JetBrains.Application.Components;
 using JetBrains.Application.Progress;
 using JetBrains.DataFlow;
 using JetBrains.DocumentManagers;
@@ -33,6 +34,7 @@ using JetBrains.Threading;
 using JetBrains.Util;
 using JetBrains.VsIntegration.ProjectModel;
 using Microsoft.VisualStudio.Shell.Interop;
+using Microsoft.VisualStudio.TextTemplating;
 #if SDK80
 using JetBrains.ProjectModel.Build;
 using JetBrains.ReSharper.Psi.Modules;
@@ -64,6 +66,7 @@ namespace GammaJul.ReSharper.ForTea.Psi {
 		private readonly IPsiSourceFile _sourceFile;
 		private readonly T4ResolveProject _resolveProject;
 		private readonly OutputAssemblies _outputAssemblies;
+		private readonly Optional<ITextTemplatingEngineHost> _ttHost;
 		private IModuleReferenceResolveManager _resolveManager;
 		private bool _isValid;
 
@@ -242,7 +245,12 @@ namespace GammaJul.ReSharper.ForTea.Psi {
 			
 			// removes the assembly references from the old assembly directives
 			foreach (string removedAssembly in dataDiff.RemovedAssemblies) {
-				string assembly = VsBuildMacroHelper.ResolveMacros(removedAssembly, resolvedMacros);
+				string assembly = removedAssembly;
+				if (_ttHost.IsNotNull) {
+					assembly = _ttHost.NotNull.ResolveAssemblyReference(assembly);
+				}
+
+				assembly = VsBuildMacroHelper.ResolveMacros(assembly, resolvedMacros);
 				IAssemblyCookie cookie;
 				if (!_assemblyReferences.TryGetValue(assembly, out cookie))
 					continue;
@@ -254,7 +262,12 @@ namespace GammaJul.ReSharper.ForTea.Psi {
 
 			// adds assembly references from the new assembly directives
 			foreach (string addedAssembly in dataDiff.AddedAssemblies) {
-				string assembly = VsBuildMacroHelper.ResolveMacros(addedAssembly, resolvedMacros);
+				string assembly = addedAssembly;
+				if (_ttHost.IsNotNull) {
+					assembly = _ttHost.NotNull.ResolveAssemblyReference(assembly);
+				}
+
+				assembly = VsBuildMacroHelper.ResolveMacros(assembly, resolvedMacros);
 				if (_assemblyReferences.ContainsKey(assembly))
 					continue;
 
@@ -387,7 +400,7 @@ namespace GammaJul.ReSharper.ForTea.Psi {
 		internal T4PsiModule([NotNull] Lifetime lifetime, [NotNull] IPsiModules psiModules, [NotNull] DocumentManager documentManager,
 			[NotNull] ChangeManager changeManager, [NotNull] IAssemblyFactory assemblyFactory, [NotNull] IShellLocks shellLocks,
 			[NotNull] IProjectFile projectFile, [NotNull] T4FileDataCache fileDataCache, [NotNull] T4Environment t4Environment,
-			[NotNull] OutputAssemblies outputAssemblies) {
+			[NotNull] OutputAssemblies outputAssemblies, Optional<ITextTemplatingEngineHost> ttHost) {
 			_lifetime = lifetime;
 			lifetime.AddAction(Dispose);
 			
@@ -405,6 +418,7 @@ namespace GammaJul.ReSharper.ForTea.Psi {
 
 			_t4Environment = t4Environment;
 			_outputAssemblies = outputAssemblies;
+			_ttHost = ttHost;
 			_resolveProject = new T4ResolveProject(_solution, _shellLocks, t4Environment.PlatformID, _project);
 
 			_sourceFile = CreateSourceFile(projectFile, documentManager);

@@ -14,6 +14,7 @@
 //    limitations under the License.
 #endregion
 using JetBrains.Annotations;
+using JetBrains.Application.Components;
 using JetBrains.Application;
 using JetBrains.DataFlow;
 using JetBrains.ProjectModel;
@@ -23,6 +24,7 @@ using JetBrains.ReSharper.Psi.Modules;
 #else
 using JetBrains.ReSharper.Psi;
 #endif
+using Microsoft.VisualStudio.TextTemplating;
 
 namespace GammaJul.ReSharper.ForTea.Psi {
 
@@ -34,15 +36,17 @@ namespace GammaJul.ReSharper.ForTea.Psi {
 
 		private readonly ChangeManager _changeManager;
 		private readonly T4Environment _t4Environment;
+		private readonly Optional<ITextTemplatingEngineHost> _ttHost;
 
 		public JetTuple<IProjectPsiModuleHandler, IPsiModuleDecorator> OverrideHandler(Lifetime lifetime, IProject project, IProjectPsiModuleHandler handler) {
-			var t4ModuleHandler = new T4ProjectPsiModuleHandler(lifetime, handler, _changeManager, _t4Environment, project);
+			var t4ModuleHandler = new T4ProjectPsiModuleHandler(lifetime, handler, _changeManager, _t4Environment, project, _ttHost);
 			return new JetTuple<IProjectPsiModuleHandler, IPsiModuleDecorator>(t4ModuleHandler, null);
 		}
 
-		public T4ProjectPsiModuleProviderFilter([NotNull] ChangeManager changeManager, [NotNull] T4Environment t4Environment) {
+		public T4ProjectPsiModuleProviderFilter([NotNull] ChangeManager changeManager, [NotNull] T4Environment t4Environment, Optional<ITextTemplatingEngineHost> ttHost) {
 			_changeManager = changeManager;
 			_t4Environment = t4Environment;
+			_ttHost = ttHost;
 		}
 
 	}

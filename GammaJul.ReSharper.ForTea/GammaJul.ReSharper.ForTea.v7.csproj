@@ -40,6 +40,7 @@
       <EmbedInteropTypes>False</EmbedInteropTypes>
     </Reference>
     <Reference Include="Microsoft.VisualStudio.Shell.Interop.8.0, Version=8.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
+    <Reference Include="Microsoft.VisualStudio.TextTemplating.Interfaces.10.0, Version=10.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL" />
     <Reference Include="PresentationCore" />
     <Reference Include="System" />
     <Reference Include="System.Drawing" />
@@ -118,6 +119,7 @@
     <Compile Include="Psi\PsiExtensions.cs" />
     <Compile Include="Psi\T4CachingLexerService.cs" />
     <Compile Include="Psi\T4DocumentRangeTranslator.cs" />
+    <Compile Include="Services\ExposeTextTemplatingEngineHostService.cs" />
     <Compile Include="Services\CodeCompletion\CodeCompletionExtensions.v7.cs" />
     <Compile Include="Services\CodeStructure\T4CodeStructureElement.cs" />
     <Compile Include="Services\CodeStructure\T4CSharpCodeStructureAspects.cs" />
