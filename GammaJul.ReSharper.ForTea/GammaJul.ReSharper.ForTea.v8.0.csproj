@@ -1,207 +1,209 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-	<Import Project="..\packages\JetBrains.ReSharper.SDK.8.0.1243\build\JetBrains.ReSharper.SDK.Props" Condition="Exists('..\packages\JetBrains.ReSharper.SDK.8.0.1243\build\JetBrains.ReSharper.SDK.Props')" />
-	<PropertyGroup>
-		<ProjectGuid>{8835E089-5908-43EE-892F-924E70CBF07E}</ProjectGuid>
-		<AssemblyName>GammaJul.ReSharper.ForTea.v8.0</AssemblyName>
-	</PropertyGroup>
-	<Import Project="ForTea.props" />
-	<PropertyGroup>
-	<DefineConstants>$(DefineConstants);SDK80</DefineConstants>
-	</PropertyGroup>
-	<ItemGroup>
-		<Reference Include="EnvDTE, Version=8.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
-			<EmbedInteropTypes>False</EmbedInteropTypes>
-		</Reference>
-		<Reference Include="Microsoft.VisualStudio.Shell.Interop.8.0, Version=8.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
-		<Reference Include="Microsoft.VisualStudio.TextTemplating.Interfaces.10.0, Version=10.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL" />
-		<Reference Include="PresentationCore" />
-		<Reference Include="System" />
-		<Reference Include="System.Drawing" />
-		<Reference Include="System.Xml" />
-		<Reference Include="WindowsBase" />
-	</ItemGroup>
-	<ItemGroup>
-		<Compile Include="Daemon\Highlightings\AfterLastFeatureHighlighting.cs" />
-		<Compile Include="Daemon\Highlightings\IgnoredAssemblyDirectiveHighlighting.cs" />
-		<Compile Include="Daemon\Highlightings\InvalidAttributeValueHighlighting.cs" />
-		<Compile Include="Daemon\Highlightings\MissingRequiredAttributeHighlighting.cs" />
-		<Compile Include="Daemon\Highlightings\MissingTransformTextMethodHighlighting.cs" />
-		<Compile Include="Daemon\Highlightings\StatementAfterFeatureHighlighting.cs" />
-		<Compile Include="Daemon\Highlightings\PredefinedHighlighting.cs" />
-		<Compile Include="Daemon\Highlightings\MissingTokenHighlighting.cs" />
-		<Compile Include="Daemon\T4CSharpErrorProcess.cs" />
-		<Compile Include="Daemon\T4CSharpErrorStage.cs" />
-		<Compile Include="Daemon\T4CSharpHighlightingProcess.cs" />
-		<Compile Include="Daemon\T4CSharpHighlightingStage.cs" />
-		<Compile Include="Daemon\T4ErrorProcess.cs" />
-		<Compile Include="Daemon\T4ErrorStage.cs" />
-		<Compile Include="Daemon\T4HighlightingProcess.cs" />
-		<Compile Include="Daemon\T4HighlightingStage.cs" />
-		<Compile Include="Daemon\T4DaemonStage.cs" />
-		<Compile Include="Daemon\T4DaemonStageProcess.cs" />
-		<Compile Include="Daemon\Highlightings\T4Highlighting.cs" />
-		<Compile Include="Daemon\Highlightings\VsPredefinedHighlighterIds.cs" />
-		<Compile Include="Daemon\T4LanguageSpecificDaemonBehavior.cs" />
-		<Compile Include="Intentions\QuickFixes\CreateTransformTextMethodQuickFix.cs" />
-		<Compile Include="Intentions\QuickFixes\HotspotHelper.v8.cs" />
-		<Compile Include="Intentions\QuickFixes\RemoveDirectiveQuickFix.cs" />
-		<Compile Include="Parsing\T4TokenNodeType.v8.cs" />
-		<Compile Include="Parsing\T4TokenNodeFlag.cs" />
-		<Compile Include="Psi\CodeStyle\T4CodeFormatter.v8.cs" />
-		<Compile Include="Psi\T4ModuleReferencer.v8.cs" />
-		<Compile Include="Psi\T4GeneratedDocumentService.v8.cs" />
-		<Compile Include="Psi\T4LanguageService.v8.cs" />
-		<Compile Include="Psi\T4MiscFilesProjectPsiModuleProvider.v8.cs" />
-		<Compile Include="Psi\T4OutsideSolutionExtensions.cs" />
-		<Compile Include="Psi\T4OutsideSolutionSourceFile.v8.cs" />
-		<Compile Include="Psi\T4OutsideSolutionSourceFileManager.v8.cs" />
-		<Compile Include="Psi\T4OutsideSolutionSourceFileProperties.v8.cs" />
-		<Compile Include="Psi\T4PsiModuleProvider.v8.cs" />
-		<Compile Include="Psi\T4ResolveProject.v8.cs" />
-		<Compile Include="Psi\T4SecondaryDocumentGenerationResult.v8.cs" />
-		<Compile Include="Psi\PsiExtensions.v8.cs" />
-		<Compile Include="Psi\SyntheticAttribute.v8.cs" />
-		<Compile Include="Psi\T4CSharpCustomModificationHandler.v8.cs" />
-		<Compile Include="Psi\T4FileDataCache.v8.cs" />
-		<Compile Include="Psi\T4PsiModule.v8.cs" />
-		<Compile Include="Psi\VsBuildMacroHelper.cs" />
-		<Compile Include="Psi\CodeStyle\T4CSharpCustomFormattingInfoProvider.cs" />
-		<Compile Include="Psi\Directives\DirectiveAttributeOptions.cs" />
-		<Compile Include="Psi\Directives\DirectiveInfoManager.cs" />
-		<Compile Include="Intentions\QuickFixes\AddMissingTokenQuickFix.cs" />
-		<Compile Include="Intentions\QuickFixes\ChangeAttributeValueQuickFix.cs" />
-		<Compile Include="Intentions\QuickFixes\MoveStatementBlockQuickFix.cs" />
-		<Compile Include="Intentions\QuickFixes\RemoveStatementBlockQuickFix.cs" />
-		<Compile Include="Intentions\QuickFixes\RemoveToEndQuickFix.cs" />
-		<Compile Include="Psi\Directives\BooleanDirectiveAttributeInfo.cs" />
-		<Compile Include="Psi\Directives\AssemblyDirectiveInfo.cs" />
-		<Compile Include="Psi\Directives\EnumDirectiveAttributeInfo.cs" />
-		<Compile Include="Psi\Directives\IncludeDirectiveInfo.cs" />
-		<Compile Include="Psi\Directives\ImportDirectiveInfo.cs" />
-		<Compile Include="Psi\Directives\OutputDirectiveInfo.cs" />
-		<Compile Include="Psi\Directives\ParameterDirectiveInfo.cs" />
-		<Compile Include="Psi\Directives\EncodingDirectiveAttributeInfo.cs" />
-		<Compile Include="Psi\Directives\CultureDirectiveAttributeInfo.cs" />
-		<Compile Include="Psi\Directives\DirectiveAttributeInfo.cs" />
-		<Compile Include="Psi\Directives\TemplateDirectiveInfo.cs" />
-		<Compile Include="Parsing\T4Lexer.cs" />
-		<Compile Include="Psi\Directives\DirectiveInfo.cs" />
-		<Compile Include="Parsing\T4ElementFactory.cs" />
-		<Compile Include="Parsing\T4FilteringLexer.cs" />
-		<Compile Include="Parsing\T4TokenNodeTypes.cs" />
-		<Compile Include="Psi\CodeStyle\T4CodeFormatter.cs" />
-		<Compile Include="Psi\PsiExtensions.cs" />
-		<Compile Include="Psi\T4CachingLexerService.cs" />
-		<Compile Include="Psi\T4DocumentRangeTranslator.cs" />
-		<Compile Include="Services\ExposeTextTemplatingEngineHostService.cs" />
-		<Compile Include="Services\CodeCompletion\CodeCompletionExtensions.v8.cs" />
-		<Compile Include="Services\CodeStructure\T4CodeStructureElement.cs" />
-		<Compile Include="Services\CodeStructure\T4CSharpCodeStructureAspects.cs" />
-		<Compile Include="Services\CodeStructure\T4CSharpCodeStructureNamespace.cs" />
-		<Compile Include="Services\CodeStructure\T4CSharpCodeStructureDeclaredElement.cs" />
-		<Compile Include="Services\CodeStructure\T4CSharpCodeStructureRegion.cs" />
-		<Compile Include="Services\CodeStructure\T4CSharpCodeStructureRegionEnd.cs" />
-		<Compile Include="Services\Navigation\MyRangeOccurence.cs" />
-		<Compile Include="Services\Navigation\T4OutsideSolutionNavigationInfo.cs">
-			<SubType>Code</SubType>
-		</Compile>
-		<Compile Include="Services\Navigation\T4OutsideSolutionNavigationProvider.cs">
-			<SubType>Code</SubType>
-		</Compile>
-		<Compile Include="Services\Navigation\T4OutsideSolutionNavigationProvider.v8.cs">
-			<SubType>Code</SubType>
-		</Compile>
-		<Compile Include="Services\Navigation\T4OutsideSolutionOccurence.cs">
-			<SubType>Code</SubType>
-		</Compile>
-		<Compile Include="Services\Navigation\T4OutsideSolutionOccurence.v8.cs">
-			<SubType>Code</SubType>
-		</Compile>
-		<Compile Include="Services\Navigation\T4OutsideSolutionOccurenceProvider.cs" />
-		<Compile Include="SupportedReSharperVersion.v8.0.cs" />
-		<Compile Include="T4Environment.cs" />
-		<Compile Include="Psi\T4CSharpCodeGenerator.cs" />
-		<Compile Include="Psi\T4CSharpCustomModificationHandler.cs" />
-		<Compile Include="Psi\T4FileData.cs" />
-		<Compile Include="Psi\T4FileDataCache.cs" />
-		<Compile Include="Psi\T4FileDataDiff.cs" />
-		<Compile Include="Psi\T4Language.cs" />
-		<Compile Include="Psi\T4ModuleReferencer.cs" />
-		<Compile Include="Psi\T4OutsideSolutionSourceFileProperties.cs" />
-		<Compile Include="Psi\T4ProjectFileType.cs" />
-		<Compile Include="Psi\GenerationResult.cs" />
-		<Compile Include="Psi\T4GeneratedDocumentService.cs" />
-		<Compile Include="Psi\T4ProjectPsiModuleHandler.cs" />
-		<Compile Include="Psi\T4ProjectPsiModuleProviderFilter.cs" />
-		<Compile Include="Psi\T4PsiModuleProvider.cs" />
-		<Compile Include="Psi\T4PsiProjectFileProperties.cs" />
-		<Compile Include="Psi\T4ResolveProject.cs" />
-		<Compile Include="Psi\T4PsiModule.cs" />
-		<Compile Include="Psi\T4MiscFilesProjectPsiModuleProvider.cs" />
-		<Compile Include="Psi\T4SecondaryLexingProcess.cs" />
-		<Compile Include="Services\CodeCompletion\AutopopupInDirective.cs" />
-		<Compile Include="Services\CodeCompletion\CodeCompletionExtensions.cs" />
-		<Compile Include="Services\CodeCompletion\DirectiveAttributeNameItemsProvider.cs" />
-		<Compile Include="Services\CodeCompletion\DirectiveAttributeValueItemsProvider.cs" />
-		<Compile Include="Services\CodeCompletion\DirectiveNameItemsProvider.cs" />
-		<Compile Include="Services\CodeCompletion\T4AutopopupSettingsKey.cs" />
-		<Compile Include="Services\CodeCompletion\T4CodeCompletionContext.cs" />
-		<Compile Include="Services\CodeCompletion\T4CodeCompletionContextProvider.cs" />
-		<Compile Include="Services\CodeStructure\T4CodeStructureDirective.cs" />
-		<Compile Include="Services\CodeStructure\T4CSharpCodeStructureProvider.cs" />
-		<Compile Include="Services\CodeStructure\T4CodeStructureRootElement.cs" />
-		<Compile Include="Services\Selection\T4CodeBehindWrappedSelection.cs" />
-		<Compile Include="Services\Selection\T4SelectEmbracingConstructProvider.cs" />
-		<Compile Include="Services\Selection\T4NodeSelection.cs" />
-		<Compile Include="Services\T4SpecificOwnerUtil.cs" />
-		<Compile Include="Services\TypingAssist\T4CSharpTypingAssist.cs" />
-		<Compile Include="Services\TypingAssist\T4TypingAssist.cs" />
-		<Compile Include="Tree\IT4DirectiveOwner.cs" />
-		<Compile Include="Tree\IT4Include.cs" />
-		<Compile Include="Tree\IT4IncludeOwner.cs" />
-		<Compile Include="Tree\IT4NamedNode.cs" />
-		<Compile Include="Tree\IT4Block.cs" />
-		<Compile Include="Tree\IT4Directive.cs" />
-		<Compile Include="Tree\IT4DirectiveAttribute.cs" />
-		<Compile Include="Tree\MissingTokenErrorElement.cs" />
-		<Compile Include="Tree\MissingTokenType.cs" />
-		<Compile Include="Tree\T4Directive.cs" />
-		<Compile Include="Tree\T4DirectiveAttribute.cs" />
-		<Compile Include="Tree\T4FeatureBlock.cs" />
-		<Compile Include="Tree\T4ExpressionBlock.cs" />
-		<Compile Include="Tree\IT4CodeBlock.cs" />
-		<Compile Include="Tree\T4Include.cs" />
-		<Compile Include="Tree\T4StatementBlock.cs" />
-		<Compile Include="Tree\T4CompositeElement.cs" />
-		<Compile Include="Tree\T4ElementTypes.cs" />
-		<Compile Include="Tree\T4File.cs" />
-		<Compile Include="Tree\IT4File.cs" />
-		<Compile Include="Tree\IT4Token.cs" />
-		<Compile Include="Tree\IT4TreeNode.cs" />
-		<Compile Include="Parsing\T4Parser.cs" />
-		<Compile Include="Parsing\T4TreeBuilder.cs" />
-		<Compile Include="Psi\T4ProjectFileLanguageService.cs" />
-		<Compile Include="Properties\AssemblyInfo.cs" />
-		<Compile Include="Psi\T4LanguageService.cs" />
-		<Compile Include="Parsing\T4LexerFactory.cs" />
-		<Compile Include="Tree\T4CodeBlock.cs" />
-		<Compile Include="Tree\T4Token.cs" />
-		<Compile Include="Parsing\T4TokenNodeType.cs" />
-		<Compile Include="Tree\T4Token.v8.cs" />
-		<Compile Include="Tree\T4TokenRole.cs" />
-		<Compile Include="Tree\T4TreeExtensions.cs" />
-		<Compile Include="VsVersions.cs" />
-	</ItemGroup>
-	<ItemGroup>
-		<Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
-	</ItemGroup>
-	<ItemGroup>
-		<Compile Include="Parsing\T4TreeBuilder.DirectiveBuilder.cs" />
-	</ItemGroup>
-	<ItemGroup>
-		<None Include="packages.GammaJul.ReSharper.ForTea.v8.0.config" />
-	</ItemGroup>
-	<Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
-	<Import Project="..\packages\JetBrains.ReSharper.SDK.8.0.1243\build\JetBrains.ReSharper.SDK.Targets" Condition="Exists('..\packages\JetBrains.ReSharper.SDK.8.0.1243\build\JetBrains.ReSharper.SDK.Targets')" />
+  <Import Project="..\packages\JetBrains.ReSharper.SDK.8.0.1243\build\JetBrains.ReSharper.SDK.Props" Condition="Exists('..\packages\JetBrains.ReSharper.SDK.8.0.1243\build\JetBrains.ReSharper.SDK.Props')" />
+  <PropertyGroup>
+    <ProjectGuid>{8835E089-5908-43EE-892F-924E70CBF07E}</ProjectGuid>
+    <AssemblyName>GammaJul.ReSharper.ForTea.v8.0</AssemblyName>
+  </PropertyGroup>
+  <Import Project="ForTea.props" />
+  <PropertyGroup>
+    <DefineConstants>$(DefineConstants);SDK80</DefineConstants>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="EnvDTE, Version=8.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
+      <EmbedInteropTypes>False</EmbedInteropTypes>
+    </Reference>
+    <Reference Include="Microsoft.VisualStudio.Shell.Interop.8.0, Version=8.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
+    <Reference Include="Microsoft.VisualStudio.TextTemplating.Interfaces.10.0, Version=10.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL" />
+    <Reference Include="PresentationCore" />
+    <Reference Include="System" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Xml" />
+    <Reference Include="WindowsBase" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Daemon\Highlightings\AfterLastFeatureHighlighting.cs" />
+    <Compile Include="Daemon\Highlightings\IgnoredAssemblyDirectiveHighlighting.cs" />
+    <Compile Include="Daemon\Highlightings\InvalidAttributeValueHighlighting.cs" />
+    <Compile Include="Daemon\Highlightings\MissingRequiredAttributeHighlighting.cs" />
+    <Compile Include="Daemon\Highlightings\MissingTransformTextMethodHighlighting.cs" />
+    <Compile Include="Daemon\Highlightings\StatementAfterFeatureHighlighting.cs" />
+    <Compile Include="Daemon\Highlightings\PredefinedHighlighting.cs" />
+    <Compile Include="Daemon\Highlightings\MissingTokenHighlighting.cs" />
+    <Compile Include="Daemon\T4CSharpErrorProcess.cs" />
+    <Compile Include="Daemon\T4CSharpErrorStage.cs" />
+    <Compile Include="Daemon\T4CSharpHighlightingProcess.cs" />
+    <Compile Include="Daemon\T4CSharpHighlightingStage.cs" />
+    <Compile Include="Daemon\T4ErrorProcess.cs" />
+    <Compile Include="Daemon\T4ErrorStage.cs" />
+    <Compile Include="Daemon\T4HighlightingProcess.cs" />
+    <Compile Include="Daemon\T4HighlightingStage.cs" />
+    <Compile Include="Daemon\T4DaemonStage.cs" />
+    <Compile Include="Daemon\T4DaemonStageProcess.cs" />
+    <Compile Include="Daemon\Highlightings\T4Highlighting.cs" />
+    <Compile Include="Daemon\Highlightings\VsPredefinedHighlighterIds.cs" />
+    <Compile Include="Daemon\T4LanguageSpecificDaemonBehavior.cs" />
+    <Compile Include="ExposeTextTemplatingEngineHostService.v8.cs" />
+    <Compile Include="Intentions\QuickFixes\CreateTransformTextMethodQuickFix.cs" />
+    <Compile Include="Intentions\QuickFixes\HotspotHelper.v8.cs" />
+    <Compile Include="Intentions\QuickFixes\RemoveDirectiveQuickFix.cs" />
+    <Compile Include="Optional.v7.v8.0.cs" />
+    <Compile Include="Parsing\T4TokenNodeType.v8.cs" />
+    <Compile Include="Parsing\T4TokenNodeFlag.cs" />
+    <Compile Include="Psi\CodeStyle\T4CodeFormatter.v8.cs" />
+    <Compile Include="Psi\T4ModuleReferencer.v8.cs" />
+    <Compile Include="Psi\T4GeneratedDocumentService.v8.cs" />
+    <Compile Include="Psi\T4LanguageService.v8.cs" />
+    <Compile Include="Psi\T4MiscFilesProjectPsiModuleProvider.v8.cs" />
+    <Compile Include="Psi\T4OutsideSolutionExtensions.cs" />
+    <Compile Include="Psi\T4OutsideSolutionSourceFile.v8.cs" />
+    <Compile Include="Psi\T4OutsideSolutionSourceFileManager.v8.cs" />
+    <Compile Include="Psi\T4OutsideSolutionSourceFileProperties.v8.cs" />
+    <Compile Include="Psi\T4PsiModuleProvider.v8.cs" />
+    <Compile Include="Psi\T4ResolveProject.v8.cs" />
+    <Compile Include="Psi\T4SecondaryDocumentGenerationResult.v8.cs" />
+    <Compile Include="Psi\PsiExtensions.v8.cs" />
+    <Compile Include="Psi\SyntheticAttribute.v8.cs" />
+    <Compile Include="Psi\T4CSharpCustomModificationHandler.v8.cs" />
+    <Compile Include="Psi\T4FileDataCache.v8.cs" />
+    <Compile Include="Psi\T4PsiModule.v8.cs" />
+    <Compile Include="Psi\VsBuildMacroHelper.cs" />
+    <Compile Include="Psi\CodeStyle\T4CSharpCustomFormattingInfoProvider.cs" />
+    <Compile Include="Psi\Directives\DirectiveAttributeOptions.cs" />
+    <Compile Include="Psi\Directives\DirectiveInfoManager.cs" />
+    <Compile Include="Intentions\QuickFixes\AddMissingTokenQuickFix.cs" />
+    <Compile Include="Intentions\QuickFixes\ChangeAttributeValueQuickFix.cs" />
+    <Compile Include="Intentions\QuickFixes\MoveStatementBlockQuickFix.cs" />
+    <Compile Include="Intentions\QuickFixes\RemoveStatementBlockQuickFix.cs" />
+    <Compile Include="Intentions\QuickFixes\RemoveToEndQuickFix.cs" />
+    <Compile Include="Psi\Directives\BooleanDirectiveAttributeInfo.cs" />
+    <Compile Include="Psi\Directives\AssemblyDirectiveInfo.cs" />
+    <Compile Include="Psi\Directives\EnumDirectiveAttributeInfo.cs" />
+    <Compile Include="Psi\Directives\IncludeDirectiveInfo.cs" />
+    <Compile Include="Psi\Directives\ImportDirectiveInfo.cs" />
+    <Compile Include="Psi\Directives\OutputDirectiveInfo.cs" />
+    <Compile Include="Psi\Directives\ParameterDirectiveInfo.cs" />
+    <Compile Include="Psi\Directives\EncodingDirectiveAttributeInfo.cs" />
+    <Compile Include="Psi\Directives\CultureDirectiveAttributeInfo.cs" />
+    <Compile Include="Psi\Directives\DirectiveAttributeInfo.cs" />
+    <Compile Include="Psi\Directives\TemplateDirectiveInfo.cs" />
+    <Compile Include="Parsing\T4Lexer.cs" />
+    <Compile Include="Psi\Directives\DirectiveInfo.cs" />
+    <Compile Include="Parsing\T4ElementFactory.cs" />
+    <Compile Include="Parsing\T4FilteringLexer.cs" />
+    <Compile Include="Parsing\T4TokenNodeTypes.cs" />
+    <Compile Include="Psi\CodeStyle\T4CodeFormatter.cs" />
+    <Compile Include="Psi\PsiExtensions.cs" />
+    <Compile Include="Psi\T4CachingLexerService.cs" />
+    <Compile Include="Psi\T4DocumentRangeTranslator.cs" />
+    <Compile Include="Services\CodeCompletion\CodeCompletionExtensions.v8.cs" />
+    <Compile Include="Services\CodeStructure\T4CodeStructureElement.cs" />
+    <Compile Include="Services\CodeStructure\T4CSharpCodeStructureAspects.cs" />
+    <Compile Include="Services\CodeStructure\T4CSharpCodeStructureNamespace.cs" />
+    <Compile Include="Services\CodeStructure\T4CSharpCodeStructureDeclaredElement.cs" />
+    <Compile Include="Services\CodeStructure\T4CSharpCodeStructureRegion.cs" />
+    <Compile Include="Services\CodeStructure\T4CSharpCodeStructureRegionEnd.cs" />
+    <Compile Include="Services\Navigation\MyRangeOccurence.cs" />
+    <Compile Include="Services\Navigation\T4OutsideSolutionNavigationInfo.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Services\Navigation\T4OutsideSolutionNavigationProvider.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Services\Navigation\T4OutsideSolutionNavigationProvider.v8.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Services\Navigation\T4OutsideSolutionOccurence.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Services\Navigation\T4OutsideSolutionOccurence.v8.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Services\Navigation\T4OutsideSolutionOccurenceProvider.cs" />
+    <Compile Include="SupportedReSharperVersion.v8.0.cs" />
+    <Compile Include="T4Environment.cs" />
+    <Compile Include="Psi\T4CSharpCodeGenerator.cs" />
+    <Compile Include="Psi\T4CSharpCustomModificationHandler.cs" />
+    <Compile Include="Psi\T4FileData.cs" />
+    <Compile Include="Psi\T4FileDataCache.cs" />
+    <Compile Include="Psi\T4FileDataDiff.cs" />
+    <Compile Include="Psi\T4Language.cs" />
+    <Compile Include="Psi\T4ModuleReferencer.cs" />
+    <Compile Include="Psi\T4OutsideSolutionSourceFileProperties.cs" />
+    <Compile Include="Psi\T4ProjectFileType.cs" />
+    <Compile Include="Psi\GenerationResult.cs" />
+    <Compile Include="Psi\T4GeneratedDocumentService.cs" />
+    <Compile Include="Psi\T4ProjectPsiModuleHandler.cs" />
+    <Compile Include="Psi\T4ProjectPsiModuleProviderFilter.cs" />
+    <Compile Include="Psi\T4PsiModuleProvider.cs" />
+    <Compile Include="Psi\T4PsiProjectFileProperties.cs" />
+    <Compile Include="Psi\T4ResolveProject.cs" />
+    <Compile Include="Psi\T4PsiModule.cs" />
+    <Compile Include="Psi\T4MiscFilesProjectPsiModuleProvider.cs" />
+    <Compile Include="Psi\T4SecondaryLexingProcess.cs" />
+    <Compile Include="Services\CodeCompletion\AutopopupInDirective.cs" />
+    <Compile Include="Services\CodeCompletion\CodeCompletionExtensions.cs" />
+    <Compile Include="Services\CodeCompletion\DirectiveAttributeNameItemsProvider.cs" />
+    <Compile Include="Services\CodeCompletion\DirectiveAttributeValueItemsProvider.cs" />
+    <Compile Include="Services\CodeCompletion\DirectiveNameItemsProvider.cs" />
+    <Compile Include="Services\CodeCompletion\T4AutopopupSettingsKey.cs" />
+    <Compile Include="Services\CodeCompletion\T4CodeCompletionContext.cs" />
+    <Compile Include="Services\CodeCompletion\T4CodeCompletionContextProvider.cs" />
+    <Compile Include="Services\CodeStructure\T4CodeStructureDirective.cs" />
+    <Compile Include="Services\CodeStructure\T4CSharpCodeStructureProvider.cs" />
+    <Compile Include="Services\CodeStructure\T4CodeStructureRootElement.cs" />
+    <Compile Include="Services\Selection\T4CodeBehindWrappedSelection.cs" />
+    <Compile Include="Services\Selection\T4SelectEmbracingConstructProvider.cs" />
+    <Compile Include="Services\Selection\T4NodeSelection.cs" />
+    <Compile Include="Services\T4SpecificOwnerUtil.cs" />
+    <Compile Include="Services\TypingAssist\T4CSharpTypingAssist.cs" />
+    <Compile Include="Services\TypingAssist\T4TypingAssist.cs" />
+    <Compile Include="TextTemplatingHostWrapper.v7.v8.0.cs" />
+    <Compile Include="Tree\IT4DirectiveOwner.cs" />
+    <Compile Include="Tree\IT4Include.cs" />
+    <Compile Include="Tree\IT4IncludeOwner.cs" />
+    <Compile Include="Tree\IT4NamedNode.cs" />
+    <Compile Include="Tree\IT4Block.cs" />
+    <Compile Include="Tree\IT4Directive.cs" />
+    <Compile Include="Tree\IT4DirectiveAttribute.cs" />
+    <Compile Include="Tree\MissingTokenErrorElement.cs" />
+    <Compile Include="Tree\MissingTokenType.cs" />
+    <Compile Include="Tree\T4Directive.cs" />
+    <Compile Include="Tree\T4DirectiveAttribute.cs" />
+    <Compile Include="Tree\T4FeatureBlock.cs" />
+    <Compile Include="Tree\T4ExpressionBlock.cs" />
+    <Compile Include="Tree\IT4CodeBlock.cs" />
+    <Compile Include="Tree\T4Include.cs" />
+    <Compile Include="Tree\T4StatementBlock.cs" />
+    <Compile Include="Tree\T4CompositeElement.cs" />
+    <Compile Include="Tree\T4ElementTypes.cs" />
+    <Compile Include="Tree\T4File.cs" />
+    <Compile Include="Tree\IT4File.cs" />
+    <Compile Include="Tree\IT4Token.cs" />
+    <Compile Include="Tree\IT4TreeNode.cs" />
+    <Compile Include="Parsing\T4Parser.cs" />
+    <Compile Include="Parsing\T4TreeBuilder.cs" />
+    <Compile Include="Psi\T4ProjectFileLanguageService.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Psi\T4LanguageService.cs" />
+    <Compile Include="Parsing\T4LexerFactory.cs" />
+    <Compile Include="Tree\T4CodeBlock.cs" />
+    <Compile Include="Tree\T4Token.cs" />
+    <Compile Include="Parsing\T4TokenNodeType.cs" />
+    <Compile Include="Tree\T4Token.v8.cs" />
+    <Compile Include="Tree\T4TokenRole.cs" />
+    <Compile Include="Tree\T4TreeExtensions.cs" />
+    <Compile Include="VsVersions.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Parsing\T4TreeBuilder.DirectiveBuilder.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.GammaJul.ReSharper.ForTea.v8.0.config" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <Import Project="..\packages\JetBrains.ReSharper.SDK.8.0.1243\build\JetBrains.ReSharper.SDK.Targets" Condition="Exists('..\packages\JetBrains.ReSharper.SDK.8.0.1243\build\JetBrains.ReSharper.SDK.Targets')" />
 </Project>

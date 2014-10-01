@@ -43,6 +43,7 @@
     <Compile Include="Daemon\T4HighlightingProcess.cs" />
     <Compile Include="Daemon\T4HighlightingStage.cs" />
     <Compile Include="Daemon\T4LanguageSpecificDaemonBehavior.cs" />
+    <Compile Include="ExposeTextTemplatingEngineHostService.v8.cs" />
     <Compile Include="Intentions\QuickFixes\AddMissingTokenQuickFix.cs" />
     <Compile Include="Intentions\QuickFixes\ChangeAttributeValueQuickFix.cs" />
     <Compile Include="Intentions\QuickFixes\CreateTransformTextMethodQuickFix.cs" />
@@ -142,7 +143,6 @@
     <Compile Include="Services\CodeStructure\T4CSharpCodeStructureProvider.cs" />
     <Compile Include="Services\CodeStructure\T4CSharpCodeStructureRegion.cs" />
     <Compile Include="Services\CodeStructure\T4CSharpCodeStructureRegionEnd.cs" />
-    <Compile Include="Services\ExposeTextTemplatingEngineHostService.cs" />
     <Compile Include="Services\Navigation\MyRangeOccurence.cs" />
     <Compile Include="Services\Navigation\T4OutsideSolutionNavigationInfo.cs" />
     <Compile Include="Services\Navigation\T4OutsideSolutionNavigationProvider.cs" />
@@ -158,6 +158,7 @@
     <Compile Include="Services\TypingAssist\T4TypingAssist.cs" />
     <Compile Include="SupportedReSharperVersion.v8.1.cs" />
     <Compile Include="T4Environment.cs" />
+    <Compile Include="TextTemplatingHostWrapper.v8.1.v8.2.cs" />
     <Compile Include="Tree\IT4Block.cs" />
     <Compile Include="Tree\IT4CodeBlock.cs" />
     <Compile Include="Tree\IT4Directive.cs" />

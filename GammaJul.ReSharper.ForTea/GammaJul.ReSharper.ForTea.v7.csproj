@@ -69,9 +69,11 @@
     <Compile Include="Daemon\Highlightings\T4Highlighting.cs" />
     <Compile Include="Daemon\Highlightings\VsPredefinedHighlighterIds.cs" />
     <Compile Include="Daemon\T4LanguageSpecificDaemonBehavior.cs" />
+    <Compile Include="ExposeTextTemplatingEngineHostService.v7.cs" />
     <Compile Include="Intentions\QuickFixes\CreateTransformTextMethodQuickFix.cs" />
     <Compile Include="Intentions\QuickFixes\HotspotHelper.v7.cs" />
     <Compile Include="Intentions\QuickFixes\RemoveDirectiveQuickFix.cs" />
+    <Compile Include="Optional.v7.v8.0.cs" />
     <Compile Include="Psi\CodeStyle\T4CodeFormatter.v7.cs" />
     <Compile Include="Psi\PsiExtensions.v7.cs" />
     <Compile Include="Psi\SyntheticAttribute.v7.cs" />
@@ -119,7 +121,6 @@
     <Compile Include="Psi\PsiExtensions.cs" />
     <Compile Include="Psi\T4CachingLexerService.cs" />
     <Compile Include="Psi\T4DocumentRangeTranslator.cs" />
-    <Compile Include="Services\ExposeTextTemplatingEngineHostService.cs" />
     <Compile Include="Services\CodeCompletion\CodeCompletionExtensions.v7.cs" />
     <Compile Include="Services\CodeStructure\T4CodeStructureElement.cs" />
     <Compile Include="Services\CodeStructure\T4CSharpCodeStructureAspects.cs" />
@@ -172,6 +173,7 @@
     <Compile Include="Services\T4SpecificOwnerUtil.cs" />
     <Compile Include="Services\TypingAssist\T4CSharpTypingAssist.cs" />
     <Compile Include="Services\TypingAssist\T4TypingAssist.cs" />
+    <Compile Include="TextTemplatingHostWrapper.v7.v8.0.cs" />
     <Compile Include="Tree\IT4DirectiveOwner.cs" />
     <Compile Include="Tree\IT4Include.cs" />
     <Compile Include="Tree\IT4IncludeOwner.cs" />

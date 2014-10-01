@@ -18,7 +18,6 @@ using System.Collections.Generic;
 using System.Linq;
 using JetBrains.Annotations;
 using JetBrains.Application;
-using JetBrains.Application.Components;
 using JetBrains.Application.Progress;
 using JetBrains.DataFlow;
 using JetBrains.DocumentManagers;
@@ -51,6 +50,7 @@ namespace GammaJul.ReSharper.ForTea.Psi {
 	/// PSI module managing a single T4 file.
 	/// </summary>
 	internal sealed partial class T4PsiModule : IProjectPsiModule, IChangeProvider {
+
 		private const string Prefix = "[T4] ";
 		
 		private readonly Dictionary<string, IAssemblyCookie> _assemblyReferences = new Dictionary<string, IAssemblyCookie>(StringComparer.OrdinalIgnoreCase);
@@ -66,7 +66,6 @@ namespace GammaJul.ReSharper.ForTea.Psi {
 		private readonly IPsiSourceFile _sourceFile;
 		private readonly T4ResolveProject _resolveProject;
 		private readonly OutputAssemblies _outputAssemblies;
-		private readonly Optional<ITextTemplatingEngineHost> _ttHost;
 		private IModuleReferenceResolveManager _resolveManager;
 		private bool _isValid;
 
@@ -241,16 +240,14 @@ namespace GammaJul.ReSharper.ForTea.Psi {
 			bool hasFileChanges = ResolveMacros(dataDiff.AddedMacros);
 			bool hasChanges = hasFileChanges;
 
-			IDictionary<string, string> resolvedMacros = GetResolvedMacros();
+			ITextTemplatingEngineHost host = _t4Environment.Host.CanBeNull;
 			
 			// removes the assembly references from the old assembly directives
 			foreach (string removedAssembly in dataDiff.RemovedAssemblies) {
 				string assembly = removedAssembly;
-				if (_ttHost.IsNotNull) {
-					assembly = _ttHost.NotNull.ResolveAssemblyReference(assembly);
-				}
-
-				assembly = VsBuildMacroHelper.ResolveMacros(assembly, resolvedMacros);
+				if (host != null)
+					assembly = host.ResolveAssemblyReference(assembly);
+				
 				IAssemblyCookie cookie;
 				if (!_assemblyReferences.TryGetValue(assembly, out cookie))
 					continue;
@@ -263,11 +260,9 @@ namespace GammaJul.ReSharper.ForTea.Psi {
 			// adds assembly references from the new assembly directives
 			foreach (string addedAssembly in dataDiff.AddedAssemblies) {
 				string assembly = addedAssembly;
-				if (_ttHost.IsNotNull) {
-					assembly = _ttHost.NotNull.ResolveAssemblyReference(assembly);
-				}
+				if (host != null)
+					assembly = host.ResolveAssemblyReference(assembly);
 
-				assembly = VsBuildMacroHelper.ResolveMacros(assembly, resolvedMacros);
 				if (_assemblyReferences.ContainsKey(assembly))
 					continue;
 
@@ -400,7 +395,7 @@ namespace GammaJul.ReSharper.ForTea.Psi {
 		internal T4PsiModule([NotNull] Lifetime lifetime, [NotNull] IPsiModules psiModules, [NotNull] DocumentManager documentManager,
 			[NotNull] ChangeManager changeManager, [NotNull] IAssemblyFactory assemblyFactory, [NotNull] IShellLocks shellLocks,
 			[NotNull] IProjectFile projectFile, [NotNull] T4FileDataCache fileDataCache, [NotNull] T4Environment t4Environment,
-			[NotNull] OutputAssemblies outputAssemblies, Optional<ITextTemplatingEngineHost> ttHost) {
+			[NotNull] OutputAssemblies outputAssemblies) {
 			_lifetime = lifetime;
 			lifetime.AddAction(Dispose);
 			
@@ -418,7 +413,6 @@ namespace GammaJul.ReSharper.ForTea.Psi {
 
 			_t4Environment = t4Environment;
 			_outputAssemblies = outputAssemblies;
-			_ttHost = ttHost;
 			_resolveProject = new T4ResolveProject(_solution, _shellLocks, t4Environment.PlatformID, _project);
 
 			_sourceFile = CreateSourceFile(projectFile, documentManager);

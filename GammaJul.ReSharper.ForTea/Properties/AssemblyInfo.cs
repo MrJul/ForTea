@@ -22,10 +22,10 @@ using JetBrains.Application.PluginSupport;
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("Julien Lebosquain")]
 [assembly: AssemblyProduct("ForTea Plugin for ReSharper " + SupportedReSharperVersion.Value)]
-[assembly: AssemblyCopyright("Copyright © Julien Lebosquain, 2012-2013")]
+[assembly: AssemblyCopyright("Copyright © Julien Lebosquain, 2012-2014")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
-[assembly: AssemblyVersion("1.1.7.0")]
+[assembly: AssemblyVersion("1.1.8.0")]
 
 // The following information is displayed by ReSharper in the Plugins dialog
 [assembly: PluginTitle("ForTea")]

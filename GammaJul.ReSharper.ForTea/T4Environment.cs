@@ -17,9 +17,11 @@ using System;
 using System.Collections.Generic;
 using JetBrains.Annotations;
 using JetBrains.Application;
+using JetBrains.Application.Components;
 using JetBrains.ProjectModel;
 using JetBrains.Util;
 using JetBrains.VsIntegration.Application;
+using Microsoft.VisualStudio.TextTemplating;
 using Microsoft.Win32;
 using PlatformID = JetBrains.ProjectModel.PlatformID;
 
@@ -32,11 +34,17 @@ namespace GammaJul.ReSharper.ForTea {
 	public class T4Environment {
 
 		private readonly IVsEnvironmentInformation _vsEnvironmentInformation;
+		private readonly TextTemplatingHostWrapper _textTemplatingHostWrapper;
 		private readonly PlatformID _platformID;
 		private readonly string[] _textTemplatingAssemblyNames;
 		private readonly bool _isSupported;
 		private IList<FileSystemPath> _includePaths;
-		
+
+		[NotNull]
+		public Optional<ITextTemplatingEngineHost> Host {
+			get { return _textTemplatingHostWrapper.Host; }
+		}
+
 		/// <summary>
 		/// Gets the version of the Visual Studio we're running under, two components only, <c>Major.Minor</c>. Example: “8.0”.
 		/// </summary>
@@ -114,39 +122,48 @@ namespace GammaJul.ReSharper.ForTea {
 				return paths;
 			}
 		}
-
-		public T4Environment([NotNull] IVsEnvironmentInformation vsEnvironmentInformation) {
+		
+		public T4Environment([NotNull] IVsEnvironmentInformation vsEnvironmentInformation, [NotNull] TextTemplatingHostWrapper textTemplatingHostWrapper) {
 			_vsEnvironmentInformation = vsEnvironmentInformation;
+			_textTemplatingHostWrapper = textTemplatingHostWrapper;
 
 			int vsMajorVersion = vsEnvironmentInformation.VsVersion2.Major;
-			if (vsMajorVersion == VsVersions.Vs2010) {
-				_platformID = new PlatformID(FrameworkIdentifier.NetFramework, new Version(4, 0));
-				_textTemplatingAssemblyNames = new[] {
-					"Microsoft.VisualStudio.TextTemplating.10.0, Version=10.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a",
-					"Microsoft.VisualStudio.TextTemplating.Interfaces.10.0, Version=10.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a"
-				};
-				_isSupported = true;
+			switch (vsMajorVersion) {
+				
+				case VsVersions.Vs2010:
+					_platformID = new PlatformID(FrameworkIdentifier.NetFramework, new Version(4, 0));
+					_textTemplatingAssemblyNames = new[] {
+						"Microsoft.VisualStudio.TextTemplating.10.0, Version=10.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a",
+						"Microsoft.VisualStudio.TextTemplating.Interfaces.10.0, Version=10.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a"
+					};
+					_isSupported = true;
+					break;
+
+				case VsVersions.Vs2012:
+					_platformID = new PlatformID(FrameworkIdentifier.NetFramework, new Version(4, 5));
+					_textTemplatingAssemblyNames = new[] {
+						"Microsoft.VisualStudio.TextTemplating.11.0, Version=11.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a",
+						"Microsoft.VisualStudio.TextTemplating.Interfaces.11.0, Version=11.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a",
+						"Microsoft.VisualStudio.TextTemplating.Interfaces.10.0, Version=10.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a"
+					};
+					_isSupported = true;
+					break;
+
+				case VsVersions.Vs2013:
+					_platformID = new PlatformID(FrameworkIdentifier.NetFramework, new Version(4, 5));
+					_textTemplatingAssemblyNames = new[] {
+						"Microsoft.VisualStudio.TextTemplating.12.0, Version=12.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a",
+						"Microsoft.VisualStudio.TextTemplating.Interfaces.11.0, Version=11.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a",
+						"Microsoft.VisualStudio.TextTemplating.Interfaces.10.0, Version=10.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a"
+					};
+					_isSupported = true;
+					break;
+
+				default:
+					_isSupported = false;
+					break;
+
 			}
-			else if (vsMajorVersion == VsVersions.Vs2012) {
-				_platformID = new PlatformID(FrameworkIdentifier.NetFramework, new Version(4, 5));
-				_textTemplatingAssemblyNames = new[] {
-					"Microsoft.VisualStudio.TextTemplating.11.0, Version=11.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a",
-					"Microsoft.VisualStudio.TextTemplating.Interfaces.11.0, Version=11.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a",
-					"Microsoft.VisualStudio.TextTemplating.Interfaces.10.0, Version=10.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a"
-				};
-				_isSupported = true;
-			}
-			else if (vsMajorVersion == VsVersions.Vs2013) {
-				_platformID = new PlatformID(FrameworkIdentifier.NetFramework, new Version(4, 5));
-				_textTemplatingAssemblyNames = new[] {
-					"Microsoft.VisualStudio.TextTemplating.12.0, Version=12.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a",
-					"Microsoft.VisualStudio.TextTemplating.Interfaces.11.0, Version=11.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a",
-					"Microsoft.VisualStudio.TextTemplating.Interfaces.10.0, Version=10.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a"
-				};
-				_isSupported = true;
-			}
-			else
-				_isSupported = false;
 		}
 
 	}

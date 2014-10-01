@@ -49,7 +49,6 @@ namespace GammaJul.ReSharper.ForTea.Psi {
 		private readonly IShellLocks _shellLocks;
 		private readonly ChangeManager _changeManager;
 		private readonly T4Environment _t4Environment;
-		private readonly Optional<ITextTemplatingEngineHost> _ttHost;
 
 		private struct ModuleWrapper {
 			internal readonly T4PsiModule Module;
@@ -159,8 +158,7 @@ namespace GammaJul.ReSharper.ForTea.Psi {
 				projectFile,
 				solution.GetComponent<T4FileDataCache>(),
 				_t4Environment,
-				solution.GetComponent<OutputAssemblies>(),
-				_ttHost);
+				solution.GetComponent<OutputAssemblies>());
 			_modules[projectFile] = new ModuleWrapper(psiModule, lifetimeDefinition);
 			changeBuilder.AddModuleChange(psiModule, AddedChangeType);
 			changeBuilder.AddFileChange(psiModule.SourceFile, AddedChangeType);
@@ -208,13 +206,11 @@ namespace GammaJul.ReSharper.ForTea.Psi {
 			}
 		}
 
-		public T4PsiModuleProvider([NotNull] Lifetime lifetime, [NotNull] IShellLocks shellLocks, [NotNull] ChangeManager changeManager,
-			[NotNull] T4Environment t4Environment, Optional<ITextTemplatingEngineHost> ttHost) {
+		public T4PsiModuleProvider([NotNull] Lifetime lifetime, [NotNull] IShellLocks shellLocks, [NotNull] ChangeManager changeManager, [NotNull] T4Environment t4Environment) {
 			_lifetime = lifetime;
 			_shellLocks = shellLocks;
 			_changeManager = changeManager;
 			_t4Environment = t4Environment;
-			_ttHost = ttHost;
 		}
 
 	}

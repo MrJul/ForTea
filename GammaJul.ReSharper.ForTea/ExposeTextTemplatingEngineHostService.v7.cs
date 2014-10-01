@@ -2,15 +2,18 @@
 using Microsoft.VisualStudio.TextTemplating;
 using Microsoft.VisualStudio.TextTemplating.VSHost;
 
-namespace GammaJul.ReSharper.ForTea.Services {
+namespace GammaJul.ReSharper.ForTea {
+
 	[WrapVsInterfaces]
 	public class ExposeTextTemplatingEngineServices : IExposeVsServices {
-		public void Register(VsServiceProviderResolver.VsServiceMap map) {
-			if (map.Resolve(typeof(ITextTemplatingEngineHost)) != null) {
+
+		public void Register(VsServiceProviderComponentContainer.VsServiceMap map) {
+			if (map.Resolve(typeof(ITextTemplatingEngineHost)) != null)
 				return;
-			}
 
 			map.QueryService<STextTemplating>().As<ITextTemplatingEngineHost>();
 		}
+
 	}
+
 }
