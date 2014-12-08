@@ -228,6 +228,7 @@
     <Compile Include="Services\TypingAssist\T4TypingAssist.cs" />
     <Compile Include="SupportedReSharperVersion.v9.0.cs" />
     <Compile Include="T4Environment.cs" />
+    <Compile Include="T4ZoneActivator.cs" />
     <Compile Include="Tree\IT4Block.cs" />
     <Compile Include="Tree\IT4CodeBlock.cs" />
     <Compile Include="Tree\IT4Directive.cs" />
@@ -258,7 +259,9 @@
     <Compile Include="ZoneMarker.v9.0.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="GammaJul.ReSharper.ForTea.v9.0.nuspec" />
+    <None Include="GammaJul.ReSharper.ForTea.v9.0.nuspec">
+      <SubType>Designer</SubType>
+    </None>
     <None Include="packages.GammaJul.ReSharper.ForTea.v9.0.config" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

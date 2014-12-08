@@ -42,8 +42,6 @@ using Microsoft.VisualStudio.TextTemplating;
 #if RS90
 using JetBrains.Application.changes;
 using JetBrains.VsIntegration.ProjectDocuments.Projects.Builder;
-#elif RS82
-using JetBrains.VsIntegration.ProjectModel;
 #endif
 
 namespace GammaJul.ReSharper.ForTea.Psi {
@@ -157,7 +155,10 @@ namespace GammaJul.ReSharper.ForTea.Psi {
 		/// </summary>
 		/// <returns>A persistent identifier.</returns>
 		public string GetPersistentID() {
-			return Prefix + _sourceFile.GetPersistentID();
+			IProjectFile projectFile = _sourceFile.ToProjectFile();
+			if (projectFile != null)
+				return Prefix + projectFile.GetPersistentID();
+			return null;
 		}
 
 		/// <summary>

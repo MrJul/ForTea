@@ -16,17 +16,18 @@
 
 using System.Collections.Generic;
 using JetBrains.Annotations;
-using JetBrains.IDE;
 using JetBrains.ProjectModel;
 using JetBrains.ReSharper.Feature.Services.Navigation;
 using JetBrains.TextControl;
 using JetBrains.ReSharper.Psi;
 using JetBrains.Util;
 #if RS90
+using JetBrains.IDE;
 using JetBrains.ReSharper.Feature.Services.Navigation.NavigationProviders;
 using JetBrains.ReSharper.Features.Navigation.Core.Navigation;
 #elif RS82
 using JetBrains.ReSharper.Feature.Services.Navigation.Navigation;
+using IEditorManager=JetBrains.IDE.EditorManager;
 #endif
 
 namespace GammaJul.ReSharper.ForTea.Services.Navigation {
@@ -34,9 +35,8 @@ namespace GammaJul.ReSharper.ForTea.Services.Navigation {
 	[NavigationProvider]
 	public class T4OutsideSolutionNavigationProvider : INavigationProvider<T4OutsideSolutionNavigationInfo> {
 
-		private readonly ISolution _solution;
-		private readonly EditorManager _editorManager;
-		
+		[NotNull] private readonly ISolution _solution;
+		[NotNull] private readonly IEditorManager _editorManager;
 		
 		public bool IsApplicable(T4OutsideSolutionNavigationInfo data) {
 			return data != null;
@@ -61,7 +61,7 @@ namespace GammaJul.ReSharper.ForTea.Services.Navigation {
 			};
 		}
 
-		public T4OutsideSolutionNavigationProvider([NotNull] EditorManager editorManager, [NotNull] ISolution solution) {
+		public T4OutsideSolutionNavigationProvider([NotNull] IEditorManager editorManager, [NotNull] ISolution solution) {
 			_editorManager = editorManager;
 			_solution = solution;
 		}

@@ -183,7 +183,7 @@ namespace GammaJul.ReSharper.ForTea.Psi {
 			get { return null; }
 		}
 
-				FileSystemPath IProject.GetOutputDirectory() {
+		FileSystemPath IProject.GetOutputDirectory() {
 			return FileSystemPath.Empty;
 		}
 
