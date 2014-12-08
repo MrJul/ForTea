@@ -1,0 +1,308 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <ProjectGuid>{63F25238-06BA-4861-95A2-DA35A1D18B65}</ProjectGuid>
+    <AssemblyName>GammaJul.ReSharper.ForTea.v9.0</AssemblyName>
+    <NuGetPackageImportStamp>d7c8aabd</NuGetPackageImportStamp>
+  </PropertyGroup>
+  <Import Project="ForTea.props" />
+  <PropertyGroup>
+    <DefineConstants>$(DefineConstants);SDK80</DefineConstants>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="antlr.runtime">
+      <HintPath>..\packages\Antlr2.Runtime.2.7.7.02\lib\antlr.runtime.dll</HintPath>
+    </Reference>
+    <Reference Include="AsyncBridge.Net35">
+      <HintPath>..\packages\AsyncBridge.Net35.0.2.0\lib\net35-Client\AsyncBridge.Net35.dll</HintPath>
+    </Reference>
+    <Reference Include="CookComputing.XmlRpcV2">
+      <HintPath>..\packages\xmlrpcnet.2.5.0\lib\net20\CookComputing.XmlRpcV2.dll</HintPath>
+    </Reference>
+    <Reference Include="DevExpress.Data.v7.1">
+      <HintPath>..\packages\JetBrains.Platform.Lib.DevExpress.2.0.20140304.0\lib\DevExpress.Data.v7.1.dll</HintPath>
+    </Reference>
+    <Reference Include="DevExpress.Utils.v7.1">
+      <HintPath>..\packages\JetBrains.Platform.Lib.DevExpress.2.0.20140304.0\lib\DevExpress.Utils.v7.1.dll</HintPath>
+    </Reference>
+    <Reference Include="DevExpress.XtraEditors.v7.1">
+      <HintPath>..\packages\JetBrains.Platform.Lib.DevExpress.2.0.20140304.0\lib\DevExpress.XtraEditors.v7.1.dll</HintPath>
+    </Reference>
+    <Reference Include="DevExpress.XtraTreeList.v7.1">
+      <HintPath>..\packages\JetBrains.Platform.Lib.DevExpress.2.0.20140304.0\lib\DevExpress.XtraTreeList.v7.1.dll</HintPath>
+    </Reference>
+    <Reference Include="EnvDTE, Version=8.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
+      <EmbedInteropTypes>False</EmbedInteropTypes>
+    </Reference>
+    <Reference Include="ICSharpCode.SharpZipLib">
+      <HintPath>..\packages\SharpZipLib.JetBrains.Stripped.0.86.0\lib\20\ICSharpCode.SharpZipLib.dll</HintPath>
+    </Reference>
+    <Reference Include="Ionic.Zip.Reduced">
+      <HintPath>..\packages\DotNetZip.Reduced.1.9.1.8\lib\net20\Ionic.Zip.Reduced.dll</HintPath>
+    </Reference>
+    <Reference Include="JetBrains.Annotations">
+      <HintPath>..\packages\JetBrains.Annotations.8.0.4.0\lib\net20\JetBrains.Annotations.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Deployment.Compression">
+      <HintPath>..\packages\JetBrains.Platform.Lib.Microsoft.Deployment.Compression.Cab.2.0.20140304.0\lib\Microsoft.Deployment.Compression.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Deployment.Compression.Cab">
+      <HintPath>..\packages\JetBrains.Platform.Lib.Microsoft.Deployment.Compression.Cab.2.0.20140304.0\lib\Microsoft.Deployment.Compression.Cab.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.VisualStudio.Shell.Interop, Version=7.1.40304.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
+      <Private>True</Private>
+      <HintPath>..\packages\JetBrains.Platform.Lib.VisualStudio.AnyVs.ShellInterop.PrivateBuild.2.0.20140304.0\lib\Microsoft.VisualStudio.Shell.Interop.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.VisualStudio.Shell.Interop.8.0, Version=8.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
+    <Reference Include="Microsoft.VisualStudio.TextTemplating.Interfaces.10.0, Version=10.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL" />
+    <Reference Include="Microsoft.Web.XmlTransform">
+      <HintPath>..\packages\Microsoft.Web.Xdt.2.1.1\lib\net40\Microsoft.Web.XmlTransform.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.WindowsAPICodePack">
+      <HintPath>..\packages\Windows7APICodePack-Core.1.1.0.0\lib\Microsoft.WindowsAPICodePack.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.WindowsAPICodePack.Shell">
+      <HintPath>..\packages\Windows7APICodePack-Shell.1.1.0.0\lib\Microsoft.WindowsAPICodePack.Shell.dll</HintPath>
+    </Reference>
+    <Reference Include="Newtonsoft.Json, Version=6.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\Newtonsoft35.Json.7.0.1\lib\net35\Newtonsoft.Json.dll</HintPath>
+    </Reference>
+    <Reference Include="NuGet.Core, Version=2.8.50506.491, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\NuGet.Core.2.8.2\lib\net40-Client\NuGet.Core.dll</HintPath>
+    </Reference>
+    <Reference Include="nunit.core">
+      <HintPath>..\packages\NUnit.Core.2.6.3\lib\nunit.core.dll</HintPath>
+    </Reference>
+    <Reference Include="nunit.core.interfaces">
+      <HintPath>..\packages\NUnit.Core.2.6.3\lib\nunit.core.interfaces.dll</HintPath>
+    </Reference>
+    <Reference Include="nunit.framework">
+      <HintPath>..\packages\NUnit.2.6.3\lib\nunit.framework.dll</HintPath>
+    </Reference>
+    <Reference Include="nunit.util">
+      <HintPath>..\packages\NUnit.Core.2.6.3\lib\nunit.util.dll</HintPath>
+    </Reference>
+    <Reference Include="NVelocity">
+      <HintPath>..\packages\NVelocity.1.0.3\lib\NVelocity.dll</HintPath>
+    </Reference>
+    <Reference Include="PresentationCore" />
+    <Reference Include="System" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Threading">
+      <HintPath>..\packages\TaskParallelLibrary.1.0.2856.0\lib\Net35\System.Threading.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Windows.Interactivity, Version=3.5.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\JetBrains.Platform.Lib.System.Windows.Interactivity.2.0.20140318.0\lib\System.Windows.Interactivity.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Xml" />
+    <Reference Include="Vestris.ResourceLib">
+      <HintPath>..\packages\Vestris.ResourceLib.JetBrains.1.4.20140925.0\lib\Vestris.ResourceLib.dll</HintPath>
+    </Reference>
+    <Reference Include="WindowsBase" />
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xml" />
+    <Reference Include="WpfContrib">
+      <HintPath>..\packages\JetBrains.Platform.Lib.WpfContrib.2.0.20140304.0\lib\WpfContrib.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Daemon\Highlightings\AfterLastFeatureHighlighting.cs" />
+    <Compile Include="Daemon\Highlightings\IgnoredAssemblyDirectiveHighlighting.cs" />
+    <Compile Include="Daemon\Highlightings\InvalidAttributeValueHighlighting.cs" />
+    <Compile Include="Daemon\Highlightings\MissingRequiredAttributeHighlighting.cs" />
+    <Compile Include="Daemon\Highlightings\MissingTokenHighlighting.cs" />
+    <Compile Include="Daemon\Highlightings\MissingTransformTextMethodHighlighting.cs" />
+    <Compile Include="Daemon\Highlightings\PredefinedHighlighting.cs" />
+    <Compile Include="Daemon\Highlightings\StatementAfterFeatureHighlighting.cs" />
+    <Compile Include="Daemon\Highlightings\T4Highlighting.cs" />
+    <Compile Include="Daemon\Highlightings\VsPredefinedHighlighterIds.cs" />
+    <Compile Include="Daemon\T4CSharpErrorProcess.cs" />
+    <Compile Include="Daemon\T4CSharpErrorStage.cs" />
+    <Compile Include="Daemon\T4CSharpHighlightingProcess.cs" />
+    <Compile Include="Daemon\T4CSharpHighlightingStage.cs" />
+    <Compile Include="Daemon\T4DaemonStage.cs" />
+    <Compile Include="Daemon\T4DaemonStageProcess.cs" />
+    <Compile Include="Daemon\T4ErrorProcess.cs" />
+    <Compile Include="Daemon\T4ErrorStage.cs" />
+    <Compile Include="Daemon\T4HighlightingProcess.cs" />
+    <Compile Include="Daemon\T4HighlightingStage.cs" />
+    <Compile Include="Daemon\T4LanguageSpecificDaemonBehavior.cs" />
+    <Compile Include="ExposeTextTemplatingEngineHostService.v8.cs" />
+    <Compile Include="Intentions\QuickFixes\AddMissingTokenQuickFix.cs" />
+    <Compile Include="Intentions\QuickFixes\ChangeAttributeValueQuickFix.cs" />
+    <Compile Include="Intentions\QuickFixes\CreateTransformTextMethodQuickFix.cs" />
+    <Compile Include="Intentions\QuickFixes\HotspotHelper.v8.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Intentions\QuickFixes\MoveStatementBlockQuickFix.cs" />
+    <Compile Include="Intentions\QuickFixes\RemoveDirectiveQuickFix.cs" />
+    <Compile Include="Intentions\QuickFixes\RemoveStatementBlockQuickFix.cs" />
+    <Compile Include="Intentions\QuickFixes\RemoveToEndQuickFix.cs" />
+    <Compile Include="Parsing\T4ElementFactory.cs" />
+    <Compile Include="Parsing\T4FilteringLexer.cs" />
+    <Compile Include="Parsing\T4Lexer.cs" />
+    <Compile Include="Parsing\T4LexerFactory.cs" />
+    <Compile Include="Parsing\T4Parser.cs" />
+    <Compile Include="Parsing\T4TokenNodeFlag.cs" />
+    <Compile Include="Parsing\T4TokenNodeType.cs" />
+    <Compile Include="Parsing\T4TokenNodeType.v8.cs" />
+    <Compile Include="Parsing\T4TokenNodeTypes.cs" />
+    <Compile Include="Parsing\T4TreeBuilder.cs" />
+    <Compile Include="Parsing\T4TreeBuilder.DirectiveBuilder.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Psi\CodeStyle\T4CodeFormatter.cs" />
+    <Compile Include="Psi\CodeStyle\T4CodeFormatter.v8.cs" />
+    <Compile Include="Psi\CodeStyle\T4CSharpCustomFormattingInfoProvider.cs" />
+    <Compile Include="Psi\Directives\AssemblyDirectiveInfo.cs" />
+    <Compile Include="Psi\Directives\BooleanDirectiveAttributeInfo.cs" />
+    <Compile Include="Psi\Directives\CultureDirectiveAttributeInfo.cs" />
+    <Compile Include="Psi\Directives\DirectiveAttributeInfo.cs" />
+    <Compile Include="Psi\Directives\DirectiveAttributeOptions.cs" />
+    <Compile Include="Psi\Directives\DirectiveInfo.cs" />
+    <Compile Include="Psi\Directives\DirectiveInfoManager.cs" />
+    <Compile Include="Psi\Directives\EncodingDirectiveAttributeInfo.cs" />
+    <Compile Include="Psi\Directives\EnumDirectiveAttributeInfo.cs" />
+    <Compile Include="Psi\Directives\ImportDirectiveInfo.cs" />
+    <Compile Include="Psi\Directives\IncludeDirectiveInfo.cs" />
+    <Compile Include="Psi\Directives\OutputDirectiveInfo.cs" />
+    <Compile Include="Psi\Directives\ParameterDirectiveInfo.cs" />
+    <Compile Include="Psi\Directives\TemplateDirectiveInfo.cs" />
+    <Compile Include="Psi\GenerationResult.cs" />
+    <Compile Include="Psi\PsiExtensions.cs" />
+    <Compile Include="Psi\PsiExtensions.v8.cs" />
+    <Compile Include="Psi\SyntheticAttribute.v8.cs" />
+    <Compile Include="Psi\T4CachingLexerService.cs" />
+    <Compile Include="Psi\T4CSharpCodeGenerator.cs" />
+    <Compile Include="Psi\T4CSharpCustomModificationHandler.cs" />
+    <Compile Include="Psi\T4CSharpCustomModificationHandler.v8.1.cs" />
+    <Compile Include="Psi\T4CSharpCustomModificationHandler.v8.cs" />
+    <Compile Include="Psi\T4DocumentRangeTranslator.cs" />
+    <Compile Include="Psi\T4FileData.cs" />
+    <Compile Include="Psi\T4FileDataCache.cs" />
+    <Compile Include="Psi\T4FileDataCache.v8.cs" />
+    <Compile Include="Psi\T4FileDataDiff.cs" />
+    <Compile Include="Psi\T4GeneratedDocumentService.cs" />
+    <Compile Include="Psi\T4GeneratedDocumentService.v8.cs" />
+    <Compile Include="Psi\T4Language.cs" />
+    <Compile Include="Psi\T4LanguageService.cs" />
+    <Compile Include="Psi\T4LanguageService.v8.cs" />
+    <Compile Include="Psi\T4MiscFilesProjectPsiModuleProvider.cs" />
+    <Compile Include="Psi\T4MiscFilesProjectPsiModuleProvider.v8.cs" />
+    <Compile Include="Psi\T4ModuleReferencer.cs" />
+    <Compile Include="Psi\T4ModuleReferencer.v8.cs" />
+    <Compile Include="Psi\T4OutsideSolutionExtensions.cs" />
+    <Compile Include="Psi\T4OutsideSolutionSourceFile.v8.cs" />
+    <Compile Include="Psi\T4OutsideSolutionSourceFileManager.v8.cs" />
+    <Compile Include="Psi\T4OutsideSolutionSourceFileProperties.cs" />
+    <Compile Include="Psi\T4OutsideSolutionSourceFileProperties.v8.cs" />
+    <Compile Include="Psi\T4ProjectFileLanguageService.cs" />
+    <Compile Include="Psi\T4ProjectFileType.cs" />
+    <Compile Include="Psi\T4ProjectPsiModuleHandler.cs" />
+    <Compile Include="Psi\T4ProjectPsiModuleProviderFilter.cs" />
+    <Compile Include="Psi\T4PsiModule.cs" />
+    <Compile Include="Psi\T4PsiModule.v8.cs" />
+    <Compile Include="Psi\T4PsiModuleProvider.cs" />
+    <Compile Include="Psi\T4PsiModuleProvider.v8.cs" />
+    <Compile Include="Psi\T4PsiProjectFileProperties.cs" />
+    <Compile Include="Psi\T4ResolveProject.cs" />
+    <Compile Include="Psi\T4ResolveProject.v8.cs" />
+    <Compile Include="Psi\T4SecondaryDocumentGenerationResult.v8.cs" />
+    <Compile Include="Psi\T4SecondaryLexingProcess.cs" />
+    <Compile Include="Psi\VsBuildMacroHelper.cs" />
+    <Compile Include="Services\CodeCompletion\AutopopupInDirective.cs" />
+    <Compile Include="Services\CodeCompletion\CodeCompletionExtensions.cs" />
+    <Compile Include="Services\CodeCompletion\CodeCompletionExtensions.v8.cs" />
+    <Compile Include="Services\CodeCompletion\DirectiveAttributeNameItemsProvider.cs" />
+    <Compile Include="Services\CodeCompletion\DirectiveAttributeValueItemsProvider.cs" />
+    <Compile Include="Services\CodeCompletion\DirectiveNameItemsProvider.cs" />
+    <Compile Include="Services\CodeCompletion\T4AutopopupSettingsKey.cs" />
+    <Compile Include="Services\CodeCompletion\T4CodeCompletionContext.cs" />
+    <Compile Include="Services\CodeCompletion\T4CodeCompletionContextProvider.cs" />
+    <Compile Include="Services\CodeStructure\T4CodeStructureDirective.cs" />
+    <Compile Include="Services\CodeStructure\T4CodeStructureElement.cs" />
+    <Compile Include="Services\CodeStructure\T4CodeStructureRootElement.cs" />
+    <Compile Include="Services\CodeStructure\T4CSharpCodeStructureAspects.cs" />
+    <Compile Include="Services\CodeStructure\T4CSharpCodeStructureDeclaredElement.cs" />
+    <Compile Include="Services\CodeStructure\T4CSharpCodeStructureNamespace.cs" />
+    <Compile Include="Services\CodeStructure\T4CSharpCodeStructureProvider.cs" />
+    <Compile Include="Services\CodeStructure\T4CSharpCodeStructureRegion.cs" />
+    <Compile Include="Services\CodeStructure\T4CSharpCodeStructureRegionEnd.cs" />
+    <Compile Include="Services\Navigation\MyRangeOccurence.cs" />
+    <Compile Include="Services\Navigation\T4OutsideSolutionNavigationInfo.cs" />
+    <Compile Include="Services\Navigation\T4OutsideSolutionNavigationProvider.cs" />
+    <Compile Include="Services\Navigation\T4OutsideSolutionNavigationProvider.v8.cs" />
+    <Compile Include="Services\Navigation\T4OutsideSolutionOccurence.cs" />
+    <Compile Include="Services\Navigation\T4OutsideSolutionOccurence.v8.cs" />
+    <Compile Include="Services\Navigation\T4OutsideSolutionOccurenceProvider.cs" />
+    <Compile Include="Services\Selection\T4CodeBehindWrappedSelection.cs" />
+    <Compile Include="Services\Selection\T4NodeSelection.cs" />
+    <Compile Include="Services\Selection\T4SelectEmbracingConstructProvider.cs" />
+    <Compile Include="Services\T4SpecificOwnerUtil.cs" />
+    <Compile Include="Services\TypingAssist\T4CSharpTypingAssist.cs" />
+    <Compile Include="Services\TypingAssist\T4TypingAssist.cs" />
+    <Compile Include="SupportedReSharperVersion.v8.2.cs" />
+    <Compile Include="T4Environment.cs" />
+    <Compile Include="TextTemplatingHostWrapper.v8.1.v8.2.cs" />
+    <Compile Include="Tree\IT4Block.cs" />
+    <Compile Include="Tree\IT4CodeBlock.cs" />
+    <Compile Include="Tree\IT4Directive.cs" />
+    <Compile Include="Tree\IT4DirectiveAttribute.cs" />
+    <Compile Include="Tree\IT4DirectiveOwner.cs" />
+    <Compile Include="Tree\IT4File.cs" />
+    <Compile Include="Tree\IT4Include.cs" />
+    <Compile Include="Tree\IT4IncludeOwner.cs" />
+    <Compile Include="Tree\IT4NamedNode.cs" />
+    <Compile Include="Tree\IT4Token.cs" />
+    <Compile Include="Tree\IT4TreeNode.cs" />
+    <Compile Include="Tree\MissingTokenErrorElement.cs" />
+    <Compile Include="Tree\MissingTokenType.cs" />
+    <Compile Include="Tree\T4CodeBlock.cs" />
+    <Compile Include="Tree\T4CompositeElement.cs" />
+    <Compile Include="Tree\T4Directive.cs" />
+    <Compile Include="Tree\T4DirectiveAttribute.cs" />
+    <Compile Include="Tree\T4ElementTypes.cs" />
+    <Compile Include="Tree\T4ExpressionBlock.cs" />
+    <Compile Include="Tree\T4FeatureBlock.cs" />
+    <Compile Include="Tree\T4File.cs" />
+    <Compile Include="Tree\T4Include.cs" />
+    <Compile Include="Tree\T4StatementBlock.cs" />
+    <Compile Include="Tree\T4Token.cs" />
+    <Compile Include="Tree\T4Token.v8.cs" />
+    <Compile Include="Tree\T4TokenRole.cs" />
+    <Compile Include="Tree\T4TreeExtensions.cs" />
+    <Compile Include="VsVersions.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
+    <Error Condition="!Exists('..\packages\JetBrains.Platform.Core.Shell.6.0.20141204.190142\build\JetBrains.Platform.Core.Shell.Targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\JetBrains.Platform.Core.Shell.6.0.20141204.190142\build\JetBrains.Platform.Core.Shell.Targets'))" />
+    <Error Condition="!Exists('..\packages\JetBrains.Platform.Core.Text.6.0.20141204.190160\build\JetBrains.Platform.Core.Text.Targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\JetBrains.Platform.Core.Text.6.0.20141204.190160\build\JetBrains.Platform.Core.Text.Targets'))" />
+    <Error Condition="!Exists('..\packages\JetBrains.Platform.Core.Ide.6.0.20141204.190160\build\JetBrains.Platform.Core.Ide.Targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\JetBrains.Platform.Core.Ide.6.0.20141204.190160\build\JetBrains.Platform.Core.Ide.Targets'))" />
+    <Error Condition="!Exists('..\packages\JetBrains.Platform.Symbols.6.0.20141204.190160\build\JetBrains.Platform.Symbols.Targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\JetBrains.Platform.Symbols.6.0.20141204.190160\build\JetBrains.Platform.Symbols.Targets'))" />
+    <Error Condition="!Exists('..\packages\Antlr2.Tools.2.7.6.3\build\Antlr2.Tools.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Antlr2.Tools.2.7.6.3\build\Antlr2.Tools.targets'))" />
+    <Error Condition="!Exists('..\packages\JetBrains.Psi.Features.Tasks.6.0.20141204.190183\build\JetBrains.Psi.Features.Tasks.Targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\JetBrains.Psi.Features.Tasks.6.0.20141204.190183\build\JetBrains.Psi.Features.Tasks.Targets'))" />
+    <Error Condition="!Exists('..\packages\JetBrains.Psi.Features.src.9.0.20141204.190183\build\JetBrains.Psi.Features.src.Targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\JetBrains.Psi.Features.src.9.0.20141204.190183\build\JetBrains.Psi.Features.src.Targets'))" />
+    <Error Condition="!Exists('..\packages\JetBrains.Platform.Tests.Framework.6.0.20141204.190160\build\JetBrains.Platform.Tests.Framework.Targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\JetBrains.Platform.Tests.Framework.6.0.20141204.190160\build\JetBrains.Platform.Tests.Framework.Targets'))" />
+    <Error Condition="!Exists('..\packages\JetBrains.Psi.Features.test.Framework.9.0.20141204.190183\build\JetBrains.Psi.Features.test.Framework.Targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\JetBrains.Psi.Features.test.Framework.9.0.20141204.190183\build\JetBrains.Psi.Features.test.Framework.Targets'))" />
+    <Error Condition="!Exists('..\packages\JetBrains.Build.Platform.Tasks.ThemedIconsPacker.2.0.20141124.0\build\JetBrains.Build.Platform.Tasks.ThemedIconsPacker.Targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\JetBrains.Build.Platform.Tasks.ThemedIconsPacker.2.0.20141124.0\build\JetBrains.Build.Platform.Tasks.ThemedIconsPacker.Targets'))" />
+    <Error Condition="!Exists('..\packages\JetBrains.ReSharper.SDK.9.0.20141204.190166\build\JetBrains.ReSharper.SDK.Targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\JetBrains.ReSharper.SDK.9.0.20141204.190166\build\JetBrains.ReSharper.SDK.Targets'))" />
+  </Target>
+  <Import Project="..\packages\JetBrains.Platform.Core.Shell.6.0.20141204.190142\build\JetBrains.Platform.Core.Shell.Targets" Condition="Exists('..\packages\JetBrains.Platform.Core.Shell.6.0.20141204.190142\build\JetBrains.Platform.Core.Shell.Targets')" />
+  <Import Project="..\packages\JetBrains.Platform.Core.Text.6.0.20141204.190160\build\JetBrains.Platform.Core.Text.Targets" Condition="Exists('..\packages\JetBrains.Platform.Core.Text.6.0.20141204.190160\build\JetBrains.Platform.Core.Text.Targets')" />
+  <Import Project="..\packages\JetBrains.Platform.Core.Ide.6.0.20141204.190160\build\JetBrains.Platform.Core.Ide.Targets" Condition="Exists('..\packages\JetBrains.Platform.Core.Ide.6.0.20141204.190160\build\JetBrains.Platform.Core.Ide.Targets')" />
+  <Import Project="..\packages\JetBrains.Platform.Symbols.6.0.20141204.190160\build\JetBrains.Platform.Symbols.Targets" Condition="Exists('..\packages\JetBrains.Platform.Symbols.6.0.20141204.190160\build\JetBrains.Platform.Symbols.Targets')" />
+  <Import Project="..\packages\Antlr2.Tools.2.7.6.3\build\Antlr2.Tools.targets" Condition="Exists('..\packages\Antlr2.Tools.2.7.6.3\build\Antlr2.Tools.targets')" />
+  <Import Project="..\packages\JetBrains.Psi.Features.Tasks.6.0.20141204.190183\build\JetBrains.Psi.Features.Tasks.Targets" Condition="Exists('..\packages\JetBrains.Psi.Features.Tasks.6.0.20141204.190183\build\JetBrains.Psi.Features.Tasks.Targets')" />
+  <Import Project="..\packages\JetBrains.Psi.Features.src.9.0.20141204.190183\build\JetBrains.Psi.Features.src.Targets" Condition="Exists('..\packages\JetBrains.Psi.Features.src.9.0.20141204.190183\build\JetBrains.Psi.Features.src.Targets')" />
+  <Import Project="..\packages\JetBrains.Platform.Tests.Framework.6.0.20141204.190160\build\JetBrains.Platform.Tests.Framework.Targets" Condition="Exists('..\packages\JetBrains.Platform.Tests.Framework.6.0.20141204.190160\build\JetBrains.Platform.Tests.Framework.Targets')" />
+  <Import Project="..\packages\JetBrains.Psi.Features.test.Framework.9.0.20141204.190183\build\JetBrains.Psi.Features.test.Framework.Targets" Condition="Exists('..\packages\JetBrains.Psi.Features.test.Framework.9.0.20141204.190183\build\JetBrains.Psi.Features.test.Framework.Targets')" />
+  <Import Project="..\packages\JetBrains.Build.Platform.Tasks.ThemedIconsPacker.2.0.20141124.0\build\JetBrains.Build.Platform.Tasks.ThemedIconsPacker.Targets" Condition="Exists('..\packages\JetBrains.Build.Platform.Tasks.ThemedIconsPacker.2.0.20141124.0\build\JetBrains.Build.Platform.Tasks.ThemedIconsPacker.Targets')" />
+  <Import Project="..\packages\JetBrains.ReSharper.SDK.9.0.20141204.190166\build\JetBrains.ReSharper.SDK.Targets" Condition="Exists('..\packages\JetBrains.ReSharper.SDK.9.0.20141204.190166\build\JetBrains.ReSharper.SDK.Targets')" />
+</Project>
