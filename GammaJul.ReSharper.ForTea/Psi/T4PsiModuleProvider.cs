@@ -19,22 +19,15 @@ using System.Linq;
 using GammaJul.ReSharper.ForTea.Tree;
 using JetBrains.Annotations;
 using JetBrains.Application;
-using JetBrains.Application.Components;
 using JetBrains.DataFlow;
 using JetBrains.DocumentManagers;
 using JetBrains.ProjectModel;
+using JetBrains.ProjectModel.Build;
 using JetBrains.ProjectModel.model2.Assemblies.Interfaces;
 using JetBrains.ReSharper.Psi;
-using JetBrains.Util;
-#if SDK80
-using JetBrains.ProjectModel.Build;
 using JetBrains.ReSharper.Psi.Modules;
-#else
-using JetBrains.ReSharper.Psi.Impl;
-using IPsiModules = JetBrains.ReSharper.Psi.PsiModuleManager;
-using OutputAssemblies = JetBrains.ReSharper.Psi.Impl.OutputAssembliesCache;
-#endif
-using Microsoft.VisualStudio.TextTemplating;
+using JetBrains.Util;
+
 
 namespace GammaJul.ReSharper.ForTea.Psi {
 
@@ -42,7 +35,7 @@ namespace GammaJul.ReSharper.ForTea.Psi {
 	/// Manages <see cref="T4PsiModule"/> for T4 files.
 	/// Contains common implementation for <see cref="T4ProjectPsiModuleHandler"/> and <see cref="T4MiscFilesProjectPsiModuleProvider"/>.
 	/// </summary>
-	public sealed partial class T4PsiModuleProvider : IDisposable {
+	public sealed class T4PsiModuleProvider : IDisposable {
 
 		private readonly Dictionary<IProjectFile, ModuleWrapper> _modules = new Dictionary<IProjectFile, ModuleWrapper>();
 		private readonly Lifetime _lifetime;
@@ -100,7 +93,7 @@ namespace GammaJul.ReSharper.ForTea.Psi {
 			
 			switch (changeType) {
 
-				case AddedChangeType:
+				case PsiModuleChange.ChangeType.Added:
 					// Preprocessed .tt files should be handled by R# itself as if it's a normal project file,
 					// so that it has access to the current project types.
 					if (projectFile.LanguageType.Is<T4ProjectFileType>() && !projectFile.IsPreprocessedT4Template()) {
@@ -109,14 +102,14 @@ namespace GammaJul.ReSharper.ForTea.Psi {
 					}
 					break;
 
-				case RemovedChangeType:
+				case PsiModuleChange.ChangeType.Removed:
 					if (_modules.TryGetValue(projectFile, out moduleWrapper)) {
 						RemoveFile(projectFile, changeBuilder, moduleWrapper);
 						return true;
 					}
 					break;
 
-				case ModifiedChangeType:
+				case PsiModuleChange.ChangeType.Modified:
 					if (_modules.TryGetValue(projectFile, out moduleWrapper)) {
 						if (!projectFile.IsPreprocessedT4Template()) {
 							ModifyFile(changeBuilder, moduleWrapper);
@@ -125,14 +118,14 @@ namespace GammaJul.ReSharper.ForTea.Psi {
 
 						// The T4 file went from Transformed to Preprocessed, it doesn't need a T4PsiModule anymore.
 						RemoveFile(projectFile, changeBuilder, moduleWrapper);
-						changeType = AddedChangeType;
+						changeType = PsiModuleChange.ChangeType.Added;
 						return false;
 					}
 
 					// The T4 file went from Preprocessed to Transformed, it now needs a T4PsiModule.
 					if (projectFile.LanguageType.Is<T4ProjectFileType>() && !projectFile.IsPreprocessedT4Template()) {
 						AddFile(projectFile, changeBuilder);
-						changeType = RemovedChangeType;
+						changeType = PsiModuleChange.ChangeType.Removed;
 						return false;
 					}
 
@@ -160,8 +153,8 @@ namespace GammaJul.ReSharper.ForTea.Psi {
 				_t4Environment,
 				solution.GetComponent<OutputAssemblies>());
 			_modules[projectFile] = new ModuleWrapper(psiModule, lifetimeDefinition);
-			changeBuilder.AddModuleChange(psiModule, AddedChangeType);
-			changeBuilder.AddFileChange(psiModule.SourceFile, AddedChangeType);
+			changeBuilder.AddModuleChange(psiModule, PsiModuleChange.ChangeType.Added);
+			changeBuilder.AddFileChange(psiModule.SourceFile, PsiModuleChange.ChangeType.Added);
 
 			// Invalidate files that had this specific files as an include,
 			// and whose IPsiSourceFile was previously managed by T4OutsideSolutionSourceFileManager.
@@ -176,14 +169,14 @@ namespace GammaJul.ReSharper.ForTea.Psi {
 
 		private void RemoveFile([NotNull] IProjectFile projectFile, [NotNull] PsiModuleChangeBuilder changeBuilder, ModuleWrapper moduleWrapper) {
 			_modules.Remove(projectFile);
-			changeBuilder.AddFileChange(moduleWrapper.Module.SourceFile, RemovedChangeType);
-			changeBuilder.AddModuleChange(moduleWrapper.Module, RemovedChangeType);
+			changeBuilder.AddFileChange(moduleWrapper.Module.SourceFile, PsiModuleChange.ChangeType.Removed);
+			changeBuilder.AddModuleChange(moduleWrapper.Module, PsiModuleChange.ChangeType.Removed);
 			InvalidateFilesHavingInclude(projectFile.Location, moduleWrapper.Module.GetPsiServices());
 			moduleWrapper.LifetimeDefinition.Terminate();
 		}
 
 		private static void ModifyFile([NotNull] PsiModuleChangeBuilder changeBuilder, ModuleWrapper moduleWrapper) {
-			changeBuilder.AddFileChange(moduleWrapper.Module.SourceFile, ModifiedChangeType);
+			changeBuilder.AddFileChange(moduleWrapper.Module.SourceFile, PsiModuleChange.ChangeType.Modified);
 		}
 
 		private void InvalidateFilesHavingInclude([NotNull] FileSystemPath includeLocation, [NotNull] IPsiServices psiServices) {

@@ -19,20 +19,28 @@ using JetBrains.Annotations;
 using JetBrains.IDE;
 using JetBrains.ProjectModel;
 using JetBrains.ReSharper.Feature.Services.Navigation;
+using JetBrains.ReSharper.Feature.Services.Navigation.Navigation;
 using JetBrains.TextControl;
 using JetBrains.ReSharper.Psi;
-#if SDK80
-using JetBrains.ReSharper.Feature.Services.Navigation.Navigation;
-#endif
+using JetBrains.Util;
 
 namespace GammaJul.ReSharper.ForTea.Services.Navigation {
 
 	[NavigationProvider]
-	public partial class T4OutsideSolutionNavigationProvider {
+	public class T4OutsideSolutionNavigationProvider : INavigationProvider<T4OutsideSolutionNavigationInfo> {
 
 		private readonly ISolution _solution;
 		private readonly EditorManager _editorManager;
 		
+		
+		public bool IsApplicable(T4OutsideSolutionNavigationInfo data) {
+			return data != null;
+		}
+
+		public IEnumerable<INavigationPoint> CreateNavigationPoints(T4OutsideSolutionNavigationInfo target) {
+			return CreateNavigationPoints(target, EmptyList<INavigationPoint>.InstanceList);
+		}
+
 		private IEnumerable<INavigationPoint> CreateNavigationPoints([NotNull] T4OutsideSolutionNavigationInfo target, [NotNull] IEnumerable<INavigationPoint> basePoints) {
 			ITextControl textControl = _editorManager.OpenFile(target.FileSystemPath, target.Activate, target.TabOptions);
 			if (textControl == null)

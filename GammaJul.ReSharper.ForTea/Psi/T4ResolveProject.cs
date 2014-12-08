@@ -21,6 +21,7 @@ using JetBrains.Application;
 using JetBrains.ProjectModel;
 using JetBrains.ProjectModel.Impl;
 using JetBrains.ProjectModel.Properties;
+using JetBrains.ProjectModel.Properties.Common;
 using JetBrains.Util;
 using PlatformID = JetBrains.ProjectModel.PlatformID;
 
@@ -31,7 +32,7 @@ namespace GammaJul.ReSharper.ForTea.Psi {
 	/// so that the GAC resolver will correctly resolve from the profile we want, which is the full framework.
 	/// TODO: see with JetBrains if that can be changed, this is really ugly
 	/// </summary>
-	internal sealed partial class T4ResolveProject : IProject {
+	internal sealed class T4ResolveProject : IProject {
 
 		private readonly IUserDataHolder _dataHolder;
 		private readonly Guid _guid = Guid.NewGuid();
@@ -171,6 +172,38 @@ namespace GammaJul.ReSharper.ForTea.Psi {
 
 		FileSystemPath IProject.ProjectFileLocation {
 			get { return null; }
+		}
+
+				FileSystemPath IProject.GetOutputDirectory() {
+			return FileSystemPath.Empty;
+		}
+
+		FileSystemPath IProject.GetOutputFilePath() {
+			return FileSystemPath.Empty;
+		}
+
+		private sealed class T4ResolveProjectProperties : ProjectPropertiesBase, IProjectProperties {
+
+			public override IBuildSettings BuildSettings {
+				get { return null; }
+			}
+
+			public ProjectLanguage DefaultLanguage {
+				get { return ProjectLanguage.UNKNOWN; }
+			}
+
+			public ProjectKind ProjectKind {
+				get { return ProjectKind.MISC_FILES_PROJECT; }
+			}
+
+			public IProjectConfiguration ActiveConfiguration {
+				get { return new UnsupportedProjectConfiguration(); }
+			}
+
+			internal T4ResolveProjectProperties([NotNull] PlatformID platformID)
+				: base(EmptyList<Guid>.InstanceList, platformID, Guid.Empty) {
+			}
+
 		}
 		
 		internal T4ResolveProject([NotNull] ISolution solution, [NotNull] IShellLocks shellLocks, [NotNull] PlatformID platformID, [NotNull] IUserDataHolder dataHolder) {

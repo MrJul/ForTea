@@ -16,11 +16,7 @@
 using System.Collections.Generic;
 using JetBrains.Annotations;
 using JetBrains.ReSharper.Psi.ExtensionsAPI.Tree;
-#if SDK80
 using JetBrains.ReSharper.Psi.Files;
-#else
-using JetBrains.ReSharper.Psi.Impl.PsiManagerImpl;
-#endif
 
 namespace GammaJul.ReSharper.ForTea.Tree {
 

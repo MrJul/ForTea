@@ -22,25 +22,16 @@ using JetBrains.ProjectModel;
 using JetBrains.ReSharper.Feature.Services.Navigation;
 using JetBrains.ReSharper.Feature.Services.Navigation.Search;
 using JetBrains.ReSharper.Feature.Services.Occurences;
-using JetBrains.ReSharper.Feature.Services.Search;
 using JetBrains.ReSharper.Psi;
 using JetBrains.UI.PopupWindowManager;
 using JetBrains.Util;
-
-#region Compatibility namespace declarations
-// Beats having #ifdefs
-// ReSharper disable EmptyNamespace
-namespace JetBrains.ReSharper.Feature.Services.Navigation.Search { }
-namespace JetBrains.ReSharper.Feature.Services.Search { }
-// ReSharper restore EmptyNamespace
-#endregion
 
 namespace GammaJul.ReSharper.ForTea.Services.Navigation {
 
 	/// <summary>
 	/// Represents an occurence of text in an include file that is located outside of the solution.
 	/// </summary>
-	public partial class T4OutsideSolutionOccurence : IOccurence {
+	public class T4OutsideSolutionOccurence : IOccurence {
 
 		private readonly List<IOccurence> _mergedItems = new List<IOccurence>();
 		private readonly IRangeMarker _rangeMarker;
@@ -81,6 +72,10 @@ namespace GammaJul.ReSharper.ForTea.Services.Navigation {
 		}
 
 		public OccurencePresentationOptions PresentationOptions { get; set; }
+		
+		public ProjectModelElementEnvoy ProjectModelElementEnvoy {
+			get { return ProjectModelElementEnvoy.Empty; }
+		}
 
 		public string DumpToString() {
 			return _rangeMarker.DocumentRange.ToString();
@@ -97,7 +92,7 @@ namespace GammaJul.ReSharper.ForTea.Services.Navigation {
 			var navigationInfo = new T4OutsideSolutionNavigationInfo(path, _rangeMarker.Range, transferFocus, tabOptions);
 			NavigationOptions navigationOptions = NavigationOptions.FromWindowContext(windowContext, "Navigate to included file", transferFocus, tabOptions);
 			NavigationManager navigationManager = NavigationManager.GetInstance(solution);
-			return NavigateCore(navigationManager, navigationInfo, navigationOptions);
+			return navigationManager.Navigate<T4OutsideSolutionNavigationProvider, T4OutsideSolutionNavigationInfo>(navigationInfo, navigationOptions);
 		}
 
 		public T4OutsideSolutionOccurence([NotNull] IRangeMarker rangeMarker) {

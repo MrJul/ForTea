@@ -13,12 +13,8 @@
 //    See the License for the specific language governing permissions and
 //    limitations under the License.
 #endregion
-using GammaJul.ReSharper.ForTea.Daemon.Highlightings;
-#if SDK80
 using JetBrains.TextControl.DocumentMarkup;
-#else
-using JetBrains.TextControl.Markup;
-#endif
+using GammaJul.ReSharper.ForTea.Daemon.Highlightings;
 
 [assembly: RegisterHighlighter(VsPredefinedHighlighterIds.Comment, EffectType = EffectType.TEXT)]
 [assembly: RegisterHighlighter(VsPredefinedHighlighterIds.HtmlAttributeName, EffectType = EffectType.TEXT)]

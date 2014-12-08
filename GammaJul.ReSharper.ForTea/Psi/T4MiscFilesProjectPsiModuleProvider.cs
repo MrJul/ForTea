@@ -13,17 +13,16 @@
 //    See the License for the specific language governing permissions and
 //    limitations under the License.
 #endregion
+
+
+using JetBrains.Util;
 using System.Collections.Generic;
 using JetBrains.Annotations;
 using JetBrains.Application;
 using JetBrains.DataFlow;
 using JetBrains.ProjectModel;
 using JetBrains.ReSharper.Psi;
-#if SDK80
 using JetBrains.ReSharper.Psi.Modules;
-#else
-using JetBrains.ReSharper.Psi.Impl;
-#endif
 
 namespace GammaJul.ReSharper.ForTea.Psi {
 
@@ -31,7 +30,7 @@ namespace GammaJul.ReSharper.ForTea.Psi {
 	/// Provides <see cref="T4PsiModule"/> for T4 files opened outside of the solution.
 	/// </summary>
 	[MiscFilesProjectPsiModuleProvider]
-	public sealed partial class T4MiscFilesProjectPsiModuleProvider : IMiscFilesProjectPsiModuleProvider {
+	public sealed class T4MiscFilesProjectPsiModuleProvider : IMiscFilesProjectPsiModuleProvider {
 
 		private readonly T4PsiModuleProvider _t4PsiModuleProvider;
 		
@@ -45,6 +44,10 @@ namespace GammaJul.ReSharper.ForTea.Psi {
 
 		public void Dispose() {
 			_t4PsiModuleProvider.Dispose();
+		}
+
+		public void OnProjectFileChanged(IProjectFile projectFile, PsiModuleChange.ChangeType changeType, PsiModuleChangeBuilder changeBuilder, FileSystemPath oldLocation) {
+			_t4PsiModuleProvider.OnProjectFileChanged(projectFile, ref changeType, changeBuilder);
 		}
 
 		public T4MiscFilesProjectPsiModuleProvider([NotNull] Lifetime lifetime, [NotNull] IShellLocks shellLocks,

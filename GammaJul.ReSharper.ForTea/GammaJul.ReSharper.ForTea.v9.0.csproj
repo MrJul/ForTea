@@ -7,9 +7,6 @@
     <NuGetPackageImportStamp>d7c8aabd</NuGetPackageImportStamp>
   </PropertyGroup>
   <Import Project="ForTea.props" />
-  <PropertyGroup>
-    <DefineConstants>$(DefineConstants);SDK80</DefineConstants>
-  </PropertyGroup>
   <ItemGroup>
     <Reference Include="antlr.runtime">
       <HintPath>..\packages\Antlr2.Runtime.2.7.7.02\lib\antlr.runtime.dll</HintPath>

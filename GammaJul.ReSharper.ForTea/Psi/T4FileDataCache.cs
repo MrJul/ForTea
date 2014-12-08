@@ -19,13 +19,9 @@ using JetBrains.Annotations;
 using JetBrains.DataFlow;
 using JetBrains.ProjectModel;
 using JetBrains.ReSharper.Psi;
+using JetBrains.ReSharper.Psi.Files;
 using JetBrains.ReSharper.Psi.Tree;
 using JetBrains.Util;
-#if SDK80
-using JetBrains.ReSharper.Psi.Files;
-#else
-using PsiFiles = JetBrains.ReSharper.Psi.PsiManager;
-#endif
 
 namespace GammaJul.ReSharper.ForTea.Psi {
 

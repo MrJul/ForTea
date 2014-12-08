@@ -14,6 +14,8 @@
 //    limitations under the License.
 #endregion
 
+
+using GammaJul.ReSharper.ForTea.Parsing;
 using JetBrains.Application.Progress;
 using JetBrains.Application.Settings;
 using JetBrains.ReSharper.Psi;
@@ -26,7 +28,7 @@ namespace GammaJul.ReSharper.ForTea.Psi.CodeStyle {
 
 	// TODO: implement the formatter
 	[Language(typeof(T4Language))]
-	public partial class T4CodeFormatter : CodeFormatterBase {
+	public class T4CodeFormatter : CodeFormatterBase {
 		
 		protected override PsiLanguageType LanguageType {
 			get { return T4Language.Instance; }
@@ -59,6 +61,15 @@ namespace GammaJul.ReSharper.ForTea.Psi.CodeStyle {
 
 		public override ITokenNode GetMinimalSeparator(ITokenNode leftToken, ITokenNode rightToken) {
 			return null;
+		}
+
+		public override ITreeNode CreateSpace(string indent, ITreeNode replacedSpace) {
+			return T4TokenNodeTypes.Space.Create(indent);
+		}
+
+		public override ITreeNode CreateNewLine() {
+			T4TokenNodeType nodeType = T4TokenNodeTypes.NewLine;
+			return nodeType.Create(nodeType.TokenRepresentation);
 		}
 
 		public T4CodeFormatter(ISettingsStore settingsStore)

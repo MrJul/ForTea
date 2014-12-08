@@ -28,6 +28,7 @@ namespace GammaJul.ReSharper.ForTea.Psi {
 	/// Secondary lexing process for T4 files, capable of getting a lexer for the code behind file.
 	/// </summary>
 	internal sealed class T4SecondaryLexingProcess : ISecondaryLexingProcess {
+
 		private readonly PsiLanguageType _codeBehindLanguage;
 		private readonly MixedLexer _mixedLexer;
 

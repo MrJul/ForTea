@@ -102,6 +102,10 @@ namespace GammaJul.ReSharper.ForTea.Parsing {
 			get { return false; }
 		}
 
+		public override bool IsFiltered {
+			get { return _flag == T4TokenNodeFlag.Whitespace; }
+		}
+
 		/// <summary>
 		/// Initializes a new instance of the <see cref="T4TokenNodeType"/> class.
 		/// </summary>
@@ -111,11 +115,7 @@ namespace GammaJul.ReSharper.ForTea.Parsing {
 		/// <param name="flag">The special type of token.</param>
 		// ReSharper disable once UnusedParameter.Local
 		internal T4TokenNodeType([NotNull] string name, int index, [CanBeNull] string repr, T4TokenNodeFlag flag)
-#if SDK80
 			: base(name, index) {
-#else
-			: base(name) {
-#endif
 			_flag = flag;
 			_repr = repr ?? String.Empty;
 		}

@@ -13,6 +13,9 @@
 //    See the License for the specific language governing permissions and
 //    limitations under the License.
 #endregion
+
+
+using JetBrains.Metadata.Reader.API;
 using System;
 using System.Linq;
 using GammaJul.ReSharper.ForTea.Psi.Directives;
@@ -20,12 +23,9 @@ using GammaJul.ReSharper.ForTea.Tree;
 using JetBrains.Annotations;
 using JetBrains.ProjectModel.Model2.Assemblies.Interfaces;
 using JetBrains.ReSharper.Psi;
-using JetBrains.Util;
-#if SDK80
 using JetBrains.ReSharper.Psi.Modules;
-#else
-using JetBrains.ReSharper.Psi.Module;
-#endif
+using JetBrains.ReSharper.Psi.Transactions;
+using JetBrains.Util;
 
 namespace GammaJul.ReSharper.ForTea.Psi {
 
@@ -33,18 +33,22 @@ namespace GammaJul.ReSharper.ForTea.Psi {
 	/// Module referencer that adds an assembly directive to a T4 file.
 	/// </summary>
 	[ModuleReferencer(Priority = -10)]
-	public partial class T4ModuleReferencer : IModuleReferencer {
+	public class T4ModuleReferencer : IModuleReferencer {
 
 		private readonly T4Environment _environment;
 		private readonly DirectiveInfoManager _directiveInfoManager;
 
-		public bool CanReferenceModule(IPsiModule module, IPsiModule moduleToReference) {
+		private bool CanReferenceModule(IPsiModule module, IPsiModule moduleToReference) {
 			var t4PsiModule = module as T4PsiModule;
 			if (t4PsiModule == null || !t4PsiModule.IsValid() || moduleToReference == null)
 				return false;
 			
 			var assembly = moduleToReference.ContainingProjectModule as IAssembly;
 			return assembly != null && assembly.PlatformID != null && assembly.PlatformID.Identifier == _environment.PlatformID.Identifier;
+		}
+
+		public bool CanReferenceModule(IPsiModule module, IPsiModule moduleToReference, IModuleReferenceResolveContext context) {
+			return CanReferenceModule(module, moduleToReference);
 		}
 
 		/// <summary>
@@ -54,7 +58,7 @@ namespace GammaJul.ReSharper.ForTea.Psi {
 			return ReferenceModuleImpl(module, moduleToReference, null);
 		}
 
-		public bool ReferenceModuleWithType(IPsiModule module, ITypeElement typeToReference) {
+		public bool ReferenceModuleWithType(IPsiModule module, ITypeElement typeToReference, IModuleReferenceResolveContext resolveContext) {
 			return ReferenceModuleImpl(module, typeToReference.Module, typeToReference.GetContainingNamespace().QualifiedName);
 		}
 
@@ -83,6 +87,15 @@ namespace GammaJul.ReSharper.ForTea.Psi {
 			};
 
 			return ExecuteTransaction(module, action);
+		}
+
+		private static bool ExecuteTransaction([NotNull] IPsiModule module, [NotNull] Action action) {
+			IPsiTransactions transactions = module.GetPsiServices().Transactions;
+			if (transactions.Current != null) {
+				action();
+				return true;
+			}
+			return transactions.Execute("T4 Assembly Reference", action).Succeded;
 		}
 
 		public T4ModuleReferencer([NotNull] T4Environment environment, [NotNull] DirectiveInfoManager directiveInfoManager) {

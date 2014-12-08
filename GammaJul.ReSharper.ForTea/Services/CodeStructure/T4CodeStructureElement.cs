@@ -21,13 +21,11 @@ using JetBrains.CommonControls;
 using JetBrains.DocumentModel;
 using JetBrains.ReSharper.Feature.Services.CodeStructure;
 using JetBrains.ReSharper.Psi;
+using JetBrains.ReSharper.Psi.Pointers;
 using JetBrains.ReSharper.Psi.Tree;
 using JetBrains.TreeModels;
 using JetBrains.UI.TreeView;
 using JetBrains.Util;
-#if SDK80
-using JetBrains.ReSharper.Psi.Pointers;
-#endif
 
 namespace GammaJul.ReSharper.ForTea.Services.CodeStructure {
 

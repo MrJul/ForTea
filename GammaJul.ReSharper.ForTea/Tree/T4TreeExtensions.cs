@@ -51,7 +51,7 @@ namespace GammaJul.ReSharper.ForTea.Tree {
 				return new Pair<IT4Token, string>();
 
 			string value = valueToken.GetText();
-			if (value == null || value.Trim().Length == 0)
+			if (value.Trim().Length == 0)
 				return new Pair<IT4Token, string>();
 
 			return new Pair<IT4Token, string>(valueToken, value);

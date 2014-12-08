@@ -17,12 +17,14 @@ using System;
 using System.Linq;
 using JetBrains.Annotations;
 using JetBrains.ProjectModel;
+using JetBrains.ProjectModel.Properties;
 using JetBrains.ReSharper.Psi;
+using JetBrains.ReSharper.Psi.Tree;
 using JetBrains.Util;
 
 namespace GammaJul.ReSharper.ForTea.Psi {
 	
-	internal static partial class PsiExtensions {
+	internal static class PsiExtensions {
 
 		[CanBeNull]
 		internal static IPsiSourceFile FindSourceFileInSolution([CanBeNull] this FileSystemPath includePath, [CanBeNull] ISolution solution) {
@@ -40,6 +42,33 @@ namespace GammaJul.ReSharper.ForTea.Psi {
 		internal static bool IsPreprocessedT4Template([CanBeNull] this IProjectFile projectFile) {
 			string customTool = projectFile.GetCustomTool();
 			return "TextTemplatingFilePreprocessor".Equals(customTool, StringComparison.OrdinalIgnoreCase);
+		}
+
+				[CanBeNull]
+		private static ProjectFileProperties TryGetProperties([CanBeNull] IProjectFile projectFile) {
+			return projectFile != null ? projectFile.Properties as ProjectFileProperties : null;
+		}
+
+		[CanBeNull]
+		internal static string GetCustomTool([CanBeNull] this IProjectFile projectFile) {
+			ProjectFileProperties properties = TryGetProperties(projectFile);
+			return properties != null ? properties.CustomTool : null;
+		}
+
+		[CanBeNull]
+		internal static string GetCustomToolNamespace([CanBeNull] this IProjectFile projectFile) {
+			ProjectFileProperties properties = TryGetProperties(projectFile);
+			return properties != null ? properties.CustomToolNamespace : null;
+		}
+
+		internal static void MarkAsDirty([NotNull] this IPsiServices psiServices, [NotNull] IPsiSourceFile psiSourcefile) {
+			psiServices.Files.MarkAsDirty(psiSourcefile);
+			psiServices.Caches.MarkAsDirty(psiSourcefile);
+		}
+
+		[NotNull]
+		internal static PredefinedType GetPredefinedType([NotNull] this ITreeNode node) {
+			return node.GetPsiModule().GetPredefinedType(node.GetResolveContext());
 		}
 
 	}

@@ -13,8 +13,6 @@
 //    See the License for the specific language governing permissions and
 //    limitations under the License.
 #endregion
-
-
 using System.Linq;
 using GammaJul.ReSharper.ForTea.Psi;
 using GammaJul.ReSharper.ForTea.Tree;
@@ -22,14 +20,11 @@ using JetBrains.Annotations;
 using JetBrains.Application;
 using JetBrains.DocumentModel;
 using JetBrains.ProjectModel;
+using JetBrains.ProjectModel.FileTypes;
 using JetBrains.ReSharper.Feature.Services.SelectEmbracingConstruct;
 using JetBrains.ReSharper.Psi;
 using JetBrains.ReSharper.Psi.Tree;
 using JetBrains.Util;
-using JetBrains.Util.Lazy;
-#if SDK80
-using JetBrains.ProjectModel.FileTypes;
-#endif
 
 namespace GammaJul.ReSharper.ForTea.Services.Selection {
 

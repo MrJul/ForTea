@@ -34,7 +34,7 @@ namespace GammaJul.ReSharper.ForTea {
 	public class T4Environment {
 
 		private readonly IVsEnvironmentInformation _vsEnvironmentInformation;
-		private readonly TextTemplatingHostWrapper _textTemplatingHostWrapper;
+		private readonly Optional<ITextTemplatingEngineHost> _textTemplatingEngineHost;
 		private readonly PlatformID _platformID;
 		private readonly string[] _textTemplatingAssemblyNames;
 		private readonly bool _isSupported;
@@ -42,7 +42,7 @@ namespace GammaJul.ReSharper.ForTea {
 
 		[NotNull]
 		public Optional<ITextTemplatingEngineHost> Host {
-			get { return _textTemplatingHostWrapper.Host; }
+			get { return _textTemplatingEngineHost; }
 		}
 
 		/// <summary>
@@ -123,9 +123,9 @@ namespace GammaJul.ReSharper.ForTea {
 			}
 		}
 		
-		public T4Environment([NotNull] IVsEnvironmentInformation vsEnvironmentInformation, [NotNull] TextTemplatingHostWrapper textTemplatingHostWrapper) {
+		public T4Environment([NotNull] IVsEnvironmentInformation vsEnvironmentInformation, [NotNull] Optional<ITextTemplatingEngineHost> textTemplatingEngineHost) {
 			_vsEnvironmentInformation = vsEnvironmentInformation;
-			_textTemplatingHostWrapper = textTemplatingHostWrapper;
+			_textTemplatingEngineHost = textTemplatingEngineHost;
 
 			int vsMajorVersion = vsEnvironmentInformation.VsVersion2.Major;
 			switch (vsMajorVersion) {

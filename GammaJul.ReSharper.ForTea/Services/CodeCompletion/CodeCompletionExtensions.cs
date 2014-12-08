@@ -25,7 +25,7 @@ namespace GammaJul.ReSharper.ForTea.Services.CodeCompletion {
 	/// <summary>
 	/// Contains extension methods for code completion.
 	/// </summary>
-	public static partial class CodeCompletionExtensions {
+	public static class CodeCompletionExtensions {
 		
 		[NotNull]
 		public static TextLookupRanges GetRanges([NotNull] this CodeCompletionContext context, [NotNull] ITreeNode node) {
@@ -35,7 +35,7 @@ namespace GammaJul.ReSharper.ForTea.Services.CodeCompletion {
 			// completion has been triggered by space or quote, insert/replace at the caret (just after the space/quote)
 			if (tokenType == T4TokenNodeTypes.Space || tokenType == T4TokenNodeTypes.Quote) {
 				var range = new TextRange(caretStart, caretStart);
-				return CreateRanges(range, range);
+				return new TextLookupRanges(range, range);
 			}
 
 			// completion has been triggered by a letter/number, determine which characters are before and after the caret
@@ -43,7 +43,7 @@ namespace GammaJul.ReSharper.ForTea.Services.CodeCompletion {
 			TextRange nodeRange = node.GetDocumentRange().TextRange;
 			var beforeCaretRange = new TextRange(nodeRange.StartOffset, caretStart);
 			var afterCaretRange = new TextRange(caretStart, nodeRange.EndOffset);
-			return CreateRanges(beforeCaretRange, beforeCaretRange.Join(afterCaretRange));
+			return new TextLookupRanges(beforeCaretRange, beforeCaretRange.Join(afterCaretRange));
 		}
 
 	}

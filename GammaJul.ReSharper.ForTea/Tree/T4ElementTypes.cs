@@ -30,7 +30,7 @@ namespace GammaJul.ReSharper.ForTea.Tree {
 		public static readonly CompositeNodeType T4DirectiveAttribute = new T4CompositeNodeType<T4DirectiveAttribute>(2006);
 		public static readonly CompositeNodeType T4Include = new T4CompositeNodeType<T4Include>(2007);
 
-		private class T4CompositeNodeType<T> : CompositeNodeType
+		private sealed class T4CompositeNodeType<T> : CompositeNodeType
 		where T : CompositeElement, new() {
 			
 			public override CompositeElement Create() {
@@ -39,11 +39,7 @@ namespace GammaJul.ReSharper.ForTea.Tree {
 
 			// ReSharper disable once UnusedParameter.Local
 			internal T4CompositeNodeType(int index)
-#if SDK80
 				: base(typeof(T).Name, index) {
-#else
-				: base(typeof(T).Name) {
-#endif
 			}
 
 		}

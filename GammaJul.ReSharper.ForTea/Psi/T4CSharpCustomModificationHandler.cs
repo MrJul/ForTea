@@ -14,28 +14,32 @@
 //    limitations under the License.
 #endregion
 
+
+using JetBrains.ReSharper.Psi.CSharp.CodeStyle.FormatSettings;
+using JetBrains.ReSharper.Psi.ExtensionsAPI.Resolve;
 using System;
 using System.Linq;
 using GammaJul.ReSharper.ForTea.Parsing;
 using GammaJul.ReSharper.ForTea.Psi.Directives;
 using GammaJul.ReSharper.ForTea.Tree;
 using JetBrains.Annotations;
+using JetBrains.Application.Settings;
 using JetBrains.DocumentModel;
 using JetBrains.ProjectModel;
 using JetBrains.ReSharper.Psi;
 using JetBrains.ReSharper.Psi.CSharp;
+using JetBrains.ReSharper.Psi.CSharp.CodeStyle;
 using JetBrains.ReSharper.Psi.CSharp.Impl.CustomHandlers;
 using JetBrains.ReSharper.Psi.CSharp.Parsing;
 using JetBrains.ReSharper.Psi.CSharp.Tree;
 using JetBrains.ReSharper.Psi.ExtensionsAPI.Tree;
 using JetBrains.ReSharper.Psi.Impl.Shared;
+using JetBrains.ReSharper.Psi.Modules;
+using JetBrains.ReSharper.Psi.Transactions;
+using JetBrains.ReSharper.Psi.Resolve;
 using JetBrains.ReSharper.Psi.Tree;
 using JetBrains.ReSharper.Psi.Web.CodeBehindSupport;
 using JetBrains.Util;
-#if SDK80
-using JetBrains.ReSharper.Psi.Modules;
-using JetBrains.ReSharper.Psi.Transactions;
-#endif
 
 namespace GammaJul.ReSharper.ForTea.Psi {
 
@@ -44,7 +48,7 @@ namespace GammaJul.ReSharper.ForTea.Psi {
 	/// (eg: adding a using statement translates to an import directive).
 	/// </summary>
 	[ProjectFileType(typeof(T4ProjectFileType))]
-	public partial class T4CSharpCustomModificationHandler : CustomModificationHandler<IT4CodeBlock, IT4Directive>, ICSharpCustomModificationHandler {
+	public class T4CSharpCustomModificationHandler : CustomModificationHandler<IT4CodeBlock, IT4Directive>, ICSharpCustomModificationHandler {
 
 		private readonly DirectiveInfoManager _directiveInfoManager;
 
@@ -306,6 +310,31 @@ namespace GammaJul.ReSharper.ForTea.Psi {
 
 			return importedNamespace.QualifiedName;
 		}
+
+		/// <summary>
+		/// Handles the addition of an import directive
+		/// </summary>
+		/// <param name="psiServices">The PSI services.</param>
+		/// <param name="action">The action to perform to add the directive.</param>
+		/// <param name="generatedAnchor">The existing using anchor.</param>
+		/// <param name="before">Whether to add the statements before of after <paramref name="generatedAnchor"/>.</param>
+		/// <param name="generatedFile">The generated file.</param>
+		/// <returns>An instance of <see cref="IUsingDirective"/>.</returns>
+		public IUsingDirective HandleAddImport(IPsiServices psiServices, Func<IUsingDirective> action, ITreeNode generatedAnchor, bool before, IFile generatedFile) {
+			return (IUsingDirective) HandleAddImportInternal(psiServices, action, generatedAnchor, before, CSharpLanguage.Instance, generatedFile);
+		}
+
+		public bool PreferQualifiedReference(IQualifiableReferenceWithGlobalSymbolTable reference) {
+			return reference.GetTreeNode().GetSettingsStore().GetValue(CSharpUsingSettingsAccessor.PreferQualifiedReference);
+		}
+
+		public string GetSpecialMethodType(DeclaredElementPresenterStyle presenter, IMethod method, ISubstitution substitution) {
+			return null;
+		}
+
+		public ThisQualifierStyle GetThisQualifierStyle(ITreeNode context) {
+	        return context.GetSettingsStore().GetValue(CSharpCustomModificationHandlerDummy.ThisQualifierStyleAccessor);
+	    }
 
 		/// <summary>
 		/// Initializes a new instance of the <see cref="T4CSharpCustomModificationHandler"/> class.

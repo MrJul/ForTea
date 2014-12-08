@@ -22,6 +22,7 @@ namespace GammaJul.ReSharper.ForTea.Daemon.Highlightings {
 
 	[StaticSeverityHighlighting(Severity.ERROR, T4Language.Name, OverlapResolve = OverlapResolveKind.ERROR, ShowToolTipInStatusBar = true, AttributeId = HighlightingAttributeIds.ERROR_ATTRIBUTE)]
 	public class MissingRequiredAttributeHighlighting : T4Highlighting<IT4Token> {
+
 		private readonly string _missingAttributeName;
 
 		[NotNull]

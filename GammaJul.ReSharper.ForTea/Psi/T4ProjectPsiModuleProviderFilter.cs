@@ -17,12 +17,8 @@ using JetBrains.Annotations;
 using JetBrains.Application;
 using JetBrains.DataFlow;
 using JetBrains.ProjectModel;
-using JetBrains.Util;
-#if SDK80
 using JetBrains.ReSharper.Psi.Modules;
-#else
-using JetBrains.ReSharper.Psi;
-#endif
+using JetBrains.Util;
 
 namespace GammaJul.ReSharper.ForTea.Psi {
 

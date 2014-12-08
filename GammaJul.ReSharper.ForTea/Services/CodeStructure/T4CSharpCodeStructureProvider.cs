@@ -25,13 +25,9 @@ using JetBrains.ReSharper.Psi;
 using JetBrains.ReSharper.Psi.CSharp;
 using JetBrains.ReSharper.Psi.CSharp.Tree;
 using JetBrains.ReSharper.Psi.ExtensionsAPI.Tree;
+using JetBrains.ReSharper.Psi.Files;
 using JetBrains.ReSharper.Psi.Tree;
 using JetBrains.Util;
-#if SDK80
-using JetBrains.ReSharper.Psi.Files;
-#else
-using JetBrains.ReSharper.Psi.Impl.PsiManagerImpl;
-#endif
 
 namespace GammaJul.ReSharper.ForTea.Services.CodeStructure {
 
@@ -47,9 +43,6 @@ namespace GammaJul.ReSharper.ForTea.Services.CodeStructure {
 
 			// TODO: handle VB
 			var cSharpFile = sourceFile.GetTheOnlyPsiFile(CSharpLanguage.Instance) as ICSharpFile;
-			if (cSharpFile == null)
-				return null;
-
 			var cSharpFileImpl = cSharpFile as IFileImpl;
 			if (cSharpFileImpl == null || cSharpFileImpl.SecondaryRangeTranslator == null)
 				return null;

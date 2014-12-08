@@ -14,7 +14,6 @@
 //    limitations under the License.
 #endregion
 using GammaJul.ReSharper.ForTea.Parsing;
-using JetBrains.Annotations;
 using JetBrains.ReSharper.Psi.ExtensionsAPI.Tree;
 
 namespace GammaJul.ReSharper.ForTea.Tree {

@@ -22,34 +22,30 @@ using JetBrains.Application.Progress;
 using JetBrains.DataFlow;
 using JetBrains.DocumentManagers;
 using JetBrains.Interop.WinApi;
+using JetBrains.Metadata.Reader.API;
 using JetBrains.Metadata.Utils;
 using JetBrains.ProjectModel;
+using JetBrains.ProjectModel.Build;
 using JetBrains.ProjectModel.Model2.Assemblies.Interfaces;
 using JetBrains.ProjectModel.Model2.References;
 using JetBrains.ProjectModel.model2.Assemblies.Interfaces;
 using JetBrains.ReSharper.Psi;
+using JetBrains.ReSharper.Psi.Files;
+using JetBrains.ReSharper.Psi.Impl;
+using JetBrains.ReSharper.Psi.Modules;
 using JetBrains.ReSharper.Psi.Web.Impl.PsiModules;
 using JetBrains.Threading;
 using JetBrains.Util;
 using JetBrains.VsIntegration.ProjectModel;
 using Microsoft.VisualStudio.Shell.Interop;
 using Microsoft.VisualStudio.TextTemplating;
-#if SDK80
-using JetBrains.ProjectModel.Build;
-using JetBrains.ReSharper.Psi.Modules;
-using JetBrains.ReSharper.Psi.Files;
-#else
-using JetBrains.ReSharper.Psi.Impl;
-using IPsiModules = JetBrains.ReSharper.Psi.PsiModuleManager;
-using OutputAssemblies = JetBrains.ReSharper.Psi.Impl.OutputAssembliesCache;
-#endif
 
 namespace GammaJul.ReSharper.ForTea.Psi {
 
 	/// <summary>
 	/// PSI module managing a single T4 file.
 	/// </summary>
-	internal sealed partial class T4PsiModule : IProjectPsiModule, IChangeProvider {
+	internal sealed class T4PsiModule : IProjectPsiModule, IChangeProvider {
 
 		private const string Prefix = "[T4] ";
 		
@@ -276,7 +272,7 @@ namespace GammaJul.ReSharper.ForTea.Psi {
 
 			// tells the world the module has changed
 			var changeBuilder = new PsiModuleChangeBuilder();
-			changeBuilder.AddModuleChange(this, ModifiedChangeType);
+			changeBuilder.AddModuleChange(this, PsiModuleChange.ChangeType.Modified);
 
 			if (hasFileChanges)
 				GetPsiServices().MarkAsDirty(_sourceFile);
@@ -323,7 +319,7 @@ namespace GammaJul.ReSharper.ForTea.Psi {
 		/// Gets all modules referenced by this module.
 		/// </summary>
 		/// <returns>All referenced modules.</returns>
-		public IEnumerable<IPsiModuleReference> GetReferences() {
+		public IEnumerable<IPsiModuleReference> GetReferences(IModuleReferenceResolveContext moduleReferenceResolveContext) {
 			_shellLocks.AssertReadAccessAllowed();
 			
 			var references = new PsiModuleReferenceAccumulator();
@@ -340,7 +336,7 @@ namespace GammaJul.ReSharper.ForTea.Psi {
 
 				// Assembly that is the output of a current project: reference the project instead.
 				else {
-					IProject project = GetProjectByOutputAssembly(cookie.Assembly);
+					IProject project = _outputAssemblies.GetProjectByOutputAssembly(cookie.Assembly);
 					if (project != null) {
 						psiModule = _psiModules.GetPrimaryPsiModule(project);
 						if (psiModule != null)
@@ -363,6 +359,30 @@ namespace GammaJul.ReSharper.ForTea.Psi {
 
 		object IChangeProvider.Execute(IChangeMap changeMap) {
 			return null;
+		}
+
+		ICollection<PreProcessingDirective> IPsiModule.GetAllDefines() {
+			return EmptyList<PreProcessingDirective>.InstanceList;
+		}
+
+		[NotNull]
+		private PsiProjectFile CreateSourceFile([NotNull] IProjectFile projectFile, [NotNull] DocumentManager documentManager) {
+			return new PsiProjectFile(
+				this,
+				projectFile,
+				(pf, sf) => new T4PsiProjectFileProperties(pf, sf, true), 
+				JetFunc<IProjectFile, IPsiSourceFile>.True,
+				documentManager,
+				UniversalModuleReferenceContext.Instance);
+		}
+		
+		[CanBeNull]
+		private IAssemblyCookie CreateCookieCore([NotNull] AssemblyReferenceTarget target) {
+			var resolveContext = UniversalModuleReferenceContext.Instance;
+			FileSystemPath result = ResolveManager.Resolve(target, _resolveProject, resolveContext);
+			return result != null
+				? _assemblyFactory.AddRef(result, "T4", resolveContext)
+				: null;
 		}
 
 		/// <summary>

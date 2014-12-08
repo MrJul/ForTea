@@ -18,11 +18,7 @@ using GammaJul.ReSharper.ForTea.Tree;
 using JetBrains.Annotations;
 using JetBrains.DocumentModel;
 using JetBrains.ReSharper.Psi;
-#if SDK80
 using JetBrains.ReSharper.Psi.Files;
-#else
-using JetBrains.ReSharper.Psi.Impl.PsiManagerImpl;
-#endif
 using JetBrains.ReSharper.Psi.Tree;
 using JetBrains.Util;
 
@@ -36,11 +32,6 @@ namespace GammaJul.ReSharper.ForTea.Psi {
 		private readonly IT4IncludeOwner _root;
 		private readonly IList<IT4Include> _includes;
 		private readonly IPsiSourceFile _sourceFile;
-
-		[NotNull]
-		internal IPsiSourceFile SourceFile {
-			get { return _sourceFile; }
-		}
 
 		private struct IncludeWithOffset {
 

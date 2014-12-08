@@ -20,10 +20,8 @@ using JetBrains.Annotations;
 using JetBrains.ReSharper.Psi;
 using JetBrains.ReSharper.Psi.ExtensionsAPI.Caches2;
 using JetBrains.ReSharper.Psi.Impl;
-using JetBrains.ReSharper.Psi.Parsing;
-#if SDK80
 using JetBrains.ReSharper.Psi.Modules;
-#endif
+using JetBrains.ReSharper.Psi.Parsing;
 
 namespace GammaJul.ReSharper.ForTea.Psi {
 
@@ -31,7 +29,7 @@ namespace GammaJul.ReSharper.ForTea.Psi {
 	/// Base, file independent language service for T4.
 	/// </summary>
 	[Language(typeof(T4Language))]
-	public sealed partial class T4LanguageService : LanguageService {
+	public sealed class T4LanguageService : LanguageService {
 		
 		private readonly T4Environment _t4Environment;
 		private readonly DirectiveInfoManager _directiveInfoManager;
@@ -81,6 +79,10 @@ namespace GammaJul.ReSharper.ForTea.Psi {
 		/// </summary>
 		public override ITypePresenter TypePresenter {
 			get { return DefaultTypePresenter.Instance; }
+		}
+
+		public override bool IsCaseSensitive {
+			get { return true; }
 		}
 
 		/// <summary>

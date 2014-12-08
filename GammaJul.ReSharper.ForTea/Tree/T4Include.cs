@@ -15,11 +15,7 @@
 #endregion
 using System.Collections.Generic;
 using JetBrains.ReSharper.Psi.ExtensionsAPI.Tree;
-#if SDK80
 using JetBrains.ReSharper.Psi.Files;
-#else
-using JetBrains.ReSharper.Psi.Impl.PsiManagerImpl;
-#endif
 using JetBrains.ReSharper.Psi.Tree;
 using JetBrains.Util;
 

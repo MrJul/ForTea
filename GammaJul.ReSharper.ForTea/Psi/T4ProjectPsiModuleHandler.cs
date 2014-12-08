@@ -20,10 +20,8 @@ using JetBrains.Application;
 using JetBrains.DataFlow;
 using JetBrains.ProjectModel;
 using JetBrains.ReSharper.Psi;
-using JetBrains.Util;
-#if SDK80
 using JetBrains.ReSharper.Psi.Modules;
-#endif
+using JetBrains.Util;
 
 namespace GammaJul.ReSharper.ForTea.Psi {
 

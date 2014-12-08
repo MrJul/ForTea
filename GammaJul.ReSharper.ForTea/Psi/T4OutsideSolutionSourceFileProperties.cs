@@ -20,7 +20,7 @@ using JetBrains.Util;
 
 namespace GammaJul.ReSharper.ForTea.Psi {
 
-	internal sealed partial class T4OutsideSolutionSourceFileProperties : IPsiSourceFileProperties {
+	internal sealed class T4OutsideSolutionSourceFileProperties : IPsiSourceFileProperties {
 
 		public IEnumerable<string> GetPreImportedNamespaces() {
 			return EmptyList<string>.InstanceList;
@@ -43,6 +43,14 @@ namespace GammaJul.ReSharper.ForTea.Psi {
 		}
 
 		public bool IsNonUserFile {
+			get { return false; }
+		}
+
+		public ICollection<PreProcessingDirective> GetDefines() {
+			return EmptyList<PreProcessingDirective>.InstanceList;
+		}
+
+		public bool IsICacheParticipant {
 			get { return false; }
 		}
 
