@@ -23,6 +23,7 @@ using Microsoft.VisualStudio.TextTemplating;
 using Microsoft.Win32;
 #if RS90
 using JetBrains.Application.platforms;
+using JetBrains.VsIntegration.Shell;
 using PlatformID = JetBrains.Application.platforms.PlatformID;
 #elif RS82
 using JetBrains.ProjectModel;
@@ -38,12 +39,11 @@ namespace GammaJul.ReSharper.ForTea {
 	[ShellComponent]
 	public class T4Environment {
 
-		private readonly IVsEnvironmentInformation _vsEnvironmentInformation;
-		private readonly Optional<ITextTemplatingEngineHost> _textTemplatingEngineHost;
-		private readonly PlatformID _platformID;
-		private readonly string[] _textTemplatingAssemblyNames;
-		private readonly bool _isSupported;
-		private IList<FileSystemPath> _includePaths;
+		[NotNull] private readonly IVsEnvironmentInformation _vsEnvironmentInformation;
+		[NotNull] private readonly Optional<ITextTemplatingEngineHost> _textTemplatingEngineHost;
+		[NotNull] private readonly string[] _textTemplatingAssemblyNames;
+		[CanBeNull] private readonly PlatformID _platformID;
+		[CanBeNull] private IList<FileSystemPath> _includePaths;
 
 		[NotNull]
 		public Optional<ITextTemplatingEngineHost> Host {
@@ -64,7 +64,7 @@ namespace GammaJul.ReSharper.ForTea {
 		[NotNull]
 		public PlatformID PlatformID {
 			get {
-				if (!_isSupported)
+				if (_platformID == null)
 					throw new NotSupportedException("Unsupported environment.");
 				return _platformID;
 			}
@@ -76,7 +76,7 @@ namespace GammaJul.ReSharper.ForTea {
 		[NotNull]
 		public IEnumerable<string> TextTemplatingAssemblyNames {
 			get {
-				if (!_isSupported)
+				if (_platformID == null)
 					throw new NotSupportedException("Unsupported environment.");
 				return _textTemplatingAssemblyNames;
 			}
@@ -86,7 +86,7 @@ namespace GammaJul.ReSharper.ForTea {
 		/// Gets whether the current environment is supported. VS2005 and VS2008 aren't.
 		/// </summary>
 		public bool IsSupported {
-			get { return _isSupported; }
+			get { return _platformID != null; }
 		}
 
 		/// <summary>
@@ -95,7 +95,7 @@ namespace GammaJul.ReSharper.ForTea {
 		[NotNull]
 		public IEnumerable<FileSystemPath> IncludePaths {
 			get {
-				if (!_isSupported)
+				if (_platformID == null)
 					return EmptyList<FileSystemPath>.InstanceList;
 				return _includePaths ?? (_includePaths = ReadIncludePaths());
 			}
@@ -141,7 +141,6 @@ namespace GammaJul.ReSharper.ForTea {
 						"Microsoft.VisualStudio.TextTemplating.10.0, Version=10.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a",
 						"Microsoft.VisualStudio.TextTemplating.Interfaces.10.0, Version=10.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a"
 					};
-					_isSupported = true;
 					break;
 
 				case VsVersions.Vs2012:
@@ -151,7 +150,6 @@ namespace GammaJul.ReSharper.ForTea {
 						"Microsoft.VisualStudio.TextTemplating.Interfaces.11.0, Version=11.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a",
 						"Microsoft.VisualStudio.TextTemplating.Interfaces.10.0, Version=10.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a"
 					};
-					_isSupported = true;
 					break;
 
 				case VsVersions.Vs2013:
@@ -161,11 +159,19 @@ namespace GammaJul.ReSharper.ForTea {
 						"Microsoft.VisualStudio.TextTemplating.Interfaces.11.0, Version=11.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a",
 						"Microsoft.VisualStudio.TextTemplating.Interfaces.10.0, Version=10.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a"
 					};
-					_isSupported = true;
+					break;
+
+				case VsVersions.Vs2015:
+					_platformID = new PlatformID(FrameworkIdentifier.NetFramework, new Version(4, 5));
+					_textTemplatingAssemblyNames = new[] {
+						"Microsoft.VisualStudio.TextTemplating.14.0, Version=14.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a",
+						"Microsoft.VisualStudio.TextTemplating.Interfaces.11.0, Version=11.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a",
+						"Microsoft.VisualStudio.TextTemplating.Interfaces.10.0, Version=10.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a"
+					};
 					break;
 
 				default:
-					_isSupported = false;
+					_textTemplatingAssemblyNames = EmptyArray<string>.Instance;
 					break;
 
 			}

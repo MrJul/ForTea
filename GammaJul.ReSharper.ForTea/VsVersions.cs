@@ -19,6 +19,7 @@ namespace GammaJul.ReSharper.ForTea {
 		public const int Vs2010 = 10;
 		public const int Vs2012 = 11;
 		public const int Vs2013 = 12;
+		public const int Vs2015 = 14;
 	}
 
 }

@@ -4,7 +4,7 @@
   <PropertyGroup>
     <ProjectGuid>{63F25238-06BA-4861-95A2-DA35A1D18B65}</ProjectGuid>
     <AssemblyName>GammaJul.ReSharper.ForTea.v9.0</AssemblyName>
-    <NuGetPackageImportStamp>d7c8aabd</NuGetPackageImportStamp>
+    <NuGetPackageImportStamp>67ecdb21</NuGetPackageImportStamp>
   </PropertyGroup>
   <Import Project="ForTea.props" />
   <PropertyGroup>
@@ -140,6 +140,7 @@
     <Compile Include="Intentions\QuickFixes\RemoveDirectiveQuickFix.cs" />
     <Compile Include="Intentions\QuickFixes\RemoveStatementBlockQuickFix.cs" />
     <Compile Include="Intentions\QuickFixes\RemoveToEndQuickFix.cs" />
+    <Compile Include="IT4Zone.v9.0.cs" />
     <Compile Include="Parsing\T4ElementFactory.cs" />
     <Compile Include="Parsing\T4FilteringLexer.cs" />
     <Compile Include="Parsing\T4Lexer.cs" />
@@ -254,6 +255,7 @@
     <Compile Include="Tree\T4TokenRole.cs" />
     <Compile Include="Tree\T4TreeExtensions.cs" />
     <Compile Include="VsVersions.cs" />
+    <Compile Include="ZoneMarker.v9.0.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.GammaJul.ReSharper.ForTea.v9.0.config" />
@@ -271,6 +273,7 @@
     <Error Condition="!Exists('..\packages\JetBrains.Psi.Features.test.Framework.9.0.20141204.190183\build\JetBrains.Psi.Features.test.Framework.Targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\JetBrains.Psi.Features.test.Framework.9.0.20141204.190183\build\JetBrains.Psi.Features.test.Framework.Targets'))" />
     <Error Condition="!Exists('..\packages\JetBrains.Build.Platform.Tasks.ThemedIconsPacker.2.0.20141124.0\build\JetBrains.Build.Platform.Tasks.ThemedIconsPacker.Targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\JetBrains.Build.Platform.Tasks.ThemedIconsPacker.2.0.20141124.0\build\JetBrains.Build.Platform.Tasks.ThemedIconsPacker.Targets'))" />
     <Error Condition="!Exists('..\packages\JetBrains.ReSharper.SDK.9.0.20141204.190166\build\JetBrains.ReSharper.SDK.Targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\JetBrains.ReSharper.SDK.9.0.20141204.190166\build\JetBrains.ReSharper.SDK.Targets'))" />
+    <Error Condition="!Exists('..\packages\JetBrains.Platform.VisualStudio.6.0.20141204.190160\build\JetBrains.Platform.VisualStudio.Targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\JetBrains.Platform.VisualStudio.6.0.20141204.190160\build\JetBrains.Platform.VisualStudio.Targets'))" />
   </Target>
   <Import Project="..\packages\JetBrains.Platform.Core.Shell.6.0.20141204.190142\build\JetBrains.Platform.Core.Shell.Targets" Condition="Exists('..\packages\JetBrains.Platform.Core.Shell.6.0.20141204.190142\build\JetBrains.Platform.Core.Shell.Targets')" />
   <Import Project="..\packages\JetBrains.Platform.Core.Text.6.0.20141204.190160\build\JetBrains.Platform.Core.Text.Targets" Condition="Exists('..\packages\JetBrains.Platform.Core.Text.6.0.20141204.190160\build\JetBrains.Platform.Core.Text.Targets')" />
@@ -283,4 +286,5 @@
   <Import Project="..\packages\JetBrains.Psi.Features.test.Framework.9.0.20141204.190183\build\JetBrains.Psi.Features.test.Framework.Targets" Condition="Exists('..\packages\JetBrains.Psi.Features.test.Framework.9.0.20141204.190183\build\JetBrains.Psi.Features.test.Framework.Targets')" />
   <Import Project="..\packages\JetBrains.Build.Platform.Tasks.ThemedIconsPacker.2.0.20141124.0\build\JetBrains.Build.Platform.Tasks.ThemedIconsPacker.Targets" Condition="Exists('..\packages\JetBrains.Build.Platform.Tasks.ThemedIconsPacker.2.0.20141124.0\build\JetBrains.Build.Platform.Tasks.ThemedIconsPacker.Targets')" />
   <Import Project="..\packages\JetBrains.ReSharper.SDK.9.0.20141204.190166\build\JetBrains.ReSharper.SDK.Targets" Condition="Exists('..\packages\JetBrains.ReSharper.SDK.9.0.20141204.190166\build\JetBrains.ReSharper.SDK.Targets')" />
+  <Import Project="..\packages\JetBrains.Platform.VisualStudio.6.0.20141204.190160\build\JetBrains.Platform.VisualStudio.Targets" Condition="Exists('..\packages\JetBrains.Platform.VisualStudio.6.0.20141204.190160\build\JetBrains.Platform.VisualStudio.Targets')" />
 </Project>
