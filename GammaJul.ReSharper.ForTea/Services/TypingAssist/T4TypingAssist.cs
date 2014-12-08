@@ -22,7 +22,6 @@ using JetBrains.Application.CommandProcessing;
 using JetBrains.Application.Settings;
 using JetBrains.DataFlow;
 using JetBrains.ProjectModel;
-using JetBrains.ReSharper.Feature.Services.CodeCompletion;
 using JetBrains.ReSharper.Feature.Services.TypingAssist;
 using JetBrains.ReSharper.Psi;
 using JetBrains.ReSharper.Psi.Parsing;
@@ -30,7 +29,9 @@ using JetBrains.TextControl;
 using JetBrains.TextControl.Util;
 #if RS90
 using JetBrains.ReSharper.Psi.CachingLexers;
+using JetBrains.ReSharper.Feature.Services.CodeCompletion;
 #elif RS82
+using ICodeCompletionSessionManager=JetBrains.ReSharper.Feature.Services.CodeCompletion.IntellisenseManager;
 using JetBrains.ReSharper.Psi.Services;
 #endif
 
@@ -40,7 +41,7 @@ namespace GammaJul.ReSharper.ForTea.Services.TypingAssist {
 	public class T4TypingAssist : TypingAssistLanguageBase<T4Language, T4CodeFormatter>, ITypingHandler {
 
 		private readonly SkippingTypingAssist _skippingTypingAssist;
-		private readonly IntellisenseManager _intellisenseManager;
+		private readonly ICodeCompletionSessionManager _codeCompletionSessionManager;
 
 		protected override bool IsSupported(ITextControl textControl) {
 			IPsiSourceFile psiSourceFile = textControl.Document.GetPsiSourceFile(Solution);
@@ -87,7 +88,7 @@ namespace GammaJul.ReSharper.ForTea.Services.TypingAssist {
 				_skippingTypingAssist.SetCharsToSkip(textControl.Document, "\"");
 
 				// popup auto completion
-				_intellisenseManager.ExecuteAutoCompletion<T4AutopopupSettingsKey>(textControl, Solution, key => key.InDirectives);
+				_codeCompletionSessionManager.ExecuteAutoCompletion<T4AutopopupSettingsKey>(textControl, Solution, key => key.InDirectives);
 			});
 
 			return true;
@@ -138,7 +139,7 @@ namespace GammaJul.ReSharper.ForTea.Services.TypingAssist {
 				_skippingTypingAssist.SetCharsToSkip(textControl.Document, "\"");
 
 				// popup auto completion
-				_intellisenseManager.ExecuteAutoCompletion<T4AutopopupSettingsKey>(textControl, Solution, key => key.InDirectives);
+				_codeCompletionSessionManager.ExecuteAutoCompletion<T4AutopopupSettingsKey>(textControl, Solution, key => key.InDirectives);
 			});
 
 			return true;
@@ -146,11 +147,12 @@ namespace GammaJul.ReSharper.ForTea.Services.TypingAssist {
 
 		public T4TypingAssist([NotNull] Lifetime lifetime, [NotNull] ISolution solution, [NotNull] ISettingsStore settingsStore,
 			[NotNull] CachingLexerService cachingLexerService, [NotNull] ICommandProcessor commandProcessor, [NotNull] IPsiServices psiServices,
-			[NotNull] ITypingAssistManager typingAssistManager, [NotNull] SkippingTypingAssist skippingTypingAssist, [NotNull] IntellisenseManager intellisenseManager)
+			[NotNull] ITypingAssistManager typingAssistManager, [NotNull] SkippingTypingAssist skippingTypingAssist,
+			[NotNull] ICodeCompletionSessionManager codeCompletionSessionManager)
 			: base(solution, settingsStore, cachingLexerService, commandProcessor, psiServices) {
 			
 			_skippingTypingAssist = skippingTypingAssist;
-			_intellisenseManager = intellisenseManager;
+			_codeCompletionSessionManager = codeCompletionSessionManager;
 
 			typingAssistManager.AddTypingHandler(lifetime, '=', this, OnEqualTyped, IsTypingSmartParenthesisHandlerAvailable);
 			typingAssistManager.AddTypingHandler(lifetime, '"', this, OnQuoteTyped, IsTypingSmartParenthesisHandlerAvailable);

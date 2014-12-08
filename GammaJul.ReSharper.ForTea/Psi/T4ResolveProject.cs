@@ -13,6 +13,9 @@
 //    See the License for the specific language governing permissions and
 //    limitations under the License.
 #endregion
+
+
+using JetBrains.DataFlow;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -38,11 +41,13 @@ namespace GammaJul.ReSharper.ForTea.Psi {
 	/// </summary>
 	internal sealed class T4ResolveProject : IProject {
 
-		private readonly IUserDataHolder _dataHolder;
 		private readonly Guid _guid = Guid.NewGuid();
-		private readonly ISolution _solution;
-		private readonly IShellLocks _shellLocks;
-		private readonly IProjectProperties _projectProperties;
+		[NotNull] private readonly IUserDataHolder _dataHolder;
+		[NotNull] private readonly ISolution _solution;
+		[NotNull] private readonly IShellLocks _shellLocks;
+		[NotNull] private readonly IProjectProperties _projectProperties;
+		[NotNull] private readonly IProperty<FileSystemPath> _projectFileLocationLive;
+		[NotNull] private readonly IProperty<FileSystemPath> _projectLocationLive;
 
 		public void PutData<T>(Key<T> key, T val) where T : class {
 			_dataHolder.PutData(key, val);
@@ -186,6 +191,18 @@ namespace GammaJul.ReSharper.ForTea.Psi {
 			return FileSystemPath.Empty;
 		}
 
+		public T GetComponent<T>() where T : class {
+			return null;
+		}
+
+		public IProperty<FileSystemPath> ProjectFileLocationLive {
+			get { return _projectFileLocationLive; }
+		}
+
+		public IProperty<FileSystemPath> ProjectLocationLive {
+			get { return _projectLocationLive; }
+		}
+
 		private sealed class T4ResolveProjectProperties : ProjectPropertiesBase, IProjectProperties {
 
 			public override IBuildSettings BuildSettings {
@@ -211,10 +228,13 @@ namespace GammaJul.ReSharper.ForTea.Psi {
 		}
 		
 		internal T4ResolveProject([NotNull] ISolution solution, [NotNull] IShellLocks shellLocks, [NotNull] PlatformID platformID, [NotNull] IUserDataHolder dataHolder) {
+			Lifetime solutionLifetime = solution.GetLifetime();
 			_shellLocks = shellLocks;
 			_solution = solution;
 			_dataHolder = dataHolder;
 			_projectProperties = new T4ResolveProjectProperties(platformID);
+			_projectFileLocationLive = new Property<FileSystemPath>(solutionLifetime, "ProjectFileLocationLive");
+			_projectLocationLive = new Property<FileSystemPath>(solutionLifetime, "ProjectLocationLive");
 		}
 
 	}

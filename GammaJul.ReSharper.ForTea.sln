@@ -7,7 +7,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 	ProjectSection(SolutionItems) = preProject
 		GammaJul.ReSharper.ForTea\ForTea.props = GammaJul.ReSharper.ForTea\ForTea.props
 		GammaJul.ReSharper.ForTea\GammaJul.ReSharper.ForTea.nuspec = GammaJul.ReSharper.ForTea\GammaJul.ReSharper.ForTea.nuspec
-		Updates.xslt = Updates.xslt
 	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GammaJul.ReSharper.ForTea.v8.2", "GammaJul.ReSharper.ForTea\GammaJul.ReSharper.ForTea.v8.2.csproj", "{1C5D4D50-09F2-406B-B0AE-1014C529EFC9}"
