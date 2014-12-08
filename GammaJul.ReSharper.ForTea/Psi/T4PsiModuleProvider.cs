@@ -27,7 +27,10 @@ using JetBrains.ProjectModel.model2.Assemblies.Interfaces;
 using JetBrains.ReSharper.Psi;
 using JetBrains.ReSharper.Psi.Modules;
 using JetBrains.Util;
-
+#if RS90
+using JetBrains.Application.changes;
+using JetBrains.ReSharper.Resources.Shell;
+#endif
 
 namespace GammaJul.ReSharper.ForTea.Psi {
 

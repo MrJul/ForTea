@@ -13,16 +13,13 @@
 //    See the License for the specific language governing permissions and
 //    limitations under the License.
 #endregion
-using System.Collections.Generic;
 using GammaJul.ReSharper.ForTea.Psi;
 using JetBrains.Annotations;
 using JetBrains.DocumentModel;
 using JetBrains.IDE;
 using JetBrains.ProjectModel;
 using JetBrains.ReSharper.Feature.Services.Navigation;
-using JetBrains.ReSharper.Feature.Services.Navigation.Search;
 using JetBrains.ReSharper.Feature.Services.Occurences;
-using JetBrains.ReSharper.Psi;
 using JetBrains.UI.PopupWindowManager;
 using JetBrains.Util;
 
@@ -31,52 +28,16 @@ namespace GammaJul.ReSharper.ForTea.Services.Navigation {
 	/// <summary>
 	/// Represents an occurence of text in an include file that is located outside of the solution.
 	/// </summary>
-	public class T4OutsideSolutionOccurence : IOccurence {
+	public partial class T4OutsideSolutionOccurence {
 
-		private readonly List<IOccurence> _mergedItems = new List<IOccurence>();
-		private readonly IRangeMarker _rangeMarker;
-
-		public TextRange TextRange {
-			get { return _rangeMarker.Range; }
-		}
-
-		public DeclaredElementEnvoy<ITypeMember> TypeMember {
-			get { return null; }
-		}
-
-		public DeclaredElementEnvoy<ITypeElement> TypeElement {
-			get { return null; }
-		}
-
-		public DeclaredElementEnvoy<INamespace> Namespace {
-			get { return null; }
-		}
-
-		public OccurenceType OccurenceType {
-			get { return OccurenceType.TextualOccurence; }
-		}
-
+		[NotNull] private readonly IRangeMarker _rangeMarker;
+		
 		public bool IsValid {
 			get { return _rangeMarker.IsValid; }
 		}
-
-		public object MergeKey {
-			get {
-				// TODO: provide a real merge key
-				return this;
-			}
-		}
-
-		public IList<IOccurence> MergedItems {
-			get { return _mergedItems; }
-		}
-
+		
 		public OccurencePresentationOptions PresentationOptions { get; set; }
 		
-		public ProjectModelElementEnvoy ProjectModelElementEnvoy {
-			get { return ProjectModelElementEnvoy.Empty; }
-		}
-
 		public string DumpToString() {
 			return _rangeMarker.DocumentRange.ToString();
 		}

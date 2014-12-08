@@ -36,9 +36,13 @@ using JetBrains.ReSharper.Psi.Modules;
 using JetBrains.ReSharper.Psi.Web.Impl.PsiModules;
 using JetBrains.Threading;
 using JetBrains.Util;
-using JetBrains.VsIntegration.ProjectModel;
 using Microsoft.VisualStudio.Shell.Interop;
 using Microsoft.VisualStudio.TextTemplating;
+#if RS90
+using JetBrains.Application.changes;
+#elif RS82
+using JetBrains.VsIntegration.ProjectModel;
+#endif
 
 namespace GammaJul.ReSharper.ForTea.Psi {
 

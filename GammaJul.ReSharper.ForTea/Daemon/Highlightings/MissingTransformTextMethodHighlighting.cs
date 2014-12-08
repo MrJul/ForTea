@@ -18,14 +18,17 @@
 using JetBrains.Annotations;
 using JetBrains.DocumentModel;
 using JetBrains.ProjectModel;
-using JetBrains.ReSharper.Daemon;
-using JetBrains.ReSharper.Daemon.Impl;
 using JetBrains.ReSharper.Psi.CSharp.Tree;
+#if RS90
+using JetBrains.ReSharper.Feature.Services.Daemon;
+#elif RS82
+using JetBrains.ReSharper.Daemon;
+#endif
 
 namespace GammaJul.ReSharper.ForTea.Daemon.Highlightings {
 
 	[StaticSeverityHighlighting(Severity.ERROR, CSharpProjectFileType.Name, OverlapResolve = OverlapResolveKind.ERROR, ShowToolTipInStatusBar = true, AttributeId = HighlightingAttributeIds.ERROR_ATTRIBUTE)]
-	public class MissingTransformTextMethodHighlighting : IHighlightingWithRange {
+	public partial class MissingTransformTextMethodHighlighting : IHighlighting {
 
 		private readonly IDeclaredTypeUsage _declaredTypeUsage;
 

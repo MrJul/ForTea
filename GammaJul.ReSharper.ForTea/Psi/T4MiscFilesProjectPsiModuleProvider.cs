@@ -13,8 +13,6 @@
 //    See the License for the specific language governing permissions and
 //    limitations under the License.
 #endregion
-
-
 using JetBrains.Util;
 using System.Collections.Generic;
 using JetBrains.Annotations;
@@ -23,6 +21,9 @@ using JetBrains.DataFlow;
 using JetBrains.ProjectModel;
 using JetBrains.ReSharper.Psi;
 using JetBrains.ReSharper.Psi.Modules;
+#if RS90
+using JetBrains.Application.changes;
+#endif
 
 namespace GammaJul.ReSharper.ForTea.Psi {
 

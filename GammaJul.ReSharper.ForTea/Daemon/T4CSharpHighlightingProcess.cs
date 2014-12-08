@@ -19,13 +19,17 @@ using JetBrains.Application.Settings;
 using JetBrains.DocumentModel;
 using JetBrains.ReSharper.Daemon;
 using JetBrains.ReSharper.Daemon.CSharp.Stages;
-using JetBrains.ReSharper.Daemon.Stages;
 using JetBrains.ReSharper.Psi;
 using JetBrains.ReSharper.Psi.CSharp.Parsing;
 using JetBrains.ReSharper.Psi.CSharp.Tree;
 using JetBrains.ReSharper.Psi.ExtensionsAPI.Tree;
 using JetBrains.ReSharper.Psi.Parsing;
 using JetBrains.ReSharper.Psi.Tree;
+#if RS90
+using JetBrains.ReSharper.Feature.Services.Daemon;
+#elif RS82
+using JetBrains.ReSharper.Daemon.Stages;
+#endif
 
 namespace GammaJul.ReSharper.ForTea.Daemon {
 	
@@ -87,7 +91,7 @@ namespace GammaJul.ReSharper.ForTea.Daemon {
 
 			string attributeId = GetHighlightingAttributeId(node);
 			if (attributeId != null)
-				context.AddHighlighting(new PredefinedHighlighting(attributeId), highlightingRange);
+				context.AddHighlighting(new PredefinedHighlighting(attributeId, highlightingRange));
 		}
 
 		[CanBeNull]

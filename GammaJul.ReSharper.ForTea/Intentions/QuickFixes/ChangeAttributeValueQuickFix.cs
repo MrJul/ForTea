@@ -13,19 +13,26 @@
 //    See the License for the specific language governing permissions and
 //    limitations under the License.
 #endregion
+
+
 using System;
 using GammaJul.ReSharper.ForTea.Daemon.Highlightings;
 using JetBrains.Annotations;
-using JetBrains.Application;
 using JetBrains.Application.Progress;
 using JetBrains.DocumentModel;
 using JetBrains.ProjectModel;
-using JetBrains.ReSharper.Feature.Services.Bulbs;
 using JetBrains.ReSharper.Feature.Services.LiveTemplates.LiveTemplates;
-using JetBrains.ReSharper.Intentions.Extensibility;
 using JetBrains.TextControl;
 using JetBrains.Util;
 using JetBrains.ReSharper.Psi.Tree;
+#if RS90
+using JetBrains.ReSharper.Resources.Shell;
+using JetBrains.ReSharper.Feature.Services.QuickFixes;
+#elif RS82
+using JetBrains.Application;
+using JetBrains.ReSharper.Feature.Services.Bulbs;
+using JetBrains.ReSharper.Intentions.Extensibility;
+#endif
 
 namespace GammaJul.ReSharper.ForTea.Intentions.QuickFixes {
 

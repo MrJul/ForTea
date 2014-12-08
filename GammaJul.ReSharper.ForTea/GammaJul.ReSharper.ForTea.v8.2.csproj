@@ -6,6 +6,9 @@
     <AssemblyName>GammaJul.ReSharper.ForTea.v8.2</AssemblyName>
   </PropertyGroup>
   <Import Project="ForTea.props" />
+  <PropertyGroup>
+    <DefineConstants>$(DefineConstants);RS82</DefineConstants>
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="EnvDTE, Version=8.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
       <EmbedInteropTypes>False</EmbedInteropTypes>
@@ -25,6 +28,8 @@
     <Compile Include="Daemon\Highlightings\MissingRequiredAttributeHighlighting.cs" />
     <Compile Include="Daemon\Highlightings\MissingTokenHighlighting.cs" />
     <Compile Include="Daemon\Highlightings\MissingTransformTextMethodHighlighting.cs" />
+    <Compile Include="Daemon\Highlightings\MissingTransformTextMethodHighlighting.v8.2.cs" />
+    <Compile Include="Daemon\Highlightings\PredefinedHighlighting.v8.2.cs" />
     <Compile Include="Daemon\Highlightings\PredefinedHighlighting.cs" />
     <Compile Include="Daemon\Highlightings\StatementAfterFeatureHighlighting.cs" />
     <Compile Include="Daemon\Highlightings\T4Highlighting.cs" />
@@ -40,7 +45,7 @@
     <Compile Include="Daemon\T4HighlightingProcess.cs" />
     <Compile Include="Daemon\T4HighlightingStage.cs" />
     <Compile Include="Daemon\T4LanguageSpecificDaemonBehavior.cs" />
-    <Compile Include="ExposeTextTemplatingEngineHostService.cs" />
+    <Compile Include="ExposeTextTemplatingEngineHostService.v8.2.cs" />
     <Compile Include="Intentions\QuickFixes\AddMissingTokenQuickFix.cs" />
     <Compile Include="Intentions\QuickFixes\ChangeAttributeValueQuickFix.cs" />
     <Compile Include="Intentions\QuickFixes\CreateTransformTextMethodQuickFix.cs" />
@@ -61,8 +66,10 @@
     <Compile Include="Parsing\T4TokenNodeTypes.cs" />
     <Compile Include="Parsing\T4TreeBuilder.cs" />
     <Compile Include="Parsing\T4TreeBuilder.DirectiveBuilder.cs" />
+    <Compile Include="Properties\AssemblyInfo.v8.2.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Psi\CodeStyle\T4CodeFormatter.cs" />
+    <Compile Include="Psi\CodeStyle\T4CodeFormatter.v8.2.cs" />
     <Compile Include="Psi\CodeStyle\T4CSharpCustomFormattingInfoProvider.cs" />
     <Compile Include="Psi\Directives\AssemblyDirectiveInfo.cs" />
     <Compile Include="Psi\Directives\BooleanDirectiveAttributeInfo.cs" />
@@ -79,9 +86,11 @@
     <Compile Include="Psi\Directives\ParameterDirectiveInfo.cs" />
     <Compile Include="Psi\Directives\TemplateDirectiveInfo.cs" />
     <Compile Include="Psi\GenerationResult.cs" />
+    <Compile Include="Psi\PsiExtensions.v8.2.cs" />
     <Compile Include="Psi\PsiExtensions.cs" />
     <Compile Include="Psi\T4CachingLexerService.cs" />
     <Compile Include="Psi\T4CSharpCodeGenerator.cs" />
+    <Compile Include="Psi\T4CSharpCustomModificationHandler.v8.2.cs" />
     <Compile Include="Psi\T4CSharpCustomModificationHandler.cs" />
     <Compile Include="Psi\T4DocumentRangeTranslator.cs" />
     <Compile Include="Psi\T4FileData.cs" />
@@ -127,6 +136,7 @@
     <Compile Include="Services\Navigation\T4OutsideSolutionNavigationInfo.cs" />
     <Compile Include="Services\Navigation\T4OutsideSolutionNavigationProvider.cs" />
     <Compile Include="Services\Navigation\T4OutsideSolutionOccurence.cs" />
+    <Compile Include="Services\Navigation\T4OutsideSolutionOccurence.v8.2.cs" />
     <Compile Include="Services\Selection\T4CodeBehindWrappedSelection.cs" />
     <Compile Include="Services\Selection\T4NodeSelection.cs" />
     <Compile Include="Services\Selection\T4SelectEmbracingConstructProvider.cs" />

@@ -18,12 +18,17 @@ using System.Collections.Generic;
 using JetBrains.Annotations;
 using JetBrains.Application;
 using JetBrains.Application.Components;
-using JetBrains.ProjectModel;
 using JetBrains.Util;
-using JetBrains.VsIntegration.Application;
 using Microsoft.VisualStudio.TextTemplating;
 using Microsoft.Win32;
+#if RS90
+using JetBrains.Application.platforms;
+using PlatformID = JetBrains.Application.platforms.PlatformID;
+#elif RS82
+using JetBrains.ProjectModel;
+using JetBrains.VsIntegration.Application;
 using PlatformID = JetBrains.ProjectModel.PlatformID;
+#endif
 
 namespace GammaJul.ReSharper.ForTea {
 

@@ -13,11 +13,13 @@
 //    See the License for the specific language governing permissions and
 //    limitations under the License.
 #endregion
-
-
 using GammaJul.ReSharper.ForTea.Psi;
-using JetBrains.ReSharper.Daemon;
 using JetBrains.ReSharper.Psi;
+#if RS90
+using JetBrains.ReSharper.Feature.Services.Daemon;
+#elif RS82
+using JetBrains.ReSharper.Daemon;
+#endif
 
 namespace GammaJul.ReSharper.ForTea.Daemon {
 

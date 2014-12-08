@@ -13,21 +13,27 @@
 //    See the License for the specific language governing permissions and
 //    limitations under the License.
 #endregion
+using JetBrains.DocumentModel;
 using System;
 using GammaJul.ReSharper.ForTea.Psi;
 using JetBrains.Annotations;
+#if RS90
+using JetBrains.ReSharper.Feature.Services.Daemon;
+#elif RS82
 using JetBrains.ReSharper.Daemon;
+#endif
 
 namespace GammaJul.ReSharper.ForTea.Daemon.Highlightings {
 
 	/// <summary>
-	/// Highlighting for T4 and C# that uses Visual Studio a predefined highlighter.
+	/// Highlighting for T4 and C# that uses a Visual Studio predefined highlighter.
 	/// </summary>
 	[StaticSeverityHighlighting(Severity.INFO, T4Language.Name, OverlapResolve = OverlapResolveKind.NONE, ShowToolTipInStatusBar = false)]
-	public class PredefinedHighlighting : ICustomAttributeIdHighlighting {
+	public partial class PredefinedHighlighting : ICustomAttributeIdHighlighting {
 
-		private readonly string _attributeId;
-
+		[NotNull] private readonly string _attributeId;
+		private readonly DocumentRange _range;
+		
 		public string AttributeId {
 			get { return _attributeId; }
 		}
@@ -48,8 +54,13 @@ namespace GammaJul.ReSharper.ForTea.Daemon.Highlightings {
 			get { return 0; }
 		}
 
-		public PredefinedHighlighting([NotNull] string attributeId) {
+		public DocumentRange CalculateRange() {
+			return _range;
+		}
+
+		public PredefinedHighlighting([NotNull] string attributeId, DocumentRange range) {
 			_attributeId = attributeId;
+			_range = range;
 		}
 
 	}

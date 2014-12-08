@@ -16,14 +16,18 @@
 using GammaJul.ReSharper.ForTea.Psi;
 using GammaJul.ReSharper.ForTea.Tree;
 using JetBrains.Annotations;
+#if RS90
+using JetBrains.ReSharper.Feature.Services.Daemon;
+#elif RS82
 using JetBrains.ReSharper.Daemon;
+#endif
 
 namespace GammaJul.ReSharper.ForTea.Daemon.Highlightings {
 
 	[StaticSeverityHighlighting(Severity.ERROR, T4Language.Name, OverlapResolve = OverlapResolveKind.ERROR, ShowToolTipInStatusBar = true, AttributeId = HighlightingAttributeIds.ERROR_ATTRIBUTE)]
 	public class MissingRequiredAttributeHighlighting : T4Highlighting<IT4Token> {
 
-		private readonly string _missingAttributeName;
+		[NotNull] private readonly string _missingAttributeName;
 
 		[NotNull]
 		public string MissingAttributeName {

@@ -15,7 +15,6 @@
 #endregion
 using System.Reflection;
 using GammaJul.ReSharper.ForTea;
-using JetBrains.Application.PluginSupport;
 
 [assembly: AssemblyTitle("GammaJul.ReSharper.ForTea")]
 [assembly: AssemblyDescription("Provides support for editing T4 (.tt) files.")]
@@ -25,9 +24,4 @@ using JetBrains.Application.PluginSupport;
 [assembly: AssemblyCopyright("Copyright © Julien Lebosquain, 2012-2014")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
-[assembly: AssemblyVersion("1.1.8.0")]
-
-// The following information is displayed by ReSharper in the Plugins dialog
-[assembly: PluginTitle("ForTea")]
-[assembly: PluginDescription("Provides support for editing T4 (.tt) files.")]
-[assembly: PluginVendor("Julien Lebosquain")]
+[assembly: AssemblyVersion("1.2.0.0")]

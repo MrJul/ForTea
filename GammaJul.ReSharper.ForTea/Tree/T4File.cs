@@ -19,13 +19,17 @@ using System.Linq;
 using GammaJul.ReSharper.ForTea.Parsing;
 using GammaJul.ReSharper.ForTea.Psi;
 using GammaJul.ReSharper.ForTea.Psi.Directives;
-using JetBrains.Application;
 using JetBrains.ReSharper.Psi;
 using JetBrains.ReSharper.Psi.ExtensionsAPI.Tree;
 using JetBrains.ReSharper.Psi.Parsing;
 using JetBrains.ReSharper.Psi.Tree;
 using JetBrains.Text;
 using JetBrains.Util;
+#if RS90
+using JetBrains.ReSharper.Resources.Shell;
+#elif RS82
+using JetBrains.Application;
+#endif
 
 namespace GammaJul.ReSharper.ForTea.Tree {
 

@@ -23,8 +23,12 @@ using JetBrains.ReSharper.Feature.Services.TypingAssist;
 using JetBrains.ReSharper.Feature.Services.Web.TypingAssist;
 using JetBrains.ReSharper.Psi;
 using JetBrains.ReSharper.Psi.CSharp;
-using JetBrains.ReSharper.Psi.Services;
 using JetBrains.TextControl;
+#if RS90
+using JetBrains.ReSharper.Psi.CachingLexers;
+#elif RS82
+using JetBrains.ReSharper.Psi.Services;
+#endif
 
 namespace GammaJul.ReSharper.ForTea.Services.TypingAssist {
 

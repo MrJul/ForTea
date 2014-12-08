@@ -15,7 +15,6 @@
 #endregion
 
 
-using JetBrains.ReSharper.Psi.CSharp.CodeStyle.FormatSettings;
 using JetBrains.ReSharper.Psi.ExtensionsAPI.Resolve;
 using System;
 using System.Linq;
@@ -48,7 +47,7 @@ namespace GammaJul.ReSharper.ForTea.Psi {
 	/// (eg: adding a using statement translates to an import directive).
 	/// </summary>
 	[ProjectFileType(typeof(T4ProjectFileType))]
-	public class T4CSharpCustomModificationHandler : CustomModificationHandler<IT4CodeBlock, IT4Directive>, ICSharpCustomModificationHandler {
+	public partial class T4CSharpCustomModificationHandler : CustomModificationHandler<IT4CodeBlock, IT4Directive>, ICSharpCustomModificationHandler {
 
 		private readonly DirectiveInfoManager _directiveInfoManager;
 
@@ -102,11 +101,7 @@ namespace GammaJul.ReSharper.ForTea.Psi {
 		/// <param name="usingDirective">The using directive.</param>
 		/// <returns>A <see cref="TreeTextRange"/> corresponding to the namespace in <paramref name="usingDirective"/>.</returns>
 		protected override TreeTextRange GetNameRange(ITreeNode usingDirective) {
-			var namespaceDirective = usingDirective as IUsingNamespaceDirective;
-			if (namespaceDirective == null)
-				throw new FailPsiTransactionException("Cannot create namespace alias.");
-
-			return namespaceDirective.ImportedSymbolName.GetTreeTextRange();
+			return (usingDirective as IUsingDirective).GetUsedNamespaceNode().GetTreeTextRange();
 		}
 
 		/// <summary>
@@ -192,11 +187,11 @@ namespace GammaJul.ReSharper.ForTea.Psi {
 		/// <returns><c>true</c> if the specified using directive can be removed; otherwise, <c>false</c>.</returns>
 		/// <remarks>As long as the using is represented as a T4 import directive in the root file, it can be removed.</remarks>
 		public bool CanRemoveUsing(IDocument document, IUsingDirective usingDirective) {
-			var namespaceDirective = usingDirective as IUsingNamespaceDirective;
-			if (namespaceDirective == null)
+			IReferenceName namespaceNode = usingDirective.GetUsedNamespaceNode();
+			if (namespaceNode == null)
 				return false;
 
-			var directive = namespaceDirective.ImportedSymbolName.GetT4ContainerFromCSharpNode<IT4Directive>();
+			var directive = namespaceNode.GetT4ContainerFromCSharpNode<IT4Directive>();
 			return directive != null && directive.GetContainingNode<IT4Include>() == null;
 		}
 		
@@ -246,11 +241,11 @@ namespace GammaJul.ReSharper.ForTea.Psi {
 		/// <param name="usingDirective">The using directive to remove.</param>
 		/// <param name="action">The action to perform to remove the directive.</param>
 		public void HandleRemoveImport(IPsiServices psiServices, ICSharpTypeAndNamespaceHolderDeclaration scope, IUsingDirective usingDirective, Action action) {
-			var namespaceDirective = usingDirective as IUsingNamespaceDirective;
-			if (namespaceDirective == null)
-				Assertion.Fail("Only a IUsingNamespaceDirective can be removed.");
+			ICSharpTreeNode namespaceNode = usingDirective.GetUsedNamespaceNode();
+			if (namespaceNode == null)
+				Assertion.Fail("Only a namespace using can be removed.");
 			else {
-				TreeTextRange range = namespaceDirective.ImportedSymbolName.GetTreeTextRange();
+				TreeTextRange range = namespaceNode.GetTreeTextRange();
 				HandleRemoveImportInternal(psiServices, scope, usingDirective, action, CSharpLanguage.Instance, range);
 			}
 		}
@@ -300,15 +295,10 @@ namespace GammaJul.ReSharper.ForTea.Psi {
 		/// <returns>The namespace contained in <paramref name="usingDirective"/>.</returns>
 		[NotNull]
 		private static string GetNamespaceFromUsingDirective([NotNull] ITreeNode usingDirective) {
-			var namespaceDirective = usingDirective as IUsingNamespaceDirective;
-			if (namespaceDirective == null)
+			IReferenceName namespaceNode = (usingDirective as IUsingDirective).GetUsedNamespaceNode();
+			if (namespaceNode == null)
 				throw new FailPsiTransactionException("Cannot create namespace alias.");
-			
-			INamespace importedNamespace = namespaceDirective.ImportedNamespace;
-			if (importedNamespace == null)
-				throw new FailPsiTransactionException("Cannot create namespace alias.");
-
-			return importedNamespace.QualifiedName;
+			return namespaceNode.QualifiedName;
 		}
 
 		/// <summary>
@@ -331,11 +321,7 @@ namespace GammaJul.ReSharper.ForTea.Psi {
 		public string GetSpecialMethodType(DeclaredElementPresenterStyle presenter, IMethod method, ISubstitution substitution) {
 			return null;
 		}
-
-		public ThisQualifierStyle GetThisQualifierStyle(ITreeNode context) {
-	        return context.GetSettingsStore().GetValue(CSharpCustomModificationHandlerDummy.ThisQualifierStyleAccessor);
-	    }
-
+		
 		/// <summary>
 		/// Initializes a new instance of the <see cref="T4CSharpCustomModificationHandler"/> class.
 		/// </summary>

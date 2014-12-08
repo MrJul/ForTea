@@ -26,14 +26,19 @@ using JetBrains.ReSharper.Feature.Services.CodeCompletion;
 using JetBrains.ReSharper.Feature.Services.TypingAssist;
 using JetBrains.ReSharper.Psi;
 using JetBrains.ReSharper.Psi.Parsing;
-using JetBrains.ReSharper.Psi.Services;
 using JetBrains.TextControl;
 using JetBrains.TextControl.Util;
+#if RS90
+using JetBrains.ReSharper.Psi.CachingLexers;
+#elif RS82
+using JetBrains.ReSharper.Psi.Services;
+#endif
 
 namespace GammaJul.ReSharper.ForTea.Services.TypingAssist {
 
 	[SolutionComponent]
 	public class T4TypingAssist : TypingAssistLanguageBase<T4Language, T4CodeFormatter>, ITypingHandler {
+
 		private readonly SkippingTypingAssist _skippingTypingAssist;
 		private readonly IntellisenseManager _intellisenseManager;
 

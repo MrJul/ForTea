@@ -14,7 +14,11 @@
 //    limitations under the License.
 #endregion
 using JetBrains.ReSharper.Psi;
+#if RS90
+using JetBrains.ReSharper.Psi.CachingLexers;
+#elif RS82
 using JetBrains.ReSharper.Psi.Services;
+#endif
 
 namespace GammaJul.ReSharper.ForTea.Psi {
 

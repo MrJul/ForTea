@@ -13,10 +13,17 @@
 //    See the License for the specific language governing permissions and
 //    limitations under the License.
 #endregion
+
+
+using JetBrains.DocumentModel;
 using System;
 using JetBrains.Annotations;
-using JetBrains.ReSharper.Daemon;
 using JetBrains.ReSharper.Psi.Tree;
+#if RS90
+using JetBrains.ReSharper.Feature.Services.Daemon;
+#elif RS82
+using JetBrains.ReSharper.Daemon;
+#endif
 
 namespace GammaJul.ReSharper.ForTea.Daemon.Highlightings {
 
@@ -26,12 +33,14 @@ namespace GammaJul.ReSharper.ForTea.Daemon.Highlightings {
 	/// <typeparam name="TNode">The type of the node.</typeparam>
 	public abstract class T4Highlighting<TNode> : IHighlighting
 	where TNode : ITreeNode {
-		private readonly TNode _associatedNode;
+
+		[NotNull] private readonly TNode _associatedNode;
 
 		/// <summary>
 		/// Gets the tree node associated with this highlighting.
 		/// </summary>
 		/// <remarks></remarks>
+		[NotNull]
 		public TNode AssociatedNode {
 			get { return _associatedNode; }
 		}
@@ -65,6 +74,10 @@ namespace GammaJul.ReSharper.ForTea.Daemon.Highlightings {
 			get { return 0; }
 		}
 
+		public DocumentRange CalculateRange() {
+			return _associatedNode.GetNavigationRange();
+		}
+
 		/// <summary>
 		/// Initializes a new instance of the <see cref="T4Highlighting{TNode}"/> class.
 		/// </summary>
@@ -72,8 +85,10 @@ namespace GammaJul.ReSharper.ForTea.Daemon.Highlightings {
 		protected T4Highlighting([NotNull] TNode associatedNode) {
 			if (ReferenceEquals(associatedNode, null))
 				throw new ArgumentNullException("associatedNode");
+
 			_associatedNode = associatedNode;
 		}
+
 	}
 
 }

@@ -28,6 +28,9 @@ using System.Linq;
 using JetBrains.Util;
 using JetBrains.ReSharper.Psi;
 using GammaJul.ReSharper.ForTea.Psi;
+#if RS90
+using JetBrains.ReSharper.Feature.Services.Daemon;
+#endif
 
 namespace GammaJul.ReSharper.ForTea.Daemon {
 

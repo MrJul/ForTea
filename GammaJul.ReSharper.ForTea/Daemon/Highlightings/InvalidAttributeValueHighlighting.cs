@@ -17,14 +17,19 @@ using GammaJul.ReSharper.ForTea.Psi;
 using GammaJul.ReSharper.ForTea.Psi.Directives;
 using GammaJul.ReSharper.ForTea.Tree;
 using JetBrains.Annotations;
+#if RS90
+using JetBrains.ReSharper.Feature.Services.Daemon;
+#elif RS82
 using JetBrains.ReSharper.Daemon;
+#endif
 
 namespace GammaJul.ReSharper.ForTea.Daemon.Highlightings {
 
 	[StaticSeverityHighlighting(Severity.ERROR, T4Language.Name, OverlapResolve = OverlapResolveKind.ERROR, ShowToolTipInStatusBar = true, AttributeId = HighlightingAttributeIds.ERROR_ATTRIBUTE)]
 	public class InvalidAttributeValueHighlighting : T4Highlighting<IT4Token> {
-		private readonly DirectiveAttributeInfo _directiveAttributeInfo;
-		private readonly string _errorMessage;
+
+		[CanBeNull] private readonly DirectiveAttributeInfo _directiveAttributeInfo;
+		[NotNull] private readonly string _errorMessage;
 
 		[CanBeNull]
 		public DirectiveAttributeInfo DirectiveAttributeInfo {

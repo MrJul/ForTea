@@ -17,8 +17,12 @@ using GammaJul.ReSharper.ForTea.Daemon.Highlightings;
 using GammaJul.ReSharper.ForTea.Parsing;
 using GammaJul.ReSharper.ForTea.Tree;
 using JetBrains.Annotations;
+using JetBrains.DocumentModel;
 using JetBrains.ReSharper.Daemon;
 using JetBrains.ReSharper.Psi.Tree;
+#if RS90
+using JetBrains.ReSharper.Feature.Services.Daemon;
+#endif
 
 namespace GammaJul.ReSharper.ForTea.Daemon {
 
@@ -33,8 +37,10 @@ namespace GammaJul.ReSharper.ForTea.Daemon {
 		/// <param name="element">The node to process.</param>
 		public override void ProcessBeforeInterior(ITreeNode element) {
 			string attributeId = GetHighlightingAttributeId(element);
-			if (attributeId != null)
-				AddHighlighting(new HighlightingInfo(element.GetHighlightingRange(), new PredefinedHighlighting(attributeId)));
+			if (attributeId != null) {
+				DocumentRange range = element.GetHighlightingRange();
+				AddHighlighting(new HighlightingInfo(range, new PredefinedHighlighting(attributeId, range)));
+			}
 		}
 
 		[CanBeNull]

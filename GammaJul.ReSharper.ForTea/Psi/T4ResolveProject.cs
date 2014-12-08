@@ -23,7 +23,11 @@ using JetBrains.ProjectModel.Impl;
 using JetBrains.ProjectModel.Properties;
 using JetBrains.ProjectModel.Properties.Common;
 using JetBrains.Util;
+#if RS90
+using PlatformID = JetBrains.Application.platforms.PlatformID;
+#elif RS82
 using PlatformID = JetBrains.ProjectModel.PlatformID;
+#endif
 
 namespace GammaJul.ReSharper.ForTea.Psi {
 

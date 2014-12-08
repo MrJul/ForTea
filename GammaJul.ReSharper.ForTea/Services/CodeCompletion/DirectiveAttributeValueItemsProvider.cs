@@ -24,6 +24,10 @@ using JetBrains.ReSharper.Psi;
 using JetBrains.ReSharper.Psi.Parsing;
 using JetBrains.ReSharper.Psi.Tree;
 using JetBrains.Util;
+#if RS90
+using JetBrains.ReSharper.Feature.Services.CodeCompletion.Infrastructure.LookupItems;
+using JetBrains.ReSharper.Feature.Services.CodeCompletion.Infrastructure.LookupItems.Impl;
+#endif
 
 namespace GammaJul.ReSharper.ForTea.Services.CodeCompletion {
 
@@ -79,7 +83,7 @@ namespace GammaJul.ReSharper.ForTea.Services.CodeCompletion {
 				return false;
 			
 			foreach (string intellisenseValue in attributeInfo.IntelliSenseValues) {
-				var item = new KeywordLookupItem(intellisenseValue);
+				var item = new TextLookupItem(intellisenseValue);
 				item.InitializeRanges(ranges, context.BasicContext);
 				collector.AddAtDefaultPlace(item);
 			}

@@ -19,12 +19,11 @@ using JetBrains.Annotations;
 using JetBrains.ProjectModel;
 using JetBrains.ProjectModel.Properties;
 using JetBrains.ReSharper.Psi;
-using JetBrains.ReSharper.Psi.Tree;
 using JetBrains.Util;
 
 namespace GammaJul.ReSharper.ForTea.Psi {
 	
-	internal static class PsiExtensions {
+	internal static partial class PsiExtensions {
 
 		[CanBeNull]
 		internal static IPsiSourceFile FindSourceFileInSolution([CanBeNull] this FileSystemPath includePath, [CanBeNull] ISolution solution) {
@@ -44,7 +43,7 @@ namespace GammaJul.ReSharper.ForTea.Psi {
 			return "TextTemplatingFilePreprocessor".Equals(customTool, StringComparison.OrdinalIgnoreCase);
 		}
 
-				[CanBeNull]
+		[CanBeNull]
 		private static ProjectFileProperties TryGetProperties([CanBeNull] IProjectFile projectFile) {
 			return projectFile != null ? projectFile.Properties as ProjectFileProperties : null;
 		}
@@ -64,11 +63,6 @@ namespace GammaJul.ReSharper.ForTea.Psi {
 		internal static void MarkAsDirty([NotNull] this IPsiServices psiServices, [NotNull] IPsiSourceFile psiSourcefile) {
 			psiServices.Files.MarkAsDirty(psiSourcefile);
 			psiServices.Caches.MarkAsDirty(psiSourcefile);
-		}
-
-		[NotNull]
-		internal static PredefinedType GetPredefinedType([NotNull] this ITreeNode node) {
-			return node.GetPsiModule().GetPredefinedType(node.GetResolveContext());
 		}
 
 	}

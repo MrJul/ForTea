@@ -16,19 +16,17 @@
 
 
 using GammaJul.ReSharper.ForTea.Parsing;
-using JetBrains.Application.Progress;
 using JetBrains.Application.Settings;
 using JetBrains.ReSharper.Psi;
 using JetBrains.ReSharper.Psi.CodeStyle;
 using JetBrains.ReSharper.Psi.Impl.CodeStyle;
 using JetBrains.ReSharper.Psi.Tree;
-using JetBrains.ReSharper.Psi.Util;
 
 namespace GammaJul.ReSharper.ForTea.Psi.CodeStyle {
 
 	// TODO: implement the formatter
 	[Language(typeof(T4Language))]
-	public class T4CodeFormatter : CodeFormatterBase {
+	public partial class T4CodeFormatter : CodeFormatterBase {
 		
 		protected override PsiLanguageType LanguageType {
 			get { return T4Language.Instance; }
@@ -42,10 +40,6 @@ namespace GammaJul.ReSharper.ForTea.Psi.CodeStyle {
 			return false;
 		}
 		
-		public override ITreeRange Format(ITreeNode firstElement, ITreeNode lastElement, CodeFormatProfile profile, IProgressIndicator progressIndicator, IContextBoundSettingsStore overrideSettingsStore = null) {
-			return new TreeRange(firstElement, lastElement);
-		}
-
 		public override void FormatInsertedNodes(ITreeNode nodeFirst, ITreeNode nodeLast, bool formatSurround) {
 		}
 
