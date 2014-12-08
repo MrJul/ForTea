@@ -41,6 +41,13 @@ namespace GammaJul.ReSharper.ForTea.Tree {
 		}
 
 		/// <summary>
+		/// Checks if this element is filtered (whitespace, comment or error).
+		/// </summary>
+		public override bool IsFiltered() {
+			return GetTokenType().IsFiltered;
+		}
+
+		/// <summary>
 		/// Returns a textual representation of the token.
 		/// </summary>
 		/// <returns>A textual representation of the token.</returns>

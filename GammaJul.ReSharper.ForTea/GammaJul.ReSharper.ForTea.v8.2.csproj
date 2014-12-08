@@ -44,7 +44,7 @@
     <Compile Include="Intentions\QuickFixes\AddMissingTokenQuickFix.cs" />
     <Compile Include="Intentions\QuickFixes\ChangeAttributeValueQuickFix.cs" />
     <Compile Include="Intentions\QuickFixes\CreateTransformTextMethodQuickFix.cs" />
-    <Compile Include="Intentions\QuickFixes\HotspotHelper.v8.cs">
+    <Compile Include="Intentions\QuickFixes\HotspotHelper.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Intentions\QuickFixes\MoveStatementBlockQuickFix.cs" />
@@ -86,7 +86,6 @@
     <Compile Include="Psi\T4DocumentRangeTranslator.cs" />
     <Compile Include="Psi\T4FileData.cs" />
     <Compile Include="Psi\T4FileDataCache.cs" />
-    <Compile Include="Psi\T4FileDataCache.v8.cs" />
     <Compile Include="Psi\T4FileDataDiff.cs" />
     <Compile Include="Psi\T4GeneratedDocumentService.cs" />
     <Compile Include="Psi\T4Language.cs" />
@@ -105,7 +104,7 @@
     <Compile Include="Psi\T4PsiModuleProvider.cs" />
     <Compile Include="Psi\T4PsiProjectFileProperties.cs" />
     <Compile Include="Psi\T4ResolveProject.cs" />
-    <Compile Include="Psi\T4SecondaryDocumentGenerationResult.v8.cs" />
+    <Compile Include="Psi\T4SecondaryDocumentGenerationResult.cs" />
     <Compile Include="Psi\T4SecondaryLexingProcess.cs" />
     <Compile Include="Psi\VsBuildMacroHelper.cs" />
     <Compile Include="Services\CodeCompletion\AutopopupInDirective.cs" />
@@ -160,7 +159,6 @@
     <Compile Include="Tree\T4Include.cs" />
     <Compile Include="Tree\T4StatementBlock.cs" />
     <Compile Include="Tree\T4Token.cs" />
-    <Compile Include="Tree\T4Token.v8.cs" />
     <Compile Include="Tree\T4TokenRole.cs" />
     <Compile Include="Tree\T4TreeExtensions.cs" />
     <Compile Include="VsVersions.cs" />

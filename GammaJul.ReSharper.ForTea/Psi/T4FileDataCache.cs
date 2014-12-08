@@ -50,6 +50,16 @@ namespace GammaJul.ReSharper.ForTea.Psi {
 				CreateOrUpdateData(t4File);
 		}
 
+		/// <summary>
+		/// Called when a PSI element changes.
+		/// </summary>
+		/// <param name="treeNode">The tree node that changed.</param>
+		/// <param name="psiChangedElementType">The type of the PSI change.</param>
+		private void OnPsiChanged(ITreeNode treeNode, PsiChangedElementType psiChangedElementType) {
+			if (treeNode != null && psiChangedElementType == PsiChangedElementType.ContentsChanged)
+				OnPsiFileChanged(treeNode.GetContainingFile());
+		}
+
 		private void CreateOrUpdateData([NotNull] IT4File t4File) {
 			IPsiSourceFile sourceFile = t4File.GetSourceFile();
 			if (sourceFile == null || !sourceFile.LanguageType.Is<T4ProjectFileType>())
@@ -80,7 +90,9 @@ namespace GammaJul.ReSharper.ForTea.Psi {
 			lifetime.AddBracket(
 				() => psiFiles.PsiFileCreated += OnPsiFileChanged,
 				() => psiFiles.PsiFileCreated -= OnPsiFileChanged);
-			RegisterPsiChanged(lifetime, psiFiles);
+			lifetime.AddBracket(
+				() => psiFiles.AfterPsiChanged += OnPsiChanged,
+				() => psiFiles.AfterPsiChanged -= OnPsiChanged);
 			lifetime.AddDispose(_fileDataBySourceFile);
 		}
 
