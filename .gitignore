@@ -1,7 +1,8 @@
 *.user
-/packages
+*.nupkg
 /*.suo
+/Copy.bat
+/packages
 /_ReSharper*
 bin
 obj
-*.nupkg
