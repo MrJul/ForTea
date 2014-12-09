@@ -171,7 +171,6 @@
     <Compile Include="Intentions\QuickFixes\RemoveDirectiveQuickFix.cs" />
     <Compile Include="Intentions\QuickFixes\RemoveStatementBlockQuickFix.cs" />
     <Compile Include="Intentions\QuickFixes\RemoveToEndQuickFix.cs" />
-    <Compile Include="IT4Zone.v9.0.cs" />
     <Compile Include="Parsing\T4ElementFactory.cs" />
     <Compile Include="Parsing\T4FilteringLexer.cs" />
     <Compile Include="Parsing\T4Lexer.cs" />
@@ -260,7 +259,6 @@
     <Compile Include="Services\TypingAssist\T4TypingAssist.cs" />
     <Compile Include="SupportedReSharperVersion.v9.0.cs" />
     <Compile Include="T4Environment.cs" />
-    <Compile Include="T4ZoneActivator.cs" />
     <Compile Include="Tree\IT4Block.cs" />
     <Compile Include="Tree\IT4CodeBlock.cs" />
     <Compile Include="Tree\IT4Directive.cs" />

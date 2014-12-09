@@ -24,12 +24,8 @@ using JetBrains.ReSharper.Psi.CSharp;
 
 namespace GammaJul.ReSharper.ForTea {
 
-//	[ZoneMarker]
-//	public class ZoneMarker : IPsiLanguageZone, IRequire<ISinceVs10Zone>, IRequire<ILanguageCSharpZone>, IRequire<ICodeEditingZone>, IRequire<DaemonZone>, IRequire<NavigationZone> {
-//	}
-
 	[ZoneMarker]
-	public class ZoneMarker {
+	public class ZoneMarker : IPsiLanguageZone, IRequire<ISinceVs10Zone>, IRequire<ILanguageCSharpZone>, IRequire<ICodeEditingZone>, IRequire<DaemonZone>, IRequire<NavigationZone> {
 	}
 
 }
