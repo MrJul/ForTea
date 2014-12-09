@@ -31,7 +31,8 @@ namespace GammaJul.ReSharper.ForTea.Services.CodeCompletion {
 
 	[SolutionComponent]
 	public class AutopopupInDirective : IAutomaticCodeCompletionStrategy {
-		private readonly SettingsScalarEntry _settingsEntry;
+
+		[NotNull] private readonly SettingsScalarEntry _settingsEntry;
 
 		public bool AcceptTyping(char c, ITextControl textControl, IContextBoundSettingsStore boundSettingsStore) {
 			return Char.IsLetterOrDigit(c) || c == ' ' || c == '"';

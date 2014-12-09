@@ -13,6 +13,9 @@
 //    See the License for the specific language governing permissions and
 //    limitations under the License.
 #endregion
+
+
+using Microsoft.VisualStudio.TextTemplating.VSHost;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -38,7 +41,6 @@ using JetBrains.Threading;
 using JetBrains.Util;
 using JetBrains.VsIntegration.ProjectModel;
 using Microsoft.VisualStudio.Shell.Interop;
-using Microsoft.VisualStudio.TextTemplating;
 #if RS90
 using JetBrains.Application.changes;
 using JetBrains.VsIntegration.ProjectDocuments.Projects.Builder;
@@ -60,6 +62,7 @@ namespace GammaJul.ReSharper.ForTea.Psi {
 		private readonly ChangeManager _changeManager;
 		private readonly IAssemblyFactory _assemblyFactory;
 		private readonly IShellLocks _shellLocks;
+		private readonly IProjectFile _projectFile;
 		private readonly IProject _project;
 		private readonly ISolution _solution;
 		private readonly T4Environment _t4Environment;
@@ -210,15 +213,21 @@ namespace GammaJul.ReSharper.ForTea.Psi {
 		/// <returns>An instance of <see cref="IVsBuildMacroInfo"/> if found.</returns>
 		[CanBeNull]
 		private IVsBuildMacroInfo TryGetVsBuildMacroInfo() {
+			// ReSharper disable once SuspiciousTypeConversion.Global
+			return TryGetVsHierarchy() as IVsBuildMacroInfo;
+		}
+
+		[CanBeNull]
+		private IVsHierarchy TryGetVsHierarchy() {
 			var synchronizer = _solution.TryGetComponent<ProjectModelSynchronizer>();
 			if (synchronizer == null)
 				return null;
 
-			VsHierarchyItem hierarchyItem = synchronizer.TryGetHierarchyItemByProjectItem(_project, false);
+			VsHierarchyItem hierarchyItem = synchronizer.TryGetHierarchyItemByProjectItem(_projectFile, false);
 			if (hierarchyItem == null)
 				return null;
 
-			return hierarchyItem.Hierarchy as IVsBuildMacroInfo;
+			return hierarchyItem.Hierarchy;
 		}
 
 		private void OnDataFileChanged(Pair<IPsiSourceFile, T4FileDataDiff> pair) {
@@ -242,36 +251,42 @@ namespace GammaJul.ReSharper.ForTea.Psi {
 
 			bool hasFileChanges = ResolveMacros(dataDiff.AddedMacros);
 			bool hasChanges = hasFileChanges;
-
-			ITextTemplatingEngineHost host = _t4Environment.Host.CanBeNull;
 			
-			// removes the assembly references from the old assembly directives
-			foreach (string removedAssembly in dataDiff.RemovedAssemblies) {
-				string assembly = removedAssembly;
-				if (host != null)
-					assembly = host.ResolveAssemblyReference(assembly);
+			ITextTemplatingComponents components = _t4Environment.Components.CanBeNull;
+			using (components.With(TryGetVsHierarchy(), _projectFile.Location)) {
 				
-				IAssemblyCookie cookie;
-				if (!_assemblyReferences.TryGetValue(assembly, out cookie))
-					continue;
+				// removes the assembly references from the old assembly directives
+				foreach (string removedAssembly in dataDiff.RemovedAssemblies) {
+					string assembly = removedAssembly;
+					if (components != null)
+						assembly = components.Host.ResolveAssemblyReference(assembly);
+				
+					IAssemblyCookie cookie;
+					if (!_assemblyReferences.TryGetValue(assembly, out cookie))
+						continue;
 
-				_assemblyReferences.Remove(assembly);
-				hasChanges = true;
-				cookie.Dispose();
-			}
-
-			// adds assembly references from the new assembly directives
-			foreach (string addedAssembly in dataDiff.AddedAssemblies) {
-				string assembly = addedAssembly;
-				if (host != null)
-					assembly = host.ResolveAssemblyReference(assembly);
-
-				if (_assemblyReferences.ContainsKey(assembly))
-					continue;
-
-				IAssemblyCookie cookie = TryAddReference(assembly);
-				if (cookie != null)
+					_assemblyReferences.Remove(assembly);
 					hasChanges = true;
+					cookie.Dispose();
+				}
+
+				// adds assembly references from the new assembly directives
+				foreach (string addedAssembly in dataDiff.AddedAssemblies) {
+					string assembly = addedAssembly;
+					if (components != null)
+						assembly = components.Host.ResolveAssemblyReference(assembly);
+
+					if (assembly == null)
+						continue;
+
+					if (_assemblyReferences.ContainsKey(assembly))
+						continue;
+
+					IAssemblyCookie cookie = TryAddReference(assembly);
+					if (cookie != null)
+						hasChanges = true;
+				}
+
 			}
 			
 			if (!hasChanges)
@@ -431,6 +446,7 @@ namespace GammaJul.ReSharper.ForTea.Psi {
 			_changeManager = changeManager;
 
 			_shellLocks = shellLocks;
+			_projectFile = projectFile;
 			_project = projectFile.GetProject();
 			Assertion.AssertNotNull(_project, "_project != null");
 			_solution = _project.GetSolution();

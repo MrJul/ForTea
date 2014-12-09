@@ -13,13 +13,16 @@
 //    See the License for the specific language governing permissions and
 //    limitations under the License.
 #endregion
+
+
+using Microsoft.VisualStudio.TextTemplating.VSHost;
+using JetBrains.Util.Lazy;
 using System;
 using System.Collections.Generic;
 using JetBrains.Annotations;
 using JetBrains.Application;
 using JetBrains.Application.Components;
 using JetBrains.Util;
-using Microsoft.VisualStudio.TextTemplating;
 using Microsoft.Win32;
 #if RS90
 using JetBrains.Application.platforms;
@@ -40,16 +43,16 @@ namespace GammaJul.ReSharper.ForTea {
 	public class T4Environment {
 
 		[NotNull] private readonly IVsEnvironmentInformation _vsEnvironmentInformation;
-		[NotNull] private readonly Optional<ITextTemplatingEngineHost> _textTemplatingEngineHost;
+		[NotNull] private readonly JetBrains.Util.Lazy.Lazy<Optional<ITextTemplatingComponents>> _components;
 		[NotNull] private readonly string[] _textTemplatingAssemblyNames;
 		[CanBeNull] private readonly PlatformID _platformID;
 		[CanBeNull] private IList<FileSystemPath> _includePaths;
 
 		[NotNull]
-		public Optional<ITextTemplatingEngineHost> Host {
-			get { return _textTemplatingEngineHost; }
+		public Optional<ITextTemplatingComponents> Components {
+			get { return _components.Value; }
 		}
-
+		
 		/// <summary>
 		/// Gets the version of the Visual Studio we're running under, two components only, <c>Major.Minor</c>. Example: “8.0”.
 		/// </summary>
@@ -128,9 +131,10 @@ namespace GammaJul.ReSharper.ForTea {
 			}
 		}
 		
-		public T4Environment([NotNull] IVsEnvironmentInformation vsEnvironmentInformation, [NotNull] Optional<ITextTemplatingEngineHost> textTemplatingEngineHost) {
+		public T4Environment([NotNull] IVsEnvironmentInformation vsEnvironmentInformation, [NotNull] RawVsServiceProvider rawVsServiceProvider) {
 			_vsEnvironmentInformation = vsEnvironmentInformation;
-			_textTemplatingEngineHost = textTemplatingEngineHost;
+			
+			_components = Lazy.Of(() => new Optional<ITextTemplatingComponents>(rawVsServiceProvider.Value.GetService<STextTemplating, ITextTemplatingComponents>()));
 
 			int vsMajorVersion = vsEnvironmentInformation.VsVersion2.Major;
 			switch (vsMajorVersion) {
