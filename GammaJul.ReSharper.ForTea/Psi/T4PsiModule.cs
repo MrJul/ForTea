@@ -40,6 +40,7 @@ using JetBrains.ReSharper.Psi.Modules;
 using JetBrains.ReSharper.Psi.Web.Impl.PsiModules;
 using JetBrains.Threading;
 using JetBrains.Util;
+using JetBrains.Util.Logging;
 using JetBrains.VsIntegration.ProjectDocuments.Projects.Builder;
 using JetBrains.VsIntegration.ProjectModel;
 using Microsoft.VisualStudio.Shell.Interop;
@@ -49,7 +50,7 @@ namespace GammaJul.ReSharper.ForTea.Psi {
 	/// <summary>
 	/// PSI module managing a single T4 file.
 	/// </summary>
-	internal sealed class T4PsiModule : IProjectPsiModule, IChangeProvider {
+	internal sealed class T4PsiModule : IPsiModule, /*IProjectPsiModule,*/ IChangeProvider {
 
 		private const string Prefix = "[T4] ";
 		
@@ -122,9 +123,9 @@ namespace GammaJul.ReSharper.ForTea.Psi {
 			get { return new[] { _sourceFile }; }
 		}
 
-		IProject IProjectPsiModule.Project {
-			get { return _project; }
-		}
+//		IProject IProjectPsiModule.Project {
+//			get { return _project; }
+//		}
 
 		/// <summary>
 		/// TargetFrameworkId corresponding to the module. 
@@ -321,8 +322,10 @@ namespace GammaJul.ReSharper.ForTea.Psi {
 			foreach (string addedMacro in macros) {
 				if (vsBuildMacroInfo == null) {
 					vsBuildMacroInfo = TryGetVsBuildMacroInfo();
-					if (vsBuildMacroInfo == null)
+					if (vsBuildMacroInfo == null) {
+						Logger.LogError("Couldn't get IVsBuildMacroInfo");
 						break;
+					}
 				}
 
 				hasChanges = true;
@@ -455,7 +458,7 @@ namespace GammaJul.ReSharper.ForTea.Psi {
 			_solution = project.GetSolution();
 
 			changeManager.RegisterChangeProvider(lifetime, this);
-			changeManager.AddDependency(lifetime, psiModules, this);		
+			changeManager.AddDependency(lifetime, psiModules, this);
 
 			_t4Environment = t4Environment;
 			_outputAssemblies = outputAssemblies;
