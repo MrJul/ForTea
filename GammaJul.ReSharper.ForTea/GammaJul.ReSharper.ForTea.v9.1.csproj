@@ -281,10 +281,10 @@
     <Compile Include="ZoneMarker.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="GammaJul.ReSharper.ForTea.v9.0.nuspec">
+    <None Include="GammaJul.ReSharper.ForTea.v9.1.nuspec">
       <SubType>Designer</SubType>
     </None>
-    <None Include="packages.GammaJul.ReSharper.ForTea.v9.0.config" />
+    <None Include="packages.GammaJul.ReSharper.ForTea.v9.1.config" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
