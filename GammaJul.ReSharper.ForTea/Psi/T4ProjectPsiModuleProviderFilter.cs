@@ -14,14 +14,11 @@
 //    limitations under the License.
 #endregion
 using JetBrains.Annotations;
-using JetBrains.Application;
+using JetBrains.Application.changes;
 using JetBrains.DataFlow;
 using JetBrains.ProjectModel;
 using JetBrains.ReSharper.Psi.Modules;
 using JetBrains.Util;
-#if RS90
-using JetBrains.Application.changes;
-#endif
 
 namespace GammaJul.ReSharper.ForTea.Psi {
 

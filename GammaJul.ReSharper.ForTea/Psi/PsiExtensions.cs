@@ -19,11 +19,12 @@ using JetBrains.Annotations;
 using JetBrains.ProjectModel;
 using JetBrains.ProjectModel.Properties;
 using JetBrains.ReSharper.Psi;
+using JetBrains.ReSharper.Psi.CSharp.Tree;
 using JetBrains.Util;
 
 namespace GammaJul.ReSharper.ForTea.Psi {
 	
-	internal static partial class PsiExtensions {
+	internal static class PsiExtensions {
 
 		[CanBeNull]
 		internal static IPsiSourceFile FindSourceFileInSolution([CanBeNull] this FileSystemPath includePath, [CanBeNull] ISolution solution) {
@@ -63,6 +64,19 @@ namespace GammaJul.ReSharper.ForTea.Psi {
 		internal static void MarkAsDirty([NotNull] this IPsiServices psiServices, [NotNull] IPsiSourceFile psiSourcefile) {
 			psiServices.Files.MarkAsDirty(psiSourcefile);
 			psiServices.Caches.MarkAsDirty(psiSourcefile);
+		}
+
+		[CanBeNull]
+		internal static IReferenceName GetUsedNamespaceNode([CanBeNull] this IUsingDirective directive) {
+			var usingSymbolDirective = directive as IUsingSymbolDirective;
+			if (usingSymbolDirective == null)
+				return null;
+
+			DeclaredElementInstance<IDeclaredElement> importedSymbol = usingSymbolDirective.ImportedSymbol;
+			if (importedSymbol == null || !(importedSymbol.Element is INamespace))
+				return null;
+
+			return usingSymbolDirective.ImportedSymbolName;
 		}
 
 	}

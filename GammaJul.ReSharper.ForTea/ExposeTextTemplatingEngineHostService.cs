@@ -1,10 +1,6 @@
 ﻿using Microsoft.VisualStudio.TextTemplating;
 using Microsoft.VisualStudio.TextTemplating.VSHost;
-#if RS90
 using JetBrains.VsIntegration.Shell;
-#elif RS82
-using JetBrains.VsIntegration.Application;
-#endif
 
 namespace GammaJul.ReSharper.ForTea {
 

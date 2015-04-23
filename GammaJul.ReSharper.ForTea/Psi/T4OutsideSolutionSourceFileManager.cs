@@ -34,11 +34,11 @@ namespace GammaJul.ReSharper.ForTea.Psi {
 	[SolutionComponent]
 	internal class T4OutsideSolutionSourceFileManager : IPsiModuleFactory {
 
-		private readonly StrongToWeakDictionary<FileSystemPath, IPsiSourceFile> _sourceFiles = new StrongToWeakDictionary<FileSystemPath, IPsiSourceFile>();
-		private readonly IProjectFileExtensions _projectFileExtensions;
-		private readonly PsiProjectFileTypeCoordinator _psiProjectFileTypeCoordinator;
-		private readonly DocumentManager _documentManager;
-		private readonly IPsiModule _psiModule;
+		[NotNull] private readonly StrongToWeakDictionary<FileSystemPath, IPsiSourceFile> _sourceFiles = new StrongToWeakDictionary<FileSystemPath, IPsiSourceFile>();
+		[NotNull] private readonly IProjectFileExtensions _projectFileExtensions;
+		[NotNull] private readonly PsiProjectFileTypeCoordinator _psiProjectFileTypeCoordinator;
+		[NotNull] private readonly DocumentManager _documentManager;
+		[NotNull] private readonly IPsiModule _psiModule;
 
 		public IEnumerable<IPsiModule> Modules {
 			get { return new[] { _psiModule }; }
@@ -76,7 +76,7 @@ namespace GammaJul.ReSharper.ForTea.Psi {
 			_projectFileExtensions = projectFileExtensions;
 			_psiProjectFileTypeCoordinator = psiProjectFileTypeCoordinator;
 			_documentManager = documentManager;
-			_psiModule = new PsiModuleOnFileSystemPaths(solution, "T4OutsideSolution");
+			_psiModule = new PsiModuleOnFileSystemPaths(solution, "T4OutsideSolution", TargetFrameworkId.Default);
 			lifetime.AddDispose(_sourceFiles);
 		}
 

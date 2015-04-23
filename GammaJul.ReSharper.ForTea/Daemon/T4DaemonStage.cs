@@ -18,13 +18,9 @@ using GammaJul.ReSharper.ForTea.Psi;
 using GammaJul.ReSharper.ForTea.Tree;
 using JetBrains.Annotations;
 using JetBrains.Application.Settings;
+using JetBrains.ReSharper.Feature.Services.Daemon;
 using JetBrains.ReSharper.Psi;
 using JetBrains.Util;
-#if RS90
-using JetBrains.ReSharper.Feature.Services.Daemon;
-#elif RS82
-using JetBrains.ReSharper.Daemon;
-#endif
 
 namespace GammaJul.ReSharper.ForTea.Daemon {
 

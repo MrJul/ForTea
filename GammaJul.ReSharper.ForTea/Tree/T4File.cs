@@ -23,13 +23,9 @@ using JetBrains.ReSharper.Psi;
 using JetBrains.ReSharper.Psi.ExtensionsAPI.Tree;
 using JetBrains.ReSharper.Psi.Parsing;
 using JetBrains.ReSharper.Psi.Tree;
+using JetBrains.ReSharper.Resources.Shell;
 using JetBrains.Text;
 using JetBrains.Util;
-#if RS90
-using JetBrains.ReSharper.Resources.Shell;
-#elif RS82
-using JetBrains.Application;
-#endif
 
 namespace GammaJul.ReSharper.ForTea.Tree {
 

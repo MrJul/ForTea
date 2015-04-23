@@ -22,14 +22,12 @@ using GammaJul.ReSharper.ForTea.Psi.Directives;
 using GammaJul.ReSharper.ForTea.Tree;
 using JetBrains.Annotations;
 using JetBrains.ReSharper.Feature.Services.CodeCompletion.Infrastructure;
+using JetBrains.ReSharper.Feature.Services.CodeCompletion.Infrastructure.LookupItems;
+using JetBrains.ReSharper.Feature.Services.CodeCompletion.Infrastructure.LookupItems.Impl;
 using JetBrains.ReSharper.Feature.Services.Lookup;
 using JetBrains.ReSharper.Psi;
 using JetBrains.ReSharper.Psi.Tree;
 using JetBrains.Util;
-#if RS90
-using JetBrains.ReSharper.Feature.Services.CodeCompletion.Infrastructure.LookupItems;
-using JetBrains.ReSharper.Feature.Services.CodeCompletion.Infrastructure.LookupItems.Impl;
-#endif
 
 namespace GammaJul.ReSharper.ForTea.Services.CodeCompletion {
 
@@ -77,7 +75,7 @@ namespace GammaJul.ReSharper.ForTea.Services.CodeCompletion {
 				
 				var item = new TextLookupItem(attributeName);
 				item.InitializeRanges(ranges, context.BasicContext);
-				collector.AddAtDefaultPlace(item);
+				collector.Add(item);
 			}
 			
 			return true;

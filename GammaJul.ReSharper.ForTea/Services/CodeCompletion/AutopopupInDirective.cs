@@ -61,11 +61,7 @@ namespace GammaJul.ReSharper.ForTea.Services.CodeCompletion {
 		public PsiLanguageType Language {
 			get { return T4Language.Instance; }
 		}
-
-		public CodeCompletionType CodeCompletionType {
-			get { return CodeCompletionType.AutomaticCompletion; }
-		}
-
+		
 		public bool ForceHideCompletion {
 			get { return false; }
 		}

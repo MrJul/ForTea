@@ -21,6 +21,7 @@ using System.Collections.Generic;
 using System.Linq;
 using JetBrains.Annotations;
 using JetBrains.Application;
+using JetBrains.Application.changes;
 using JetBrains.Application.Progress;
 using JetBrains.DataFlow;
 using JetBrains.DocumentManagers;
@@ -39,12 +40,9 @@ using JetBrains.ReSharper.Psi.Modules;
 using JetBrains.ReSharper.Psi.Web.Impl.PsiModules;
 using JetBrains.Threading;
 using JetBrains.Util;
+using JetBrains.VsIntegration.ProjectDocuments.Projects.Builder;
 using JetBrains.VsIntegration.ProjectModel;
 using Microsoft.VisualStudio.Shell.Interop;
-#if RS90
-using JetBrains.Application.changes;
-using JetBrains.VsIntegration.ProjectDocuments.Projects.Builder;
-#endif
 
 namespace GammaJul.ReSharper.ForTea.Psi {
 
@@ -55,21 +53,21 @@ namespace GammaJul.ReSharper.ForTea.Psi {
 
 		private const string Prefix = "[T4] ";
 		
-		private readonly Dictionary<string, IAssemblyCookie> _assemblyReferences = new Dictionary<string, IAssemblyCookie>(StringComparer.OrdinalIgnoreCase);
-		private readonly Dictionary<string, string> _resolvedMacros = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
-		private readonly Lifetime _lifetime;
-		private readonly IPsiModules _psiModules;
-		private readonly ChangeManager _changeManager;
-		private readonly IAssemblyFactory _assemblyFactory;
-		private readonly IShellLocks _shellLocks;
-		private readonly IProjectFile _projectFile;
-		private readonly IProject _project;
-		private readonly ISolution _solution;
-		private readonly T4Environment _t4Environment;
-		private readonly IPsiSourceFile _sourceFile;
-		private readonly T4ResolveProject _resolveProject;
-		private readonly OutputAssemblies _outputAssemblies;
-		private IModuleReferenceResolveManager _resolveManager;
+		[NotNull] private readonly Dictionary<string, IAssemblyCookie> _assemblyReferences = new Dictionary<string, IAssemblyCookie>(StringComparer.OrdinalIgnoreCase);
+		[NotNull] private readonly Dictionary<string, string> _resolvedMacros = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
+		[NotNull] private readonly Lifetime _lifetime;
+		[NotNull] private readonly IPsiModules _psiModules;
+		[NotNull] private readonly ChangeManager _changeManager;
+		[NotNull] private readonly IAssemblyFactory _assemblyFactory;
+		[NotNull] private readonly IShellLocks _shellLocks;
+		[NotNull] private readonly IProjectFile _projectFile;
+		[NotNull] private readonly IProject _project;
+		[NotNull] private readonly ISolution _solution;
+		[NotNull] private readonly T4Environment _t4Environment;
+		[NotNull] private readonly IPsiSourceFile _sourceFile;
+		[NotNull] private readonly T4ResolveProject _resolveProject;
+		[NotNull] private readonly OutputAssemblies _outputAssemblies;
+		[CanBeNull] private IModuleReferenceResolveManager _resolveManager;
 		private bool _isValid;
 
 		/// <summary>
@@ -129,6 +127,13 @@ namespace GammaJul.ReSharper.ForTea.Psi {
 		}
 
 		/// <summary>
+		/// TargetFrameworkId corresponding to the module. 
+		/// </summary>
+		public TargetFrameworkId TargetFrameworkId {
+			get { return TargetFrameworkId.Default; }
+		}
+
+		/// <summary>
 		/// Gets the solution this PSI module is attached to.
 		/// </summary>
 		/// <returns>An instance of <see cref="ISolution"/>.</returns>
@@ -158,10 +163,7 @@ namespace GammaJul.ReSharper.ForTea.Psi {
 		/// </summary>
 		/// <returns>A persistent identifier.</returns>
 		public string GetPersistentID() {
-			IProjectFile projectFile = _sourceFile.ToProjectFile();
-			if (projectFile != null)
-				return Prefix + projectFile.GetPersistentID();
-			return null;
+			return Prefix + _projectFile.GetPersistentID();
 		}
 
 		/// <summary>
@@ -344,13 +346,13 @@ namespace GammaJul.ReSharper.ForTea.Psi {
 		public IEnumerable<IPsiModuleReference> GetReferences(IModuleReferenceResolveContext moduleReferenceResolveContext) {
 			_shellLocks.AssertReadAccessAllowed();
 			
-			var references = new PsiModuleReferenceAccumulator();
+			var references = new PsiModuleReferenceAccumulator(TargetFrameworkId);
 			
 			foreach (IAssemblyCookie cookie in _assemblyReferences.Values) {
 				if (cookie.Assembly == null)
 					continue;
 
-				IPsiModule psiModule = _psiModules.GetPrimaryPsiModule(cookie.Assembly);
+				IPsiModule psiModule = _psiModules.GetPrimaryPsiModule(cookie.Assembly, TargetFrameworkId);
 
 				// Normal assembly.
 				if (psiModule != null)
@@ -360,7 +362,7 @@ namespace GammaJul.ReSharper.ForTea.Psi {
 				else {
 					IProject project = _outputAssemblies.GetProjectByOutputAssembly(cookie.Assembly);
 					if (project != null) {
-						psiModule = _psiModules.GetPrimaryPsiModule(project);
+						psiModule = _psiModules.GetPrimaryPsiModule(project, TargetFrameworkId);
 						if (psiModule != null)
 							references.Add(new PsiModuleReference(psiModule));
 					}
@@ -444,19 +446,20 @@ namespace GammaJul.ReSharper.ForTea.Psi {
 			_psiModules = psiModules;
 			_assemblyFactory = assemblyFactory;
 			_changeManager = changeManager;
-
 			_shellLocks = shellLocks;
+
 			_projectFile = projectFile;
-			_project = projectFile.GetProject();
-			Assertion.AssertNotNull(_project, "_project != null");
-			_solution = _project.GetSolution();
+			IProject project = projectFile.GetProject();
+			Assertion.AssertNotNull(project, "project != null");
+			_project = project;
+			_solution = project.GetSolution();
 
 			changeManager.RegisterChangeProvider(lifetime, this);
 			changeManager.AddDependency(lifetime, psiModules, this);		
 
 			_t4Environment = t4Environment;
 			_outputAssemblies = outputAssemblies;
-			_resolveProject = new T4ResolveProject(_solution, _shellLocks, t4Environment.PlatformID, _project);
+			_resolveProject = new T4ResolveProject(lifetime, _solution, _shellLocks, t4Environment.PlatformID, project);
 
 			_sourceFile = CreateSourceFile(projectFile, documentManager);
 

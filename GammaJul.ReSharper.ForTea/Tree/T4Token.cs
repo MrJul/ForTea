@@ -27,7 +27,7 @@ namespace GammaJul.ReSharper.ForTea.Tree {
 	/// Implementation of <see cref="IT4Token"/>.
 	/// </summary>
 	// ReSharper disable once PartialTypeWithSinglePart
-	public partial class T4Token : BindedToBufferLeafElement, IT4Token {
+	public class T4Token : BindedToBufferLeafElement, IT4Token {
 
 		public override PsiLanguageType Language {
 			get { return T4Language.Instance; }

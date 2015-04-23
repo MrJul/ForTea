@@ -19,16 +19,12 @@ using System.Collections.Generic;
 using JetBrains.CommonControls;
 using JetBrains.DocumentModel;
 using JetBrains.ReSharper.Feature.Services.CodeStructure;
+using JetBrains.ReSharper.Feature.Services.Resources;
 using JetBrains.ReSharper.Psi.CSharp.Tree;
 using JetBrains.ReSharper.Psi.Tree;
 using JetBrains.TreeModels;
 using JetBrains.UI.TreeView;
 using JetBrains.Util;
-#if RS90
-using JetBrains.ReSharper.Feature.Services.Resources;
-#elif RS82
-using JetBrains.ReSharper.Psi.Services.Resources;
-#endif
 
 namespace GammaJul.ReSharper.ForTea.Services.CodeStructure {
 

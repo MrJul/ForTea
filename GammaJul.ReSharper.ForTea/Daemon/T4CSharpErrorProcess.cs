@@ -22,15 +22,10 @@ using GammaJul.ReSharper.ForTea.Psi;
 using JetBrains.Annotations;
 using JetBrains.Application.Settings;
 using JetBrains.ReSharper.Daemon.CSharp.Stages;
+using JetBrains.ReSharper.Feature.Services.Daemon;
 using JetBrains.ReSharper.Psi;
 using JetBrains.ReSharper.Psi.CSharp;
 using JetBrains.ReSharper.Psi.CSharp.Tree;
-#if RS90
-using JetBrains.ReSharper.Feature.Services.Daemon;
-#elif RS82
-using JetBrains.ReSharper.Daemon;
-using JetBrains.ReSharper.Daemon.Stages;
-#endif
 
 namespace GammaJul.ReSharper.ForTea.Daemon {
 

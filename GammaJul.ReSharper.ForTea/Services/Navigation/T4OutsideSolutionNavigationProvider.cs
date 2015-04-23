@@ -16,19 +16,14 @@
 
 using System.Collections.Generic;
 using JetBrains.Annotations;
+using JetBrains.IDE;
 using JetBrains.ProjectModel;
 using JetBrains.ReSharper.Feature.Services.Navigation;
+using JetBrains.ReSharper.Feature.Services.Navigation.NavigationProviders;
+using JetBrains.ReSharper.Features.Navigation.Core.Navigation;
 using JetBrains.TextControl;
 using JetBrains.ReSharper.Psi;
 using JetBrains.Util;
-#if RS90
-using JetBrains.IDE;
-using JetBrains.ReSharper.Feature.Services.Navigation.NavigationProviders;
-using JetBrains.ReSharper.Features.Navigation.Core.Navigation;
-#elif RS82
-using JetBrains.ReSharper.Feature.Services.Navigation.Navigation;
-using IEditorManager=JetBrains.IDE.EditorManager;
-#endif
 
 namespace GammaJul.ReSharper.ForTea.Services.Navigation {
 

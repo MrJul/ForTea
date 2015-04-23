@@ -1,11 +1,8 @@
 using GammaJul.ReSharper.ForTea.Psi;
 using JetBrains.Annotations;
-using JetBrains.ReSharper.Psi.Tree;
-#if RS90
 using JetBrains.ReSharper.Feature.Services.Daemon;
-#elif RS82
-using JetBrains.ReSharper.Daemon;
-#endif
+using JetBrains.ReSharper.Psi.Tree;
+
 
 namespace GammaJul.ReSharper.ForTea.Daemon.Highlightings {
 

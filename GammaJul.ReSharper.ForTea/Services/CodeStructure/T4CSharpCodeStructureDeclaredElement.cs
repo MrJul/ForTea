@@ -15,14 +15,10 @@
 #endregion
 using JetBrains.ReSharper.Feature.Services.CSharp.CodeStructure;
 using JetBrains.ReSharper.Feature.Services.CodeStructure;
+using JetBrains.ReSharper.Feature.Services.Util;
 using JetBrains.ReSharper.Psi;
 using JetBrains.ReSharper.Psi.Tree;
 using JetBrains.Util;
-#if RS90
-using JetBrains.ReSharper.Feature.Services.Util;
-#elif RS82
-using JetBrains.ReSharper.Psi.Services;
-#endif
 
 namespace GammaJul.ReSharper.ForTea.Services.CodeStructure {
 

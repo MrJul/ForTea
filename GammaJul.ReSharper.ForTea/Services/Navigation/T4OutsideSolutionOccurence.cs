@@ -28,7 +28,7 @@ namespace GammaJul.ReSharper.ForTea.Services.Navigation {
 	/// <summary>
 	/// Represents an occurence of text in an include file that is located outside of the solution.
 	/// </summary>
-	public partial class T4OutsideSolutionOccurence {
+	public class T4OutsideSolutionOccurence {
 
 		[NotNull] private readonly IRangeMarker _rangeMarker;
 		
@@ -36,6 +36,14 @@ namespace GammaJul.ReSharper.ForTea.Services.Navigation {
 			get { return _rangeMarker.IsValid; }
 		}
 		
+		public OccurenceType OccurenceType {
+			get { return OccurenceType.TextualOccurence; }
+		}
+
+		public ISolution GetSolution() {
+			return null;
+		}
+
 		public OccurencePresentationOptions PresentationOptions { get; set; }
 		
 		public string DumpToString() {
@@ -55,6 +63,8 @@ namespace GammaJul.ReSharper.ForTea.Services.Navigation {
 			NavigationManager navigationManager = NavigationManager.GetInstance(solution);
 			return navigationManager.Navigate<T4OutsideSolutionNavigationProvider, T4OutsideSolutionNavigationInfo>(navigationInfo, navigationOptions);
 		}
+
+
 
 		public T4OutsideSolutionOccurence([NotNull] IRangeMarker rangeMarker) {
 			_rangeMarker = rangeMarker;

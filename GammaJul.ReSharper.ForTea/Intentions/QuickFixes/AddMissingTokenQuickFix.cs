@@ -24,18 +24,12 @@ using JetBrains.Application.Progress;
 using JetBrains.DocumentModel;
 using JetBrains.ProjectModel;
 using JetBrains.ReSharper.Feature.Services.LiveTemplates.LiveTemplates;
+using JetBrains.ReSharper.Feature.Services.QuickFixes;
 using JetBrains.ReSharper.Psi;
 using JetBrains.ReSharper.Psi.Tree;
+using JetBrains.ReSharper.Resources.Shell;
 using JetBrains.TextControl;
 using JetBrains.Util;
-#if RS90
-using JetBrains.ReSharper.Feature.Services.QuickFixes;
-using JetBrains.ReSharper.Resources.Shell;
-#elif RS82
-using JetBrains.Application;
-using JetBrains.ReSharper.Feature.Services.Bulbs;
-using JetBrains.ReSharper.Intentions.Extensibility;
-#endif
 
 namespace GammaJul.ReSharper.ForTea.Intentions.QuickFixes {
 

@@ -16,17 +16,20 @@
 
 
 using GammaJul.ReSharper.ForTea.Parsing;
+using JetBrains.Application.Progress;
 using JetBrains.Application.Settings;
 using JetBrains.ReSharper.Psi;
 using JetBrains.ReSharper.Psi.CodeStyle;
 using JetBrains.ReSharper.Psi.Impl.CodeStyle;
 using JetBrains.ReSharper.Psi.Tree;
+using JetBrains.ReSharper.Psi.Util;
+using JetBrains.Util.Text;
 
 namespace GammaJul.ReSharper.ForTea.Psi.CodeStyle {
 
 	// TODO: implement the formatter
 	[Language(typeof(T4Language))]
-	public partial class T4CodeFormatter : CodeFormatterBase {
+	public class T4CodeFormatter : CodeFormatterBase {
 		
 		protected override PsiLanguageType LanguageType {
 			get { return T4Language.Instance; }
@@ -60,10 +63,15 @@ namespace GammaJul.ReSharper.ForTea.Psi.CodeStyle {
 		public override ITreeNode CreateSpace(string indent, ITreeNode replacedSpace) {
 			return T4TokenNodeTypes.Space.Create(indent);
 		}
-
-		public override ITreeNode CreateNewLine() {
+		
+		public override ITreeNode CreateNewLine(LineEnding lineEnding) {
 			T4TokenNodeType nodeType = T4TokenNodeTypes.NewLine;
-			return nodeType.Create(nodeType.TokenRepresentation);
+			return nodeType.Create(lineEnding.GetPresentation());
+		}
+		
+		public override ITreeRange Format(ITreeNode firstElement, ITreeNode lastElement, CodeFormatProfile profile, IProgressIndicator progressIndicator,
+			IContextBoundSettingsStore overrideSettingsStore = null, IPotentSettingsTracker settingsTracker = null) {
+			return new TreeRange(firstElement, lastElement);
 		}
 
 		public T4CodeFormatter(ISettingsStore settingsStore)

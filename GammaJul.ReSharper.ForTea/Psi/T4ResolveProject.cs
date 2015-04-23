@@ -21,16 +21,15 @@ using System.Collections.Generic;
 using System.IO;
 using JetBrains.Annotations;
 using JetBrains.Application;
+using JetBrains.Metadata.Reader.API;
 using JetBrains.ProjectModel;
 using JetBrains.ProjectModel.Impl;
+using JetBrains.ProjectModel.ProjectImplementation;
 using JetBrains.ProjectModel.Properties;
 using JetBrains.ProjectModel.Properties.Common;
+using JetBrains.ProjectModel.References;
 using JetBrains.Util;
-#if RS90
 using PlatformID = JetBrains.Application.platforms.PlatformID;
-#elif RS82
-using PlatformID = JetBrains.ProjectModel.PlatformID;
-#endif
 
 namespace GammaJul.ReSharper.ForTea.Psi {
 
@@ -48,6 +47,7 @@ namespace GammaJul.ReSharper.ForTea.Psi {
 		[NotNull] private readonly IProjectProperties _projectProperties;
 		[NotNull] private readonly IProperty<FileSystemPath> _projectFileLocationLive;
 		[NotNull] private readonly IProperty<FileSystemPath> _projectLocationLive;
+		[NotNull] private readonly TargetFrameworkReferences _targetFrameworkReferences;
 
 		public void PutData<T>(Key<T> key, T val) where T : class {
 			_dataHolder.PutData(key, val);
@@ -91,8 +91,8 @@ namespace GammaJul.ReSharper.ForTea.Psi {
 		string IProjectElement.GetPersistentID() {
 			return Name;
 		}
-		
-		void IProjectItem.Dump(TextWriter to) {
+
+		void IProjectItem.Dump(TextWriter to, DumpFlags flags) {
 		}
 
 		string IProjectItem.GetPresentableProjectPath() {
@@ -156,8 +156,8 @@ namespace GammaJul.ReSharper.ForTea.Psi {
 		
 		public void Dispose() {
 		}
-		
-		IEnumerable<IProjectToModuleReference> IProject.GetModuleReferences() {
+
+		IEnumerable<IProjectToModuleReference> IProject.GetModuleReferences(TargetFrameworkId targetFrameworkId) {
 			return EmptyList<IProjectToModuleReference>.InstanceList;
 		}
 
@@ -203,7 +203,15 @@ namespace GammaJul.ReSharper.ForTea.Psi {
 			get { return _projectLocationLive; }
 		}
 
-		private sealed class T4ResolveProjectProperties : ProjectPropertiesBase, IProjectProperties {
+		public TargetFrameworkScope GetOrCreateTargetFramework(TargetFrameworkId targetFrameworkId) {
+			return _targetFrameworkReferences.GetOrCreateGetScope(targetFrameworkId);
+		}
+
+		public IEnumerable<TargetFrameworkId> TargetFrameworkIds {
+			get { return new[] { TargetFrameworkId.Default }; }
+		}
+
+		private sealed class T4ResolveProjectProperties : ProjectPropertiesBase<UnsupportedProjectConfiguration>, IProjectProperties {
 
 			public override IBuildSettings BuildSettings {
 				get { return null; }
@@ -216,25 +224,22 @@ namespace GammaJul.ReSharper.ForTea.Psi {
 			public ProjectKind ProjectKind {
 				get { return ProjectKind.MISC_FILES_PROJECT; }
 			}
-
-			public IProjectConfiguration ActiveConfiguration {
-				get { return new UnsupportedProjectConfiguration(); }
-			}
-
+			
 			internal T4ResolveProjectProperties([NotNull] PlatformID platformID)
 				: base(EmptyList<Guid>.InstanceList, platformID, Guid.Empty) {
 			}
 
 		}
 		
-		internal T4ResolveProject([NotNull] ISolution solution, [NotNull] IShellLocks shellLocks, [NotNull] PlatformID platformID, [NotNull] IUserDataHolder dataHolder) {
-			Lifetime solutionLifetime = solution.GetLifetime();
+		internal T4ResolveProject([NotNull] Lifetime lifetime, [NotNull] ISolution solution, [NotNull] IShellLocks shellLocks,
+			[NotNull] PlatformID platformID, [NotNull] IUserDataHolder dataHolder) {
 			_shellLocks = shellLocks;
 			_solution = solution;
 			_dataHolder = dataHolder;
 			_projectProperties = new T4ResolveProjectProperties(platformID);
-			_projectFileLocationLive = new Property<FileSystemPath>(solutionLifetime, "ProjectFileLocationLive");
-			_projectLocationLive = new Property<FileSystemPath>(solutionLifetime, "ProjectLocationLive");
+			_projectFileLocationLive = new Property<FileSystemPath>(lifetime, "ProjectFileLocationLive");
+			_projectLocationLive = new Property<FileSystemPath>(lifetime, "ProjectLocationLive");
+			_targetFrameworkReferences = new TargetFrameworkReferences(lifetime, shellLocks, this, solution.SolutionOwner.GetComponent<AssemblyInfoDatabase>());
 		}
 
 	}

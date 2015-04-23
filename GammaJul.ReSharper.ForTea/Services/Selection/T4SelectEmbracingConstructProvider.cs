@@ -23,12 +23,8 @@ using JetBrains.ProjectModel.FileTypes;
 using JetBrains.ReSharper.Feature.Services.SelectEmbracingConstruct;
 using JetBrains.ReSharper.Psi;
 using JetBrains.ReSharper.Psi.Tree;
-using JetBrains.Util;
-#if RS90
 using JetBrains.ReSharper.Resources.Shell;
-#elif RS82
-using JetBrains.Application;
-#endif
+using JetBrains.Util;
 
 namespace GammaJul.ReSharper.ForTea.Services.Selection {
 

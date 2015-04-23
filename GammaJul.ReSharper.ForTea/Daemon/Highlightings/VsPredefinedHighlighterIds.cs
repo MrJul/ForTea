@@ -26,7 +26,7 @@ using GammaJul.ReSharper.ForTea.Daemon.Highlightings;
 [assembly: RegisterHighlighter(VsPredefinedHighlighterIds.Keyword, EffectType = EffectType.TEXT)]
 [assembly: RegisterHighlighter(VsPredefinedHighlighterIds.Number, EffectType = EffectType.TEXT)]
 [assembly: RegisterHighlighter(VsPredefinedHighlighterIds.Operator, EffectType = EffectType.TEXT)]
-[assembly: RegisterHighlighter(VsPredefinedHighlighterIds.RazorCode, EffectType = EffectType.HIGHLIGHT)]
+[assembly: RegisterHighlighter(VsPredefinedHighlighterIds.RazorCode, EffectType = EffectType.HIGHLIGHT_BELOW_TEXT_MARKER)]
 [assembly: RegisterHighlighter(VsPredefinedHighlighterIds.String, EffectType = EffectType.TEXT)]
 [assembly: RegisterHighlighter(VsPredefinedHighlighterIds.StringVerbatim, EffectType = EffectType.TEXT)]
 [assembly: RegisterHighlighter(VsPredefinedHighlighterIds.UserType, EffectType = EffectType.TEXT)]

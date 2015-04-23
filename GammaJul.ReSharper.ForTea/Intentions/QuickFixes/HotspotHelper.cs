@@ -18,11 +18,7 @@ using JetBrains.DocumentModel;
 using JetBrains.ReSharper.Feature.Services.LiveTemplates.Hotspots;
 using JetBrains.ReSharper.Feature.Services.LiveTemplates.Macros;
 using JetBrains.ReSharper.Feature.Services.LiveTemplates.Macros.Implementations;
-#if RS90
 using JetBrains.ReSharper.Feature.Services.LiveTemplates.Templates;
-#elif RS82
-using JetBrains.ReSharper.LiveTemplates;
-#endif
 
 namespace GammaJul.ReSharper.ForTea.Intentions.QuickFixes {
 

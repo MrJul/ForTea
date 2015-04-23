@@ -19,6 +19,7 @@ using System.Linq;
 using GammaJul.ReSharper.ForTea.Tree;
 using JetBrains.Annotations;
 using JetBrains.Application;
+using JetBrains.Application.changes;
 using JetBrains.DataFlow;
 using JetBrains.DocumentManagers;
 using JetBrains.ProjectModel;
@@ -26,11 +27,8 @@ using JetBrains.ProjectModel.Build;
 using JetBrains.ProjectModel.model2.Assemblies.Interfaces;
 using JetBrains.ReSharper.Psi;
 using JetBrains.ReSharper.Psi.Modules;
-using JetBrains.Util;
-#if RS90
-using JetBrains.Application.changes;
 using JetBrains.ReSharper.Resources.Shell;
-#endif
+using JetBrains.Util;
 
 namespace GammaJul.ReSharper.ForTea.Psi {
 

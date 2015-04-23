@@ -22,15 +22,13 @@ using GammaJul.ReSharper.ForTea.Tree;
 using JetBrains.Annotations;
 using JetBrains.DocumentModel;
 using JetBrains.ReSharper.Daemon;
+using JetBrains.ReSharper.Feature.Services.Daemon;
 using JetBrains.ReSharper.Psi.Parsing;
 using JetBrains.ReSharper.Psi.Tree;
 using System.Linq;
 using JetBrains.Util;
 using JetBrains.ReSharper.Psi;
 using GammaJul.ReSharper.ForTea.Psi;
-#if RS90
-using JetBrains.ReSharper.Feature.Services.Daemon;
-#endif
 
 namespace GammaJul.ReSharper.ForTea.Daemon {
 

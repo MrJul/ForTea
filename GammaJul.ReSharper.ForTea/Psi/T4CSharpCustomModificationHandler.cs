@@ -15,7 +15,6 @@
 #endregion
 
 
-using JetBrains.ReSharper.Psi.ExtensionsAPI.Resolve;
 using System;
 using System.Linq;
 using GammaJul.ReSharper.ForTea.Parsing;
@@ -31,11 +30,12 @@ using JetBrains.ReSharper.Psi.CSharp.CodeStyle;
 using JetBrains.ReSharper.Psi.CSharp.Impl.CustomHandlers;
 using JetBrains.ReSharper.Psi.CSharp.Parsing;
 using JetBrains.ReSharper.Psi.CSharp.Tree;
+using JetBrains.ReSharper.Psi.ExtensionsAPI.Resolve;
 using JetBrains.ReSharper.Psi.ExtensionsAPI.Tree;
 using JetBrains.ReSharper.Psi.Impl.Shared;
 using JetBrains.ReSharper.Psi.Modules;
-using JetBrains.ReSharper.Psi.Transactions;
 using JetBrains.ReSharper.Psi.Resolve;
+using JetBrains.ReSharper.Psi.Transactions;
 using JetBrains.ReSharper.Psi.Tree;
 using JetBrains.ReSharper.Psi.Web.CodeBehindSupport;
 using JetBrains.Util;
@@ -47,9 +47,25 @@ namespace GammaJul.ReSharper.ForTea.Psi {
 	/// (eg: adding a using statement translates to an import directive).
 	/// </summary>
 	[ProjectFileType(typeof(T4ProjectFileType))]
-	public partial class T4CSharpCustomModificationHandler : CustomModificationHandler<IT4CodeBlock, IT4Directive>, ICSharpCustomModificationHandler {
+	public class T4CSharpCustomModificationHandler : CustomModificationHandler<IT4CodeBlock, IT4Directive>, ICSharpCustomModificationHandler {
 
-		private readonly DirectiveInfoManager _directiveInfoManager;
+		[NotNull] private readonly DirectiveInfoManager _directiveInfoManager;
+
+		/// <summary>
+		/// Determines whether namespace aliases can be used.
+		/// </summary>
+		/// <returns>Always <c>false</c> since T4 files does not support aliases.</returns>
+		public bool CanUseAliases {
+			get { return false; }
+		}
+
+		/// <summary>
+		/// Determines whether static imports can be used.
+		/// </summary>
+		/// <returns>Always <c>false</c> since T4 files does not support static imports.</returns>
+		public bool CanUseStaticImport {
+			get { return false; }
+		}
 
 		/// <summary>
 		/// Creates a new T4 code block.
@@ -196,14 +212,6 @@ namespace GammaJul.ReSharper.ForTea.Psi {
 		}
 		
 		/// <summary>
-		/// Determines whether namespace aliases can be used.
-		/// </summary>
-		/// <returns>Always <c>false</c> since T4 files does not support aliases.</returns>
-		public bool CanUseAliases() {
-			return false;
-		}
-
-		/// <summary>
 		/// Translates changes in generated code-behind file to original file.
 		/// </summary>
 		/// <param name="psiServices">The PSI services.</param>
@@ -321,7 +329,15 @@ namespace GammaJul.ReSharper.ForTea.Psi {
 		public string GetSpecialMethodType(DeclaredElementPresenterStyle presenter, IMethod method, ISubstitution substitution) {
 			return null;
 		}
-		
+
+		public ThisQualifierSettingsKey GetThisQualifierStyle(ITreeNode context) {
+			return context.GetSettingsStore().GetKey<ThisQualifierSettingsKey>(SettingsOptimization.OptimizeDefault);
+		}
+
+		public StaticQualifierSettingsKey GetStaticQualifierStyle(ITreeNode context) {
+			return context.GetSettingsStore().GetKey<StaticQualifierSettingsKey>(SettingsOptimization.OptimizeDefault);
+		}
+
 		/// <summary>
 		/// Initializes a new instance of the <see cref="T4CSharpCustomModificationHandler"/> class.
 		/// </summary>

@@ -22,18 +22,13 @@ using JetBrains.Application.CommandProcessing;
 using JetBrains.Application.Settings;
 using JetBrains.DataFlow;
 using JetBrains.ProjectModel;
+using JetBrains.ReSharper.Feature.Services.CodeCompletion;
 using JetBrains.ReSharper.Feature.Services.TypingAssist;
 using JetBrains.ReSharper.Psi;
 using JetBrains.ReSharper.Psi.Parsing;
+using JetBrains.ReSharper.Psi.CachingLexers;
 using JetBrains.TextControl;
 using JetBrains.TextControl.Util;
-#if RS90
-using JetBrains.ReSharper.Psi.CachingLexers;
-using JetBrains.ReSharper.Feature.Services.CodeCompletion;
-#elif RS82
-using ICodeCompletionSessionManager=JetBrains.ReSharper.Feature.Services.CodeCompletion.IntellisenseManager;
-using JetBrains.ReSharper.Psi.Services;
-#endif
 
 namespace GammaJul.ReSharper.ForTea.Services.TypingAssist {
 
@@ -148,8 +143,8 @@ namespace GammaJul.ReSharper.ForTea.Services.TypingAssist {
 		public T4TypingAssist([NotNull] Lifetime lifetime, [NotNull] ISolution solution, [NotNull] ISettingsStore settingsStore,
 			[NotNull] CachingLexerService cachingLexerService, [NotNull] ICommandProcessor commandProcessor, [NotNull] IPsiServices psiServices,
 			[NotNull] ITypingAssistManager typingAssistManager, [NotNull] SkippingTypingAssist skippingTypingAssist,
-			[NotNull] ICodeCompletionSessionManager codeCompletionSessionManager)
-			: base(solution, settingsStore, cachingLexerService, commandProcessor, psiServices) {
+			[NotNull] ICodeCompletionSessionManager codeCompletionSessionManager, IExternalIntellisenseHost externalIntellisenseHost)
+			: base(solution, settingsStore, cachingLexerService, commandProcessor, psiServices, externalIntellisenseHost) {
 			
 			_skippingTypingAssist = skippingTypingAssist;
 			_codeCompletionSessionManager = codeCompletionSessionManager;

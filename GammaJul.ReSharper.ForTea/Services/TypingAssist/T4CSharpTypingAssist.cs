@@ -18,17 +18,14 @@ using JetBrains.Application.CommandProcessing;
 using JetBrains.Application.Settings;
 using JetBrains.DataFlow;
 using JetBrains.ProjectModel;
+using JetBrains.ReSharper.Feature.Services.CodeCompletion;
 using JetBrains.ReSharper.Feature.Services.CSharp.TypingAssist;
 using JetBrains.ReSharper.Feature.Services.TypingAssist;
 using JetBrains.ReSharper.Feature.Services.Web.TypingAssist;
 using JetBrains.ReSharper.Psi;
+using JetBrains.ReSharper.Psi.CachingLexers;
 using JetBrains.ReSharper.Psi.CSharp;
 using JetBrains.TextControl;
-#if RS90
-using JetBrains.ReSharper.Psi.CachingLexers;
-#elif RS82
-using JetBrains.ReSharper.Psi.Services;
-#endif
 
 namespace GammaJul.ReSharper.ForTea.Services.TypingAssist {
 
@@ -72,8 +69,8 @@ namespace GammaJul.ReSharper.ForTea.Services.TypingAssist {
 		}
 
 		public T4CSharpTypingAssist(Lifetime lifetime, ISolution solution, ICommandProcessor commandProcessor, CachingLexerService cachingLexerService,
-			ISettingsStore settingsStore, ITypingAssistManager typingAssistManager, IPsiServices psiServices)
-			: base(lifetime, solution, commandProcessor, cachingLexerService, settingsStore, typingAssistManager, psiServices) {
+			ISettingsStore settingsStore, ITypingAssistManager typingAssistManager, IPsiServices psiServices, IExternalIntellisenseHost externalIntellisenseHost)
+			: base(lifetime, solution, commandProcessor, cachingLexerService, settingsStore, typingAssistManager, psiServices, externalIntellisenseHost) {
 		}
 
 	}

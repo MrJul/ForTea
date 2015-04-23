@@ -29,7 +29,7 @@ namespace GammaJul.ReSharper.ForTea.Psi {
 	/// Cache holding <see cref="T4FileData"/> for each T4 file.
 	/// </summary>
 	[PsiComponent]
-	public sealed partial class T4FileDataCache {
+	public sealed class T4FileDataCache {
 
 		private readonly WeakToStrongDictionary<IPsiSourceFile, T4FileData> _fileDataBySourceFile = new WeakToStrongDictionary<IPsiSourceFile, T4FileData>();
 		private readonly DirectiveInfoManager _directiveInfoManager;

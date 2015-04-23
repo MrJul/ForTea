@@ -16,16 +16,12 @@
 using System.Collections.Generic;
 using System.Linq;
 using JetBrains.Annotations;
+using JetBrains.Application.changes;
 using JetBrains.DataFlow;
 using JetBrains.ProjectModel;
 using JetBrains.ReSharper.Psi;
 using JetBrains.ReSharper.Psi.Modules;
 using JetBrains.Util;
-#if RS90
-using JetBrains.Application.changes;
-#elif RS82
-using JetBrains.Application;
-#endif
 
 namespace GammaJul.ReSharper.ForTea.Psi {
 
