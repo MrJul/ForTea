@@ -103,7 +103,7 @@ namespace GammaJul.ReSharper.ForTea.Psi {
 			string ns = GetNamespaceFromUsingDirective(usingDirective);
 			IT4Directive directive = _directiveInfoManager.Import.CreateDirective(ns);
 
-			if (anchor != null && anchor.GetContainingNode<IT4Include>() != null)
+			if (anchor != null && anchor.GetContainingNode<IT4Include>() == null)
 				directive = before ? t4File.AddDirectiveBefore(directive, anchor) : t4File.AddDirectiveAfter(directive, anchor);
 			else
 				directive = t4File.AddDirective(directive, _directiveInfoManager);
@@ -203,13 +203,26 @@ namespace GammaJul.ReSharper.ForTea.Psi {
 		/// <returns><c>true</c> if the specified using directive can be removed; otherwise, <c>false</c>.</returns>
 		/// <remarks>As long as the using is represented as a T4 import directive in the root file, it can be removed.</remarks>
 		public bool CanRemoveUsing(IDocument document, IUsingDirective usingDirective) {
-			IReferenceName namespaceNode = usingDirective.GetUsedNamespaceNode();
-			if (namespaceNode == null)
+			TreeTextRange nameRange = GetNameRange(usingDirective);
+			if (!nameRange.IsValid())
 				return false;
 
-			var directive = namespaceNode.GetT4ContainerFromCSharpNode<IT4Directive>();
-			return directive != null && directive.GetContainingNode<IT4Include>() == null;
+			IFile containingFile = usingDirective.GetContainingFile();
+			if (containingFile == null)
+				return false;
+
+			DocumentRange documentRange = containingFile.GetDocumentRange(nameRange);
+			return documentRange.IsValid() && documentRange.Document == document;
+
+//			IReferenceName namespaceNode = usingDirective.GetUsedNamespaceNode();
+//			if (namespaceNode == null)
+//				return false;
+//
+//			var directive = namespaceNode.GetT4ContainerFromCSharpNode<IT4Directive>();
+//			return directive != null && directive.GetContainingNode<IT4Include>() == null;
 		}
+
+
 		
 		/// <summary>
 		/// Translates changes in generated code-behind file to original file.

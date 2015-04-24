@@ -50,7 +50,7 @@ namespace GammaJul.ReSharper.ForTea.Psi {
 	/// <summary>
 	/// PSI module managing a single T4 file.
 	/// </summary>
-	internal sealed class T4PsiModule : IPsiModule, /*IProjectPsiModule,*/ IChangeProvider {
+	internal sealed class T4PsiModule : IPsiModule, IProjectPsiModule, IChangeProvider {
 
 		private const string Prefix = "[T4] ";
 		
@@ -123,9 +123,9 @@ namespace GammaJul.ReSharper.ForTea.Psi {
 			get { return new[] { _sourceFile }; }
 		}
 
-//		IProject IProjectPsiModule.Project {
-//			get { return _project; }
-//		}
+		IProject IProjectPsiModule.Project {
+			get { return _project; }
+		}
 
 		/// <summary>
 		/// TargetFrameworkId corresponding to the module. 

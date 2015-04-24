@@ -152,6 +152,7 @@ namespace GammaJul.ReSharper.ForTea.Tree {
 			return Pair.Of(existingDirectives.Last(), BeforeOrAfter.After);
 		}
 
+		[NotNull]
 		public static IEnumerable<IT4Include> GetRecursiveIncludes([NotNull] this IT4IncludeOwner owner) {
 			foreach (IT4Include include in owner.GetIncludes()) {
 				yield return include;
