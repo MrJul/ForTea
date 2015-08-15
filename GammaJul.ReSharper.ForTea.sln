@@ -9,7 +9,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		GammaJul.ReSharper.ForTea\GammaJul.ReSharper.ForTea.nuspec = GammaJul.ReSharper.ForTea\GammaJul.ReSharper.ForTea.nuspec
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GammaJul.ReSharper.ForTea.v9.1", "GammaJul.ReSharper.ForTea\GammaJul.ReSharper.ForTea.v9.1.csproj", "{63F25238-06BA-4861-95A2-DA35A1D18B65}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GammaJul.ReSharper.ForTea.v9.2", "GammaJul.ReSharper.ForTea\GammaJul.ReSharper.ForTea.v9.2.csproj", "{63F25238-06BA-4861-95A2-DA35A1D18B65}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".nuget", ".nuget", "{76B97717-91D3-4E92-8E4B-75718FCAB78B}"
 	ProjectSection(SolutionItems) = preProject

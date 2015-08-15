@@ -237,7 +237,7 @@ namespace GammaJul.ReSharper.ForTea.Psi {
 			if (pair.First != _sourceFile)
 				return;
 
-			if (_shellLocks.IsWriteAccessAllowed)
+			if (_shellLocks.IsWriteAccessAllowed())
 				OnDataFileChanged(pair.Second);
 			else {
 				_shellLocks.ExecuteOrQueue(_lifetime, "T4PsiModuleOnFileDataChanged",

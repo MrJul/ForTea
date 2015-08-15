@@ -335,7 +335,7 @@ namespace GammaJul.ReSharper.ForTea.Psi {
 			return (IUsingDirective) HandleAddImportInternal(psiServices, action, generatedAnchor, before, CSharpLanguage.Instance, generatedFile);
 		}
 
-		public bool PreferQualifiedReference(IQualifiableReferenceWithGlobalSymbolTable reference) {
+		public bool PreferQualifiedReference(IQualifiableReference reference) {
 			return reference.GetTreeNode().GetSettingsStore().GetValue(CSharpUsingSettingsAccessor.PreferQualifiedReference);
 		}
 
