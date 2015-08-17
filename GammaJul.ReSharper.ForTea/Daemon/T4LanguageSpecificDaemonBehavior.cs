@@ -30,7 +30,9 @@ namespace GammaJul.ReSharper.ForTea.Daemon {
 			get { return true; }
 		}
 
-		public ErrorStripeRequest InitialErrorStripe(IPsiSourceFile sourceFile) {
+	    public bool RunInFindCodeIssues { get { return true; } }
+
+	    public ErrorStripeRequest InitialErrorStripe(IPsiSourceFile sourceFile) {
 			return sourceFile.Properties.ProvidesCodeModel ? ErrorStripeRequest.STRIPE_AND_ERRORS : ErrorStripeRequest.NONE;
 		}
 

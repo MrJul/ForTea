@@ -203,8 +203,8 @@ namespace GammaJul.ReSharper.ForTea.Psi {
 			get { return _projectLocationLive; }
 		}
 
-		public TargetFrameworkScope GetOrCreateTargetFramework(TargetFrameworkId targetFrameworkId) {
-			return _targetFrameworkReferences.GetOrCreateGetScope(targetFrameworkId);
+		public TargetFrameworkScope GetTargetFramework(TargetFrameworkId targetFrameworkId) {
+			return _targetFrameworkReferences.GetScope(targetFrameworkId);
 		}
 
 		public IEnumerable<TargetFrameworkId> TargetFrameworkIds {

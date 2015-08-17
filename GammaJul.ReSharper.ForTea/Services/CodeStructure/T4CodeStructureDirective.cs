@@ -22,7 +22,7 @@ using JetBrains.Annotations;
 using JetBrains.CommonControls;
 using JetBrains.DocumentModel;
 using JetBrains.ReSharper.Feature.Services.CodeStructure;
-using JetBrains.ReSharper.Psi.Web.Resources;
+using JetBrains.ReSharper.Psi.Resources;
 using JetBrains.TreeModels;
 using JetBrains.UI.TreeView;
 using JetBrains.Util;
