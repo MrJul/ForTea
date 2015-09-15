@@ -2,7 +2,7 @@
 <package xmlns="http://schemas.microsoft.com/packaging/2011/08/nuspec.xsd">
 	<metadata>
 		<id>JLebosquain.ForTea</id>
-		<version>1.3.2</version>
+		<version>1.4.0</version>
 		<title>ForTea (for R# 9.2)</title>
 		<authors>Julien Lebosquain</authors>
 		<description>Adds support for editing T4 text templating files (.tt)</description>
