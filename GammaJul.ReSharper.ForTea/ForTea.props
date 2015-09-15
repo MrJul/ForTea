@@ -30,11 +30,4 @@
 		<DefineConstants>TRACE</DefineConstants>
 	</PropertyGroup>
 
-	<PropertyGroup>
-		<StartAction>Program</StartAction>
-		<StartProgram>$(VsInstallDir)devenv.exe</StartProgram>
-		<StartArguments>/ReSharper.Plugin $(AssemblyName).dll /ReSharper.Internal</StartArguments>
-		<StartWorkingDirectory>$(MSBuildProjectDirectory)\$(OutputPath)</StartWorkingDirectory>
-	</PropertyGroup>
-
 </Project>

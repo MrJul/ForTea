@@ -1,6 +1,4 @@
-*.user
-*.nupkg
-/*.suo
+/.vs
 /Copy.bat
 /packages
 /_ReSharper*
