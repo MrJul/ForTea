@@ -3,5 +3,6 @@
 /packages
 /_ReSharper*
 *.user
+*.nupkg
 bin
 obj
