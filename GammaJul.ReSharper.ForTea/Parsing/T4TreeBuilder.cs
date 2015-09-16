@@ -35,15 +35,15 @@ namespace GammaJul.ReSharper.ForTea.Parsing {
 	/// </summary>
 	internal sealed partial class T4TreeBuilder {
 
-		private readonly List<IT4Include> _includes = new List<IT4Include>();
-		private readonly T4Environment _t4Environment;
-		private readonly DirectiveInfoManager _directiveInfoManager;
-		private readonly PsiBuilderLexer _builderLexer;
-		private readonly IPsiSourceFile _sourceFile;
-		private readonly ISolution _solution;
-		private readonly T4PsiModule _macroResolveModule;
-		private readonly HashSet<FileSystemPath> _existingIncludePaths;
-		private List<T4Directive> _notClosedDirectives;
+		[NotNull] private readonly List<IT4Include> _includes = new List<IT4Include>();
+		[NotNull] private readonly T4Environment _t4Environment;
+		[NotNull] private readonly DirectiveInfoManager _directiveInfoManager;
+		[NotNull] private readonly PsiBuilderLexer _builderLexer;
+		[CanBeNull] private readonly IPsiSourceFile _sourceFile;
+		[CanBeNull] private readonly ISolution _solution;
+		[CanBeNull] private readonly T4PsiModule _macroResolveModule;
+		[NotNull] private readonly HashSet<FileSystemPath> _existingIncludePaths;
+		[CanBeNull] private List<T4Directive> _notClosedDirectives;
 
 		/// <summary>
 		/// Advances the lexer to the next token.

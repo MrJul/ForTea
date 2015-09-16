@@ -28,27 +28,23 @@ namespace GammaJul.ReSharper.ForTea.Services.Navigation {
 	/// <summary>
 	/// Represents an occurence of text in an include file that is located outside of the solution.
 	/// </summary>
-	public class T4OutsideSolutionOccurence {
+	public class T4OutsideSolutionOccurence : IOccurence {
 
 		[NotNull] private readonly IRangeMarker _rangeMarker;
 		
-		public bool IsValid {
-			get { return _rangeMarker.IsValid; }
-		}
-		
-		public OccurenceType OccurenceType {
-			get { return OccurenceType.TextualOccurence; }
-		}
+		public bool IsValid
+			=> _rangeMarker.IsValid;
 
-		public ISolution GetSolution() {
-			return null;
-		}
+		public OccurenceType OccurenceType
+			=> OccurenceType.TextualOccurence;
+
+		public ISolution GetSolution()
+			=> null;
 
 		public OccurencePresentationOptions PresentationOptions { get; set; }
 		
-		public string DumpToString() {
-			return _rangeMarker.DocumentRange.ToString();
-		}
+		public string DumpToString()
+			=> _rangeMarker.DocumentRange.ToString();
 
 		public bool Navigate(ISolution solution, PopupWindowContextSource windowContext, bool transferFocus, TabOptions tabOptions = TabOptions.Default) {
 			if (!IsValid)
@@ -59,13 +55,11 @@ namespace GammaJul.ReSharper.ForTea.Services.Navigation {
 				return false;
 
 			var navigationInfo = new T4OutsideSolutionNavigationInfo(path, _rangeMarker.Range, transferFocus, tabOptions);
-			NavigationOptions navigationOptions = NavigationOptions.FromWindowContext(windowContext, "Navigate to included file", transferFocus, tabOptions);
-			NavigationManager navigationManager = NavigationManager.GetInstance(solution);
+			var navigationOptions = NavigationOptions.FromWindowContext(windowContext, "Navigate to included file", transferFocus, tabOptions);
+			var navigationManager = NavigationManager.GetInstance(solution);
 			return navigationManager.Navigate<T4OutsideSolutionNavigationProvider, T4OutsideSolutionNavigationInfo>(navigationInfo, navigationOptions);
 		}
-
-
-
+		
 		public T4OutsideSolutionOccurence([NotNull] IRangeMarker rangeMarker) {
 			_rangeMarker = rangeMarker;
 		}

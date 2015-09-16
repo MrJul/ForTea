@@ -243,6 +243,7 @@
     <Compile Include="Services\Navigation\T4OutsideSolutionNavigationInfo.cs" />
     <Compile Include="Services\Navigation\T4OutsideSolutionNavigationProvider.cs" />
     <Compile Include="Services\Navigation\T4OutsideSolutionOccurence.cs" />
+    <Compile Include="Services\Navigation\T4OutsideSolutionOccurenceProvider.cs" />
     <Compile Include="Services\Selection\T4CodeBehindWrappedSelection.cs" />
     <Compile Include="Services\Selection\T4NodeSelection.cs" />
     <Compile Include="Services\Selection\T4SelectEmbracingConstructProvider.cs" />
