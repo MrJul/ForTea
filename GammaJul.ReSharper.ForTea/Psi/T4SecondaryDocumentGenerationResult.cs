@@ -13,6 +13,9 @@
 //    See the License for the specific language governing permissions and
 //    limitations under the License.
 #endregion
+
+
+using System.Collections.Generic;
 using JetBrains.Annotations;
 using JetBrains.ReSharper.Psi;
 using JetBrains.ReSharper.Psi.ExtensionsAPI;
@@ -27,21 +30,28 @@ namespace GammaJul.ReSharper.ForTea.Psi {
 	/// </summary>
 	public sealed class T4SecondaryDocumentGenerationResult : SecondaryDocumentGenerationResult {
 
-		private readonly OneToSetMap<FileSystemPath, FileSystemPath> _includedFiles;
-		private readonly FileDependency _fileDependency;
+		[NotNull] private readonly IPsiSourceFile _sourceFile;
+		[NotNull] private readonly HashSet<FileSystemPath> _includedFiles;
+		[NotNull] private readonly T4FileDependencyManager _t4FileDependencyManager;
 
 		public override void CommitChanges() {
 			base.CommitChanges();
-			_fileDependency.UpdateDependencies(_includedFiles);
+
+			FileSystemPath location = _sourceFile.GetLocation();
+			if (!location.IsEmpty) {
+				_t4FileDependencyManager.UpdateIncludes(location, _includedFiles);
+				_t4FileDependencyManager.TryGetCurrentInvalidator()?.AddCommittedFilePath(location);
+			}
 		}
 
 		// ReSharper disable once UnusedParameter.Local
 		public T4SecondaryDocumentGenerationResult([NotNull] IPsiSourceFile sourceFile, [NotNull] string text, [NotNull] PsiLanguageType language,
 			[NotNull] ISecondaryRangeTranslator secondaryRangeTranslator, [NotNull] ILexerFactory lexerFactory,
-			[NotNull] FileDependency fileDependency, [NotNull] OneToSetMap<FileSystemPath, FileSystemPath> includedFiles)
+			[NotNull] T4FileDependencyManager t4FileDependencyManager, [NotNull] IEnumerable<FileSystemPath> includedFiles)
 			: base(text, language, secondaryRangeTranslator, lexerFactory) {
-			_fileDependency = fileDependency;
-			_includedFiles = includedFiles;
+			_sourceFile = sourceFile;
+			_t4FileDependencyManager = t4FileDependencyManager;
+			_includedFiles = new HashSet<FileSystemPath>(includedFiles);
 		}
 
 	}

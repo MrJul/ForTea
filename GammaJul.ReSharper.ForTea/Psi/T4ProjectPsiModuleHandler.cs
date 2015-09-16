@@ -30,7 +30,7 @@ namespace GammaJul.ReSharper.ForTea.Psi {
 	/// </summary>
 	internal sealed class T4ProjectPsiModuleHandler : DelegatingProjectPsiModuleHandler {
 
-		private readonly T4PsiModuleProvider _t4PsiModuleProvider;
+		[NotNull] private readonly T4PsiModuleProvider _t4PsiModuleProvider;
 		
 		public override IList<IPsiModule> GetAllModules() {
 			var modules = new List<IPsiModule>(base.GetAllModules());
@@ -47,8 +47,12 @@ namespace GammaJul.ReSharper.ForTea.Psi {
 			return base.GetPsiSourceFilesFor(projectFile).Concat(_t4PsiModuleProvider.GetPsiSourceFilesFor(projectFile));
 		}
 		
-		public T4ProjectPsiModuleHandler(Lifetime lifetime, [NotNull] IProjectPsiModuleHandler handler, [NotNull] ChangeManager changeManager,
-			[NotNull] T4Environment t4Environment, [NotNull] IProject project)
+		public T4ProjectPsiModuleHandler(
+			[NotNull] Lifetime lifetime,
+			[NotNull] IProjectPsiModuleHandler handler,
+			[NotNull] ChangeManager changeManager,
+			[NotNull] T4Environment t4Environment,
+			[NotNull] IProject project)
 			: base(handler) {
 			_t4PsiModuleProvider = new T4PsiModuleProvider(lifetime, project.Locks, changeManager, t4Environment);
 		}

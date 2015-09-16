@@ -38,8 +38,7 @@ namespace GammaJul.ReSharper.ForTea.Psi {
 	[GeneratedDocumentService(typeof(T4ProjectFileType))]
 	public class T4GeneratedDocumentService : GeneratedDocumentServiceBase {
 
-		private readonly DirectiveInfoManager _directiveInfoManager;
-		private readonly FileDependency _fileDependency;
+		[NotNull] private readonly DirectiveInfoManager _directiveInfoManager;
 		
 		/// <summary>
 		/// Generates a C# file from a T4 file.
@@ -60,14 +59,17 @@ namespace GammaJul.ReSharper.ForTea.Psi {
 			var includedFiles = new OneToSetMap<FileSystemPath, FileSystemPath>();
 			includedFiles.AddRange(modificationInfo.SourceFile.GetLocation(), t4File.GetNonEmptyIncludePaths());
 
+			ISolution solution = modificationInfo.SourceFile.GetSolution();
+			var t4FileDependencyManager = solution.GetComponent<T4FileDependencyManager>();
+
 			return new T4SecondaryDocumentGenerationResult(
 				modificationInfo.SourceFile,
 				result.Builder.ToString(),
 				csharpLanguageService.LanguageType,
 				new RangeTranslatorWithGeneratedRangeMap(result.GeneratedRangeMap),
 				csharpLanguageService.GetPrimaryLexerFactory(),
-				_fileDependency,
-				includedFiles);
+				t4FileDependencyManager,
+				t4File.GetNonEmptyIncludePaths());
 		}
 
 		/// <summary>
@@ -140,8 +142,7 @@ namespace GammaJul.ReSharper.ForTea.Psi {
 			};
 		}
 		
-		public T4GeneratedDocumentService([NotNull] FileDependency fileDependency, [NotNull] DirectiveInfoManager directiveInfoManager) {
-			_fileDependency = fileDependency;
+		public T4GeneratedDocumentService([NotNull] DirectiveInfoManager directiveInfoManager) {
 			_directiveInfoManager = directiveInfoManager;
 		}
 

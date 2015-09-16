@@ -191,8 +191,11 @@
     <Compile Include="Psi\Directives\ParameterDirectiveInfo.cs" />
     <Compile Include="Psi\Directives\TemplateDirectiveInfo.cs" />
     <Compile Include="Psi\GenerationResult.cs" />
+    <Compile Include="Psi\IT4FileDependencyInvalidator.cs" />
     <Compile Include="Psi\PsiExtensions.cs" />
     <Compile Include="Psi\T4CachingLexerService.cs" />
+    <Compile Include="Psi\T4FileDependencyManager.Invalidator.cs" />
+    <Compile Include="Psi\T4FileDependencyManager.cs" />
     <Compile Include="Psi\T4CSharpCodeGenerator.cs" />
     <Compile Include="Psi\T4CSharpCustomModificationHandler.cs" />
     <Compile Include="Psi\T4DocumentRangeTranslator.cs" />

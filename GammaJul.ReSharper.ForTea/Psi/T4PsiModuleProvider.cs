@@ -38,11 +38,11 @@ namespace GammaJul.ReSharper.ForTea.Psi {
 	/// </summary>
 	public sealed class T4PsiModuleProvider : IDisposable {
 
-		private readonly Dictionary<IProjectFile, ModuleWrapper> _modules = new Dictionary<IProjectFile, ModuleWrapper>();
-		private readonly Lifetime _lifetime;
-		private readonly IShellLocks _shellLocks;
-		private readonly ChangeManager _changeManager;
-		private readonly T4Environment _t4Environment;
+		[NotNull] private readonly Dictionary<IProjectFile, ModuleWrapper> _modules = new Dictionary<IProjectFile, ModuleWrapper>();
+		[NotNull] private readonly Lifetime _lifetime;
+		[NotNull] private readonly IShellLocks _shellLocks;
+		[NotNull] private readonly ChangeManager _changeManager;
+		[NotNull] private readonly T4Environment _t4Environment;
 
 		private struct ModuleWrapper {
 			internal readonly T4PsiModule Module;
@@ -181,6 +181,7 @@ namespace GammaJul.ReSharper.ForTea.Psi {
 		}
 
 		private void InvalidateFilesHavingInclude([NotNull] FileSystemPath includeLocation, [NotNull] IPsiServices psiServices) {
+			psiServices.GetComponent<T4FileDependencyManager>().UpdateIncludes(includeLocation, EmptyList<FileSystemPath>.InstanceList);
 			foreach (ModuleWrapper moduleWrapper in _modules.Values) {
 				IPsiSourceFile sourceFile = moduleWrapper.Module.SourceFile;
 				var t4File = sourceFile.GetTheOnlyPsiFile(T4Language.Instance) as IT4File;
@@ -200,7 +201,11 @@ namespace GammaJul.ReSharper.ForTea.Psi {
 			}
 		}
 
-		public T4PsiModuleProvider([NotNull] Lifetime lifetime, [NotNull] IShellLocks shellLocks, [NotNull] ChangeManager changeManager, [NotNull] T4Environment t4Environment) {
+		public T4PsiModuleProvider(
+			[NotNull] Lifetime lifetime,
+			[NotNull] IShellLocks shellLocks,
+			[NotNull] ChangeManager changeManager,
+			[NotNull] T4Environment t4Environment) {
 			_lifetime = lifetime;
 			_shellLocks = shellLocks;
 			_changeManager = changeManager;
