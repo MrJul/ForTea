@@ -19,12 +19,12 @@ using System.Collections.ObjectModel;
 using System.Globalization;
 using System.Linq;
 using JetBrains.Annotations;
-using JetBrains.Util.Lazy;
+using JetBrains.Util;
 
 namespace GammaJul.ReSharper.ForTea.Psi.Directives {
 
 	public class CultureDirectiveAttributeInfo : DirectiveAttributeInfo {
-		private readonly JetBrains.Util.Lazy.Lazy<JetHashSet<string>> _cultureCodes;
+		private readonly Lazy<JetHashSet<string>> _cultureCodes;
 		private ReadOnlyCollection<string> _intellisenseValues;
 
 		[NotNull]

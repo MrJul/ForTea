@@ -16,7 +16,6 @@
 
 
 using Microsoft.VisualStudio.TextTemplating.VSHost;
-using JetBrains.Util.Lazy;
 using System;
 using System.Collections.Generic;
 using JetBrains.Annotations;
@@ -37,7 +36,7 @@ namespace GammaJul.ReSharper.ForTea {
 	public class T4Environment {
 
 		[NotNull] private readonly IVsEnvironmentInformation _vsEnvironmentInformation;
-		[NotNull] private readonly JetBrains.Util.Lazy.Lazy<Optional<ITextTemplatingComponents>> _components;
+		[NotNull] private readonly Lazy<Optional<ITextTemplatingComponents>> _components;
 		[NotNull] private readonly string[] _textTemplatingAssemblyNames;
 		[CanBeNull] private readonly PlatformID _platformID;
 		[CanBeNull] private IList<FileSystemPath> _includePaths;
@@ -128,7 +127,7 @@ namespace GammaJul.ReSharper.ForTea {
 		public T4Environment([NotNull] IVsEnvironmentInformation vsEnvironmentInformation, [NotNull] RawVsServiceProvider rawVsServiceProvider) {
 			_vsEnvironmentInformation = vsEnvironmentInformation;
 			
-			_components = Lazy.Of(() => new Optional<ITextTemplatingComponents>(rawVsServiceProvider.Value.GetService<STextTemplating, ITextTemplatingComponents>()));
+			_components = Lazy.Of(() => new Optional<ITextTemplatingComponents>(rawVsServiceProvider.Value.GetService<STextTemplating, ITextTemplatingComponents>()), true);
 
 			int vsMajorVersion = vsEnvironmentInformation.VsVersion2.Major;
 			switch (vsMajorVersion) {

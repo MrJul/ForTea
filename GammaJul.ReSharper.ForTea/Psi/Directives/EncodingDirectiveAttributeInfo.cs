@@ -19,13 +19,13 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using JetBrains.Annotations;
-using JetBrains.Util.Lazy;
+using JetBrains.Util;
 
 namespace GammaJul.ReSharper.ForTea.Psi.Directives {
 
 	public class EncodingDirectiveAttributeInfo : DirectiveAttributeInfo {
 
-		private readonly JetBrains.Util.Lazy.Lazy<JetHashSet<string>> _encodings;
+		private readonly Lazy<JetHashSet<string>> _encodings;
 		private ReadOnlyCollection<string> _intellisenseValues;
 
 		[NotNull]

@@ -41,7 +41,8 @@ namespace GammaJul.ReSharper.ForTea.Psi {
 			if (baseLexer.TokenType == T4TokenNodeTypes.Code) {
 				LanguageService service = _codeBehindLanguage.LanguageService();
 				if (service != null) {
-					var buffer = new ProjectedBuffer(_mixedLexer.Buffer,
+					var buffer = ProjectedBuffer.Create(
+						_mixedLexer.Buffer,
 						new TextRange(_mixedLexer.PrimaryLexer.TokenStart, _mixedLexer.PrimaryLexer.AdvanceWhile(T4TokenNodeTypes.Code)));
 					ILexer lexer = service.GetPrimaryLexerFactory().CreateLexer(buffer);
 					lexer.Start();

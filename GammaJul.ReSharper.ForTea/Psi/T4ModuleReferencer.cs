@@ -15,7 +15,6 @@
 #endregion
 
 
-using JetBrains.Metadata.Reader.API;
 using System;
 using System.Linq;
 using GammaJul.ReSharper.ForTea.Psi.Directives;
@@ -38,7 +37,7 @@ namespace GammaJul.ReSharper.ForTea.Psi {
 		private readonly T4Environment _environment;
 		private readonly DirectiveInfoManager _directiveInfoManager;
 
-		private bool CanReferenceModule(IPsiModule module, IPsiModule moduleToReference) {
+		public bool CanReferenceModule(IPsiModule module, IPsiModule moduleToReference) {
 			var t4PsiModule = module as T4PsiModule;
 			if (t4PsiModule == null || !t4PsiModule.IsValid() || moduleToReference == null)
 				return false;
@@ -46,11 +45,7 @@ namespace GammaJul.ReSharper.ForTea.Psi {
 			var assembly = moduleToReference.ContainingProjectModule as IAssembly;
 			return assembly != null && assembly.PlatformID != null && assembly.PlatformID.Identifier == _environment.PlatformID.Identifier;
 		}
-
-		public bool CanReferenceModule(IPsiModule module, IPsiModule moduleToReference, IModuleReferenceResolveContext context) {
-			return CanReferenceModule(module, moduleToReference);
-		}
-
+		
 		/// <summary>
 		/// Returns true if module is referenced
 		/// </summary>
@@ -58,7 +53,7 @@ namespace GammaJul.ReSharper.ForTea.Psi {
 			return ReferenceModuleImpl(module, moduleToReference, null);
 		}
 
-		public bool ReferenceModuleWithType(IPsiModule module, ITypeElement typeToReference, IModuleReferenceResolveContext resolveContext) {
+		public bool ReferenceModuleWithType(IPsiModule module, ITypeElement typeToReference) {
 			return ReferenceModuleImpl(module, typeToReference.Module, typeToReference.GetContainingNamespace().QualifiedName);
 		}
 

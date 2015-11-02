@@ -27,6 +27,7 @@ using JetBrains.ProjectModel;
 using JetBrains.ReSharper.Psi;
 using JetBrains.ReSharper.Psi.CSharp;
 using JetBrains.ReSharper.Psi.CSharp.CodeStyle;
+using JetBrains.ReSharper.Psi.CSharp.CodeStyle.Settings;
 using JetBrains.ReSharper.Psi.CSharp.Impl.CustomHandlers;
 using JetBrains.ReSharper.Psi.CSharp.Parsing;
 using JetBrains.ReSharper.Psi.CSharp.Tree;

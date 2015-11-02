@@ -2,12 +2,12 @@
 <package xmlns="http://schemas.microsoft.com/packaging/2011/08/nuspec.xsd">
 	<metadata>
 		<id>JLebosquain.ForTea</id>
-		<version>1.4.1</version>
+		<version>1.5.0</version>
 		<title>ForTea</title>
 		<authors>Julien Lebosquain</authors>
 		<description>Adds support for editing T4 text templating files (.tt)</description>
 		<releaseNotes>
-			Added support for ReSharper 9.2 (#54).
+			Added support for ReSharper 10.
 		</releaseNotes>
 		<projectUrl>https://github.com/MrJul/ForTea/</projectUrl>
 		<iconUrl>https://raw.github.com/MrJul/ForTea/master/Logo/ForTea%20128x128.png</iconUrl>
@@ -15,10 +15,10 @@
 		<copyright>Copyright &#x00A9; 2012-2015 Julien Lebosquain</copyright>
 		<tags>T4 Text Templating Template .tt</tags>
 		<dependencies>
-			<dependency id="Wave" version="[3.0]" />
+			<dependency id="Wave" version="[4.0]" />
 		</dependencies>
 	</metadata>
 	<files>
-		<file src="bin\Release\GammaJul.ReSharper.ForTea.v9.2.dll" target="DotFiles" />
+		<file src="bin\Release\GammaJul.ReSharper.ForTea.v10.0.dll" target="DotFiles" />
 	</files>
 </package>
