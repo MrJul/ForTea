@@ -327,7 +327,13 @@ namespace GammaJul.ReSharper.ForTea.Psi {
 
 				string value;
 				bool succeeded = HResultHelpers.SUCCEEDED(vsBuildMacroInfo.GetBuildMacroValue(addedMacro, out value)) && !String.IsNullOrEmpty(value);
-				lock (_resolvedMacros) {
+                if (!succeeded)
+                {
+                    value = MSBuildExtensions.GetStringValue(TryGetVsHierarchy(), addedMacro, null);
+                    succeeded = !String.IsNullOrEmpty(value);
+                }
+
+                lock (_resolvedMacros) {
 					if (succeeded)
 						_resolvedMacros[addedMacro] = value;
 					else
