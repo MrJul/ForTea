@@ -206,16 +206,6 @@ namespace GammaJul.ReSharper.ForTea.Psi {
 				_assemblyReferences.Add(assemblyNameOrFile, cookie);
 			return cookie;
 		}
-		
-		/// <summary>
-		/// The <see cref="IVsHierarchy"/> representing the project file normally implements <see cref="IVsBuildMacroInfo"/>.
-		/// </summary>
-		/// <returns>An instance of <see cref="IVsBuildMacroInfo"/> if found.</returns>
-		[CanBeNull]
-		private IVsBuildMacroInfo TryGetVsBuildMacroInfo() {
-			// ReSharper disable once SuspiciousTypeConversion.Global
-			return TryGetVsHierarchy() as IVsBuildMacroInfo;
-		}
 
 		[CanBeNull]
 		private IVsHierarchy TryGetVsHierarchy() {
@@ -314,24 +304,13 @@ namespace GammaJul.ReSharper.ForTea.Psi {
 		/// <returns>Whether at least one macro has been processed.</returns>
 		private bool ResolveMacros([NotNull] IEnumerable<string> macros) {
 			bool hasChanges = false;
-
-			IVsBuildMacroInfo vsBuildMacroInfo = null;
+			
 			foreach (string addedMacro in macros) {
-				if (vsBuildMacroInfo == null) {
-					vsBuildMacroInfo = TryGetVsBuildMacroInfo();
-					if (vsBuildMacroInfo == null)
-						break;
-				}
 
 				hasChanges = true;
 
-				string value;
-				bool succeeded = HResultHelpers.SUCCEEDED(vsBuildMacroInfo.GetBuildMacroValue(addedMacro, out value)) && !String.IsNullOrEmpty(value);
-				if (!succeeded)
-				{
-					value = MSBuildExtensions.GetStringValue(TryGetVsHierarchy(), addedMacro, null);
-					succeeded = !String.IsNullOrEmpty(value);
-				}
+				string value = MSBuildExtensions.GetStringValue(TryGetVsHierarchy(), addedMacro, null);
+				bool succeeded = !String.IsNullOrEmpty(value);
 				
 				lock (_resolvedMacros) {
 					if (succeeded)
