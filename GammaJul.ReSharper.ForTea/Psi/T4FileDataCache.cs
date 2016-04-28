@@ -55,8 +55,8 @@ namespace GammaJul.ReSharper.ForTea.Psi {
 		/// </summary>
 		/// <param name="treeNode">The tree node that changed.</param>
 		/// <param name="psiChangedElementType">The type of the PSI change.</param>
-		private void OnPsiChanged(ITreeNode treeNode, PsiChangedElementType psiChangedElementType) {
-			if (treeNode != null && psiChangedElementType == PsiChangedElementType.ContentsChanged)
+		private void OnPsiChanged(ITreeNode treeNode, PsiChangedElementType psiChangedElementType) {            
+			if (treeNode != null && psiChangedElementType == PsiChangedElementType.SourceContentsChanged)
 				OnPsiFileChanged(treeNode.GetContainingFile());
 		}
 

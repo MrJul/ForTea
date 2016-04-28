@@ -1,0 +1,1 @@
+c:\Projects\Karpach.Plugins.Resharper\trunk\.nuget\NuGet.exe pack -Symbols -Version 1.6 GammaJul.ReSharper.ForTea.nuspec

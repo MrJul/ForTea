@@ -74,8 +74,7 @@ namespace GammaJul.ReSharper.ForTea.Psi.CodeStyle {
 			return new TreeRange(firstElement, lastElement);
 		}
 
-		public T4CodeFormatter(ISettingsStore settingsStore)
-			: base(settingsStore) {
+		public T4CodeFormatter(ISettingsStore settingsStore) {            
 		}
 
 	}

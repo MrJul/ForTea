@@ -50,7 +50,7 @@ namespace GammaJul.ReSharper.ForTea {
 		/// Gets the version of the Visual Studio we're running under, two components only, <c>Major.Minor</c>. Example: “8.0”.
 		/// </summary>
 		[NotNull]
-		public Version VsVersion2 {
+		public Version2 VsVersion2 {
 			get { return _vsEnvironmentInformation.VsVersion2; }
 		}
 
@@ -99,8 +99,9 @@ namespace GammaJul.ReSharper.ForTea {
 
 		[NotNull]
 		private IList<FileSystemPath> ReadIncludePaths() {
-			string registryKey = VsEnvironmentInformation.Discovery.GetVisualStudioRegistryPath(_vsEnvironmentInformation.VsHive)
+			string registryKey = JetBrains.ReSharper.Resources.Shell.Shell.Instance.GetComponent<IVsEnvironmentInformation>().GetVisualStudioGlobalRegistryPath()
 				+ @"_Config\TextTemplating\IncludeFolders\.tt";
+            MessageBox.ShowInfo(registryKey, "Info");
 			using (RegistryKey key = Registry.CurrentUser.OpenSubKey(registryKey)) {
 
 				if (key == null)
@@ -129,7 +130,7 @@ namespace GammaJul.ReSharper.ForTea {
 			
 			_components = Lazy.Of(() => new Optional<ITextTemplatingComponents>(rawVsServiceProvider.Value.GetService<STextTemplating, ITextTemplatingComponents>()), true);
 
-			int vsMajorVersion = vsEnvironmentInformation.VsVersion2.Major;
+			uint vsMajorVersion = vsEnvironmentInformation.VsVersion2.Major;
 			switch (vsMajorVersion) {
 				
 				case VsVersions.Vs2010:

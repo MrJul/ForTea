@@ -13,12 +13,12 @@
 //    See the License for the specific language governing permissions and
 //    limitations under the License.
 #endregion
+using System;
 using JetBrains.Annotations;
 using JetBrains.Application.changes;
 using JetBrains.DataFlow;
 using JetBrains.ProjectModel;
 using JetBrains.ReSharper.Psi.Modules;
-using JetBrains.Util;
 
 namespace GammaJul.ReSharper.ForTea.Psi {
 
@@ -29,14 +29,15 @@ namespace GammaJul.ReSharper.ForTea.Psi {
 	public class T4ProjectPsiModuleProviderFilter : IProjectPsiModuleProviderFilter {
 
 		[NotNull] private readonly ChangeManager _changeManager;
-		[NotNull] private readonly T4Environment _t4Environment;
+		[NotNull] private readonly T4Environment _t4Environment;		
 
-		public JetTuple<IProjectPsiModuleHandler, IPsiModuleDecorator> OverrideHandler(Lifetime lifetime, IProject project, IProjectPsiModuleHandler handler) {
-			var t4ModuleHandler = new T4ProjectPsiModuleHandler(lifetime, handler, _changeManager, _t4Environment, project);
-			return new JetTuple<IProjectPsiModuleHandler, IPsiModuleDecorator>(t4ModuleHandler, null);
-		}
+        Tuple<IProjectPsiModuleHandler, IPsiModuleDecorator> IProjectPsiModuleProviderFilter.OverrideHandler(Lifetime lifetime, IProject project, IProjectPsiModuleHandler handler)
+        {            
+            var t4ModuleHandler = new T4ProjectPsiModuleHandler(lifetime, handler, _changeManager, _t4Environment, project);
+            return new Tuple<IProjectPsiModuleHandler, IPsiModuleDecorator>(t4ModuleHandler, null);
+        }
 
-		public T4ProjectPsiModuleProviderFilter(
+        public T4ProjectPsiModuleProviderFilter(
 			[NotNull] ChangeManager changeManager,
 			[NotNull] T4Environment t4Environment) {
 			_changeManager = changeManager;
