@@ -16,6 +16,7 @@
 
 
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using GammaJul.ReSharper.ForTea.Daemon.Highlightings;
 using GammaJul.ReSharper.ForTea.Psi;
@@ -47,8 +48,20 @@ namespace GammaJul.ReSharper.ForTea.Daemon {
 			if (typeElement == null)
 				return;
 
-			if (!typeElement.Methods.Any(IsTransformTextMethod))
+			if (!GetAllMethodsInTypeHierarchy(typeElement).Any(IsTransformTextMethod))
 				context.AddHighlighting(new MissingTransformTextMethodHighlighting(superTypeUsage));
+		}
+
+		private static IEnumerable<IMethod> GetAllMethodsInTypeHierarchy(ITypeElement typeElement) {
+			var currentTypeElement = typeElement;
+			while (currentTypeElement != null) {
+				foreach (var method in currentTypeElement.Methods)
+					yield return method;
+				var baseClassDeclaredType = currentTypeElement.GetSuperTypes().FirstOrDefault();
+				if (baseClassDeclaredType == null)
+					yield break;
+				currentTypeElement = baseClassDeclaredType.GetTypeElement();
+			}
 		}
 
 		private static bool IsTransformTextMethod([NotNull] IMethod method) {
