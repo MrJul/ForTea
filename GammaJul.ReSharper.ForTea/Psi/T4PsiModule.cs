@@ -68,7 +68,8 @@ namespace GammaJul.ReSharper.ForTea.Psi {
 		[NotNull] private readonly IPsiSourceFile _sourceFile;
 		[NotNull] private readonly T4ResolveProject _resolveProject;
 		[NotNull] private readonly OutputAssemblies _outputAssemblies;
-		[CanBeNull] private IModuleReferenceResolveManager _resolveManager;
+        [NotNull] private readonly Dictionary<object, object> _userData = new Dictionary<object, object>();
+		[CanBeNull] private IModuleReferenceResolveManager _resolveManager;        
 		private bool _isValid;
 
 		/// <summary>
@@ -476,6 +477,18 @@ namespace GammaJul.ReSharper.ForTea.Psi {
 			fileDataCache.FileDataChanged.Advise(lifetime, OnDataFileChanged);
 			AddBaseReferences();
 		}
+
+	    public void PutData<T>(Key<T> key, T value) where T : class {
+            _userData.Add(key, value);
+	    }
+
+	    public T GetData<T>(Key<T> key) where T : class {
+	        return (_userData.ContainsKey(key) ? _userData[key] : null) as T;
+	    }
+
+	    public IEnumerable<KeyValuePair<object, object>> EnumerateData() {
+	        return _userData.Select(p => p);
+	    }
 
 	}
 
