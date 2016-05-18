@@ -50,7 +50,7 @@ namespace GammaJul.ReSharper.ForTea.Psi {
 	/// <summary>
 	/// PSI module managing a single T4 file.
 	/// </summary>
-	internal sealed class T4PsiModule : IPsiModule, IProjectPsiModule, IChangeProvider {
+	internal sealed class T4PsiModule : IProjectPsiModule, IChangeProvider {
 
 		private const string Prefix = "[T4] ";
 		
@@ -68,8 +68,8 @@ namespace GammaJul.ReSharper.ForTea.Psi {
 		[NotNull] private readonly IPsiSourceFile _sourceFile;
 		[NotNull] private readonly T4ResolveProject _resolveProject;
 		[NotNull] private readonly OutputAssemblies _outputAssemblies;
-        [NotNull] private readonly Dictionary<object, object> _userData = new Dictionary<object, object>();
-		[CanBeNull] private IModuleReferenceResolveManager _resolveManager;        
+		[NotNull] private readonly UserDataHolder _userDataHolder = new UserDataHolder();
+		[CanBeNull] private IModuleReferenceResolveManager _resolveManager;
 		private bool _isValid;
 
 		/// <summary>
@@ -139,7 +139,6 @@ namespace GammaJul.ReSharper.ForTea.Psi {
 		/// Gets the solution this PSI module is attached to.
 		/// </summary>
 		/// <returns>An instance of <see cref="ISolution"/>.</returns>
-		[NotNull]
 		public ISolution GetSolution() {
 			return _solution;
 		}
@@ -419,6 +418,21 @@ namespace GammaJul.ReSharper.ForTea.Psi {
 				: null;
 		}
 
+
+		public T GetData<T>(Key<T> key)
+		where T : class {
+			return _userDataHolder.GetData(key);
+		}
+
+		public void PutData<T>(Key<T> key, T val)
+		where T : class {
+			_userDataHolder.PutData(key, val);
+		}
+
+		public IEnumerable<KeyValuePair<object, object>> EnumerateData() {
+			return _userDataHolder.EnumerateData();
+		}
+
 		/// <summary>
 		/// Disposes this instance.
 		/// </summary>
@@ -477,18 +491,6 @@ namespace GammaJul.ReSharper.ForTea.Psi {
 			fileDataCache.FileDataChanged.Advise(lifetime, OnDataFileChanged);
 			AddBaseReferences();
 		}
-
-	    public void PutData<T>(Key<T> key, T value) where T : class {
-            _userData.Add(key, value);
-	    }
-
-	    public T GetData<T>(Key<T> key) where T : class {
-	        return (_userData.ContainsKey(key) ? _userData[key] : null) as T;
-	    }
-
-	    public IEnumerable<KeyValuePair<object, object>> EnumerateData() {
-	        return _userData.Select(p => p);
-	    }
 
 	}
 

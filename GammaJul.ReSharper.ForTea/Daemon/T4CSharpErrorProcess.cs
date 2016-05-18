@@ -16,7 +16,6 @@
 
 
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using GammaJul.ReSharper.ForTea.Daemon.Highlightings;
 using GammaJul.ReSharper.ForTea.Psi;
@@ -27,6 +26,8 @@ using JetBrains.ReSharper.Feature.Services.Daemon;
 using JetBrains.ReSharper.Psi;
 using JetBrains.ReSharper.Psi.CSharp;
 using JetBrains.ReSharper.Psi.CSharp.Tree;
+using JetBrains.ReSharper.Psi.Util;
+using JetBrains.Util;
 
 namespace GammaJul.ReSharper.ForTea.Daemon {
 
@@ -47,21 +48,16 @@ namespace GammaJul.ReSharper.ForTea.Daemon {
 			ITypeElement typeElement = CSharpTypeFactory.CreateDeclaredType(superTypeUsage).GetTypeElement();
 			if (typeElement == null)
 				return;
-
-			if (!GetAllMethodsInTypeHierarchy(typeElement).Any(IsTransformTextMethod))
+			
+			if (!HasTransformTextMethod(typeElement))
 				context.AddHighlighting(new MissingTransformTextMethodHighlighting(superTypeUsage));
 		}
 
-		private static IEnumerable<IMethod> GetAllMethodsInTypeHierarchy(ITypeElement typeElement) {
-			var currentTypeElement = typeElement;
-			while (currentTypeElement != null) {
-				foreach (var method in currentTypeElement.Methods)
-					yield return method;
-				var baseClassDeclaredType = currentTypeElement.GetSuperTypes().FirstOrDefault();
-				if (baseClassDeclaredType == null)
-					yield break;
-				currentTypeElement = baseClassDeclaredType.GetTypeElement();
-			}
+		private static bool HasTransformTextMethod([NotNull] ITypeElement typeElement) {
+			return typeElement
+				.GetAllClassMembers(T4CSharpCodeGenerator.TransformTextMethodName)
+				.SelectNotNull(instance => instance.Member as IMethod)
+				.Any(IsTransformTextMethod);
 		}
 
 		private static bool IsTransformTextMethod([NotNull] IMethod method) {

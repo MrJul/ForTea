@@ -3,7 +3,7 @@
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>
     <ProjectGuid>{63F25238-06BA-4861-95A2-DA35A1D18B65}</ProjectGuid>
-    <AssemblyName>GammaJul.ReSharper.ForTea.v10.0</AssemblyName>
+    <AssemblyName>GammaJul.ReSharper.ForTea</AssemblyName>
     <NuGetPackageImportStamp>
     </NuGetPackageImportStamp>
   </PropertyGroup>

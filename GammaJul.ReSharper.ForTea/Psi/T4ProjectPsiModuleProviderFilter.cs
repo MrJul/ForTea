@@ -29,7 +29,7 @@ namespace GammaJul.ReSharper.ForTea.Psi {
 	public class T4ProjectPsiModuleProviderFilter : IProjectPsiModuleProviderFilter {
 
 		[NotNull] private readonly ChangeManager _changeManager;
-		[NotNull] private readonly T4Environment _t4Environment;		
+		[NotNull] private readonly T4Environment _t4Environment;
 
         Tuple<IProjectPsiModuleHandler, IPsiModuleDecorator> IProjectPsiModuleProviderFilter.OverrideHandler(Lifetime lifetime, IProject project, IProjectPsiModuleHandler handler)
         {            

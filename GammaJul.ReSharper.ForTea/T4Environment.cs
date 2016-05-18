@@ -99,9 +99,9 @@ namespace GammaJul.ReSharper.ForTea {
 
 		[NotNull]
 		private IList<FileSystemPath> ReadIncludePaths() {
-			string registryKey = JetBrains.ReSharper.Resources.Shell.Shell.Instance.GetComponent<IVsEnvironmentInformation>().GetVisualStudioGlobalRegistryPath()
+			string registryKey = _vsEnvironmentInformation.GetVisualStudioGlobalRegistryPath()
 				+ @"_Config\TextTemplating\IncludeFolders\.tt";
-            MessageBox.ShowInfo(registryKey, "Info");
+
 			using (RegistryKey key = Registry.CurrentUser.OpenSubKey(registryKey)) {
 
 				if (key == null)

@@ -68,11 +68,11 @@ namespace GammaJul.ReSharper.ForTea.Psi {
 			get { return false; }
 		}
 
-	    public bool CanOmitBraces {
-	        get { return false; }
-	    }
+		public bool CanOmitBraces {
+			get { return false; }
+		}
 
-	    /// <summary>
+		/// <summary>
 		/// Creates a new T4 code block.
 		/// </summary>
 		/// <param name="text">The C# code.</param>
