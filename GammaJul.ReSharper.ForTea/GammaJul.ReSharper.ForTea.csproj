@@ -220,6 +220,7 @@
     <Compile Include="Psi\IT4FileDependencyInvalidator.cs" />
     <Compile Include="Psi\PsiExtensions.cs" />
     <Compile Include="Psi\T4CachingLexerService.cs" />
+    <Compile Include="Psi\T4CSharpLanguageLevelProvider.cs" />
     <Compile Include="Psi\T4FileDependencyManager.Invalidator.cs" />
     <Compile Include="Psi\T4FileDependencyManager.cs" />
     <Compile Include="Psi\T4CSharpCodeGenerator.cs" />

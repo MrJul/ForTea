@@ -22,6 +22,7 @@ using JetBrains.Annotations;
 using JetBrains.Application;
 using JetBrains.Application.Components;
 using JetBrains.Application.platforms;
+using JetBrains.ReSharper.Psi.CSharp;
 using JetBrains.VsIntegration.Shell;
 using JetBrains.Util;
 using Microsoft.Win32;
@@ -42,20 +43,18 @@ namespace GammaJul.ReSharper.ForTea {
 		[CanBeNull] private IList<FileSystemPath> _includePaths;
 
 		[NotNull]
-		public Optional<ITextTemplatingComponents> Components {
-			get { return _components.Value; }
-		}
-		
+		public Optional<ITextTemplatingComponents> Components
+			=> _components.Value;
+
 		/// <summary>
 		/// Gets the version of the Visual Studio we're running under, two components only, <c>Major.Minor</c>. Example: “8.0”.
 		/// </summary>
 		[NotNull]
-		public Version2 VsVersion2 {
-			get { return _vsEnvironmentInformation.VsVersion2; }
-		}
+		public Version2 VsVersion2
+			=> _vsEnvironmentInformation.VsVersion2;
 
 		/// <summary>
-		/// Gets the platform ID (.NET 4.0 under VS2010, .NET 4.5 under VS2012).
+		/// Gets the platform ID (.NET 4.0 under VS2010, .NET 4.5 under VS2012+).
 		/// </summary>
 		[NotNull]
 		public PlatformID PlatformID {
@@ -65,6 +64,11 @@ namespace GammaJul.ReSharper.ForTea {
 				return _platformID;
 			}
 		}
+
+		/// <summary>
+		/// Gets the C# language version.
+		/// </summary>
+		public CSharpLanguageLevel CSharpLanguageLevel { get; }
 
 		/// <summary>
 		/// Gets the default included assemblies.
@@ -81,9 +85,8 @@ namespace GammaJul.ReSharper.ForTea {
 		/// <summary>
 		/// Gets whether the current environment is supported. VS2005 and VS2008 aren't.
 		/// </summary>
-		public bool IsSupported {
-			get { return _platformID != null; }
-		}
+		public bool IsSupported
+			=> _platformID != null;
 
 		/// <summary>
 		/// Gets the common include paths from the registry.
@@ -135,6 +138,7 @@ namespace GammaJul.ReSharper.ForTea {
 				
 				case VsVersions.Vs2010:
 					_platformID = new PlatformID(FrameworkIdentifier.NetFramework, new Version(4, 0));
+					CSharpLanguageLevel = CSharpLanguageLevel.CSharp40;
 					_textTemplatingAssemblyNames = new[] {
 						"Microsoft.VisualStudio.TextTemplating.10.0, Version=10.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a",
 						"Microsoft.VisualStudio.TextTemplating.Interfaces.10.0, Version=10.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a"
@@ -143,6 +147,7 @@ namespace GammaJul.ReSharper.ForTea {
 
 				case VsVersions.Vs2012:
 					_platformID = new PlatformID(FrameworkIdentifier.NetFramework, new Version(4, 5));
+					CSharpLanguageLevel = CSharpLanguageLevel.CSharp50;
 					_textTemplatingAssemblyNames = new[] {
 						"Microsoft.VisualStudio.TextTemplating.11.0, Version=11.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a",
 						"Microsoft.VisualStudio.TextTemplating.Interfaces.11.0, Version=11.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a",
@@ -152,6 +157,7 @@ namespace GammaJul.ReSharper.ForTea {
 
 				case VsVersions.Vs2013:
 					_platformID = new PlatformID(FrameworkIdentifier.NetFramework, new Version(4, 5));
+					CSharpLanguageLevel = CSharpLanguageLevel.CSharp50;
 					_textTemplatingAssemblyNames = new[] {
 						"Microsoft.VisualStudio.TextTemplating.12.0, Version=12.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a",
 						"Microsoft.VisualStudio.TextTemplating.Interfaces.11.0, Version=11.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a",
@@ -161,6 +167,8 @@ namespace GammaJul.ReSharper.ForTea {
 
 				case VsVersions.Vs2015:
 					_platformID = new PlatformID(FrameworkIdentifier.NetFramework, new Version(4, 5));
+					const int vs2015Update2Build = 25123;
+					CSharpLanguageLevel = vsEnvironmentInformation.VsVersion4.Build >= vs2015Update2Build ? CSharpLanguageLevel.CSharp60 : CSharpLanguageLevel.CSharp50;
 					_textTemplatingAssemblyNames = new[] {
 						"Microsoft.VisualStudio.TextTemplating.14.0, Version=14.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a",
 						"Microsoft.VisualStudio.TextTemplating.Interfaces.11.0, Version=11.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a",
