@@ -80,7 +80,7 @@ namespace GammaJul.ReSharper.ForTea.Psi.Directives {
 
 			bool isAtLeastVs2012 = environment.VsVersion2.Major >= VsVersions.Vs2012;
 
-			_languageAttribute = new EnumDirectiveAttributeInfo("language", DirectiveAttributeOptions.None, "C#", "VB");
+			_languageAttribute = new EnumDirectiveAttributeInfo("language", DirectiveAttributeOptions.None, "C#", "C#v3.5", "VB", "VBv3.5");
 			_hostSpecificAttribute = isAtLeastVs2012
 				? new EnumDirectiveAttributeInfo("hostspecific",DirectiveAttributeOptions.None, "true", "false", "trueFromBase")
 				: new BooleanDirectiveAttributeInfo("hostspecific", DirectiveAttributeOptions.None);
