@@ -23,6 +23,7 @@ using JetBrains.ReSharper.Feature.Services.Daemon;
 using JetBrains.ReSharper.Psi;
 using JetBrains.ReSharper.Psi.CSharp.Parsing;
 using JetBrains.ReSharper.Psi.CSharp.Tree;
+using JetBrains.ReSharper.Psi.ExtensionsAPI.Resolve;
 using JetBrains.ReSharper.Psi.ExtensionsAPI.Tree;
 using JetBrains.ReSharper.Psi.Parsing;
 using JetBrains.ReSharper.Psi.Tree;
@@ -114,16 +115,25 @@ namespace GammaJul.ReSharper.ForTea.Daemon {
 
 			if (_csharpOperators[tokenType])
 				return VsPredefinedHighlighterIds.Operator;
-			
+
 			if (tokenType.IsIdentifier) {
-				
 				var declaration = element.Parent as ITypeDeclaration;
 				if (declaration != null)
 					return GetTypeElementHighlightingAttributeId(declaration.DeclaredElement);
 
+				ResolveResultWithInfo reference = null;
+
 				var referenceName = element.Parent as IReferenceName;
-				if (referenceName != null) {
-					var typeElement = referenceName.Reference.Resolve().DeclaredElement as ITypeElement;
+				if (referenceName != null)
+					reference = referenceName.Reference.Resolve();
+
+				var referenceExpresion = element.Parent as IReferenceExpression;
+				if (referenceExpresion != null)
+					reference = referenceExpresion.Reference.Resolve();
+
+				if (reference != null)
+				{
+					var typeElement = reference.DeclaredElement as ITypeElement;
 					if (typeElement != null)
 						return GetTypeElementHighlightingAttributeId(typeElement);
 				}
@@ -137,19 +147,19 @@ namespace GammaJul.ReSharper.ForTea.Daemon {
 		[CanBeNull]
 		private static string GetTypeElementHighlightingAttributeId([CanBeNull] ITypeElement element) {
 			return HighlightingAttributeIds.GetHighlightAttributeForTypeElement(element);
-            // TODO: see why these highlighters fail (no MEF classification)
-            //if (element == null)
-            //	return null;
-            //if (element is IInterface)
-            //	return T4CSharpInterfaceHighlighting.Instance;
-            //if (element is IStruct)
-            //	return T4CSharpStructHighlighting.Instance;
-            //if (element is IEnum)
-            //	return T4CSharpEnumHighlighting.Instance;
-            //if (element is IDelegate)
-            //	return T4CSharpDelegateHighlighting.Instance;
-            //return T4CSharpTypeHighlighting.Instance;
-        }
+			// TODO: see why these highlighters fail (no MEF classification)
+			//if (element == null)
+			//	return null;
+			//if (element is IInterface)
+			//	return T4CSharpInterfaceHighlighting.Instance;
+			//if (element is IStruct)
+			//	return T4CSharpStructHighlighting.Instance;
+			//if (element is IEnum)
+			//	return T4CSharpEnumHighlighting.Instance;
+			//if (element is IDelegate)
+			//	return T4CSharpDelegateHighlighting.Instance;
+			//return T4CSharpTypeHighlighting.Instance;
+		}
 
 		public T4CSharpHighlightingProcess(IDaemonProcess process, IContextBoundSettingsStore settingsStore, ICSharpFile file)
 			: base(process, settingsStore, file) {
