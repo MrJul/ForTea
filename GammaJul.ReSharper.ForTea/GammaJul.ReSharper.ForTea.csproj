@@ -180,6 +180,8 @@
     <Compile Include="Daemon\T4HighlightingProcess.cs" />
     <Compile Include="Daemon\T4HighlightingStage.cs" />
     <Compile Include="Daemon\T4LanguageSpecificDaemonBehavior.cs" />
+    <Compile Include="Daemon\T4VBHighlightingProcess.cs" />
+    <Compile Include="Daemon\T4VBHighlightingStage.cs" />
     <Compile Include="ExposeTextTemplatingEngineHostService.cs" />
     <Compile Include="Intentions\QuickFixes\AddMissingTokenQuickFix.cs" />
     <Compile Include="Intentions\QuickFixes\ChangeAttributeValueQuickFix.cs" />
