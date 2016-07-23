@@ -136,20 +136,20 @@ namespace GammaJul.ReSharper.ForTea.Daemon {
 
 		[CanBeNull]
 		private static string GetTypeElementHighlightingAttributeId([CanBeNull] ITypeElement element) {
-			return null;
-			// TODO: see why these highlighters fail (no MEF classification)
-			//if (element == null)
-			//	return null;
-			//if (element is IInterface)
-			//	return T4CSharpInterfaceHighlighting.Instance;
-			//if (element is IStruct)
-			//	return T4CSharpStructHighlighting.Instance;
-			//if (element is IEnum)
-			//	return T4CSharpEnumHighlighting.Instance;
-			//if (element is IDelegate)
-			//	return T4CSharpDelegateHighlighting.Instance;
-			//return T4CSharpTypeHighlighting.Instance;
-		}
+			return HighlightingAttributeIds.GetHighlightAttributeForTypeElement(element);
+            // TODO: see why these highlighters fail (no MEF classification)
+            //if (element == null)
+            //	return null;
+            //if (element is IInterface)
+            //	return T4CSharpInterfaceHighlighting.Instance;
+            //if (element is IStruct)
+            //	return T4CSharpStructHighlighting.Instance;
+            //if (element is IEnum)
+            //	return T4CSharpEnumHighlighting.Instance;
+            //if (element is IDelegate)
+            //	return T4CSharpDelegateHighlighting.Instance;
+            //return T4CSharpTypeHighlighting.Instance;
+        }
 
 		public T4CSharpHighlightingProcess(IDaemonProcess process, IContextBoundSettingsStore settingsStore, ICSharpFile file)
 			: base(process, settingsStore, file) {
