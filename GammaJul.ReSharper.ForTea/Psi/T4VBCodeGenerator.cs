@@ -241,7 +241,7 @@ namespace GammaJul.ReSharper.ForTea.Psi {
 			}
 			builder.AppendLine("Imports System");
 			result.Append(_usingsResult);
-			builder.AppendFormat("[{0}]", SyntheticAttribute.Name);
+			builder.AppendFormat("<{0}> _", SyntheticAttribute.Name);
 			builder.AppendLine();
 
 			builder.AppendFormat("Public Class {0} {1} Inherits ", ClassName, Environment.NewLine);
