@@ -1,5 +1,6 @@
 #region License
 //    Copyright 2012 Julien Lebosquain
+//    Copyright 2016 Caelan Sayler - [caelantsayler]at[gmail]com
 // 
 //    Licensed under the Apache License, Version 2.0 (the "License");
 //    you may not use this file except in compliance with the License.
@@ -15,6 +16,7 @@
 #endregion
 
 
+using System;
 using JetBrains.DocumentModel;
 using System.Collections.Generic;
 using GammaJul.ReSharper.ForTea.Psi.Directives;
@@ -27,13 +29,15 @@ using JetBrains.ReSharper.Psi.ExtensionsAPI;
 using JetBrains.ReSharper.Psi.Files;
 using JetBrains.ReSharper.Psi.Impl.Shared;
 using JetBrains.ReSharper.Psi.Parsing;
+using JetBrains.ReSharper.Psi.Tree;
+using JetBrains.ReSharper.Psi.VB;
 using JetBrains.ReSharper.Psi.Web.Generation;
 using JetBrains.Util;
 
 namespace GammaJul.ReSharper.ForTea.Psi {
 
 	/// <summary>
-	/// This class will generate a C# code-behind from a T4 file.
+	/// This class will generate a code-behind from a T4 file.
 	/// </summary>
 	[GeneratedDocumentService(typeof(T4ProjectFileType))]
 	public class T4GeneratedDocumentService : GeneratedDocumentServiceBase {
@@ -41,19 +45,41 @@ namespace GammaJul.ReSharper.ForTea.Psi {
 		[NotNull] private readonly DirectiveInfoManager _directiveInfoManager;
 		
 		/// <summary>
-		/// Generates a C# file from a T4 file.
+		/// Generates a C# or VB file from a T4 file.
 		/// </summary>
 		/// <param name="modificationInfo">The modifications that occurred in the T4 file.</param>
 		public override ISecondaryDocumentGenerationResult Generate(PrimaryFileModificationInfo modificationInfo) {
 			var t4File = modificationInfo.NewPsiFile as IT4File;
 			if (t4File == null)
 				return null;
-			 
-			var generator = new T4CSharpCodeGenerator(t4File, _directiveInfoManager);
-			GenerationResult result = generator.Generate();
 
-			LanguageService csharpLanguageService = CSharpLanguage.Instance.LanguageService();
-			if (csharpLanguageService == null)
+			var templateNode = t4File.FindNextNode(n =>
+			{
+				var directive = n as IT4Directive;
+				if (directive != null && directive.IsSpecificDirective(_directiveInfoManager.Template))
+					return TreeNodeActionType.ACCEPT;
+
+				return TreeNodeActionType.CONTINUE;
+			}) as IT4Directive;
+
+			if (templateNode == null)
+				return null;
+
+			var templateLang = templateNode.GetAttributeValue(_directiveInfoManager.Template.LanguageAttribute.Name);
+
+			GenerationResult result;
+			LanguageService langService;
+			if (templateLang != null && templateLang.StartsWith("VB", StringComparison.OrdinalIgnoreCase))
+			{
+				result = new T4VBCodeGenerator(t4File, _directiveInfoManager).Generate();
+				langService = VBLanguage.Instance.LanguageService();
+			}
+			else {
+				result = new T4CSharpCodeGenerator(t4File, _directiveInfoManager).Generate();
+				langService = CSharpLanguage.Instance.LanguageService();
+			}
+
+			if (result == null || langService == null)
 				return null;
 
 			var includedFiles = new OneToSetMap<FileSystemPath, FileSystemPath>();
@@ -65,9 +91,9 @@ namespace GammaJul.ReSharper.ForTea.Psi {
 			return new T4SecondaryDocumentGenerationResult(
 				modificationInfo.SourceFile,
 				result.Builder.ToString(),
-				csharpLanguageService.LanguageType,
+				langService.LanguageType,
 				new RangeTranslatorWithGeneratedRangeMap(result.GeneratedRangeMap),
-				csharpLanguageService.GetPrimaryLexerFactory(),
+				langService.GetPrimaryLexerFactory(),
 				t4FileDependencyManager,
 				t4File.GetNonEmptyIncludePaths());
 		}
@@ -77,12 +103,11 @@ namespace GammaJul.ReSharper.ForTea.Psi {
 		/// </summary>
 		/// <returns>Always <see cref="CSharpLanguage"/>.</returns>
 		public override IEnumerable<PsiLanguageType> GetSecondaryPsiLanguageTypes(IProject project) {
-			// TODO: handle VB
-			return new PsiLanguageType[] { CSharpLanguage.Instance };
+			return new PsiLanguageType[] { CSharpLanguage.Instance, VBLanguage.Instance };
 		}
 
 		public override bool IsSecondaryPsiLanguageType(IProject project, PsiLanguageType language) {
-			return language.Is<CSharpLanguage>();
+			return language.Is<CSharpLanguage>() || language.Is<VBLanguage>();
 		}
 
 		/// <summary>

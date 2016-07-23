@@ -248,6 +248,8 @@
     <Compile Include="Psi\T4ResolveProject.cs" />
     <Compile Include="Psi\T4SecondaryDocumentGenerationResult.cs" />
     <Compile Include="Psi\T4SecondaryLexingProcess.cs" />
+    <Compile Include="Psi\T4VBCodeGenerator.cs" />
+    <Compile Include="Psi\T4VBCustomModificationHandler.cs" />
     <Compile Include="Psi\TextTemplatingComponentsExtensions.cs" />
     <Compile Include="Psi\VsBuildMacroHelper.cs" />
     <Compile Include="Services\CodeCompletion\AutopopupInDirective.cs" />
@@ -277,6 +279,7 @@
     <Compile Include="Services\T4SpecificOwnerUtil.cs" />
     <Compile Include="Services\TypingAssist\T4CSharpTypingAssist.cs" />
     <Compile Include="Services\TypingAssist\T4TypingAssist.cs" />
+    <Compile Include="Services\TypingAssist\T4VBTypingAssist.cs" />
     <Compile Include="SupportedReSharperVersion.cs" />
     <Compile Include="T4Environment.cs" />
     <Compile Include="Tree\IT4Block.cs" />
