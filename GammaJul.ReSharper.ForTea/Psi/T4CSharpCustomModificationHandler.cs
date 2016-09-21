@@ -50,7 +50,7 @@ namespace GammaJul.ReSharper.ForTea.Psi {
 	/// (eg: adding a using statement translates to an import directive).
 	/// </summary>
 	[ProjectFileType(typeof(T4ProjectFileType))]
-	public class T4CSharpCustomModificationHandler : CustomModificationHandler<IT4CodeBlock, IT4Directive>, ICSharpCustomModificationHandler {
+	public class T4CSharpCustomModificationHandler : CustomModificationHandler<IT4CodeBlock, IT4Directive> {
 
 		[NotNull] private readonly DirectiveInfoManager _directiveInfoManager;
 

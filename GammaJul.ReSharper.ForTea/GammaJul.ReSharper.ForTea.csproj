@@ -266,7 +266,6 @@
     <Compile Include="Services\T4SpecificOwnerUtil.cs" />
     <Compile Include="Services\TypingAssist\T4CSharpTypingAssist.cs" />
     <Compile Include="Services\TypingAssist\T4TypingAssist.cs" />
-    <Compile Include="SupportedReSharperVersion.cs" />
     <Compile Include="T4Environment.cs" />
     <Compile Include="Tree\IT4Block.cs" />
     <Compile Include="Tree\IT4CodeBlock.cs" />
@@ -298,7 +297,6 @@
     <Compile Include="ZoneMarker.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="app.config" />
     <None Include="GammaJul.ReSharper.ForTea.nuspec">
       <SubType>Designer</SubType>
     </None>
