@@ -17,34 +17,29 @@
 #endregion
 
 
-using System.Collections.Generic;
-using System.Linq;
 using GammaJul.ReSharper.ForTea.Psi;
 using JetBrains.DocumentManagers;
 using JetBrains.DocumentModel;
 using JetBrains.ProjectModel;
-using JetBrains.ReSharper.Feature.Services.Occurences;
-using JetBrains.ReSharper.Psi;
+using JetBrains.ReSharper.Feature.Services.Occurrences;
 using JetBrains.ReSharper.Psi.Search;
 
 namespace GammaJul.ReSharper.ForTea.Services.Navigation {
 
-	// TODO: remove this class, it's not used for R# 8 since we're using the new NavigateablePsiSourceFileWithLocation
-	// with built-in navigation support rather than a custom ISourceFile.
 	/// <summary>
-	/// An implementation of <see cref="IOccurenceProvider" /> that creates occurences for find results that are
+	/// An implementation of <see cref="IOccurrenceProvider" /> that creates occurences for find results that are
 	/// inside included files that aren't present in the current solution, and thus ignored by ReSharper.
 	/// </summary>
-	[OccurenceProvider(Priority = 10000)]
-	public class T4OutsideSolutionOccurenceProvider : IOccurenceProvider {
+	[OccurrenceProvider(Priority = 10000)]
+	public class T4OutsideSolutionOccurrenceProvider : IOccurrenceProvider {
 
-		public IOccurence MakeOccurence(FindResult findResult) {
+		public IOccurrence MakeOccurrence(FindResult findResult) {
 			var findResultText = findResult as FindResultText;
 			if (findResultText == null || findResultText.DocumentRange.Document.GetOutsideSolutionPath().IsEmpty)
 				return null;
 			
 			IRangeMarker rangeMarker = findResultText.Solution.GetComponent<DocumentManager>().CreateRangeMarker(findResultText.DocumentRange);
-			return new T4OutsideSolutionOccurence(rangeMarker);
+			return new T4OutsideSolutionOccurrence(rangeMarker);
 		}
 
 	}

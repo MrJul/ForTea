@@ -19,7 +19,7 @@ using JetBrains.DocumentModel;
 using JetBrains.IDE;
 using JetBrains.ProjectModel;
 using JetBrains.ReSharper.Feature.Services.Navigation;
-using JetBrains.ReSharper.Feature.Services.Occurences;
+using JetBrains.ReSharper.Feature.Services.Occurrences;
 using JetBrains.UI.PopupWindowManager;
 using JetBrains.Util;
 
@@ -28,20 +28,20 @@ namespace GammaJul.ReSharper.ForTea.Services.Navigation {
 	/// <summary>
 	/// Represents an occurence of text in an include file that is located outside of the solution.
 	/// </summary>
-	public class T4OutsideSolutionOccurence : IOccurence {
+	public class T4OutsideSolutionOccurrence : IOccurrence {
 
 		[NotNull] private readonly IRangeMarker _rangeMarker;
 		
 		public bool IsValid
 			=> _rangeMarker.IsValid;
 
-		public OccurenceType OccurenceType
-			=> OccurenceType.TextualOccurence;
+		public OccurrenceType OccurrenceType
+			=> OccurrenceType.TextualOccurrence;
 
 		public ISolution GetSolution()
 			=> null;
 
-		public OccurencePresentationOptions PresentationOptions { get; set; }
+		public OccurrencePresentationOptions PresentationOptions { get; set; }
 		
 		public string DumpToString()
 			=> _rangeMarker.DocumentRange.ToString();
@@ -60,7 +60,7 @@ namespace GammaJul.ReSharper.ForTea.Services.Navigation {
 			return navigationManager.Navigate<T4OutsideSolutionNavigationProvider, T4OutsideSolutionNavigationInfo>(navigationInfo, navigationOptions);
 		}
 		
-		public T4OutsideSolutionOccurence([NotNull] IRangeMarker rangeMarker) {
+		public T4OutsideSolutionOccurrence([NotNull] IRangeMarker rangeMarker) {
 			_rangeMarker = rangeMarker;
 		}
 

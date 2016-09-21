@@ -183,16 +183,16 @@ namespace GammaJul.ReSharper.ForTea.Psi {
 			get { return null; }
 		}
 
-		FileSystemPath IProject.GetOutputDirectory() {
+		FileSystemPath IProject.GetOutputDirectory(TargetFrameworkId targetFrameworkId) {
 			return FileSystemPath.Empty;
 		}
 
-		FileSystemPath IProject.GetOutputFilePath() {
+		FileSystemPath IProject.GetOutputFilePath(TargetFrameworkId targetFrameworkId) {
 			return FileSystemPath.Empty;
 		}
 
 		public T GetComponent<T>() where T : class {
-			return null;
+			return _solution.GetComponent<T>();
 		}
 
 		public IProperty<FileSystemPath> ProjectFileLocationLive {

@@ -16,6 +16,7 @@
 
 
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using GammaJul.ReSharper.ForTea.Parsing;
 using GammaJul.ReSharper.ForTea.Psi.Directives;
@@ -38,6 +39,7 @@ using JetBrains.ReSharper.Psi.Modules;
 using JetBrains.ReSharper.Psi.Resolve;
 using JetBrains.ReSharper.Psi.Transactions;
 using JetBrains.ReSharper.Psi.Tree;
+using JetBrains.ReSharper.Psi.Util;
 using JetBrains.ReSharper.Psi.Web.CodeBehindSupport;
 using JetBrains.Util;
 
@@ -354,6 +356,12 @@ namespace GammaJul.ReSharper.ForTea.Psi {
 
 		public StaticQualifierSettingsKey GetStaticQualifierStyle(ITreeNode context) {
 			return context.GetSettingsStore().GetKey<StaticQualifierSettingsKey>(SettingsOptimization.OptimizeDefault);
+		}
+
+		public IList<ITreeRange> GetHolderBlockRanges(ITreeNode treeNode) {
+			return new ITreeRange[] {
+				new TreeRange(treeNode.FirstChild, treeNode.LastChild)
+			};
 		}
 
 		/// <summary>

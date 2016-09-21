@@ -53,6 +53,9 @@ namespace GammaJul.ReSharper.ForTea.Psi.CodeStyle {
 		public override void FormatReplacedNode(ITreeNode oldNode, ITreeNode newNode) {
 		}
 
+		public override void FormatReplacedRange(ITreeNode first, ITreeNode last, ITreeRange oldNodes) {
+		}
+
 		public override void FormatDeletedNodes(ITreeNode parent, ITreeNode prevNode, ITreeNode nextNode) {
 		}
 
@@ -74,7 +77,8 @@ namespace GammaJul.ReSharper.ForTea.Psi.CodeStyle {
 			return new TreeRange(firstElement, lastElement);
 		}
 
-		public T4CodeFormatter(ISettingsStore settingsStore) {            
+		public T4CodeFormatter(IFormatterDebugInfoLoggersProvider formatterLoggerProvider)
+			: base(formatterLoggerProvider) {
 		}
 
 	}

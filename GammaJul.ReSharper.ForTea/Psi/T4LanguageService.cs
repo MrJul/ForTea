@@ -14,6 +14,8 @@
 //    limitations under the License.
 #endregion
 
+
+using System.Collections.Generic;
 using GammaJul.ReSharper.ForTea.Parsing;
 using GammaJul.ReSharper.ForTea.Psi.Directives;
 using JetBrains.Annotations;
@@ -22,6 +24,8 @@ using JetBrains.ReSharper.Psi.ExtensionsAPI.Caches2;
 using JetBrains.ReSharper.Psi.Impl;
 using JetBrains.ReSharper.Psi.Modules;
 using JetBrains.ReSharper.Psi.Parsing;
+using JetBrains.ReSharper.Psi.Tree;
+using JetBrains.Util;
 
 namespace GammaJul.ReSharper.ForTea.Psi {
 
@@ -83,6 +87,10 @@ namespace GammaJul.ReSharper.ForTea.Psi {
 
 		public override bool IsCaseSensitive {
 			get { return true; }
+		}
+
+		public override IEnumerable<ITypeDeclaration> FindTypeDeclarations(IFile file) {
+			return EmptyList<ITypeDeclaration>.InstanceList;
 		}
 
 		/// <summary>
