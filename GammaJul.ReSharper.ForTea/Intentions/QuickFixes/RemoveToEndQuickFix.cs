@@ -21,6 +21,7 @@ using JetBrains.ProjectModel;
 using JetBrains.ReSharper.Feature.Services.QuickFixes;
 using JetBrains.ReSharper.Psi.ExtensionsAPI.Tree;
 using JetBrains.ReSharper.Psi.Tree;
+using JetBrains.ReSharper.Resources.Shell;
 using JetBrains.TextControl;
 using JetBrains.Util;
 
@@ -37,7 +38,7 @@ namespace GammaJul.ReSharper.ForTea.Intentions.QuickFixes {
 			Assertion.AssertNotNull(file, "file != null");
 
 			ITreeNode endNode = file.LastChild ?? startNode;
-			using (file.CreateWriteLock())
+			using (WriteLockCookie.Create(file.IsPhysical()))
 				ModificationUtil.DeleteChildRange(startNode, endNode);
 
 			return null;

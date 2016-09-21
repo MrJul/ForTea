@@ -26,6 +26,7 @@ using JetBrains.ReSharper.Psi.Tree;
 using JetBrains.TextControl;
 using JetBrains.Util;
 using System.Linq;
+using JetBrains.ReSharper.Resources.Shell;
 
 namespace GammaJul.ReSharper.ForTea.Intentions.QuickFixes {
 
@@ -41,7 +42,7 @@ namespace GammaJul.ReSharper.ForTea.Intentions.QuickFixes {
 			T4FeatureBlock feature = file.GetFeatureBlocks().First();
 
 			ITreeNode featureBlock;
-			using (file.CreateWriteLock()) {
+			using (WriteLockCookie.Create(file.IsPhysical())) {
 
 				// clone the statement block and add it before the feature block
 				ITreeNode featurePrevSibling = feature.PrevSibling;

@@ -7,6 +7,7 @@ using JetBrains.ProjectModel;
 using JetBrains.ReSharper.Feature.Services.QuickFixes;
 using JetBrains.ReSharper.Psi.ExtensionsAPI.Tree;
 using JetBrains.ReSharper.Psi.Tree;
+using JetBrains.ReSharper.Resources.Shell;
 using JetBrains.TextControl;
 using JetBrains.Util;
 
@@ -19,7 +20,7 @@ namespace GammaJul.ReSharper.ForTea.Intentions.QuickFixes {
 
 		protected override Action<ITextControl> ExecutePsiTransaction(ISolution solution, IProgressIndicator progress) {
 			ITreeNode node = _highlighting.AssociatedNode;
-			using (node.CreateWriteLock()) {
+			using (WriteLockCookie.Create(node.IsPhysical())) {
 				ITokenNode nextToken = node.GetNextToken();
 				ITreeNode end = nextToken != null && nextToken.GetTokenType() == T4TokenNodeTypes.NewLine ? nextToken : node;
 				ModificationUtil.DeleteChildRange(node, end);

@@ -20,6 +20,7 @@ using GammaJul.ReSharper.ForTea.Parsing;
 using JetBrains.Annotations;
 using JetBrains.ReSharper.Psi.ExtensionsAPI.Tree;
 using JetBrains.ReSharper.Psi.Tree;
+using JetBrains.ReSharper.Resources.Shell;
 using JetBrains.Util;
 
 namespace GammaJul.ReSharper.ForTea.Tree {
@@ -119,7 +120,7 @@ namespace GammaJul.ReSharper.ForTea.Tree {
 			if (attribute == null)
 				throw new ArgumentNullException("attribute");
 
-			using (this.CreateWriteLock()) {
+			using (WriteLockCookie.Create(IsPhysical())) {
 
 				ITreeNode lastNode = LastChild;
 				Assertion.AssertNotNull(lastNode, "lastNode != null");

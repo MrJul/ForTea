@@ -55,8 +55,8 @@ namespace GammaJul.ReSharper.ForTea.Intentions.QuickFixes {
 			TextRange hotspotRange;
 
 			// replace the error token by the missing text
-			using (file.CreateWriteLock()) {
-				
+			using (WriteLockCookie.Create(file.IsPhysical())) {
+
 				modifiedRange = errorElement.GetTreeTextRange();
 				ITokenNode previousToken = errorElement.GetPreviousToken();
 				if (previousToken != null && previousToken.GetTokenType() == T4TokenNodeTypes.NewLine)

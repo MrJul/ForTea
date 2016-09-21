@@ -95,7 +95,7 @@ namespace GammaJul.ReSharper.ForTea.Tree {
 			if (anchor == null)
 				throw new ArgumentNullException("anchor");
 
-			using (this.CreateWriteLock()) {
+			using (WriteLockCookie.Create(IsPhysical())) {
 				directive = ModificationUtil.AddChildBefore(anchor, directive);
 
 				// if the directive was inserted between a new line (or the file start) and the anchor, add another new line after
@@ -119,7 +119,7 @@ namespace GammaJul.ReSharper.ForTea.Tree {
 			if (anchor == null)
 				throw new ArgumentNullException("anchor");
 
-			using (this.CreateWriteLock()) {
+			using (WriteLockCookie.Create(IsPhysical())) {
 				directive = ModificationUtil.AddChildAfter(anchor, directive);
 
 				// if the directive was inserted between the anchor and a new line, add another new line before
@@ -147,7 +147,7 @@ namespace GammaJul.ReSharper.ForTea.Tree {
 			if (anchor != null)
 				return AddDirectiveAfter(directive, anchor);
 			
-			using (this.CreateWriteLock()) {
+			using (WriteLockCookie.Create(IsPhysical())) {
 				directive = FirstChild != null
 					? ModificationUtil.AddChildBefore(FirstChild, directive)
 					: ModificationUtil.AddChild(this, directive);
@@ -164,7 +164,7 @@ namespace GammaJul.ReSharper.ForTea.Tree {
 			if (directive == null)
 				return;
 
-			using (this.CreateWriteLock()) {
+			using (WriteLockCookie.Create(IsPhysical())) {
 				ITreeNode endNode = directive;
 
 				// remove the included node with the include directive
@@ -191,7 +191,7 @@ namespace GammaJul.ReSharper.ForTea.Tree {
 				throw new ArgumentNullException("statementBlock");
 
 			T4StatementBlock anchor = GetStatementBlocks().LastOrDefault();
-			using (this.CreateWriteLock()) {
+			using (WriteLockCookie.Create(IsPhysical())) {
 				return anchor == null
 					? ModificationUtil.AddChild(this, statementBlock)
 					: ModificationUtil.AddChildAfter(anchor, statementBlock);
@@ -208,7 +208,7 @@ namespace GammaJul.ReSharper.ForTea.Tree {
 				throw new ArgumentNullException("featureBlock");
 
 			T4FeatureBlock anchor = GetFeatureBlocks().LastOrDefault();
-			using (this.CreateWriteLock()) {
+			using (WriteLockCookie.Create(IsPhysical())) {
 				return anchor == null
 					? ModificationUtil.AddChild(this, featureBlock)
 					: ModificationUtil.AddChildAfter(anchor, featureBlock);
@@ -223,7 +223,7 @@ namespace GammaJul.ReSharper.ForTea.Tree {
 			if (node == null)
 				return;
 
-			using (this.CreateWriteLock())
+			using (WriteLockCookie.Create(IsPhysical()))
 				ModificationUtil.DeleteChild(node);
 		}
 

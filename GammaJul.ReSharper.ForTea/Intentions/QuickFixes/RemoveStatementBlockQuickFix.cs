@@ -20,7 +20,7 @@ using JetBrains.Application.Progress;
 using JetBrains.ProjectModel;
 using JetBrains.ReSharper.Feature.Services.QuickFixes;
 using JetBrains.ReSharper.Psi.ExtensionsAPI.Tree;
-using JetBrains.ReSharper.Psi.Tree;
+using JetBrains.ReSharper.Resources.Shell;
 using JetBrains.TextControl;
 using JetBrains.Util;
 
@@ -31,7 +31,7 @@ namespace GammaJul.ReSharper.ForTea.Intentions.QuickFixes {
 		private readonly StatementAfterFeatureHighlighting _highlighting;
 
 		protected override Action<ITextControl> ExecutePsiTransaction(ISolution solution, IProgressIndicator progress) {
-			using (_highlighting.AssociatedNode.CreateWriteLock())
+			using (WriteLockCookie.Create(_highlighting.AssociatedNode.IsPhysical()))
 				ModificationUtil.DeleteChild(_highlighting.AssociatedNode);
 			return null;
 		}
