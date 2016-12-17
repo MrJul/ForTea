@@ -11,7 +11,7 @@ Don't hesitate to [open an issue](https://github.com/MrJul/ForTea/issues) if you
 Installation
 ------------
 Visual Studio 2010, 2012, 2013 and 2015 are supported.  
-ReSharper 10.0 must be installed (older releases are still available for ReSharper 9.2, 9.1, 9.0 and 8.2).  
+ReSharper 2016.3 must be installed (older releases are still available for ReSharper 8.2, 9.0, 9.1, 9.2, 10.0, 2016.1 and 2016.2).  
 To install ForTea, use Extension Manager from the ReSharper menu.
 
 
