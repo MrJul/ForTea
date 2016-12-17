@@ -114,6 +114,10 @@
       <Private>True</Private>
     </Reference>
     <Reference Include="Microsoft.VisualStudio.OLE.Interop, Version=7.1.40304.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
+    <Reference Include="Microsoft.VisualStudio.Shell.Interop, Version=7.1.40304.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
+      <HintPath>..\packages\JetBrains.Platform.Lib.VisualStudio.AnyVs.ShellInterop.PrivateBuild.2.0.20140304.0\lib\Microsoft.VisualStudio.Shell.Interop.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="Microsoft.VisualStudio.Shell.Interop.8.0, Version=8.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
     <Reference Include="Microsoft.VisualStudio.Shell.Immutable.10.0, Version=10.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
       <Private>False</Private>
@@ -514,6 +518,7 @@
     <Error Condition="!Exists('..\packages\JetBrains.Psi.Features.UnitTesting.107.0.20161215.131222\build\JetBrains.Psi.Features.UnitTesting.Targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\JetBrains.Psi.Features.UnitTesting.107.0.20161215.131222\build\JetBrains.Psi.Features.UnitTesting.Targets'))" />
     <Error Condition="!Exists('..\packages\JetBrains.Psi.Features.test.Framework.107.0.20161215.131222\build\JetBrains.Psi.Features.test.Framework.Targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\JetBrains.Psi.Features.test.Framework.107.0.20161215.131222\build\JetBrains.Psi.Features.test.Framework.Targets'))" />
     <Error Condition="!Exists('..\packages\JetBrains.ReSharper.SDK.Internal.107.0.20161215.134837\build\JetBrains.ReSharper.SDK.Internal.Targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\JetBrains.ReSharper.SDK.Internal.107.0.20161215.134837\build\JetBrains.ReSharper.SDK.Internal.Targets'))" />
+    <Error Condition="!Exists('..\packages\JetBrains.Platform.VisualStudio.107.0.20161214.153643\build\JetBrains.Platform.VisualStudio.Targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\JetBrains.Platform.VisualStudio.107.0.20161214.153643\build\JetBrains.Platform.VisualStudio.Targets'))" />
   </Target>
   <Import Project="..\packages\JetBrains.Build.Platform.Tasks.ThemedIconsPacker.2.0.20151217.1\build\JetBrains.Build.Platform.Tasks.ThemedIconsPacker.Targets" Condition="Exists('..\packages\JetBrains.Build.Platform.Tasks.ThemedIconsPacker.2.0.20151217.1\build\JetBrains.Build.Platform.Tasks.ThemedIconsPacker.Targets')" />
   <Import Project="..\packages\JetBrains.Platform.Interop.dotMemoryUnit.Framework.107.0.20161214.153643\build\JetBrains.Platform.Interop.dotMemoryUnit.Framework.Targets" Condition="Exists('..\packages\JetBrains.Platform.Interop.dotMemoryUnit.Framework.107.0.20161214.153643\build\JetBrains.Platform.Interop.dotMemoryUnit.Framework.Targets')" />
@@ -531,4 +536,5 @@
   <Import Project="..\packages\JetBrains.Psi.Features.UnitTesting.107.0.20161215.131222\build\JetBrains.Psi.Features.UnitTesting.Targets" Condition="Exists('..\packages\JetBrains.Psi.Features.UnitTesting.107.0.20161215.131222\build\JetBrains.Psi.Features.UnitTesting.Targets')" />
   <Import Project="..\packages\JetBrains.Psi.Features.test.Framework.107.0.20161215.131222\build\JetBrains.Psi.Features.test.Framework.Targets" Condition="Exists('..\packages\JetBrains.Psi.Features.test.Framework.107.0.20161215.131222\build\JetBrains.Psi.Features.test.Framework.Targets')" />
   <Import Project="..\packages\JetBrains.ReSharper.SDK.Internal.107.0.20161215.134837\build\JetBrains.ReSharper.SDK.Internal.Targets" Condition="Exists('..\packages\JetBrains.ReSharper.SDK.Internal.107.0.20161215.134837\build\JetBrains.ReSharper.SDK.Internal.Targets')" />
+  <Import Project="..\packages\JetBrains.Platform.VisualStudio.107.0.20161214.153643\build\JetBrains.Platform.VisualStudio.Targets" Condition="Exists('..\packages\JetBrains.Platform.VisualStudio.107.0.20161214.153643\build\JetBrains.Platform.VisualStudio.Targets')" />
 </Project>

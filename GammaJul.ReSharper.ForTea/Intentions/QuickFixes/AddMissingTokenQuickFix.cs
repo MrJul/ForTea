@@ -75,7 +75,7 @@ namespace GammaJul.ReSharper.ForTea.Intentions.QuickFixes {
 			// create a hotspot around a directive name or value, with basic completion invoked
 			return textControl => {
 
-				DocumentRange initialRange = file.GetDocumentRange(modifiedRange.StartOffset);
+				DocumentRange initialRange = file.GetDocumentRange(modifiedRange);
 				int startOffset = initialRange.TextRange.StartOffset;
 				var finalRange = new TextRange(startOffset + hotspotRange.StartOffset, startOffset + hotspotRange.EndOffset);
 				string fieldName = textControl.Document.GetText(finalRange);

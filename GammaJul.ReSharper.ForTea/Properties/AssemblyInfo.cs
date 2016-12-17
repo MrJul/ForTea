@@ -14,14 +14,13 @@
 //    limitations under the License.
 #endregion
 using System.Reflection;
-using GammaJul.ReSharper.ForTea;
 
 [assembly: AssemblyTitle("GammaJul.ReSharper.ForTea")]
 [assembly: AssemblyDescription("Provides support for editing T4 (.tt) files.")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("Julien Lebosquain")]
-[assembly: AssemblyProduct("ForTea Plugin for ReSharper 2016.2")]
+[assembly: AssemblyProduct("ForTea Plugin for ReSharper")]
 [assembly: AssemblyCopyright("Copyright © Julien Lebosquain, 2012-2016")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
-[assembly: AssemblyVersion("1.7.0.0")]
+[assembly: AssemblyVersion("1.8.0.0")]

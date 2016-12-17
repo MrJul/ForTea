@@ -17,7 +17,6 @@ using GammaJul.ReSharper.ForTea.Daemon.Highlightings;
 using JetBrains.Annotations;
 using JetBrains.Application.Settings;
 using JetBrains.DocumentModel;
-using JetBrains.ReSharper.Daemon;
 using JetBrains.ReSharper.Daemon.CSharp.Stages;
 using JetBrains.ReSharper.Feature.Services.Daemon;
 using JetBrains.ReSharper.Psi;
@@ -35,7 +34,7 @@ namespace GammaJul.ReSharper.ForTea.Daemon {
 	/// </summary>
 	internal class T4CSharpHighlightingProcess : CSharpIncrementalDaemonStageProcessBase {
 
-		private static readonly NodeTypeSet _csharpOperators = new NodeTypeSet(
+		[NotNull] private static readonly NodeTypeSet _csharpOperators = new NodeTypeSet(
 			CSharpTokenType.COMMA,
 			CSharpTokenType.DOT,
 			CSharpTokenType.EQ,
@@ -121,12 +120,9 @@ namespace GammaJul.ReSharper.ForTea.Daemon {
 				if (declaration != null)
 					return GetTypeElementHighlightingAttributeId(declaration.DeclaredElement);
 
-				var referenceName = element.Parent as IReferenceName;
-				if (referenceName != null) {
-					var typeElement = referenceName.Reference.Resolve().DeclaredElement as ITypeElement;
-					if (typeElement != null)
-						return GetTypeElementHighlightingAttributeId(typeElement);
-				}
+				var typeElement = (element.Parent as IReferenceName)?.Reference.Resolve().DeclaredElement as ITypeElement;
+				if (typeElement != null)
+					return GetTypeElementHighlightingAttributeId(typeElement);
 
 				return VsPredefinedHighlighterIds.Identifier;
 			}

@@ -21,7 +21,6 @@ using GammaJul.ReSharper.ForTea.Psi.Directives;
 using GammaJul.ReSharper.ForTea.Tree;
 using JetBrains.Annotations;
 using JetBrains.DocumentModel;
-using JetBrains.ReSharper.Daemon;
 using JetBrains.ReSharper.Feature.Services.Daemon;
 using JetBrains.ReSharper.Psi.Parsing;
 using JetBrains.ReSharper.Psi.Tree;
@@ -34,8 +33,8 @@ namespace GammaJul.ReSharper.ForTea.Daemon {
 
 	internal sealed class T4ErrorProcess : T4DaemonStageProcess {
 
-		private readonly DirectiveInfoManager _directiveInfoManager;
-		private T4FeatureBlock _lastFeature;
+		[NotNull] private readonly DirectiveInfoManager _directiveInfoManager;
+		[CanBeNull] private T4FeatureBlock _lastFeature;
 		private bool _gotFeature;
 		private bool _gotLastFeature;
 		private bool _inLastFeature;
@@ -95,7 +94,7 @@ namespace GammaJul.ReSharper.ForTea.Daemon {
 				return;
 
 			// highlight from just after the last feature to the end of the document
-			DocumentRange range = element.GetHighlightingRange().SetEndTo(File.GetDocumentRange().TextRange.EndOffset);
+			DocumentRange range = element.GetHighlightingRange().SetEndTo(File.GetDocumentRange().EndOffset);
 			AddHighlighting(new HighlightingInfo(range, new AfterLastFeatureHighlighting(element)));
 			_afterLastFeatureErrorAdded = true;
 		}
@@ -115,11 +114,7 @@ namespace GammaJul.ReSharper.ForTea.Daemon {
 			if (directive == null)
 				return;
 
-			DirectiveInfo directiveInfo = _directiveInfoManager.GetDirectiveByName(directive.GetName());
-			if (directiveInfo == null)
-				return;
-
-			DirectiveAttributeInfo attributeInfo = directiveInfo.GetAttributeByName(attribute.GetName());
+			DirectiveAttributeInfo attributeInfo = _directiveInfoManager.GetDirectiveByName(directive.GetName())?.GetAttributeByName(attribute.GetName());
 			if (attributeInfo == null)
 				return;
 			

@@ -18,7 +18,6 @@ using GammaJul.ReSharper.ForTea.Parsing;
 using GammaJul.ReSharper.ForTea.Tree;
 using JetBrains.Annotations;
 using JetBrains.DocumentModel;
-using JetBrains.ReSharper.Daemon;
 using JetBrains.ReSharper.Feature.Services.Daemon;
 using JetBrains.ReSharper.Psi.Tree;
 

@@ -40,205 +40,176 @@ namespace GammaJul.ReSharper.ForTea.Psi {
 	/// </summary>
 	internal sealed class T4ResolveProject : IProject {
 
-		private readonly Guid _guid = Guid.NewGuid();
 		[NotNull] private readonly IUserDataHolder _dataHolder;
 		[NotNull] private readonly ISolution _solution;
 		[NotNull] private readonly IShellLocks _shellLocks;
 		[NotNull] private readonly IProjectProperties _projectProperties;
-		[NotNull] private readonly IProperty<FileSystemPath> _projectFileLocationLive;
-		[NotNull] private readonly IProperty<FileSystemPath> _projectLocationLive;
 		[NotNull] private readonly TargetFrameworkReferences _targetFrameworkReferences;
 
-		public void PutData<T>(Key<T> key, T val) where T : class {
-			_dataHolder.PutData(key, val);
-		}
+		public void PutData<T>(Key<T> key, T val)
+		where T : class
+			=> _dataHolder.PutData(key, val);
 
-		public T GetData<T>(Key<T> key) where T : class {
-			return _dataHolder.GetData(key);
-		}
+		public T GetData<T>(Key<T> key)
+		where T : class
+			=> _dataHolder.GetData(key);
 
-		public IEnumerable<KeyValuePair<object, object>> EnumerateData() {
-			return _dataHolder.EnumerateData();
-		}
+		public IEnumerable<KeyValuePair<object, object>> EnumerateData()
+			=> _dataHolder.EnumerateData();
 
-		public string Name {
-			get { return GetType().FullName; }
-		}
+		public string Name
+			=> GetType().FullName;
 
-		public bool IsValid() {
-			return _solution.IsValid();
-		}
+		public bool IsValid()
+			=> _solution.IsValid();
 
-		public ISolution GetSolution() {
-			return _solution;
-		}
+		public ISolution GetSolution() => _solution;
 
 		void IProjectModelElement.Accept(ProjectVisitor projectVisitor) {
 		}
 
-		object IProjectModelElement.GetProperty(Key propertyName) {
-			return _dataHolder.GetData(propertyName);
-		}
+		object IProjectModelElement.GetProperty(Key propertyName)
+			=> _dataHolder.GetData(propertyName);
 
-		void IProjectModelElement.SetProperty(Key propertyName, object propertyValue) {
-			_dataHolder.PutData(propertyName, propertyValue);
-		}
-		
-		IProject IProjectElement.GetProject() {
-			return this;
-		}
+		void IProjectModelElement.SetProperty(Key propertyName, object propertyValue)
+			=> _dataHolder.PutData(propertyName, propertyValue);
 
-		string IProjectElement.GetPersistentID() {
-			return Name;
-		}
+		IProject IProjectElement.GetProject()
+			=> this;
+
+		string IProjectElement.GetPersistentID()
+			=> Name;
 
 		void IProjectItem.Dump(TextWriter to, DumpFlags flags) {
 		}
 
-		string IProjectItem.GetPresentableProjectPath() {
-			return null;
-		}
+		string IProjectItem.GetPresentableProjectPath()
+			=> null;
 
-		IProjectFolder IProjectItem.ParentFolder {
-			get { return null; }
-		}
+		IProjectFolder IProjectItem.ParentFolder
+			=> null;
 
-		FileSystemPath IProjectItem.Location {
-			get { return null; }
-		}
+		FileSystemPath IProjectItem.Location
+			=> null;
 
-		ProjectItemKind IProjectItem.Kind {
-			get { return ProjectItemKind.PROJECT; }
-		}
+		ProjectItemKind IProjectItem.Kind
+			=> ProjectItemKind.PROJECT;
 
-		bool IProjectItem.IsLinked {
-			get { return false; }
-		}
+		bool IProjectItem.IsLinked
+			=> false;
 
-		IShellLocks IProjectItem.Locks {
-			get { return _shellLocks; }
-		}
-		
-		IProjectItem IProjectFolder.FindProjectItemByLocation(FileSystemPath location) {
-			return null;
-		}
+		IShellLocks IProjectItem.Locks
+			=> _shellLocks;
 
-		IProjectItem IProjectFolder.GetSubItem(string name) {
-			return null;
-		}
+		IProjectItem IProjectFolder.FindProjectItemByLocation(FileSystemPath location)
+			=> null;
 
-		IList<IProjectItem> IProjectFolder.GetSubItems(string name) {
-			return EmptyList<IProjectItem>.InstanceList;
-		}
+		IProjectItem IProjectFolder.GetSubItem(string name)
+			=> null;
 
-		IList<IProjectItem> IProjectFolder.GetSubItems() {
-			return EmptyList<IProjectItem>.InstanceList;
-		}
+		IList<IProjectItem> IProjectFolder.GetSubItems(string name)
+			=> EmptyList<IProjectItem>.InstanceList;
 
-		bool IProjectFolder.WriteProjectFolder(BinaryWriter writer, ProjectSerializationIndex index, FileSystemPath baseLocation) {
-			return false;
-		}
+		IList<IProjectItem> IProjectFolder.GetSubItems()
+			=> EmptyList<IProjectItem>.InstanceList;
 
-		ProjectFolderPath IProjectFolder.Path {
-			get { return null; }
-		}
+		bool IProjectFolder.WriteProjectFolder(BinaryWriter writer, ProjectSerializationIndex index, FileSystemPath baseLocation)
+			=> false;
 
-		string IModule.Presentation {
-			get { return Name; }
-		}
+		ProjectFolderPath IProjectFolder.Path
+			=> null;
+
+		string IModule.Presentation
+			=> Name;
 
 		/// <summary>
 		/// The platform to which the module is targeted. For real project is never null.
 		/// </summary>
-		public PlatformID PlatformID {
-			get { return _projectProperties.PlatformId; }
-		}
-		
+		public PlatformID PlatformID
+			=> _projectProperties.PlatformId;
+
 		public void Dispose() {
 		}
 
-		IEnumerable<IProjectToModuleReference> IProject.GetModuleReferences(TargetFrameworkId targetFrameworkId) {
-			return EmptyList<IProjectToModuleReference>.InstanceList;
-		}
+		IEnumerable<IProjectToModuleReference> IProject.GetModuleReferences(TargetFrameworkId targetFrameworkId)
+			=> EmptyList<IProjectToModuleReference>.InstanceList;
 
-		bool IProject.HasFlavour<T>() {
-			return false;
-		}
+		bool IProject.HasFlavour<T>()
+			=> false;
 
-		IProjectFile IProject.ProjectFile {
-			get { return null; }
-		}
+		IProjectFile IProject.ProjectFile
+			=> null;
 
-		Guid IProject.Guid {
-			get { return _guid; }
-		}
+		Guid IProject.Guid { get; } = Guid.NewGuid();
 
 		bool IProject.IsOpened { get; set; }
 
-		IProjectProperties IProject.ProjectProperties {
-			get { return _projectProperties; }
-		}
+		IProjectProperties IProject.ProjectProperties
+			=> _projectProperties;
 
-		FileSystemPath IProject.ProjectFileLocation {
-			get { return null; }
-		}
+		FileSystemPath IProject.ProjectFileLocation
+			=> null;
 
-		FileSystemPath IProject.GetOutputDirectory(TargetFrameworkId targetFrameworkId) {
-			return FileSystemPath.Empty;
-		}
+		FileSystemPath IProject.GetOutputDirectory(TargetFrameworkId targetFrameworkId)
+			=> FileSystemPath.Empty;
 
-		FileSystemPath IProject.GetOutputFilePath(TargetFrameworkId targetFrameworkId) {
-			return FileSystemPath.Empty;
-		}
+		FileSystemPath IProject.GetOutputFilePath(TargetFrameworkId targetFrameworkId)
+			=> FileSystemPath.Empty;
 
-		public T GetComponent<T>() where T : class {
-			return _solution.GetComponent<T>();
-		}
+		public T GetComponent<T>()
+		where T : class
+			=> _solution.GetComponent<T>();
 
-		public IProperty<FileSystemPath> ProjectFileLocationLive {
-			get { return _projectFileLocationLive; }
-		}
+		[NotNull]
+		public IProperty<FileSystemPath> ProjectFileLocationLive { get; }
 
-		public IProperty<FileSystemPath> ProjectLocationLive {
-			get { return _projectLocationLive; }
-		}
+		[NotNull]
+		public IProperty<FileSystemPath> ProjectLocationLive { get; }
 
-		public TargetFrameworkScope GetTargetFramework(TargetFrameworkId targetFrameworkId) {
-			return _targetFrameworkReferences.GetScope(targetFrameworkId);
-		}
+		public TargetFrameworkScope GetTargetFramework(TargetFrameworkId targetFrameworkId)
+			=> _targetFrameworkReferences.GetScope(targetFrameworkId);
 
-		public IEnumerable<TargetFrameworkId> TargetFrameworkIds {
-			get { return new[] { TargetFrameworkId.Default }; }
-		}
+		public IEnumerable<TargetFrameworkId> TargetFrameworkIds
+			=> new[] { TargetFrameworkId.Default };
+
+		IProjectFolder IProjectFolder.GetSubFolderByPath(ProjectFolderPath projectFolderPath)
+			=> null;
+
+		ICollection<FileSystemPath> IProject.GetOutputDirectories()
+			=> EmptyList<FileSystemPath>.Instance;
+
+		ICollection<FileSystemPath> IProject.GetIntermidiateDirectories()
+			=> EmptyList<FileSystemPath>.Instance;
 
 		private sealed class T4ResolveProjectProperties : ProjectPropertiesBase<UnsupportedProjectConfiguration>, IProjectProperties {
 
-			public override IBuildSettings BuildSettings {
-				get { return null; }
-			}
+			public override IBuildSettings BuildSettings
+				=> null;
 
-			public ProjectLanguage DefaultLanguage {
-				get { return ProjectLanguage.UNKNOWN; }
-			}
+			public ProjectLanguage DefaultLanguage
+				=> ProjectLanguage.UNKNOWN;
 
-			public ProjectKind ProjectKind {
-				get { return ProjectKind.MISC_FILES_PROJECT; }
-			}
-			
+			public ProjectKind ProjectKind
+				=> ProjectKind.MISC_FILES_PROJECT;
+
 			internal T4ResolveProjectProperties([NotNull] PlatformID platformID)
 				: base(EmptyList<Guid>.InstanceList, platformID, Guid.Empty) {
 			}
 
 		}
-		
-		internal T4ResolveProject([NotNull] Lifetime lifetime, [NotNull] ISolution solution, [NotNull] IShellLocks shellLocks,
-			[NotNull] PlatformID platformID, [NotNull] IUserDataHolder dataHolder) {
+
+		internal T4ResolveProject(
+			[NotNull] Lifetime lifetime,
+			[NotNull] ISolution solution,
+			[NotNull] IShellLocks shellLocks,
+			[NotNull] PlatformID platformID,
+			[NotNull] IUserDataHolder dataHolder) {
 			_shellLocks = shellLocks;
 			_solution = solution;
 			_dataHolder = dataHolder;
 			_projectProperties = new T4ResolveProjectProperties(platformID);
-			_projectFileLocationLive = new Property<FileSystemPath>(lifetime, "ProjectFileLocationLive");
-			_projectLocationLive = new Property<FileSystemPath>(lifetime, "ProjectLocationLive");
+			ProjectFileLocationLive = new Property<FileSystemPath>(lifetime, "ProjectFileLocationLive");
+			ProjectLocationLive = new Property<FileSystemPath>(lifetime, "ProjectLocationLive");
 			_targetFrameworkReferences = new TargetFrameworkReferences(lifetime, shellLocks, this, solution.SolutionOwner.GetComponent<AssemblyInfoDatabase>());
 		}
 

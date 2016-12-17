@@ -18,6 +18,7 @@
 using Microsoft.VisualStudio.TextTemplating.VSHost;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using JetBrains.Annotations;
 using JetBrains.Application;
@@ -65,7 +66,6 @@ namespace GammaJul.ReSharper.ForTea.Psi {
 		[NotNull] private readonly IProject _project;
 		[NotNull] private readonly ISolution _solution;
 		[NotNull] private readonly T4Environment _t4Environment;
-		[NotNull] private readonly IPsiSourceFile _sourceFile;
 		[NotNull] private readonly T4ResolveProject _resolveProject;
 		[NotNull] private readonly OutputAssemblies _outputAssemblies;
 		[NotNull] private readonly UserDataHolder _userDataHolder = new UserDataHolder();
@@ -76,96 +76,81 @@ namespace GammaJul.ReSharper.ForTea.Psi {
 		/// Returns the source file associated with this PSI module.
 		/// </summary>
 		[NotNull]
-		internal IPsiSourceFile SourceFile {
-			get { return _sourceFile; }
-		}
+		internal IPsiSourceFile SourceFile { get; }
 
 		/// <summary>
 		/// Gets an instance of <see cref="IModuleReferenceResolveManager"/> used to resolve assemblies.
 		/// </summary>
 		[NotNull]
-		private IModuleReferenceResolveManager ResolveManager {
-			get { return _resolveManager ?? (_resolveManager = _solution.GetComponent<IModuleReferenceResolveManager>()); }
-		}
+		private IModuleReferenceResolveManager ResolveManager
+			=> _resolveManager ?? (_resolveManager = _solution.GetComponent<IModuleReferenceResolveManager>());
 
 		/// <summary>
 		/// Gets the name of this PSI module.
 		/// </summary>
-		public string Name {
-			get { return Prefix + _sourceFile.Name; }
-		}
+		public string Name
+			=> Prefix + SourceFile.Name;
 
 		/// <summary>
 		/// Gets the display name of this PSI module.
 		/// </summary>
-		public string DisplayName {
-			get { return Prefix + _sourceFile.DisplayName; }
-		}
+		public string DisplayName
+			=> Prefix + SourceFile.DisplayName;
 
 		/// <summary>
 		/// Gets the language used by this PSI module. This should be the code behind language, not the primary language.
 		/// </summary>
-		public PsiLanguageType PsiLanguage {
-			get { return _sourceFile.GetLanguages().FirstOrDefault(lang => !lang.Is<T4Language>()) ?? UnknownLanguage.Instance; }
-		}
+		public PsiLanguageType PsiLanguage
+			=> SourceFile.GetLanguages().FirstOrDefault(lang => !lang.Is<T4Language>()) ?? UnknownLanguage.Instance;
 
 		/// <summary>
 		/// Gets the project file type used by this PSI module: always <see cref="JetBrains.ProjectModel.ProjectFileType"/>.
 		/// </summary>
-		public ProjectFileType ProjectFileType {
-			get { return T4ProjectFileType.Instance; }
-		}
-		
-		IModule IPsiModule.ContainingProjectModule {
-			get { return null; }
-		}
+		public ProjectFileType ProjectFileType
+			=> T4ProjectFileType.Instance;
 
-		IEnumerable<IPsiSourceFile> IPsiModule.SourceFiles {
-			get { return new[] { _sourceFile }; }
-		}
+		IModule IPsiModule.ContainingProjectModule
+			=> null;
 
-		IProject IProjectPsiModule.Project {
-			get { return _project; }
-		}
+		IEnumerable<IPsiSourceFile> IPsiModule.SourceFiles
+			=> new[] { SourceFile };
+
+		IProject IProjectPsiModule.Project
+			=> _project;
 
 		/// <summary>
 		/// TargetFrameworkId corresponding to the module. 
 		/// </summary>
-		public TargetFrameworkId TargetFrameworkId {
-			get { return TargetFrameworkId.Default; }
-		}
+		public TargetFrameworkId TargetFrameworkId
+			=> TargetFrameworkId.Default;
 
 		/// <summary>
 		/// Gets the solution this PSI module is attached to.
 		/// </summary>
 		/// <returns>An instance of <see cref="ISolution"/>.</returns>
-		public ISolution GetSolution() {
-			return _solution;
-		}
+		public ISolution GetSolution()
+			=> _solution;
 
 		/// <summary>
 		/// Gets an instance of <see cref="IPsiServices"/> for the current solution.
 		/// </summary>
 		/// <returns>An instance of <see cref="IPsiServices"/>.</returns>
-		public IPsiServices GetPsiServices() {
-			return _solution.GetPsiServices();
-		}
+		public IPsiServices GetPsiServices()
+			=> _solution.GetPsiServices();
 
 		/// <summary>
 		/// Gets whether the PSI module is valid.
 		/// </summary>
 		/// <returns><c>true</c> if the PSI module is valid, <c>false</c> otherwise.</returns>
-		public bool IsValid() {
-			return _isValid;
-		}
+		public bool IsValid()
+			=> _isValid;
 
 		/// <summary>
 		/// Gets a persistent identifier for this PSI module.
 		/// </summary>
 		/// <returns>A persistent identifier.</returns>
-		public string GetPersistentID() {
-			return Prefix + _projectFile.GetPersistentID();
-		}
+		public string GetPersistentID()
+			=> Prefix + _projectFile.GetPersistentID();
 
 		/// <summary>
 		/// Creates a new <see cref="IAssemblyCookie"/> from an assembly full name.
@@ -215,10 +200,9 @@ namespace GammaJul.ReSharper.ForTea.Psi {
 		/// </summary>
 		/// <returns>An instance of <see cref="IVsBuildMacroInfo"/> if found.</returns>
 		[CanBeNull]
-		private IVsBuildMacroInfo TryGetVsBuildMacroInfo() {
-			// ReSharper disable once SuspiciousTypeConversion.Global
-			return TryGetVsHierarchy() as IVsBuildMacroInfo;
-		}
+		[SuppressMessage("ReSharper", "SuspiciousTypeConversion.Global")]
+		private IVsBuildMacroInfo TryGetVsBuildMacroInfo()
+			=> TryGetVsHierarchy() as IVsBuildMacroInfo;
 
 		[CanBeNull]
 		private IVsHierarchy TryGetVsHierarchy() {
@@ -234,7 +218,7 @@ namespace GammaJul.ReSharper.ForTea.Psi {
 		}
 
 		private void OnDataFileChanged(Pair<IPsiSourceFile, T4FileDataDiff> pair) {
-			if (pair.First != _sourceFile)
+			if (pair.First != SourceFile)
 				return;
 
 			if (_shellLocks.IsWriteAccessAllowed())
@@ -300,7 +284,7 @@ namespace GammaJul.ReSharper.ForTea.Psi {
 			changeBuilder.AddModuleChange(this, PsiModuleChange.ChangeType.Modified);
 
 			if (hasFileChanges)
-				GetPsiServices().MarkAsDirty(_sourceFile);
+				GetPsiServices().MarkAsDirty(SourceFile);
 			
 			_shellLocks.ExecuteOrQueue("T4PsiModuleChange",
 				() => _changeManager.ExecuteAfterChange(
@@ -332,8 +316,7 @@ namespace GammaJul.ReSharper.ForTea.Psi {
 
 				string value;
 				bool succeeded = HResultHelpers.SUCCEEDED(vsBuildMacroInfo.GetBuildMacroValue(addedMacro, out value)) && !String.IsNullOrEmpty(value);
-				if (!succeeded)
-				{
+				if (!succeeded) {
 					value = MSBuildExtensions.GetStringValue(TryGetVsHierarchy(), addedMacro, null);
 					succeeded = !String.IsNullOrEmpty(value);
 				}
@@ -384,31 +367,28 @@ namespace GammaJul.ReSharper.ForTea.Psi {
 		[NotNull]
 		public IDictionary<string, string> GetResolvedMacros() {
 			lock (_resolvedMacros) {
-				return _resolvedMacros.Count != 0
-					? new Dictionary<string, string>(_resolvedMacros)
-					: EmptyDictionary<string, string>.Instance;
+				if (_resolvedMacros.Count > 0)
+					return new Dictionary<string, string>(_resolvedMacros);
+				return EmptyDictionary<string, string>.Instance;
 			}
 		}
 
-		object IChangeProvider.Execute(IChangeMap changeMap) {
-			return null;
-		}
+		object IChangeProvider.Execute(IChangeMap changeMap)
+			=> null;
 
-		ICollection<PreProcessingDirective> IPsiModule.GetAllDefines() {
-			return EmptyList<PreProcessingDirective>.InstanceList;
-		}
+		ICollection<PreProcessingDirective> IPsiModule.GetAllDefines()
+			=> EmptyList<PreProcessingDirective>.InstanceList;
 
 		[NotNull]
-		private PsiProjectFile CreateSourceFile([NotNull] IProjectFile projectFile, [NotNull] DocumentManager documentManager) {
-			return new PsiProjectFile(
+		private PsiProjectFile CreateSourceFile([NotNull] IProjectFile projectFile, [NotNull] DocumentManager documentManager)
+			=> new PsiProjectFile(
 				this,
 				projectFile,
-				(pf, sf) => new T4PsiProjectFileProperties(pf, sf, true), 
+				(pf, sf) => new T4PsiProjectFileProperties(pf, sf, true),
 				JetFunc<IProjectFile, IPsiSourceFile>.True,
 				documentManager,
 				UniversalModuleReferenceContext.Instance);
-		}
-		
+
 		[CanBeNull]
 		private IAssemblyCookie CreateCookieCore([NotNull] AssemblyReferenceTarget target) {
 			var resolveContext = UniversalModuleReferenceContext.Instance;
@@ -420,18 +400,15 @@ namespace GammaJul.ReSharper.ForTea.Psi {
 
 
 		public T GetData<T>(Key<T> key)
-		where T : class {
-			return _userDataHolder.GetData(key);
-		}
+		where T : class
+			=> _userDataHolder.GetData(key);
 
 		public void PutData<T>(Key<T> key, T val)
-		where T : class {
-			_userDataHolder.PutData(key, val);
-		}
+		where T : class
+			=> _userDataHolder.PutData(key, val);
 
-		public IEnumerable<KeyValuePair<object, object>> EnumerateData() {
-			return _userDataHolder.EnumerateData();
-		}
+		public IEnumerable<KeyValuePair<object, object>> EnumerateData()
+			=> _userDataHolder.EnumerateData();
 
 		/// <summary>
 		/// Disposes this instance.
@@ -459,11 +436,19 @@ namespace GammaJul.ReSharper.ForTea.Psi {
 			foreach (string assemblyName in _t4Environment.TextTemplatingAssemblyNames)
 				TryAddReference(assemblyName);
 		}
-		
-		internal T4PsiModule([NotNull] Lifetime lifetime, [NotNull] IPsiModules psiModules, [NotNull] DocumentManager documentManager,
-			[NotNull] ChangeManager changeManager, [NotNull] IAssemblyFactory assemblyFactory, [NotNull] IShellLocks shellLocks,
-			[NotNull] IProjectFile projectFile, [NotNull] T4FileDataCache fileDataCache, [NotNull] T4Environment t4Environment,
+
+		internal T4PsiModule(
+			[NotNull] Lifetime lifetime,
+			[NotNull] IPsiModules psiModules,
+			[NotNull] DocumentManager documentManager,
+			[NotNull] ChangeManager changeManager,
+			[NotNull] IAssemblyFactory assemblyFactory,
+			[NotNull] IShellLocks shellLocks,
+			[NotNull] IProjectFile projectFile,
+			[NotNull] T4FileDataCache fileDataCache,
+			[NotNull] T4Environment t4Environment,
 			[NotNull] OutputAssemblies outputAssemblies) {
+
 			_lifetime = lifetime;
 			lifetime.AddAction(Dispose);
 			
@@ -485,7 +470,7 @@ namespace GammaJul.ReSharper.ForTea.Psi {
 			_outputAssemblies = outputAssemblies;
 			_resolveProject = new T4ResolveProject(lifetime, _solution, _shellLocks, t4Environment.PlatformID, project);
 
-			_sourceFile = CreateSourceFile(projectFile, documentManager);
+			SourceFile = CreateSourceFile(projectFile, documentManager);
 
 			_isValid = true;
 			fileDataCache.FileDataChanged.Advise(lifetime, OnDataFileChanged);

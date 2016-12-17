@@ -1,4 +1,5 @@
 ﻿#region License
+
 //    Copyright 2012 Julien Lebosquain
 // 
 //    Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,6 +13,7 @@
 //    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 //    See the License for the specific language governing permissions and
 //    limitations under the License.
+
 #endregion
 
 
@@ -30,25 +32,21 @@ namespace GammaJul.ReSharper.ForTea.Psi.CodeStyle {
 	// TODO: implement the formatter
 	[Language(typeof(T4Language))]
 	public class T4CodeFormatter : CodeFormatterBase {
-		
-		protected override PsiLanguageType LanguageType {
-			get { return T4Language.Instance; }
-		}
 
-		public override bool IsWhitespaceToken(ITokenNode token) {
-			return token.IsWhitespaceToken();
-		}
+		protected override PsiLanguageType LanguageType
+			=> T4Language.Instance;
 
-		protected override bool IsFormatNextSpaces(CodeFormatProfile profile) {
-			return false;
-		}
-		
+		public override bool IsWhitespaceToken(ITokenNode token)
+			=> token.IsWhitespaceToken();
+
+		protected override bool IsFormatNextSpaces(CodeFormatProfile profile)
+			=> false;
+
 		public override void FormatInsertedNodes(ITreeNode nodeFirst, ITreeNode nodeLast, bool formatSurround) {
 		}
 
-		public override ITreeRange FormatInsertedRange(ITreeNode nodeFirst, ITreeNode nodeLast, ITreeRange origin) {
-			return origin;
-		}
+		public override ITreeRange FormatInsertedRange(ITreeNode nodeFirst, ITreeNode nodeLast, ITreeRange origin)
+			=> origin;
 
 		public override void FormatReplacedNode(ITreeNode oldNode, ITreeNode newNode) {
 		}
@@ -59,23 +57,23 @@ namespace GammaJul.ReSharper.ForTea.Psi.CodeStyle {
 		public override void FormatDeletedNodes(ITreeNode parent, ITreeNode prevNode, ITreeNode nextNode) {
 		}
 
-		public override ITokenNode GetMinimalSeparator(ITokenNode leftToken, ITokenNode rightToken) {
-			return null;
-		}
+		public override ITokenNode GetMinimalSeparator(ITokenNode leftToken, ITokenNode rightToken)
+			=> null;
 
-		public override ITreeNode CreateSpace(string indent, ITreeNode replacedSpace) {
-			return T4TokenNodeTypes.Space.Create(indent);
-		}
-		
-		public override ITreeNode CreateNewLine(LineEnding lineEnding) {
-			T4TokenNodeType nodeType = T4TokenNodeTypes.NewLine;
-			return nodeType.Create(lineEnding.GetPresentation());
-		}
-		
-		public override ITreeRange Format(ITreeNode firstElement, ITreeNode lastElement, CodeFormatProfile profile, IProgressIndicator progressIndicator,
-			IContextBoundSettingsStore overrideSettingsStore = null, IPotentSettingsTracker settingsTracker = null) {
-			return new TreeRange(firstElement, lastElement);
-		}
+		public override ITreeNode CreateSpace(string indent, ITreeNode replacedSpace)
+			=> T4TokenNodeTypes.Space.Create(indent);
+
+		public override ITreeNode CreateNewLine(LineEnding lineEnding, IPsiSourceFile psiSourceFile)
+			=> T4TokenNodeTypes.NewLine.Create(lineEnding.GetPresentation());
+
+		public override ITreeRange Format(
+			ITreeNode firstElement,
+			ITreeNode lastElement,
+			CodeFormatProfile profile,
+			IProgressIndicator progressIndicator,
+			IContextBoundSettingsStore overrideSettingsStore = null,
+			IPotentSettingsTracker settingsTracker = null)
+			=> new TreeRange(firstElement, lastElement);
 
 		public T4CodeFormatter(IFormatterDebugInfoLoggersProvider formatterLoggerProvider)
 			: base(formatterLoggerProvider) {

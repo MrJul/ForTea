@@ -33,13 +33,11 @@ namespace GammaJul.ReSharper.ForTea.Services.Navigation {
 		[NotNull] private readonly ISolution _solution;
 		[NotNull] private readonly IEditorManager _editorManager;
 		
-		public bool IsApplicable(T4OutsideSolutionNavigationInfo data) {
-			return data != null;
-		}
+		public bool IsApplicable(T4OutsideSolutionNavigationInfo data)
+			=> data != null;
 
-		public IEnumerable<INavigationPoint> CreateNavigationPoints(T4OutsideSolutionNavigationInfo target) {
-			return CreateNavigationPoints(target, EmptyList<INavigationPoint>.InstanceList);
-		}
+		public IEnumerable<INavigationPoint> CreateNavigationPoints(T4OutsideSolutionNavigationInfo target)
+			=> CreateNavigationPoints(target, EmptyList<INavigationPoint>.InstanceList);
 
 		private IEnumerable<INavigationPoint> CreateNavigationPoints([NotNull] T4OutsideSolutionNavigationInfo target, [NotNull] IEnumerable<INavigationPoint> basePoints) {
 			ITextControl textControl = _editorManager.OpenFile(target.FileSystemPath, target.Activate, target.TabOptions);
@@ -47,12 +45,12 @@ namespace GammaJul.ReSharper.ForTea.Services.Navigation {
 				return basePoints;
 
 			// the source file should exist since we just opened it
-			IPsiSourceFile sourceFile = textControl.Document.GetPsiSourceFile(_solution);
-			if (sourceFile == null)
+			IProjectFile projectFile = textControl.Document.GetPsiSourceFile(_solution).ToProjectFile();
+			if (projectFile == null)
 				return basePoints;
-
+			
 			return new INavigationPoint[] {
-				new TextNavigationPoint(sourceFile.ToProjectFile(), target.TextRange.StartOffset)
+				new TextNavigationPoint(projectFile, target.TextRange.StartOffset)
 			};
 		}
 

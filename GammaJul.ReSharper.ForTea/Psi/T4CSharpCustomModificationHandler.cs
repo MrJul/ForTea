@@ -50,7 +50,7 @@ namespace GammaJul.ReSharper.ForTea.Psi {
 	/// (eg: adding a using statement translates to an import directive).
 	/// </summary>
 	[ProjectFileType(typeof(T4ProjectFileType))]
-	public class T4CSharpCustomModificationHandler : CustomModificationHandler<IT4CodeBlock, IT4Directive> {
+	public class T4CSharpCustomModificationHandler : CustomModificationHandler<IT4CodeBlock, IT4Directive>, ICSharpCustomModificationHandler {
 
 		[NotNull] private readonly DirectiveInfoManager _directiveInfoManager;
 
@@ -58,21 +58,18 @@ namespace GammaJul.ReSharper.ForTea.Psi {
 		/// Determines whether namespace aliases can be used.
 		/// </summary>
 		/// <returns>Always <c>false</c> since T4 files does not support aliases.</returns>
-		public bool CanUseAliases {
-			get { return false; }
-		}
+		public bool CanUseAliases
+			=> false;
 
 		/// <summary>
 		/// Determines whether static imports can be used.
 		/// </summary>
 		/// <returns>Always <c>false</c> since T4 files does not support static imports.</returns>
-		public bool CanUseStaticImport {
-			get { return false; }
-		}
+		public bool CanUseStaticImport
+			=> false;
 
-		public bool CanOmitBraces {
-			get { return false; }
-		}
+		public bool CanOmitBraces
+			=> false;
 
 		/// <summary>
 		/// Creates a new T4 code block.
@@ -92,10 +89,8 @@ namespace GammaJul.ReSharper.ForTea.Psi {
 		/// </summary>
 		/// <param name="codeBlock">The code block.</param>
 		/// <returns>A <see cref="TreeTextRange"/> representing the code range in <paramref name="codeBlock"/>.</returns>
-		protected override TreeTextRange GetCodeTreeTextRange(IT4CodeBlock codeBlock) {
-			IT4Token codeToken = codeBlock.GetCodeToken();
-			return codeToken != null ? codeToken.GetTreeTextRange() : TreeTextRange.InvalidRange;
-		}
+		protected override TreeTextRange GetCodeTreeTextRange(IT4CodeBlock codeBlock)
+			=> codeBlock.GetCodeToken()?.GetTreeTextRange() ?? TreeTextRange.InvalidRange;
 
 		/// <summary>
 		/// Creates a T4 import directive instead of a C# using directive.
@@ -123,18 +118,16 @@ namespace GammaJul.ReSharper.ForTea.Psi {
 		/// </summary>
 		/// <param name="usingDirective">The using directive.</param>
 		/// <returns>A <see cref="TreeTextRange"/> corresponding to the namespace in <paramref name="usingDirective"/>.</returns>
-		protected override TreeTextRange GetNameRange(ITreeNode usingDirective) {
-			return (usingDirective as IUsingDirective).GetUsedNamespaceNode().GetTreeTextRange();
-		}
+		protected override TreeTextRange GetNameRange(ITreeNode usingDirective)
+			=> (usingDirective as IUsingDirective).GetUsedNamespaceNode().GetTreeTextRange();
 
 		/// <summary>
 		/// Removes an import directive.
 		/// </summary>
 		/// <param name="originalFile">The original T4 file where the directive must be removed.</param>
 		/// <param name="directiveInOriginalFile">The import directive in the file.</param>
-		protected override void RemoveUsingNode(IFile originalFile, IT4Directive directiveInOriginalFile) {
-			((IT4File) originalFile).RemoveDirective(directiveInOriginalFile);
-		}
+		protected override void RemoveUsingNode(IFile originalFile, IT4Directive directiveInOriginalFile)
+			=> ((IT4File) originalFile).RemoveDirective(directiveInOriginalFile);
 
 		/// <summary>
 		/// Creates a new feature block with new type members.
@@ -155,9 +148,8 @@ namespace GammaJul.ReSharper.ForTea.Psi {
 		/// </summary>
 		/// <param name="psiModule">The associated PSI module.</param>
 		/// <returns>A T4 new line token.</returns>
-		protected override ITreeNode CreateNewLineToken(IPsiModule psiModule) {
-			return CSharpTokenType.NEW_LINE.CreateLeafElement();
-		}
+		protected override ITreeNode CreateNewLineToken(IPsiModule psiModule)
+			=> CSharpTokenType.NEW_LINE.CreateLeafElement();
 
 		/// <summary>
 		/// Gets an existing feature block that can contains type members.
@@ -249,17 +241,14 @@ namespace GammaJul.ReSharper.ForTea.Psi {
 			}
 		}
 
-		public void HandleRemoveStatementsRange(IPsiServices psiServices, ITreeRange treeRange, Action action) {
-			action();
-		}
+		public void HandleRemoveStatementsRange(IPsiServices psiServices, ITreeRange treeRange, Action action)
+			=> action();
 
-		public ITreeRange HandleChangeStatements(IPsiServices psiServices, ITreeRange rangeBeforeChange, Func<ITreeRange> changeAction, bool strict) {
-			return changeAction();
-		}
+		public ITreeRange HandleChangeStatements(IPsiServices psiServices, ITreeRange rangeBeforeChange, Func<ITreeRange> changeAction, bool strict)
+			=> changeAction();
 
-		public void HandleChangeExpressionInStatement(IPsiServices psiServices, IStatement statement, Action changeAction) {
-			changeAction();
-		}
+		public void HandleChangeExpressionInStatement(IPsiServices psiServices, IStatement statement, Action changeAction)
+			=> changeAction();
 
 		/// <summary>
 		/// Handles the removal of an import directive.
@@ -291,16 +280,12 @@ namespace GammaJul.ReSharper.ForTea.Psi {
 
 		private static void RemoveContainingBlockIfEmpty([CanBeNull] ITreeNode node) {
 			var block = node.GetT4ContainerFromCSharpNode<IT4CodeBlock>();
-			if (block == null)
-				return;
-
-			string code = block.GetCodeText();
+			string code = block?.GetCodeText();
 			if (code == null || code.Trim().Length == 0)
 				return;
 
 			var file = block.GetContainingFile() as IT4File;
-			if (file != null)
-				file.RemoveChild(block);
+			file?.RemoveChild(block);
 		}
 
 		/// <summary>
@@ -308,14 +293,12 @@ namespace GammaJul.ReSharper.ForTea.Psi {
 		/// </summary>
 		/// <param name="method">The method.</param>
 		/// <returns>Always the body of <paramref name="method"/>.</returns>
-		public IBlock GetMethodBodyVisibleForUser(ICSharpFunctionDeclaration method) {
-			return method.Body;
-		}
+		public IBlock GetMethodBodyVisibleForUser(ICSharpFunctionDeclaration method)
+			=> method.Body;
 
-		public bool IsToAddImportsToDeepestScope(ITreeNode context) {
-			return false;
-		}
-		
+		public bool IsToAddImportsToDeepestScope(ITreeNode context)
+			=> false;
+
 		/// <summary>
 		/// Retrives the namespace from a C# using directive.
 		/// </summary>
@@ -338,31 +321,23 @@ namespace GammaJul.ReSharper.ForTea.Psi {
 		/// <param name="before">Whether to add the statements before of after <paramref name="generatedAnchor"/>.</param>
 		/// <param name="generatedFile">The generated file.</param>
 		/// <returns>An instance of <see cref="IUsingDirective"/>.</returns>
-		public IUsingDirective HandleAddImport(IPsiServices psiServices, Func<IUsingDirective> action, ITreeNode generatedAnchor, bool before, IFile generatedFile) {
-			return (IUsingDirective) HandleAddImportInternal(psiServices, action, generatedAnchor, before, CSharpLanguage.Instance, generatedFile);
-		}
+		public IUsingDirective HandleAddImport(IPsiServices psiServices, Func<IUsingDirective> action, ITreeNode generatedAnchor, bool before, IFile generatedFile)
+			=> (IUsingDirective) HandleAddImportInternal(psiServices, action, generatedAnchor, before, CSharpLanguage.Instance, generatedFile);
 
-		public bool PreferQualifiedReference(IQualifiableReference reference) {
-			return reference.GetTreeNode().GetSettingsStore().GetValue(CSharpUsingSettingsAccessor.PreferQualifiedReference);
-		}
+		public bool PreferQualifiedReference(IQualifiableReference reference)
+			=> reference.GetTreeNode().GetSettingsStore().GetValue(CSharpUsingSettingsAccessor.PreferQualifiedReference);
 
-		public string GetSpecialMethodType(DeclaredElementPresenterStyle presenter, IMethod method, ISubstitution substitution) {
-			return null;
-		}
+		public string GetSpecialMethodType(DeclaredElementPresenterStyle presenter, IMethod method, ISubstitution substitution)
+			=> null;
 
-		public ThisQualifierSettingsKey GetThisQualifierStyle(ITreeNode context) {
-			return context.GetSettingsStore().GetKey<ThisQualifierSettingsKey>(SettingsOptimization.OptimizeDefault);
-		}
+		public ThisQualifierSettingsKey GetThisQualifierStyle(ITreeNode context)
+			=> context.GetSettingsStore().GetKey<ThisQualifierSettingsKey>(SettingsOptimization.OptimizeDefault);
 
-		public StaticQualifierSettingsKey GetStaticQualifierStyle(ITreeNode context) {
-			return context.GetSettingsStore().GetKey<StaticQualifierSettingsKey>(SettingsOptimization.OptimizeDefault);
-		}
+		public StaticQualifierSettingsKey GetStaticQualifierStyle(ITreeNode context)
+			=> context.GetSettingsStore().GetKey<StaticQualifierSettingsKey>(SettingsOptimization.OptimizeDefault);
 
-		public IList<ITreeRange> GetHolderBlockRanges(ITreeNode treeNode) {
-			return new ITreeRange[] {
-				new TreeRange(treeNode.FirstChild, treeNode.LastChild)
-			};
-		}
+		public IList<ITreeRange> GetHolderBlockRanges(ITreeNode treeNode)
+			=> new ITreeRange[] { new TreeRange(treeNode.FirstChild, treeNode.LastChild) };
 
 		/// <summary>
 		/// Initializes a new instance of the <see cref="T4CSharpCustomModificationHandler"/> class.
