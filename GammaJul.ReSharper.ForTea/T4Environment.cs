@@ -22,6 +22,7 @@ using JetBrains.Annotations;
 using JetBrains.Application;
 using JetBrains.Application.Components;
 using JetBrains.Application.platforms;
+using JetBrains.Metadata.Reader.API;
 using JetBrains.ReSharper.Psi.CSharp;
 using JetBrains.VsIntegration.Shell;
 using JetBrains.Util;
@@ -40,6 +41,7 @@ namespace GammaJul.ReSharper.ForTea {
 		[NotNull] private readonly Lazy<Optional<ITextTemplatingComponents>> _components;
 		[NotNull] private readonly string[] _textTemplatingAssemblyNames;
 		[CanBeNull] private readonly PlatformID _platformID;
+		[CanBeNull] private readonly TargetFrameworkId _targetFrameworkId;
 		[CanBeNull] private IList<FileSystemPath> _includePaths;
 
 		[NotNull]
@@ -60,8 +62,20 @@ namespace GammaJul.ReSharper.ForTea {
 		public PlatformID PlatformID {
 			get {
 				if (_platformID == null)
-					throw new NotSupportedException("Unsupported environment.");
+					throw CreateUnsupportedEnvironmentException();
 				return _platformID;
+			}
+		}
+
+		/// <summary>
+		/// Gets the target framework ID.
+		/// </summary>
+		[NotNull]
+		public TargetFrameworkId TargetFrameworkId {
+			get {
+				if (_targetFrameworkId == null)
+					throw CreateUnsupportedEnvironmentException();
+				return _targetFrameworkId;
 			}
 		}
 
@@ -77,7 +91,7 @@ namespace GammaJul.ReSharper.ForTea {
 		public IEnumerable<string> TextTemplatingAssemblyNames {
 			get {
 				if (_platformID == null)
-					throw new NotSupportedException("Unsupported environment.");
+					throw CreateUnsupportedEnvironmentException();
 				return _textTemplatingAssemblyNames;
 			}
 		}
@@ -127,7 +141,12 @@ namespace GammaJul.ReSharper.ForTea {
 				return paths;
 			}
 		}
-		
+
+		[NotNull]
+		[Pure]
+		private static NotSupportedException CreateUnsupportedEnvironmentException()
+			=> new NotSupportedException("Unsupported environment.");
+
 		public T4Environment([NotNull] IVsEnvironmentInformation vsEnvironmentInformation, [NotNull] RawVsServiceProvider rawVsServiceProvider) {
 			_vsEnvironmentInformation = vsEnvironmentInformation;
 			
@@ -176,11 +195,24 @@ namespace GammaJul.ReSharper.ForTea {
 					};
 					break;
 
+				case VsVersions.Vs2017:
+					_platformID = new PlatformID(FrameworkIdentifier.NetFramework, new Version(4, 5));
+					CSharpLanguageLevel = CSharpLanguageLevel.CSharp70;
+					_textTemplatingAssemblyNames = new[] {
+						"Microsoft.VisualStudio.TextTemplating.15.0, Version=15.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a",
+						"Microsoft.VisualStudio.TextTemplating.Interfaces.11.0, Version=11.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a",
+						"Microsoft.VisualStudio.TextTemplating.Interfaces.10.0, Version=10.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a"
+					};
+					break;
+
 				default:
 					_textTemplatingAssemblyNames = EmptyArray<string>.Instance;
 					break;
 
 			}
+
+			if (_platformID != null)
+				_targetFrameworkId = TargetFrameworkId.Create(_platformID.FullName);
 		}
 
 	}

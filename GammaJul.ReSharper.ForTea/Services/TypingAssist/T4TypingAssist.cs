@@ -15,7 +15,6 @@
 #endregion
 using GammaJul.ReSharper.ForTea.Parsing;
 using GammaJul.ReSharper.ForTea.Psi;
-using GammaJul.ReSharper.ForTea.Psi.CodeStyle;
 using GammaJul.ReSharper.ForTea.Services.CodeCompletion;
 using JetBrains.Annotations;
 using JetBrains.Application.CommandProcessing;
@@ -33,7 +32,7 @@ using JetBrains.TextControl.Util;
 namespace GammaJul.ReSharper.ForTea.Services.TypingAssist {
 
 	[SolutionComponent]
-	public class T4TypingAssist : TypingAssistLanguageBase<T4Language, T4CodeFormatter>, ITypingHandler {
+	public class T4TypingAssist : TypingAssistLanguageBase<T4Language>, ITypingHandler {
 
 		private readonly SkippingTypingAssist _skippingTypingAssist;
 		private readonly ICodeCompletionSessionManager _codeCompletionSessionManager;
@@ -45,9 +44,8 @@ namespace GammaJul.ReSharper.ForTea.Services.TypingAssist {
 				&& psiSourceFile.IsValid();
 		}
 
-		public bool QuickCheckAvailability(ITextControl textControl, IPsiSourceFile projectFile) {
-			return projectFile.LanguageType.Is<T4ProjectFileType>();
-		}
+		public bool QuickCheckAvailability(ITextControl textControl, IPsiSourceFile projectFile)
+			=> projectFile.LanguageType.Is<T4ProjectFileType>();
 
 		/// <summary>
 		/// When = is typed, insert "".

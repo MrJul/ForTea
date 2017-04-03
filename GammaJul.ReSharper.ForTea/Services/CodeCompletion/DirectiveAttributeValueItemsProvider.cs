@@ -52,7 +52,7 @@ namespace GammaJul.ReSharper.ForTea.Services.CodeCompletion {
 				return true;
 
 			if (tokenType == T4TokenNodeTypes.Quote) {
-				ITreeNode leftSibling = node.GetMeaningfulLeftSib();
+				ITreeNode leftSibling = node.GetPreviousMeaningfulSibling();
 				if (leftSibling != null && leftSibling.GetTokenType() == T4TokenNodeTypes.Equal)
 					return true;
 			}

@@ -69,13 +69,9 @@ namespace GammaJul.ReSharper.ForTea.Psi {
 		[CanBeNull]
 		internal static IReferenceName GetUsedNamespaceNode([CanBeNull] this IUsingDirective directive) {
 			var usingSymbolDirective = directive as IUsingSymbolDirective;
-			if (usingSymbolDirective == null)
+			if (usingSymbolDirective == null || usingSymbolDirective.StaticKeyword != null)
 				return null;
-
-			DeclaredElementInstance<IDeclaredElement> importedSymbol = usingSymbolDirective.ImportedSymbol;
-			if (importedSymbol == null || !(importedSymbol.Element is INamespace))
-				return null;
-
+			
 			return usingSymbolDirective.ImportedSymbolName;
 		}
 

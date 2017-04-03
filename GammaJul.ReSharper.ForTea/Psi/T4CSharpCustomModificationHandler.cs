@@ -78,7 +78,7 @@ namespace GammaJul.ReSharper.ForTea.Psi {
 		/// <param name="anchor">Where to insert the code.</param>
 		/// <returns>A new instance of <see cref="IT4CodeBlock"/>.</returns>
 		protected override IT4CodeBlock CreateInlineCodeBlock(string text, ITreeNode anchor) {
-			ITreeNode existingFeatureNode = anchor.FindPrevNode(node => node is T4FeatureBlock ? TreeNodeActionType.ACCEPT : TreeNodeActionType.CONTINUE);
+			ITreeNode existingFeatureNode = anchor.FindPreviousNode(node => node is T4FeatureBlock ? TreeNodeActionType.ACCEPT : TreeNodeActionType.CONTINUE);
 			return existingFeatureNode != null
 				? (IT4CodeBlock) T4ElementFactory.Instance.CreateFeatureBlock(text)
 				: T4ElementFactory.Instance.CreateStatementBlock(text);
@@ -220,20 +220,15 @@ namespace GammaJul.ReSharper.ForTea.Psi {
 //			var directive = namespaceNode.GetT4ContainerFromCSharpNode<IT4Directive>();
 //			return directive != null && directive.GetContainingNode<IT4Include>() == null;
 		}
-
-
 		
-		/// <summary>
-		/// Translates changes in generated code-behind file to original file.
-		/// </summary>
-		/// <param name="psiServices">The PSI services.</param>
-		/// <param name="addAction">The action that will add C# statements.</param>
-		/// <param name="block">The C# block where the statement will be inserted.</param>
-		/// <param name="anchor">The anchor.</param>
-		/// <param name="before">Whether to add the statements before of after <paramref name="anchor"/>.</param>
-		/// <param name="strict">If true, HTML whitespace statements on bounds are not included. Use for single added statement to be returned.</param>
-		/// <returns>An instance of <see cref="ICSharpStatementsRange"/>.</returns>
-		public ICSharpStatementsRange HandleAddStatementsRange(IPsiServices psiServices, Func<ITreeNode, ICSharpStatementsRange> addAction, IBlock block, ITreeNode anchor, bool before, bool strict) {
+		/// <inheritdoc />
+		public ICSharpStatementsRange HandleAddStatementsRange(
+			IPsiServices psiServices,
+			Func<ITreeNode, ICSharpStatementsRange> addAction,
+			IStatementsOwner block,
+			ITreeNode anchor,
+			bool before,
+			bool strict) {
 			using (CustomGeneratedChangePromotionCookie.Create(block)) {
 				ICSharpStatementsRange range = addAction(anchor);
 				FinishAddStatementsRange(range.TreeRange, before);
@@ -300,7 +295,7 @@ namespace GammaJul.ReSharper.ForTea.Psi {
 			=> false;
 
 		/// <summary>
-		/// Retrives the namespace from a C# using directive.
+		/// Retrieves the namespace from a C# using directive.
 		/// </summary>
 		/// <param name="usingDirective">The using directive.</param>
 		/// <returns>The namespace contained in <paramref name="usingDirective"/>.</returns>

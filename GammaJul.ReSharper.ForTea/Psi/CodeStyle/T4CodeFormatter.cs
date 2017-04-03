@@ -18,7 +18,7 @@
 
 
 using GammaJul.ReSharper.ForTea.Parsing;
-using JetBrains.Application.Progress;
+using JetBrains.Annotations;
 using JetBrains.Application.Settings;
 using JetBrains.ReSharper.Psi;
 using JetBrains.ReSharper.Psi.CodeStyle;
@@ -31,9 +31,9 @@ namespace GammaJul.ReSharper.ForTea.Psi.CodeStyle {
 
 	// TODO: implement the formatter
 	[Language(typeof(T4Language))]
-	public class T4CodeFormatter : CodeFormatterBase {
+	public class T4CodeFormatter : CodeFormatterBase<T4FormatSettingsKey> {
 
-		protected override PsiLanguageType LanguageType
+		public override PsiLanguageType LanguageType
 			=> T4Language.Instance;
 
 		public override bool IsWhitespaceToken(ITokenNode token)
@@ -70,13 +70,11 @@ namespace GammaJul.ReSharper.ForTea.Psi.CodeStyle {
 			ITreeNode firstElement,
 			ITreeNode lastElement,
 			CodeFormatProfile profile,
-			IProgressIndicator progressIndicator,
-			IContextBoundSettingsStore overrideSettingsStore = null,
-			IPotentSettingsTracker settingsTracker = null)
+			AdditionalFormatterParameters parameters = null)
 			=> new TreeRange(firstElement, lastElement);
 
-		public T4CodeFormatter(IFormatterDebugInfoLoggersProvider formatterLoggerProvider)
-			: base(formatterLoggerProvider) {
+		public T4CodeFormatter([NotNull] IFormatterDebugInfoLoggersProvider formatterLoggerProvider, [NotNull] ISettingsOptimization settingsOptimization)
+			: base(formatterLoggerProvider, settingsOptimization) {
 		}
 
 	}

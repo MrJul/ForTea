@@ -16,6 +16,7 @@
 
 using System.Collections.Generic;
 using JetBrains.Annotations;
+using JetBrains.Application.FileSystemTracker;
 using JetBrains.DataFlow;
 using JetBrains.DocumentManagers;
 using JetBrains.DocumentModel;
@@ -70,13 +71,18 @@ namespace GammaJul.ReSharper.ForTea.Psi {
 				_sourceFiles.Remove(path);
 		}
 
-		public T4OutsideSolutionSourceFileManager([NotNull] Lifetime lifetime, [NotNull] IProjectFileExtensions projectFileExtensions,
-			[NotNull] PsiProjectFileTypeCoordinator psiProjectFileTypeCoordinator, [NotNull] DocumentManager documentManager,
-			[NotNull] ISolution solution) {
+		public T4OutsideSolutionSourceFileManager(
+			[NotNull] Lifetime lifetime,
+			[NotNull] IProjectFileExtensions projectFileExtensions,
+			[NotNull] PsiProjectFileTypeCoordinator psiProjectFileTypeCoordinator,
+			[NotNull] DocumentManager documentManager,
+			[NotNull] ISolution solution,
+			[NotNull] T4Environment t4Environment,
+			[NotNull] IFileSystemTracker fileSystemTracker) {
 			_projectFileExtensions = projectFileExtensions;
 			_psiProjectFileTypeCoordinator = psiProjectFileTypeCoordinator;
 			_documentManager = documentManager;
-			_psiModule = new PsiModuleOnFileSystemPaths(solution, "T4OutsideSolution", TargetFrameworkId.Default);
+			_psiModule = new PsiModuleOnFileSystemPaths(solution, "T4OutsideSolution", t4Environment.TargetFrameworkId, fileSystemTracker, lifetime);
 			lifetime.AddDispose(_sourceFiles);
 		}
 

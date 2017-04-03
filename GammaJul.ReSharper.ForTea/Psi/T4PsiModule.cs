@@ -68,6 +68,7 @@ namespace GammaJul.ReSharper.ForTea.Psi {
 		[NotNull] private readonly T4Environment _t4Environment;
 		[NotNull] private readonly T4ResolveProject _resolveProject;
 		[NotNull] private readonly OutputAssemblies _outputAssemblies;
+		[NotNull] private readonly IModuleReferenceResolveContext _moduleReferenceResolveContext;
 		[NotNull] private readonly UserDataHolder _userDataHolder = new UserDataHolder();
 		[CanBeNull] private IModuleReferenceResolveManager _resolveManager;
 		private bool _isValid;
@@ -122,7 +123,7 @@ namespace GammaJul.ReSharper.ForTea.Psi {
 		/// TargetFrameworkId corresponding to the module. 
 		/// </summary>
 		public TargetFrameworkId TargetFrameworkId
-			=> TargetFrameworkId.Default;
+			=> _t4Environment.TargetFrameworkId;
 
 		/// <summary>
 		/// Gets the solution this PSI module is attached to.
@@ -387,14 +388,13 @@ namespace GammaJul.ReSharper.ForTea.Psi {
 				(pf, sf) => new T4PsiProjectFileProperties(pf, sf, true),
 				JetFunc<IProjectFile, IPsiSourceFile>.True,
 				documentManager,
-				UniversalModuleReferenceContext.Instance);
+				_moduleReferenceResolveContext);
 
 		[CanBeNull]
 		private IAssemblyCookie CreateCookieCore([NotNull] AssemblyReferenceTarget target) {
-			var resolveContext = UniversalModuleReferenceContext.Instance;
-			FileSystemPath result = ResolveManager.Resolve(target, _resolveProject, resolveContext);
+			FileSystemPath result = ResolveManager.Resolve(target, _resolveProject, _moduleReferenceResolveContext);
 			return result != null
-				? _assemblyFactory.AddRef(result, "T4", resolveContext)
+				? _assemblyFactory.AddRef(result, "T4", _moduleReferenceResolveContext)
 				: null;
 		}
 
@@ -468,8 +468,9 @@ namespace GammaJul.ReSharper.ForTea.Psi {
 
 			_t4Environment = t4Environment;
 			_outputAssemblies = outputAssemblies;
-			_resolveProject = new T4ResolveProject(lifetime, _solution, _shellLocks, t4Environment.PlatformID, project);
+			_resolveProject = new T4ResolveProject(lifetime, _solution, _shellLocks, t4Environment.PlatformID, t4Environment.TargetFrameworkId, project);
 
+			_moduleReferenceResolveContext = new PsiModuleResolveContext(this, _t4Environment.TargetFrameworkId, null);
 			SourceFile = CreateSourceFile(projectFile, documentManager);
 
 			_isValid = true;

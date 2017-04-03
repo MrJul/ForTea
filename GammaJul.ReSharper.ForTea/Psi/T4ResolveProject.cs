@@ -43,6 +43,7 @@ namespace GammaJul.ReSharper.ForTea.Psi {
 		[NotNull] private readonly IUserDataHolder _dataHolder;
 		[NotNull] private readonly ISolution _solution;
 		[NotNull] private readonly IShellLocks _shellLocks;
+		[NotNull] private readonly TargetFrameworkId _targetFrameworkId;
 		[NotNull] private readonly IProjectProperties _projectProperties;
 		[NotNull] private readonly TargetFrameworkReferences _targetFrameworkReferences;
 
@@ -170,7 +171,7 @@ namespace GammaJul.ReSharper.ForTea.Psi {
 			=> _targetFrameworkReferences.GetScope(targetFrameworkId);
 
 		public IEnumerable<TargetFrameworkId> TargetFrameworkIds
-			=> new[] { TargetFrameworkId.Default };
+			=> new[] { _targetFrameworkId };
 
 		IProjectFolder IProjectFolder.GetSubFolderByPath(ProjectFolderPath projectFolderPath)
 			=> null;
@@ -192,8 +193,8 @@ namespace GammaJul.ReSharper.ForTea.Psi {
 			public ProjectKind ProjectKind
 				=> ProjectKind.MISC_FILES_PROJECT;
 
-			internal T4ResolveProjectProperties([NotNull] PlatformID platformID)
-				: base(EmptyList<Guid>.InstanceList, platformID, Guid.Empty) {
+			internal T4ResolveProjectProperties([NotNull] PlatformID platformID, [NotNull] TargetFrameworkId targetFrameworkId)
+				: base(EmptyList<Guid>.InstanceList, platformID, Guid.Empty, new[] { targetFrameworkId }) {
 			}
 
 		}
@@ -203,11 +204,13 @@ namespace GammaJul.ReSharper.ForTea.Psi {
 			[NotNull] ISolution solution,
 			[NotNull] IShellLocks shellLocks,
 			[NotNull] PlatformID platformID,
+			[NotNull] TargetFrameworkId targetFrameworkId,
 			[NotNull] IUserDataHolder dataHolder) {
 			_shellLocks = shellLocks;
+			_targetFrameworkId = targetFrameworkId;
 			_solution = solution;
 			_dataHolder = dataHolder;
-			_projectProperties = new T4ResolveProjectProperties(platformID);
+			_projectProperties = new T4ResolveProjectProperties(platformID, targetFrameworkId);
 			ProjectFileLocationLive = new Property<FileSystemPath>(lifetime, "ProjectFileLocationLive");
 			ProjectLocationLive = new Property<FileSystemPath>(lifetime, "ProjectLocationLive");
 			_targetFrameworkReferences = new TargetFrameworkReferences(lifetime, shellLocks, this, solution.SolutionOwner.GetComponent<AssemblyInfoDatabase>());

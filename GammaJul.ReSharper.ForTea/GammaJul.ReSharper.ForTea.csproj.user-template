@@ -8,14 +8,14 @@
   <!-- Rename this file to .csproj.user to automatically copy the plugin and update VS -->
   <!-- Edit the following property group if needed -->
   <PropertyGroup>
-	<RsPluginVsVersion>14</RsPluginVsVersion>
+	<RsPluginVsVersion>15_3008df9b</RsPluginVsVersion>
 	<RsPluginVsHive>RsDev</RsPluginVsHive>
-	<RsPluginRsInstallSuffix>_001</RsPluginRsInstallSuffix>
+	<RsPluginRsInstallSuffix>_000</RsPluginRsInstallSuffix>
   </PropertyGroup>
   
   <PropertyGroup>
   	<RsPluginRsInstallFolder>$(LOCALAPPDATA)\JetBrains\Installations\ReSharperPlatformVs$(RsPluginVsVersion)$(RsPluginVsHive)$(RsPluginRsInstallSuffix)</RsPluginRsInstallFolder>
-	<RsPluginVsExePath>$(PROGRAMFILES)\Microsoft Visual Studio $(RsPluginVsVersion).0\Common7\IDE\devenv.exe</RsPluginVsExePath>
+	<RsPluginVsExePath>$(PROGRAMFILES)\Microsoft Visual Studio\2017\Professional\Common7\IDE\devenv.exe</RsPluginVsExePath>
     <StartProgram>$(RsPluginVsExePath)</StartProgram>
     <StartArguments>/RootSuffix $(RsPluginVsHive) /ReSharper.Internal</StartArguments>
   </PropertyGroup>
