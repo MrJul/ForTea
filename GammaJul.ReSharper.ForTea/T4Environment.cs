@@ -18,6 +18,7 @@
 using Microsoft.VisualStudio.TextTemplating.VSHost;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using JetBrains.Annotations;
 using JetBrains.Application;
 using JetBrains.Application.Components;
@@ -147,20 +148,35 @@ namespace GammaJul.ReSharper.ForTea {
 		private static NotSupportedException CreateUnsupportedEnvironmentException()
 			=> new NotSupportedException("Unsupported environment.");
 
+		[NotNull]
+		private static string CreateGacAssemblyName([NotNull] string name, int majorVersion)
+			=> String.Format(
+				CultureInfo.InvariantCulture,
+				"{0}.{1}.0, Version={1}.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a",
+				name,
+				majorVersion);
+
+		[NotNull]
+		[Pure]
+		private static string CreateDevEnvPublicAssemblyName([NotNull] IVsEnvironmentInformation vsEnvironmentInformation, [NotNull] string name)
+			=> vsEnvironmentInformation
+				.DevEnvInstallDir
+				.Combine(RelativePath.Parse("PublicAssemblies\\" + name + ".dll"))
+				.FullPath;
+
 		public T4Environment([NotNull] IVsEnvironmentInformation vsEnvironmentInformation, [NotNull] RawVsServiceProvider rawVsServiceProvider) {
 			_vsEnvironmentInformation = vsEnvironmentInformation;
 			
 			_components = Lazy.Of(() => new Optional<ITextTemplatingComponents>(rawVsServiceProvider.Value.GetService<STextTemplating, ITextTemplatingComponents>()), true);
-
-			uint vsMajorVersion = vsEnvironmentInformation.VsVersion2.Major;
-			switch (vsMajorVersion) {
+			
+			switch (vsEnvironmentInformation.VsVersion2.Major) {
 				
 				case VsVersions.Vs2010:
 					_platformID = new PlatformID(FrameworkIdentifier.NetFramework, new Version(4, 0));
 					CSharpLanguageLevel = CSharpLanguageLevel.CSharp40;
 					_textTemplatingAssemblyNames = new[] {
-						"Microsoft.VisualStudio.TextTemplating.10.0, Version=10.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a",
-						"Microsoft.VisualStudio.TextTemplating.Interfaces.10.0, Version=10.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a"
+						CreateGacAssemblyName("Microsoft.VisualStudio.TextTemplating", 10),
+						CreateGacAssemblyName("Microsoft.VisualStudio.TextTemplating.Interfaces", 10)
 					};
 					break;
 
@@ -168,9 +184,9 @@ namespace GammaJul.ReSharper.ForTea {
 					_platformID = new PlatformID(FrameworkIdentifier.NetFramework, new Version(4, 5));
 					CSharpLanguageLevel = CSharpLanguageLevel.CSharp50;
 					_textTemplatingAssemblyNames = new[] {
-						"Microsoft.VisualStudio.TextTemplating.11.0, Version=11.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a",
-						"Microsoft.VisualStudio.TextTemplating.Interfaces.11.0, Version=11.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a",
-						"Microsoft.VisualStudio.TextTemplating.Interfaces.10.0, Version=10.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a"
+						CreateGacAssemblyName("Microsoft.VisualStudio.TextTemplating", 11),
+						CreateGacAssemblyName("Microsoft.VisualStudio.TextTemplating.Interfaces", 11),
+						CreateGacAssemblyName("Microsoft.VisualStudio.TextTemplating.Interfaces", 10)
 					};
 					break;
 
@@ -178,9 +194,9 @@ namespace GammaJul.ReSharper.ForTea {
 					_platformID = new PlatformID(FrameworkIdentifier.NetFramework, new Version(4, 5));
 					CSharpLanguageLevel = CSharpLanguageLevel.CSharp50;
 					_textTemplatingAssemblyNames = new[] {
-						"Microsoft.VisualStudio.TextTemplating.12.0, Version=12.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a",
-						"Microsoft.VisualStudio.TextTemplating.Interfaces.11.0, Version=11.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a",
-						"Microsoft.VisualStudio.TextTemplating.Interfaces.10.0, Version=10.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a"
+						CreateGacAssemblyName("Microsoft.VisualStudio.TextTemplating", 12),
+						CreateGacAssemblyName("Microsoft.VisualStudio.TextTemplating.Interfaces", 11),
+						CreateGacAssemblyName("Microsoft.VisualStudio.TextTemplating.Interfaces", 10)
 					};
 					break;
 
@@ -189,19 +205,19 @@ namespace GammaJul.ReSharper.ForTea {
 					const int vs2015Update2Build = 25123;
 					CSharpLanguageLevel = vsEnvironmentInformation.VsVersion4.Build >= vs2015Update2Build ? CSharpLanguageLevel.CSharp60 : CSharpLanguageLevel.CSharp50;
 					_textTemplatingAssemblyNames = new[] {
-						"Microsoft.VisualStudio.TextTemplating.14.0, Version=14.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a",
-						"Microsoft.VisualStudio.TextTemplating.Interfaces.11.0, Version=11.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a",
-						"Microsoft.VisualStudio.TextTemplating.Interfaces.10.0, Version=10.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a"
+						CreateGacAssemblyName("Microsoft.VisualStudio.TextTemplating", 14),
+						CreateGacAssemblyName("Microsoft.VisualStudio.TextTemplating.Interfaces", 11),
+						CreateGacAssemblyName("Microsoft.VisualStudio.TextTemplating.Interfaces", 10)
 					};
 					break;
 
 				case VsVersions.Vs2017:
-					_platformID = new PlatformID(FrameworkIdentifier.NetFramework, new Version(4, 5));
+					_platformID = new PlatformID(FrameworkIdentifier.NetFramework, new Version(4, 6));
 					CSharpLanguageLevel = CSharpLanguageLevel.CSharp70;
 					_textTemplatingAssemblyNames = new[] {
-						"Microsoft.VisualStudio.TextTemplating.15.0, Version=15.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a",
-						"Microsoft.VisualStudio.TextTemplating.Interfaces.11.0, Version=11.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a",
-						"Microsoft.VisualStudio.TextTemplating.Interfaces.10.0, Version=10.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a"
+						CreateDevEnvPublicAssemblyName(vsEnvironmentInformation, "Microsoft.VisualStudio.TextTemplating.15.0"),
+						CreateDevEnvPublicAssemblyName(vsEnvironmentInformation, "Microsoft.VisualStudio.TextTemplating.Interfaces.11.0"),
+						CreateDevEnvPublicAssemblyName(vsEnvironmentInformation, "Microsoft.VisualStudio.TextTemplating.Interfaces.10.0")
 					};
 					break;
 
@@ -210,7 +226,7 @@ namespace GammaJul.ReSharper.ForTea {
 					break;
 
 			}
-
+			
 			if (_platformID != null)
 				_targetFrameworkId = TargetFrameworkId.Create(_platformID.FullName);
 		}
