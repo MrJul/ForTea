@@ -34,6 +34,9 @@ What's supported
 
 Things to know
 --------------
+There is a bug in ReSharper8 that prevents correct plugins initialization. (http://youtrack.jetbrains.com/issue/RSRP-382976)
+Currently one possbile workaround is to open VS and then open solution. This is going to be fixed in next R# build.
+
 ForTea is only a ReSharper plugin at the moment, and doesn't provide any Visual Studio service,
 meaning there are some limitations.
 Amongst those, syntax highlighting is fully handled by ReSharper rather than Visual Studio:
