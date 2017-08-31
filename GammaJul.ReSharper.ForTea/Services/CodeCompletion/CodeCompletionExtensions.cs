@@ -15,6 +15,7 @@
 #endregion
 using GammaJul.ReSharper.ForTea.Parsing;
 using JetBrains.Annotations;
+using JetBrains.DocumentModel;
 using JetBrains.ReSharper.Feature.Services.CodeCompletion.Infrastructure;
 using JetBrains.ReSharper.Psi.Parsing;
 using JetBrains.ReSharper.Psi.Tree;
@@ -29,20 +30,20 @@ namespace GammaJul.ReSharper.ForTea.Services.CodeCompletion {
 		
 		[NotNull]
 		public static TextLookupRanges GetRanges([NotNull] this CodeCompletionContext context, [NotNull] ITreeNode node) {
-			int caretStart = context.CaretDocumentRange.TextRange.StartOffset;
+			var caretStart = new  DocumentOffset(context.Document, context.CaretDocumentRange.TextRange.StartOffset);
 			TokenNodeType tokenType = node.GetTokenType();
 
 			// completion has been triggered by space or quote, insert/replace at the caret (just after the space/quote)
 			if (tokenType == T4TokenNodeTypes.Space || tokenType == T4TokenNodeTypes.Quote) {
-				var range = new TextRange(caretStart, caretStart);
+				var range = new DocumentRange(caretStart, caretStart);
 				return new TextLookupRanges(range, range);
 			}
 
 			// completion has been triggered by a letter/number, determine which characters are before and after the caret
 			// replace only those before in insert mode, replace before and after in replace mode
 			TextRange nodeRange = node.GetDocumentRange().TextRange;
-			var beforeCaretRange = new TextRange(nodeRange.StartOffset, caretStart);
-			var afterCaretRange = new TextRange(caretStart, nodeRange.EndOffset);
+			var beforeCaretRange = new DocumentRange(new DocumentOffset(context.Document, nodeRange.StartOffset), caretStart);
+			var afterCaretRange = new DocumentRange(caretStart, new DocumentOffset(context.Document, nodeRange.EndOffset));
 			return new TextLookupRanges(beforeCaretRange, beforeCaretRange.Join(afterCaretRange));
 		}
 

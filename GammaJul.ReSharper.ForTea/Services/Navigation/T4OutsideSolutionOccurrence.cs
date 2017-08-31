@@ -15,12 +15,12 @@
 #endregion
 using GammaJul.ReSharper.ForTea.Psi;
 using JetBrains.Annotations;
+using JetBrains.Application.UI.PopupLayout;
 using JetBrains.DocumentModel;
 using JetBrains.IDE;
 using JetBrains.ProjectModel;
 using JetBrains.ReSharper.Feature.Services.Navigation;
 using JetBrains.ReSharper.Feature.Services.Occurrences;
-using JetBrains.UI.PopupWindowManager;
 using JetBrains.Util;
 
 namespace GammaJul.ReSharper.ForTea.Services.Navigation {

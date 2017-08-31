@@ -24,6 +24,7 @@ using JetBrains.Annotations;
 using JetBrains.Application;
 using JetBrains.Application.changes;
 using JetBrains.Application.Progress;
+using JetBrains.Application.Threading;
 using JetBrains.DataFlow;
 using JetBrains.DocumentManagers;
 using JetBrains.Interop.WinApi;
@@ -406,6 +407,16 @@ namespace GammaJul.ReSharper.ForTea.Psi {
 		public void PutData<T>(Key<T> key, T val)
 		where T : class
 			=> _userDataHolder.PutData(key, val);
+
+		public T GetOrCreateDataUnderLock<T>(Key<T> key, Func<T> factory)
+			where T : class {
+			throw new NotImplementedException();
+		}
+
+		public T GetOrCreateDataUnderLock<T, TState>(Key<T> key, TState state, Func<TState, T> factory)
+			where T : class {
+			throw new NotImplementedException();
+		}
 
 		public IEnumerable<KeyValuePair<object, object>> EnumerateData()
 			=> _userDataHolder.EnumerateData();

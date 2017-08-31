@@ -52,7 +52,7 @@ namespace GammaJul.ReSharper.ForTea.Services.CodeCompletion {
 			return node.GetTokenType() == T4TokenNodeTypes.Space && node.Parent is IT4Directive;
 		}
 
-		protected override bool AddLookupItems(T4CodeCompletionContext context, GroupedItemsCollector collector) {
+		protected override bool AddLookupItems(T4CodeCompletionContext context, IItemsCollector collector) {
 			ITreeNode node = context.BasicContext.File.FindNodeAt(context.BasicContext.SelectedTreeRange);
 			Assertion.AssertNotNull(node, "node == null");
 			var ranges = context.BasicContext.GetRanges(node);

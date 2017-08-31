@@ -26,6 +26,7 @@ using JetBrains.ReSharper.Psi;
 using JetBrains.ReSharper.Psi.Modules;
 using JetBrains.ReSharper.Psi.Modules.ExternalFileModules;
 using JetBrains.Util;
+using JetBrains.Util.DataStructures;
 
 namespace GammaJul.ReSharper.ForTea.Psi {
 
@@ -41,8 +42,8 @@ namespace GammaJul.ReSharper.ForTea.Psi {
 		[NotNull] private readonly DocumentManager _documentManager;
 		[NotNull] private readonly IPsiModule _psiModule;
 
-		public IEnumerable<IPsiModule> Modules {
-			get { return new[] { _psiModule }; }
+		public HybridCollection<IPsiModule> Modules {
+			get { return new HybridCollection<IPsiModule>(_psiModule); }
 		}
 
 		public IPsiSourceFile GetOrCreateSourceFile([NotNull] FileSystemPath path) {
