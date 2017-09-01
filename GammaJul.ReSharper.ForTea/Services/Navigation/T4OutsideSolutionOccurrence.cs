@@ -54,7 +54,7 @@ namespace GammaJul.ReSharper.ForTea.Services.Navigation {
 			if (path.IsEmpty)
 				return false;
 
-			var navigationInfo = new T4OutsideSolutionNavigationInfo(path, _rangeMarker.Range, transferFocus, tabOptions);
+			var navigationInfo = new T4OutsideSolutionNavigationInfo(path, _rangeMarker.DocumentRange, transferFocus, tabOptions);
 			var navigationOptions = NavigationOptions.FromWindowContext(windowContext, "Navigate to included file", transferFocus, tabOptions);
 			var navigationManager = NavigationManager.GetInstance(solution);
 			return navigationManager.Navigate<T4OutsideSolutionNavigationProvider, T4OutsideSolutionNavigationInfo>(navigationInfo, navigationOptions);

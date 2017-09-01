@@ -50,7 +50,7 @@ namespace GammaJul.ReSharper.ForTea.Services.Navigation {
 				return basePoints;
 			
 			return new INavigationPoint[] {
-				new TextNavigationPoint(projectFile, target.TextRange.StartOffset)
+				new TextNavigationPoint(projectFile, target.DocumentRange.StartOffset.Offset)
 			};
 		}
 
