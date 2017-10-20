@@ -14,7 +14,6 @@
 //    limitations under the License.
 #endregion
 
-using System.Collections.Generic;
 using JetBrains.Annotations;
 using JetBrains.Application.FileSystemTracker;
 using JetBrains.DataFlow;
@@ -36,22 +35,20 @@ namespace GammaJul.ReSharper.ForTea.Psi {
 	[SolutionComponent]
 	internal class T4OutsideSolutionSourceFileManager : IPsiModuleFactory {
 
-		[NotNull] private readonly StrongToWeakDictionary<FileSystemPath, IPsiSourceFile> _sourceFiles = new StrongToWeakDictionary<FileSystemPath, IPsiSourceFile>();
+		[NotNull] private readonly StrongToWeakDictionary<FileSystemPath, IPsiSourceFile> _sourceFiles;
 		[NotNull] private readonly IProjectFileExtensions _projectFileExtensions;
 		[NotNull] private readonly PsiProjectFileTypeCoordinator _psiProjectFileTypeCoordinator;
 		[NotNull] private readonly DocumentManager _documentManager;
 		[NotNull] private readonly IPsiModule _psiModule;
 
-		public HybridCollection<IPsiModule> Modules {
-			get { return new HybridCollection<IPsiModule>(_psiModule); }
-		}
+		public HybridCollection<IPsiModule> Modules
+			=> new HybridCollection<IPsiModule>(_psiModule);
 
 		public IPsiSourceFile GetOrCreateSourceFile([NotNull] FileSystemPath path) {
 			Assertion.Assert(path.IsAbsolute, "path.IsAbsolute");
 			
 			lock (_sourceFiles) {
-				IPsiSourceFile sourceFile;
-				if (!_sourceFiles.TryGetValue(path, out sourceFile) || sourceFile == null) {
+				if (!_sourceFiles.TryGetValue(path, out IPsiSourceFile sourceFile) || sourceFile == null) {
 					sourceFile = new T4OutsideSolutionSourceFile(
 						_projectFileExtensions, _psiProjectFileTypeCoordinator, _psiModule, path,
 						sf => sf.Location.ExistsFile, sf => new T4OutsideSolutionSourceFileProperties(),
@@ -83,6 +80,7 @@ namespace GammaJul.ReSharper.ForTea.Psi {
 			_projectFileExtensions = projectFileExtensions;
 			_psiProjectFileTypeCoordinator = psiProjectFileTypeCoordinator;
 			_documentManager = documentManager;
+			_sourceFiles = new StrongToWeakDictionary<FileSystemPath, IPsiSourceFile>(lifetime);
 			_psiModule = new PsiModuleOnFileSystemPaths(solution, "T4OutsideSolution", t4Environment.TargetFrameworkId, fileSystemTracker, lifetime);
 			lifetime.AddDispose(_sourceFiles);
 		}

@@ -21,7 +21,6 @@ using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using JetBrains.Annotations;
-using JetBrains.Application;
 using JetBrains.Application.changes;
 using JetBrains.Application.Progress;
 using JetBrains.Application.Threading;
@@ -40,7 +39,6 @@ using JetBrains.ReSharper.Psi.Files;
 using JetBrains.ReSharper.Psi.Impl;
 using JetBrains.ReSharper.Psi.Modules;
 using JetBrains.ReSharper.Psi.Web.Impl.PsiModules;
-using JetBrains.Threading;
 using JetBrains.Util;
 using JetBrains.Util.Logging;
 using JetBrains.VsIntegration.ProjectDocuments.Projects.Builder;
@@ -409,14 +407,12 @@ namespace GammaJul.ReSharper.ForTea.Psi {
 			=> _userDataHolder.PutData(key, val);
 
 		public T GetOrCreateDataUnderLock<T>(Key<T> key, Func<T> factory)
-			where T : class {
-			throw new NotImplementedException();
-		}
+		where T : class
+			=> _userDataHolder.GetOrCreateDataUnderLock(key, factory);
 
 		public T GetOrCreateDataUnderLock<T, TState>(Key<T> key, TState state, Func<TState, T> factory)
-			where T : class {
-			throw new NotImplementedException();
-		}
+		where T : class
+			=> _userDataHolder.GetOrCreateDataUnderLock(key, state, factory);
 
 		public IEnumerable<KeyValuePair<object, object>> EnumerateData()
 			=> _userDataHolder.EnumerateData();

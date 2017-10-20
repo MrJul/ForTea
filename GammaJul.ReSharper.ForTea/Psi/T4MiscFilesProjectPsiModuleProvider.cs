@@ -16,7 +16,6 @@
 using JetBrains.Util;
 using System.Collections.Generic;
 using JetBrains.Annotations;
-using JetBrains.Application;
 using JetBrains.Application.changes;
 using JetBrains.Application.Threading;
 using JetBrains.DataFlow;
@@ -34,21 +33,21 @@ namespace GammaJul.ReSharper.ForTea.Psi {
 
 		[NotNull] private readonly T4PsiModuleProvider _t4PsiModuleProvider;
 		
-		public IEnumerable<IPsiModule> GetModules() {
-			return _t4PsiModuleProvider.GetModules();
-		}
+		public IEnumerable<IPsiModule> GetModules()
+			=> _t4PsiModuleProvider.GetModules();
 
-		public IEnumerable<IPsiSourceFile> GetPsiSourceFilesFor(IProjectFile projectFile) {
-			return _t4PsiModuleProvider.GetPsiSourceFilesFor(projectFile);
-		}
+		public IEnumerable<IPsiSourceFile> GetPsiSourceFilesFor(IProjectFile projectFile)
+			=> _t4PsiModuleProvider.GetPsiSourceFilesFor(projectFile);
 
-		public void Dispose() {
-			_t4PsiModuleProvider.Dispose();
-		}
+		public void Dispose()
+			=> _t4PsiModuleProvider.Dispose();
 
-		public void OnProjectFileChanged(IProjectFile projectFile, PsiModuleChange.ChangeType changeType, PsiModuleChangeBuilder changeBuilder, FileSystemPath oldLocation) {
-			_t4PsiModuleProvider.OnProjectFileChanged(projectFile, ref changeType, changeBuilder);
-		}
+		public void OnProjectFileChanged(
+			IProjectFile projectFile,
+			PsiModuleChange.ChangeType changeType,
+			PsiModuleChangeBuilder changeBuilder,
+			FileSystemPath oldLocation)
+			=> _t4PsiModuleProvider.OnProjectFileChanged(projectFile, ref changeType, changeBuilder);
 
 		public T4MiscFilesProjectPsiModuleProvider(
 			[NotNull] Lifetime lifetime,

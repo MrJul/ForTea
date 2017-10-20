@@ -20,7 +20,6 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using JetBrains.Annotations;
-using JetBrains.Application;
 using JetBrains.Application.Infra;
 using JetBrains.Application.Threading;
 using JetBrains.Metadata.Reader.API;
@@ -54,14 +53,12 @@ namespace GammaJul.ReSharper.ForTea.Psi {
 			=> _dataHolder.PutData(key, val);
 
 		public T GetOrCreateDataUnderLock<T>(Key<T> key, Func<T> factory)
-			where T : class {
-			throw new NotImplementedException();
-		}
+		where T : class
+			=> _dataHolder.GetOrCreateDataUnderLock(key, factory);
 
 		public T GetOrCreateDataUnderLock<T, TState>(Key<T> key, TState state, Func<TState, T> factory)
-			where T : class {
-			throw new NotImplementedException();
-		}
+		where T : class
+			=> _dataHolder.GetOrCreateDataUnderLock(key, state, factory);
 
 		public T GetData<T>(Key<T> key)
 		where T : class
@@ -71,12 +68,13 @@ namespace GammaJul.ReSharper.ForTea.Psi {
 			=> _dataHolder.EnumerateData();
 
 		public string Name
-			=> GetType().FullName;
+			=> typeof(T4ResolveProject).FullName ?? nameof(T4ResolveProject);
 
 		public bool IsValid()
 			=> _solution.IsValid();
 
-		public ISolution GetSolution() => _solution;
+		public ISolution GetSolution()
+			=> _solution;
 
 		void IProjectModelElement.Accept(ProjectVisitor projectVisitor) {
 		}

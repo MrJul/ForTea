@@ -36,9 +36,14 @@ namespace GammaJul.ReSharper.ForTea.Psi.CodeStyle {
 		public override PsiLanguageType LanguageType
 			=> T4Language.Instance;
 
-		protected override CodeFormattingContext CreateFormatterContext(CodeFormatProfile profile, ITreeNode firstNode, ITreeNode lastNode, AdditionalFormatterParameters parameters, ICustomFormatterInfoProvider provider, int stageNumber) {
-			throw new System.NotImplementedException();
-		}
+		protected override CodeFormattingContext CreateFormatterContext(
+			CodeFormatProfile profile,
+			ITreeNode firstNode,
+			ITreeNode lastNode,
+			AdditionalFormatterParameters parameters,
+			ICustomFormatterInfoProvider provider,
+			int stageNumber)
+			=> new CodeFormattingContext(this, firstNode, lastNode, profile, FormatterLoggerProvider.FormatterLogger, parameters);
 
 		public override bool IsWhitespaceToken(ITokenNode token)
 			=> token.IsWhitespaceToken();

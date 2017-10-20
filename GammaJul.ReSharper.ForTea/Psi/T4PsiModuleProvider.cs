@@ -18,7 +18,6 @@ using System.Collections.Generic;
 using System.Linq;
 using GammaJul.ReSharper.ForTea.Tree;
 using JetBrains.Annotations;
-using JetBrains.Application;
 using JetBrains.Application.changes;
 using JetBrains.Application.Threading;
 using JetBrains.DataFlow;
