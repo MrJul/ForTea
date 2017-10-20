@@ -23,4 +23,4 @@ using System.Reflection;
 [assembly: AssemblyCopyright("Copyright © Julien Lebosquain, 2012-2017")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
-[assembly: AssemblyVersion("1.9.1.0")]
+[assembly: AssemblyVersion("1.10.0.0")]
