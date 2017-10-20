@@ -15,12 +15,12 @@
 #endregion
 using GammaJul.ReSharper.ForTea.Psi;
 using JetBrains.Annotations;
+using JetBrains.Application.UI.PopupLayout;
 using JetBrains.DocumentModel;
 using JetBrains.IDE;
 using JetBrains.ProjectModel;
 using JetBrains.ReSharper.Feature.Services.Navigation;
 using JetBrains.ReSharper.Feature.Services.Occurrences;
-using JetBrains.UI.PopupWindowManager;
 using JetBrains.Util;
 
 namespace GammaJul.ReSharper.ForTea.Services.Navigation {
@@ -54,7 +54,7 @@ namespace GammaJul.ReSharper.ForTea.Services.Navigation {
 			if (path.IsEmpty)
 				return false;
 
-			var navigationInfo = new T4OutsideSolutionNavigationInfo(path, _rangeMarker.Range, transferFocus, tabOptions);
+			var navigationInfo = new T4OutsideSolutionNavigationInfo(path, _rangeMarker.DocumentRange, transferFocus, tabOptions);
 			var navigationOptions = NavigationOptions.FromWindowContext(windowContext, "Navigate to included file", transferFocus, tabOptions);
 			var navigationManager = NavigationManager.GetInstance(solution);
 			return navigationManager.Navigate<T4OutsideSolutionNavigationProvider, T4OutsideSolutionNavigationInfo>(navigationInfo, navigationOptions);

@@ -40,7 +40,7 @@ namespace GammaJul.ReSharper.ForTea.Services.Navigation {
 			=> CreateNavigationPoints(target, EmptyList<INavigationPoint>.InstanceList);
 
 		private IEnumerable<INavigationPoint> CreateNavigationPoints([NotNull] T4OutsideSolutionNavigationInfo target, [NotNull] IEnumerable<INavigationPoint> basePoints) {
-			ITextControl textControl = _editorManager.OpenFile(target.FileSystemPath, target.Activate, target.TabOptions);
+			ITextControl textControl = _editorManager.OpenFile(target.FileSystemPath, new OpenFileOptions(target.Activate, tabOptions: target.TabOptions));
 			if (textControl == null)
 				return basePoints;
 
@@ -50,7 +50,7 @@ namespace GammaJul.ReSharper.ForTea.Services.Navigation {
 				return basePoints;
 			
 			return new INavigationPoint[] {
-				new TextNavigationPoint(projectFile, target.TextRange.StartOffset)
+				new TextNavigationPoint(projectFile, target.DocumentRange.StartOffset.Offset)
 			};
 		}
 

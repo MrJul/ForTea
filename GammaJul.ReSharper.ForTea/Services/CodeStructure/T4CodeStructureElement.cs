@@ -17,14 +17,14 @@ using System;
 using System.Collections.Generic;
 using GammaJul.ReSharper.ForTea.Psi;
 using JetBrains.Annotations;
-using JetBrains.CommonControls;
+using JetBrains.Application.UI.Controls.TreeView;
+using JetBrains.Application.UI.Controls.Utils;
+using JetBrains.Application.UI.TreeModels;
 using JetBrains.DocumentModel;
 using JetBrains.ReSharper.Feature.Services.CodeStructure;
 using JetBrains.ReSharper.Psi;
 using JetBrains.ReSharper.Psi.Pointers;
 using JetBrains.ReSharper.Psi.Tree;
-using JetBrains.TreeModels;
-using JetBrains.UI.TreeView;
 using JetBrains.Util;
 
 namespace GammaJul.ReSharper.ForTea.Services.CodeStructure {

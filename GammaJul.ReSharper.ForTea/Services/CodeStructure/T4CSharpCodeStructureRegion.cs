@@ -15,10 +15,10 @@
 #endregion
 using System;
 using System.Collections.Generic;
+using JetBrains.Application.UI.Controls.TreeView;
 using JetBrains.ReSharper.Feature.Services.CSharp.CodeStructure;
 using JetBrains.ReSharper.Feature.Services.CodeStructure;
 using JetBrains.ReSharper.Psi.Tree;
-using JetBrains.UI.TreeView;
 using JetBrains.Util;
 
 namespace GammaJul.ReSharper.ForTea.Services.CodeStructure {

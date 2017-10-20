@@ -14,6 +14,7 @@
 //    limitations under the License.
 #endregion
 using JetBrains.Annotations;
+using JetBrains.DocumentModel;
 using JetBrains.IDE;
 using JetBrains.Util;
 
@@ -22,7 +23,7 @@ namespace GammaJul.ReSharper.ForTea.Services.Navigation {
 	public class T4OutsideSolutionNavigationInfo {
 
 		private readonly FileSystemPath _fileSystemPath;
-		private readonly TextRange _textRange;
+		private readonly DocumentRange _documentRange;
 		private readonly bool _activate;
 		private readonly TabOptions _tabOptions;
 
@@ -31,8 +32,8 @@ namespace GammaJul.ReSharper.ForTea.Services.Navigation {
 			get { return _fileSystemPath; }
 		}
 
-		public TextRange TextRange {
-			get { return _textRange; }
+		public DocumentRange DocumentRange {
+			get { return _documentRange; }
 		}
 
 		public bool Activate {
@@ -43,9 +44,9 @@ namespace GammaJul.ReSharper.ForTea.Services.Navigation {
 			get { return _tabOptions; }
 		}
 
-		public T4OutsideSolutionNavigationInfo([NotNull] FileSystemPath fileSystemPath, TextRange textRange, bool activate, TabOptions tabOptions) {
+		public T4OutsideSolutionNavigationInfo([NotNull] FileSystemPath fileSystemPath, DocumentRange documentRange, bool activate, TabOptions tabOptions) {
 			_fileSystemPath = fileSystemPath;
-			_textRange = textRange;
+			_documentRange = documentRange;
 			_activate = activate;
 			_tabOptions = tabOptions;
 		}

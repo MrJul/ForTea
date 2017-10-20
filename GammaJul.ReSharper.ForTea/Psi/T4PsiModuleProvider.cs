@@ -20,6 +20,7 @@ using GammaJul.ReSharper.ForTea.Tree;
 using JetBrains.Annotations;
 using JetBrains.Application;
 using JetBrains.Application.changes;
+using JetBrains.Application.Threading;
 using JetBrains.DataFlow;
 using JetBrains.DocumentManagers;
 using JetBrains.ProjectModel;

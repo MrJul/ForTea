@@ -84,7 +84,7 @@ namespace GammaJul.ReSharper.ForTea.Intentions.QuickFixes {
 					.GetComponent<LiveTemplatesManager>()
 					.CreateHotspotSessionAtopExistingText(
 						solution,
-						TextRange.InvalidRange,
+						DocumentOffset.InvalidOffset, 
 						textControl,
 						LiveTemplatesManager.EscapeAction.LeaveTextAndCaret,
 						HotspotHelper.CreateBasicCompletionHotspotInfo(fieldName, new DocumentRange(initialRange.Document, finalRange)))
