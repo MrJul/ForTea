@@ -1,8 +1,9 @@
-/.vs
+.vs
 /Copy.bat
 /packages
-/_ReSharper*
+_ReSharper*
 *.user
 *.nupkg
 bin
 obj
+*.tmp
