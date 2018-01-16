@@ -74,11 +74,10 @@ namespace GammaJul.ReSharper.ForTea.Services.TypingAssist {
 			ISettingsStore settingsStore,
 			ITypingAssistManager typingAssistManager,
 			IPsiServices psiServices,
-			IExternalIntellisenseHost externalIntellisenseHost,
-			ISmartDocCommentConfiguration smartDocCommentConfiguration)
+			IExternalIntellisenseHost externalIntellisenseHost)
 			: base(
 				lifetime, solution, commandProcessor, skippingTypingAssist, cachingLexerService, settingsStore,
-				typingAssistManager, psiServices, externalIntellisenseHost, smartDocCommentConfiguration) {
+				typingAssistManager, psiServices, externalIntellisenseHost) {
 		}
 
 	}

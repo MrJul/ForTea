@@ -67,7 +67,7 @@ namespace GammaJul.ReSharper.ForTea.Services.CodeCompletion {
 			JetHashSet<string> existingNames = directive
 				.GetAttributes()
 				.Select(attr => attr.GetName())
-				.ToHashSet(s => s, StringComparer.OrdinalIgnoreCase);
+				.ToJetHashSet(s => s, StringComparer.OrdinalIgnoreCase);
 
 			foreach (string attributeName in directiveInfo.SupportedAttributes.Select(attr => attr.Name)) {
 				if (existingNames.Contains(attributeName))

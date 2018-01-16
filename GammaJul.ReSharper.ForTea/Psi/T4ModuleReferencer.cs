@@ -43,7 +43,7 @@ namespace GammaJul.ReSharper.ForTea.Psi {
 				return false;
 			
 			var assembly = moduleToReference.ContainingProjectModule as IAssembly;
-			return assembly != null && assembly.PlatformID != null && assembly.PlatformID.Identifier == _environment.PlatformID.Identifier;
+			return assembly != null && assembly.TargetFrameworkId.Equals(_environment.TargetFrameworkId);
 		}
 		
 		/// <summary>

@@ -180,6 +180,9 @@ namespace GammaJul.ReSharper.ForTea.Psi {
 		public TargetFrameworkScope GetTargetFramework(TargetFrameworkId targetFrameworkId)
 			=> _targetFrameworkReferences.GetScope(targetFrameworkId);
 
+		public IEnumerable<TargetFrameworkScope> GetAllTargetFrameworks()
+			=> _targetFrameworkReferences.GetAllScopes();
+
 		public IEnumerable<TargetFrameworkId> TargetFrameworkIds
 			=> new[] { _targetFrameworkId };
 
@@ -204,7 +207,7 @@ namespace GammaJul.ReSharper.ForTea.Psi {
 				=> ProjectKind.MISC_FILES_PROJECT;
 
 			internal T4ResolveProjectProperties([NotNull] PlatformID platformID, [NotNull] TargetFrameworkId targetFrameworkId)
-				: base(EmptyList<Guid>.InstanceList, platformID, Guid.Empty, new[] { targetFrameworkId }) {
+				: base(EmptyList<Guid>.InstanceList, platformID, Guid.Empty, new[] { targetFrameworkId }, dotNetCoreSDK: null) {
 			}
 
 		}

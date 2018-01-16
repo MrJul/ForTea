@@ -41,8 +41,7 @@ namespace GammaJul.ReSharper.ForTea.Psi.CodeStyle {
 			ITreeNode firstNode,
 			ITreeNode lastNode,
 			AdditionalFormatterParameters parameters,
-			ICustomFormatterInfoProvider provider,
-			int stageNumber)
+			ICustomFormatterInfoProvider provider)
 			=> new CodeFormattingContext(this, firstNode, lastNode, profile, FormatterLoggerProvider.FormatterLogger, parameters);
 
 		public override bool IsWhitespaceToken(ITokenNode token)
@@ -72,7 +71,7 @@ namespace GammaJul.ReSharper.ForTea.Psi.CodeStyle {
 		public override ITreeNode CreateSpace(string indent, ITreeNode replacedSpace)
 			=> T4TokenNodeTypes.Space.Create(indent);
 
-		public override ITreeNode CreateNewLine(LineEnding lineEnding, IPsiSourceFile psiSourceFile)
+		public override ITreeNode CreateNewLine(LineEnding lineEnding)
 			=> T4TokenNodeTypes.NewLine.Create(lineEnding.GetPresentation());
 
 		public override ITreeRange Format(
@@ -82,8 +81,8 @@ namespace GammaJul.ReSharper.ForTea.Psi.CodeStyle {
 			AdditionalFormatterParameters parameters = null)
 			=> new TreeRange(firstElement, lastElement);
 
-		public T4CodeFormatter([NotNull] IFormatterDebugInfoLoggersProvider formatterLoggerProvider, [NotNull] ISettingsOptimization settingsOptimization)
-			: base(formatterLoggerProvider, settingsOptimization) {
+		public T4CodeFormatter([NotNull] CodeFormatterRequirements requirements)
+			: base(requirements) {
 		}
 
 	}

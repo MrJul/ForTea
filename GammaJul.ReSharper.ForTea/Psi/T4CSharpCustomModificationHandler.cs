@@ -291,7 +291,7 @@ namespace GammaJul.ReSharper.ForTea.Psi {
 		public IBlock GetMethodBodyVisibleForUser(ICSharpFunctionDeclaration method)
 			=> method.Body;
 
-		public bool IsToAddImportsToDeepestScope(ITreeNode context)
+		public bool IsToAddImportsToDeepestScope(ITreeNode context, IContextBoundSettingsStore settingsStore)
 			=> false;
 
 		/// <summary>
@@ -325,7 +325,7 @@ namespace GammaJul.ReSharper.ForTea.Psi {
 		public string GetSpecialMethodType(DeclaredElementPresenterStyle presenter, IMethod method, ISubstitution substitution)
 			=> null;
 
-		public ThisQualifierSettingsKey GetThisQualifierStyle(ITreeNode context)
+		public ThisQualifierSettingsKey GetThisQualifierStyle(ITreeNode context, IContextBoundSettingsStore settingsStore)
 			=> context.GetSettingsStore().GetKey<ThisQualifierSettingsKey>(SettingsOptimization.OptimizeDefault);
 
 		public StaticQualifierSettingsKey GetStaticQualifierStyle(ITreeNode context)

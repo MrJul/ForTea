@@ -29,7 +29,7 @@ namespace GammaJul.ReSharper.ForTea.Psi.Directives {
 
 		[NotNull]
 		private static JetHashSet<string> CreateCultureCodes() {
-			return CultureInfo.GetCultures(CultureTypes.SpecificCultures).ToHashSet(info => info.Name, StringComparer.OrdinalIgnoreCase);
+			return CultureInfo.GetCultures(CultureTypes.SpecificCultures).ToJetHashSet(info => info.Name, StringComparer.OrdinalIgnoreCase);
 		}
 
 		public override bool IsValid(string value) {
