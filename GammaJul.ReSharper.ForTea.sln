@@ -1,14 +1,16 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
-VisualStudioVersion = 15.0.27004.2005
+VisualStudioVersion = 15.0.27130.2003
 MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = ".build", "build\.build.csproj", "{C3BAC890-6656-48CF-BC81-7E35AB72D690}"
+EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{3EF83234-454C-41FC-982A-DDAA57E2EB86}"
 	ProjectSection(SolutionItems) = preProject
-		GammaJul.ReSharper.ForTea\ForTea.props = GammaJul.ReSharper.ForTea\ForTea.props
+		source\GammaJul.ReSharper.ForTea\ForTea.props = source\GammaJul.ReSharper.ForTea\ForTea.props
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GammaJul.ReSharper.ForTea", "GammaJul.ReSharper.ForTea\GammaJul.ReSharper.ForTea.csproj", "{63F25238-06BA-4861-95A2-DA35A1D18B65}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GammaJul.ReSharper.ForTea", "source\GammaJul.ReSharper.ForTea\GammaJul.ReSharper.ForTea.csproj", "{63F25238-06BA-4861-95A2-DA35A1D18B65}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -20,6 +22,16 @@ Global
 		Release|x86 = Release|x86
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{C3BAC890-6656-48CF-BC81-7E35AB72D690}.All|Any CPU.ActiveCfg = Release|Any CPU
+		{C3BAC890-6656-48CF-BC81-7E35AB72D690}.All|Any CPU.Build.0 = Release|Any CPU
+		{C3BAC890-6656-48CF-BC81-7E35AB72D690}.All|x86.ActiveCfg = Release|Any CPU
+		{C3BAC890-6656-48CF-BC81-7E35AB72D690}.All|x86.Build.0 = Release|Any CPU
+		{C3BAC890-6656-48CF-BC81-7E35AB72D690}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C3BAC890-6656-48CF-BC81-7E35AB72D690}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{C3BAC890-6656-48CF-BC81-7E35AB72D690}.Debug|x86.Build.0 = Debug|Any CPU
+		{C3BAC890-6656-48CF-BC81-7E35AB72D690}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C3BAC890-6656-48CF-BC81-7E35AB72D690}.Release|x86.ActiveCfg = Release|Any CPU
+		{C3BAC890-6656-48CF-BC81-7E35AB72D690}.Release|x86.Build.0 = Release|Any CPU
 		{63F25238-06BA-4861-95A2-DA35A1D18B65}.All|Any CPU.ActiveCfg = Release|Any CPU
 		{63F25238-06BA-4861-95A2-DA35A1D18B65}.All|Any CPU.Build.0 = Release|Any CPU
 		{63F25238-06BA-4861-95A2-DA35A1D18B65}.All|x86.ActiveCfg = Release|Any CPU
@@ -34,7 +46,7 @@ Global
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
-		VisualSVNWorkingCopyRoot = .
 		SolutionGuid = {8AC999FF-8B2A-48E7-B69E-9F8CB884B0F0}
+		VisualSVNWorkingCopyRoot = .
 	EndGlobalSection
 EndGlobal
