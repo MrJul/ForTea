@@ -20,6 +20,7 @@ using System.Linq;
 using GammaJul.ReSharper.ForTea.Psi.Directives;
 using GammaJul.ReSharper.ForTea.Tree;
 using JetBrains.Annotations;
+using JetBrains.Metadata.Reader.API;
 using JetBrains.ProjectModel.Model2.Assemblies.Interfaces;
 using JetBrains.ReSharper.Psi;
 using JetBrains.ReSharper.Psi.Modules;
@@ -38,12 +39,11 @@ namespace GammaJul.ReSharper.ForTea.Psi {
 		private readonly DirectiveInfoManager _directiveInfoManager;
 
 		public bool CanReferenceModule(IPsiModule module, IPsiModule moduleToReference) {
-			var t4PsiModule = module as T4PsiModule;
-			if (t4PsiModule == null || !t4PsiModule.IsValid() || moduleToReference == null)
-				return false;
-			
-			var assembly = moduleToReference.ContainingProjectModule as IAssembly;
-			return assembly != null && assembly.TargetFrameworkId.Equals(_environment.TargetFrameworkId);
+			return module is T4PsiModule t4PsiModule
+				&& t4PsiModule.IsValid()
+				&& moduleToReference != null
+				&& moduleToReference.ContainingProjectModule is IAssembly assembly
+				&& _environment.TargetFrameworkId.IsReferenceAllowed(assembly.TargetFrameworkId);
 		}
 		
 		/// <summary>
@@ -65,8 +65,7 @@ namespace GammaJul.ReSharper.ForTea.Psi {
 			var assembly = (IAssembly) moduleToReference.ContainingProjectModule;
 			Assertion.AssertNotNull(assembly, "assembly != null");
 
-			var t4File = t4PsiModule.SourceFile.GetTheOnlyPsiFile(T4Language.Instance) as IT4File;
-			if (t4File == null)
+			if (!(t4PsiModule.SourceFile.GetTheOnlyPsiFile(T4Language.Instance) is IT4File t4File))
 				return false;
 
 			Action action = () => {
