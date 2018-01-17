@@ -19,7 +19,6 @@
 
 using GammaJul.ReSharper.ForTea.Parsing;
 using JetBrains.Annotations;
-using JetBrains.Application.Settings;
 using JetBrains.ReSharper.Psi;
 using JetBrains.ReSharper.Psi.CodeStyle;
 using JetBrains.ReSharper.Psi.Impl.CodeStyle;

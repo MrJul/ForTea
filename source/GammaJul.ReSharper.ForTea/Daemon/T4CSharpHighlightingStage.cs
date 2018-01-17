@@ -33,7 +33,7 @@ namespace GammaJul.ReSharper.ForTea.Daemon {
 	public class T4CSharpHighlightingStage : CSharpDaemonStageBase {
 
 		protected override bool IsSupported(IPsiSourceFile sourceFile) {
-			return base.IsSupported(sourceFile) && sourceFile.IsLanguageSupported<T4Language>();
+			return base.IsSupported(sourceFile) && sourceFile != null && sourceFile.IsLanguageSupported<T4Language>();
 		}
 		
 		protected override IDaemonStageProcess CreateProcess(IDaemonProcess process, IContextBoundSettingsStore settings, DaemonProcessKind processKind, ICSharpFile file) {

@@ -195,15 +195,15 @@ namespace GammaJul.ReSharper.ForTea.Psi {
 		ICollection<FileSystemPath> IProject.GetIntermidiateDirectories()
 			=> EmptyList<FileSystemPath>.Instance;
 
-		private sealed class T4ResolveProjectProperties : ProjectPropertiesBase<UnsupportedProjectConfiguration>, IProjectProperties {
+		private sealed class T4ResolveProjectProperties : ProjectPropertiesBase<UnsupportedProjectConfiguration> {
 
 			public override IBuildSettings BuildSettings
 				=> null;
 
-			public ProjectLanguage DefaultLanguage
+			public override ProjectLanguage DefaultLanguage
 				=> ProjectLanguage.UNKNOWN;
 
-			public ProjectKind ProjectKind
+			public override ProjectKind ProjectKind
 				=> ProjectKind.MISC_FILES_PROJECT;
 
 			internal T4ResolveProjectProperties([NotNull] PlatformID platformID, [NotNull] TargetFrameworkId targetFrameworkId)
