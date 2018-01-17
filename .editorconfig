@@ -1,0 +1,17 @@
+root = true
+
+[*]
+end_of_line = crlf
+charset = utf-8
+
+[*.cs]
+indent_style = tab
+indent_size = 4
+
+[*.csproj,*.targets]
+indent_style = tab
+indent_size = 2
+
+[*.xaml,*.nuspec]
+indent_style = tab
+indent_size = 2
