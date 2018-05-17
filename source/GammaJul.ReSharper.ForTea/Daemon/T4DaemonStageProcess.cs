@@ -78,7 +78,7 @@ namespace GammaJul.ReSharper.ForTea.Daemon {
 		public virtual bool ProcessingIsFinished {
 			get {
 				if (_daemonProcess.InterruptFlag)
-					throw new ProcessCancelledException();
+					throw new OperationCanceledException();
 				return false;
 			}
 		}
@@ -86,9 +86,9 @@ namespace GammaJul.ReSharper.ForTea.Daemon {
 		/// <summary>
 		/// Executes the process.
 		/// </summary>
-		public virtual void Execute(Action<DaemonStageResult> commiter) {
+		public virtual void Execute(Action<DaemonStageResult> committer) {
 			File.ProcessDescendants(this);
-			commiter(new DaemonStageResult(_highlightings.ToArray()));
+			committer(new DaemonStageResult(_highlightings.ToArray()));
 		}
 
 		protected void AddHighlighting([NotNull] HighlightingInfo highlighting) {

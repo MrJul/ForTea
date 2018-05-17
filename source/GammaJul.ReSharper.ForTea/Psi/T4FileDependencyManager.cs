@@ -1,4 +1,4 @@
-﻿#region License
+#region License
 //    Copyright 2012 Julien Lebosquain
 // 
 //    Licensed under the Apache License, Version 2.0 (the "License");
@@ -43,7 +43,7 @@ namespace GammaJul.ReSharper.ForTea.Psi {
 				_includerToIncludees.RemoveKey(includer);
 
 				if (includees.Count > 0) {
-					_includerToIncludees.AddRangeFast(includer, includees);
+					_includerToIncludees.AddRange(includer, includees);
 					foreach (FileSystemPath includee in includees)
 						_includeeToIncluders.Add(includee, includer);
 				}

@@ -6,3 +6,6 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## 1.11.0
 - Support for ReSharper 2017.3
+
+## 1.12.0
+- Support for ReSharper 2018.1

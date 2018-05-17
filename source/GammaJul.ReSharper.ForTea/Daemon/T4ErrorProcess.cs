@@ -1,4 +1,4 @@
-﻿#region License
+#region License
 //    Copyright 2012 Julien Lebosquain
 // 
 //    Licensed under the Apache License, Version 2.0 (the "License");
@@ -162,9 +162,9 @@ namespace GammaJul.ReSharper.ForTea.Daemon {
 		/// <summary>
 		/// Executes the process.
 		/// </summary>
-		public override void Execute(Action<DaemonStageResult> commiter) {
+		public override void Execute(Action<DaemonStageResult> committer) {
 			_lastFeature = File.GetFeatureBlocks().LastOrDefault();
-			base.Execute(commiter);
+			base.Execute(committer);
 		}
 
 		/// <summary>
