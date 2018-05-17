@@ -1,4 +1,4 @@
-﻿#region License
+#region License
 //    Copyright 2012 Julien Lebosquain
 // 
 //    Licensed under the Apache License, Version 2.0 (the "License");
@@ -67,6 +67,8 @@ namespace GammaJul.ReSharper.ForTea.Psi {
 		public IEnumerable<KeyValuePair<object, object>> EnumerateData()
 			=> _dataHolder.EnumerateData();
 
+		public Type MarshallerType => null;
+
 		public string Name
 			=> typeof(T4ResolveProject).FullName ?? nameof(T4ResolveProject);
 
@@ -123,9 +125,6 @@ namespace GammaJul.ReSharper.ForTea.Psi {
 
 		IList<IProjectItem> IProjectFolder.GetSubItems()
 			=> EmptyList<IProjectItem>.InstanceList;
-
-		bool IProjectFolder.WriteProjectFolder(BinaryWriter writer, ProjectSerializationIndex index, FileSystemPath baseLocation)
-			=> false;
 
 		ProjectFolderPath IProjectFolder.Path
 			=> null;
