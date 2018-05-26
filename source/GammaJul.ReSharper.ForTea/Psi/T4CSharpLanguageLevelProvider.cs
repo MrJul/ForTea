@@ -1,4 +1,4 @@
-﻿#region License
+#region License
 //    Copyright 2012 Julien Lebosquain
 // 
 //    Licensed under the Apache License, Version 2.0 (the "License");
@@ -32,15 +32,21 @@ namespace GammaJul.ReSharper.ForTea.Psi {
 		public override bool IsApplicable(IPsiModule psiModule)
 			=> psiModule is T4PsiModule;
 
-		public override bool CanSetLanguageLevel(IPsiModule psiModule)
+		public override bool CanSetReSharperLanguageLevel(IPsiModule psiModule)
 			=> false;
+
+		public override bool CanSetCompilerLanguageLevel(IPsiModule psiModule, CSharpLanguageLevel languageLevel)
+			=> false;
+
+		public override void SetReSharperLanguageLevel(IPsiModule psiModule, CSharpLanguageLevel languageLevel)
+			=> throw new InvalidOperationException("Language level cannot be set for a T4 module.");
+
+
+		public override void SetCompilerLanguageLevel(IPsiModule psiModule, CSharpLanguageLevel languageLevel)
+			=> throw new InvalidOperationException("Language level cannot be set for a T4 module.");
 
 		public override CSharpLanguageLevel GetLanguageLevel(IPsiModule psiModule)
 			=> _t4Environment.CSharpLanguageLevel;
-
-		public override void SetLanguageLevel(IPsiModule psiModule, CSharpLanguageLevel languageLevel) {
-			throw new InvalidOperationException("Language level cannot be set for a T4 module.");
-		}
 
 		public T4CSharpLanguageLevelProvider([NotNull] T4Environment t4Environment) {
 			_t4Environment = t4Environment;

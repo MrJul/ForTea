@@ -17,7 +17,6 @@ using System;
 using System.Collections.Generic;
 using GammaJul.ReSharper.ForTea.Tree;
 using JetBrains.Annotations;
-using JetBrains.Application.Progress;
 using JetBrains.ReSharper.Feature.Services.Daemon;
 using JetBrains.ReSharper.Psi;
 using JetBrains.ReSharper.Psi.Tree;
@@ -30,23 +29,17 @@ namespace GammaJul.ReSharper.ForTea.Daemon {
 	/// <remarks></remarks>
 	internal abstract class T4DaemonStageProcess : IDaemonStageProcess, IRecursiveElementProcessor {
 
-		private readonly IDaemonProcess _daemonProcess;
-		private readonly IT4File _file;
 		private readonly List<HighlightingInfo> _highlightings = new List<HighlightingInfo>();
 
 		/// <summary>
 		/// Gets the associated daemon process.
 		/// </summary>
-		public IDaemonProcess DaemonProcess {
-			get { return _daemonProcess; }
-		}
+		public IDaemonProcess DaemonProcess { get; }
 
 		/// <summary>
 		/// Gets the associated T4 file.
 		/// </summary>
-		internal IT4File File {
-			get { return _file; }
-		}
+		internal IT4File File { get; }
 
 		/// <summary>
 		/// Returns whether the interior of a node should be processed.
@@ -74,14 +67,8 @@ namespace GammaJul.ReSharper.ForTea.Daemon {
 		/// <summary>
 		/// Gets whetheer the processing is finished.
 		/// </summary>
-		/// <remarks>This property also checks for interruption.</remarks>
-		public virtual bool ProcessingIsFinished {
-			get {
-				if (_daemonProcess.InterruptFlag)
-					throw new ProcessCancelledException();
-				return false;
-			}
-		}
+		public bool ProcessingIsFinished
+			=> false;
 
 		/// <summary>
 		/// Executes the process.
@@ -101,8 +88,8 @@ namespace GammaJul.ReSharper.ForTea.Daemon {
 		/// <param name="file">The associated T4 file.</param>
 		/// <param name="daemonProcess">The associated daemon process.</param>
 		protected T4DaemonStageProcess([NotNull] IT4File file, [NotNull] IDaemonProcess daemonProcess) {
-			_file = file;
-			_daemonProcess = daemonProcess;
+			File = file;
+			DaemonProcess = daemonProcess;
 		}
 
 	}

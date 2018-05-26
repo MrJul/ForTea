@@ -1,4 +1,4 @@
-﻿#region License
+#region License
 //    Copyright 2012 Julien Lebosquain
 // 
 //    Licensed under the Apache License, Version 2.0 (the "License");
@@ -23,4 +23,4 @@ using System.Reflection;
 [assembly: AssemblyCopyright("Copyright © Julien Lebosquain, 2012-2018")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
-[assembly: AssemblyVersion("1.11.0.0")]
+[assembly: AssemblyVersion("1.12.0.0")]

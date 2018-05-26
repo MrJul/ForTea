@@ -1,4 +1,4 @@
-﻿#region License
+#region License
 //    Copyright 2012 Julien Lebosquain
 // 
 //    Licensed under the Apache License, Version 2.0 (the "License");
@@ -24,7 +24,6 @@ using JetBrains.Application.Infra;
 using JetBrains.Application.Threading;
 using JetBrains.Metadata.Reader.API;
 using JetBrains.ProjectModel;
-using JetBrains.ProjectModel.Impl;
 using JetBrains.ProjectModel.ProjectImplementation;
 using JetBrains.ProjectModel.Properties;
 using JetBrains.ProjectModel.Properties.Common;
@@ -76,6 +75,9 @@ namespace GammaJul.ReSharper.ForTea.Psi {
 		public ISolution GetSolution()
 			=> _solution;
 
+		Type IProjectModelElement.MarshallerType
+			=> null;
+
 		void IProjectModelElement.Accept(ProjectVisitor projectVisitor) {
 		}
 
@@ -124,20 +126,11 @@ namespace GammaJul.ReSharper.ForTea.Psi {
 		IList<IProjectItem> IProjectFolder.GetSubItems()
 			=> EmptyList<IProjectItem>.InstanceList;
 
-		bool IProjectFolder.WriteProjectFolder(BinaryWriter writer, ProjectSerializationIndex index, FileSystemPath baseLocation)
-			=> false;
-
 		ProjectFolderPath IProjectFolder.Path
 			=> null;
 
 		string IModule.Presentation
 			=> Name;
-
-		/// <summary>
-		/// The platform to which the module is targeted. For real project is never null.
-		/// </summary>
-		public PlatformID PlatformID
-			=> _projectProperties.PlatformId;
 
 		public void Dispose() {
 		}
@@ -206,13 +199,13 @@ namespace GammaJul.ReSharper.ForTea.Psi {
 			public override ProjectKind ProjectKind
 				=> ProjectKind.MISC_FILES_PROJECT;
 
-			internal T4ResolveProjectProperties([NotNull] PlatformID platformID, [NotNull] TargetFrameworkId targetFrameworkId)
+			public T4ResolveProjectProperties([NotNull] PlatformID platformID, [NotNull] TargetFrameworkId targetFrameworkId)
 				: base(EmptyList<Guid>.InstanceList, platformID, Guid.Empty, new[] { targetFrameworkId }, dotNetCoreSDK: null) {
 			}
 
 		}
 
-		internal T4ResolveProject(
+		public T4ResolveProject(
 			[NotNull] Lifetime lifetime,
 			[NotNull] ISolution solution,
 			[NotNull] IShellLocks shellLocks,

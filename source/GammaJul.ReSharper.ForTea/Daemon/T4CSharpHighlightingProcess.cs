@@ -1,4 +1,4 @@
-﻿#region License
+#region License
 //    Copyright 2012 Julien Lebosquain
 // 
 //    Licensed under the Apache License, Version 2.0 (the "License");
@@ -34,7 +34,8 @@ namespace GammaJul.ReSharper.ForTea.Daemon {
 	/// </summary>
 	internal class T4CSharpHighlightingProcess : CSharpIncrementalDaemonStageProcessBase {
 
-		[NotNull] private static readonly NodeTypeSet _csharpOperators = new NodeTypeSet(
+		[NotNull]
+		private static readonly NodeTypeSet _csharpOperators = new NodeTypeSet(
 			CSharpTokenType.COMMA,
 			CSharpTokenType.DOT,
 			CSharpTokenType.EQ,
@@ -116,12 +117,10 @@ namespace GammaJul.ReSharper.ForTea.Daemon {
 			
 			if (tokenType.IsIdentifier) {
 				
-				var declaration = element.Parent as ITypeDeclaration;
-				if (declaration != null)
+				if (element.Parent is ITypeDeclaration declaration)
 					return GetTypeElementHighlightingAttributeId(declaration.DeclaredElement);
 
-				var typeElement = (element.Parent as IReferenceName)?.Reference.Resolve().DeclaredElement as ITypeElement;
-				if (typeElement != null)
+				if ((element.Parent as IReferenceName)?.Reference.Resolve().DeclaredElement is ITypeElement typeElement)
 					return GetTypeElementHighlightingAttributeId(typeElement);
 
 				return VsPredefinedHighlighterIds.Identifier;

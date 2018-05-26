@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <OutputType>Exe</OutputType>
@@ -7,16 +7,14 @@
     <RootNamespace></RootNamespace>
     <IsPackable>False</IsPackable>
     <NoWarn>CS0649;CS0169</NoWarn>
-    
-    <!-- NUKE CONFIGURATION -->
-    <NukeVersion>0.1.454</NukeVersion>
+    <NukeVersion>0.4.0</NukeVersion>
     <NukeCodeGeneration>False</NukeCodeGeneration>
   </PropertyGroup>
 
   <ItemGroup>
     <PackageReference Include="Nuke.Common" Version="$(NukeVersion)" />
     <PackageReference Include="Nuke.CodeGeneration" Version="$(NukeVersion)" Condition="'$(NukeCodeGeneration)' != 'False'" />
-    <PackageReference Include="GitVersion.CommandLine" Version="4.0.0-beta0011" />
+    <PackageReference Include="GitVersion.CommandLine" Version="4.0.0-beta0012" />
   </ItemGroup>
 
   <ItemGroup>
