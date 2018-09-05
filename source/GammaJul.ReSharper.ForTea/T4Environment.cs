@@ -1,4 +1,4 @@
-﻿#region License
+#region License
 //    Copyright 2012 Julien Lebosquain
 // 
 //    Licensed under the Apache License, Version 2.0 (the "License");
@@ -23,12 +23,11 @@ using JetBrains.Annotations;
 using JetBrains.Application;
 using JetBrains.Application.Components;
 using JetBrains.Application.platforms;
-using JetBrains.Metadata.Reader.API;
 using JetBrains.ReSharper.Psi.CSharp;
 using JetBrains.VsIntegration.Shell;
 using JetBrains.Util;
+using JetBrains.Util.Dotnet.TargetFrameworkIds;
 using Microsoft.Win32;
-using PlatformID = JetBrains.Application.platforms.PlatformID;
 
 namespace GammaJul.ReSharper.ForTea {
 
@@ -41,7 +40,6 @@ namespace GammaJul.ReSharper.ForTea {
 		[NotNull] private readonly IVsEnvironmentInformation _vsEnvironmentInformation;
 		[NotNull] private readonly Lazy<Optional<ITextTemplatingComponents>> _components;
 		[NotNull] private readonly string[] _textTemplatingAssemblyNames;
-		[CanBeNull] private readonly PlatformID _platformID;
 		[CanBeNull] private readonly TargetFrameworkId _targetFrameworkId;
 		[CanBeNull] private IList<FileSystemPath> _includePaths;
 
@@ -55,18 +53,6 @@ namespace GammaJul.ReSharper.ForTea {
 		[NotNull]
 		public Version2 VsVersion2
 			=> _vsEnvironmentInformation.VsVersion2;
-
-		/// <summary>
-		/// Gets the platform ID (.NET 4.0 under VS2010, .NET 4.5 under VS2012+).
-		/// </summary>
-		[NotNull]
-		public PlatformID PlatformID {
-			get {
-				if (_platformID == null)
-					throw CreateUnsupportedEnvironmentException();
-				return _platformID;
-			}
-		}
 
 		/// <summary>
 		/// Gets the target framework ID.
@@ -91,7 +77,7 @@ namespace GammaJul.ReSharper.ForTea {
 		[NotNull]
 		public IEnumerable<string> TextTemplatingAssemblyNames {
 			get {
-				if (_platformID == null)
+				if (_targetFrameworkId == null)
 					throw CreateUnsupportedEnvironmentException();
 				return _textTemplatingAssemblyNames;
 			}
@@ -101,7 +87,7 @@ namespace GammaJul.ReSharper.ForTea {
 		/// Gets whether the current environment is supported. VS2005 and VS2008 aren't.
 		/// </summary>
 		public bool IsSupported
-			=> _platformID != null;
+			=> _targetFrameworkId != null;
 
 		/// <summary>
 		/// Gets the common include paths from the registry.
@@ -109,7 +95,7 @@ namespace GammaJul.ReSharper.ForTea {
 		[NotNull]
 		public IEnumerable<FileSystemPath> IncludePaths {
 			get {
-				if (_platformID == null)
+				if (_targetFrameworkId == null)
 					return EmptyList<FileSystemPath>.InstanceList;
 				return _includePaths ?? (_includePaths = ReadIncludePaths());
 			}
@@ -172,7 +158,7 @@ namespace GammaJul.ReSharper.ForTea {
 			switch (vsEnvironmentInformation.VsVersion2.Major) {
 				
 				case VsVersions.Vs2010:
-					_platformID = new PlatformID(FrameworkIdentifier.NetFramework, new Version(4, 0));
+					_targetFrameworkId = TargetFrameworkId.Create(FrameworkIdentifier.NetFramework, new Version(4, 0));
 					CSharpLanguageLevel = CSharpLanguageLevel.CSharp40;
 					_textTemplatingAssemblyNames = new[] {
 						CreateGacAssemblyName("Microsoft.VisualStudio.TextTemplating", 10),
@@ -181,7 +167,7 @@ namespace GammaJul.ReSharper.ForTea {
 					break;
 
 				case VsVersions.Vs2012:
-					_platformID = new PlatformID(FrameworkIdentifier.NetFramework, new Version(4, 5));
+					_targetFrameworkId = TargetFrameworkId.Create(FrameworkIdentifier.NetFramework, new Version(4, 5));
 					CSharpLanguageLevel = CSharpLanguageLevel.CSharp50;
 					_textTemplatingAssemblyNames = new[] {
 						CreateGacAssemblyName("Microsoft.VisualStudio.TextTemplating", 11),
@@ -191,7 +177,7 @@ namespace GammaJul.ReSharper.ForTea {
 					break;
 
 				case VsVersions.Vs2013:
-					_platformID = new PlatformID(FrameworkIdentifier.NetFramework, new Version(4, 5));
+					_targetFrameworkId = TargetFrameworkId.Create(FrameworkIdentifier.NetFramework, new Version(4, 5));
 					CSharpLanguageLevel = CSharpLanguageLevel.CSharp50;
 					_textTemplatingAssemblyNames = new[] {
 						CreateGacAssemblyName("Microsoft.VisualStudio.TextTemplating", 12),
@@ -201,7 +187,7 @@ namespace GammaJul.ReSharper.ForTea {
 					break;
 
 				case VsVersions.Vs2015:
-					_platformID = new PlatformID(FrameworkIdentifier.NetFramework, new Version(4, 5));
+					_targetFrameworkId = TargetFrameworkId.Create(FrameworkIdentifier.NetFramework, new Version(4, 5));
 					const int vs2015Update2Build = 25123;
 					CSharpLanguageLevel = vsEnvironmentInformation.VsVersion4.Build >= vs2015Update2Build ? CSharpLanguageLevel.CSharp60 : CSharpLanguageLevel.CSharp50;
 					_textTemplatingAssemblyNames = new[] {
@@ -212,7 +198,7 @@ namespace GammaJul.ReSharper.ForTea {
 					break;
 
 				case VsVersions.Vs2017:
-					_platformID = new PlatformID(FrameworkIdentifier.NetFramework, new Version(4, 6));
+					_targetFrameworkId = TargetFrameworkId.Create(FrameworkIdentifier.NetFramework, new Version(4, 6));
 					CSharpLanguageLevel = CSharpLanguageLevel.CSharp70;
 					_textTemplatingAssemblyNames = new[] {
 						CreateDevEnvPublicAssemblyName(vsEnvironmentInformation, "Microsoft.VisualStudio.TextTemplating.15.0"),
@@ -226,9 +212,6 @@ namespace GammaJul.ReSharper.ForTea {
 					break;
 
 			}
-			
-			if (_platformID != null)
-				_targetFrameworkId = TargetFrameworkId.Create(_platformID.FullName);
 		}
 
 	}

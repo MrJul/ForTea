@@ -1,4 +1,4 @@
-﻿#region License
+#region License
 //    Copyright 2012 Julien Lebosquain
 // 
 //    Licensed under the Apache License, Version 2.0 (the "License");
@@ -81,7 +81,7 @@ namespace GammaJul.ReSharper.ForTea.Psi {
 			_psiProjectFileTypeCoordinator = psiProjectFileTypeCoordinator;
 			_documentManager = documentManager;
 			_sourceFiles = new StrongToWeakDictionary<FileSystemPath, IPsiSourceFile>(lifetime);
-			_psiModule = new PsiModuleOnFileSystemPaths(solution, "T4OutsideSolution", t4Environment.TargetFrameworkId, fileSystemTracker, lifetime);
+			_psiModule = new PsiModuleOnFileSystemPaths(solution, "T4 Outside Solution", "T4OutsideSolution", t4Environment.TargetFrameworkId, fileSystemTracker, lifetime);
 			lifetime.AddDispose(_sourceFiles);
 		}
 
