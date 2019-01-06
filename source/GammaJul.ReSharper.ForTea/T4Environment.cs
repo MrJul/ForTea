@@ -1,4 +1,4 @@
-﻿#region License
+#region License
 //    Copyright 2012 Julien Lebosquain
 // 
 //    Licensed under the Apache License, Version 2.0 (the "License");
@@ -23,12 +23,13 @@ using JetBrains.Annotations;
 using JetBrains.Application;
 using JetBrains.Application.Components;
 using JetBrains.Application.platforms;
-using JetBrains.Metadata.Reader.API;
 using JetBrains.ReSharper.Psi.CSharp;
 using JetBrains.VsIntegration.Shell;
 using JetBrains.Util;
+using JetBrains.Util.Dotnet.TargetFrameworkIds;
 using Microsoft.Win32;
 using PlatformID = JetBrains.Application.platforms.PlatformID;
+using PureAttribute = System.Diagnostics.Contracts.PureAttribute;
 
 namespace GammaJul.ReSharper.ForTea {
 

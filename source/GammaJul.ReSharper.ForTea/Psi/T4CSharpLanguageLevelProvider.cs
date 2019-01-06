@@ -17,6 +17,9 @@
 
 using System;
 using JetBrains.Annotations;
+using JetBrains.ProjectModel;
+using JetBrains.ProjectModel.Properties;
+using JetBrains.ProjectModel.Properties.CSharp;
 using JetBrains.ReSharper.Psi;
 using JetBrains.ReSharper.Psi.CSharp;
 using JetBrains.ReSharper.Psi.CSharp.Impl;
@@ -27,29 +30,19 @@ namespace GammaJul.ReSharper.ForTea.Psi {
 	[SolutionFeaturePart]
 	public class T4CSharpLanguageLevelProvider : CSharpLanguageLevelProvider {
 
+		private readonly ILanguageLevelProjectProperty<CSharpLanguageLevel, CSharpLanguageVersion> _projectProperty;
+
 		[NotNull] private readonly T4Environment _t4Environment;
 
 		public override bool IsApplicable(IPsiModule psiModule)
 			=> psiModule is T4PsiModule;
-
-		public override bool CanSetReSharperLanguageLevel(IPsiModule psiModule)
-			=> false;
-
-		public override bool CanSetCompilerLanguageLevel(IPsiModule psiModule, CSharpLanguageLevel languageLevel)
-			=> false;
-
-		public override void SetReSharperLanguageLevel(IPsiModule psiModule, CSharpLanguageLevel languageLevel)
-			=> throw new InvalidOperationException("Language level cannot be set for a T4 module.");
-
-
-		public override void SetCompilerLanguageLevel(IPsiModule psiModule, CSharpLanguageLevel languageLevel)
-			=> throw new InvalidOperationException("Language level cannot be set for a T4 module.");
-
+		
 		public override CSharpLanguageLevel GetLanguageLevel(IPsiModule psiModule)
-			=> _t4Environment.CSharpLanguageLevel;
-
-		public T4CSharpLanguageLevelProvider([NotNull] T4Environment t4Environment) {
-			_t4Environment = t4Environment;
+			=> (CSharpLanguageLevel) _projectProperty.GetLanguageLevel(((IProjectPsiModule) psiModule).Project).ToLanguageVersion();
+		
+		public T4CSharpLanguageLevelProvider(ILanguageLevelProjectProperty<CSharpLanguageLevel, CSharpLanguageVersion> projectProperty, ILanguageLevelOverrider<CSharpLanguageLevel> languageLevelOverrider = null, Lazy<ILanguageVersionModifier<CSharpLanguageVersion>> languageVersionModifier = null)
+			: base(projectProperty, languageLevelOverrider, languageVersionModifier) {
+			_projectProperty = projectProperty;
 		}
 
 	}

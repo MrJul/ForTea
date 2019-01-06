@@ -1,4 +1,4 @@
-﻿#region License
+#region License
 //    Copyright 2012 Julien Lebosquain
 // 
 //    Licensed under the Apache License, Version 2.0 (the "License");
@@ -18,6 +18,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using GammaJul.ReSharper.ForTea.Parsing;
 using GammaJul.ReSharper.ForTea.Psi.Directives;
 using GammaJul.ReSharper.ForTea.Tree;
@@ -34,6 +35,7 @@ using JetBrains.ReSharper.Psi.CSharp.Parsing;
 using JetBrains.ReSharper.Psi.CSharp.Tree;
 using JetBrains.ReSharper.Psi.ExtensionsAPI.Resolve;
 using JetBrains.ReSharper.Psi.ExtensionsAPI.Tree;
+using JetBrains.ReSharper.Psi.Impl.CodeStyle;
 using JetBrains.ReSharper.Psi.Impl.Shared;
 using JetBrains.ReSharper.Psi.Modules;
 using JetBrains.ReSharper.Psi.Resolve;
@@ -100,7 +102,7 @@ namespace GammaJul.ReSharper.ForTea.Psi {
 		/// <param name="usingDirective">The C# using directive.</param>
 		/// <param name="originalFile">The original T4 file where the directive must be created.</param>
 		/// <returns>A <see cref="TreeTextRange"/> corresponding to the namespace in the newly created directive.</returns>
-		protected override TreeTextRange CreateUsingNode(bool before, IT4Directive anchor, ITreeNode usingDirective, IFile originalFile) {
+		protected override bool CreateAndMapUsingNode(bool before, IT4Directive anchor, ITreeNode usingDirective, IFile originalFile) {
 			var t4File = (IT4File) originalFile;
 			string ns = GetNamespaceFromUsingDirective(usingDirective);
 			IT4Directive directive = _directiveInfoManager.Import.CreateDirective(ns);
@@ -110,7 +112,7 @@ namespace GammaJul.ReSharper.ForTea.Psi {
 			else
 				directive = t4File.AddDirective(directive, _directiveInfoManager);
 
-			return directive.GetAttributeValueToken(_directiveInfoManager.Import.NamespaceAttribute.Name).GetTreeTextRange();
+			return true;
 		}
 
 		/// <summary>
@@ -192,6 +194,10 @@ namespace GammaJul.ReSharper.ForTea.Psi {
 					return inheritsToken;
 			}
 			return null;
+		}
+
+		public bool IsQualifiedUsingAtNestedScope(ITreeNode context, IContextBoundSettingsStore settingsStore) {
+			return (bool)SettingsStoreEx.GetValue<CSharpUsingSettings, bool>(settingsStore, (Expression<Func<CSharpUsingSettings, bool>>)CSharpUsingSettingsAccessor.QualifiedUsingAtNestedScope, (IDictionary<SettingsKey, object>)null);
 		}
 
 		/// <summary>

@@ -1,4 +1,4 @@
-﻿#region License
+#region License
 //    Copyright 2012 Julien Lebosquain
 // 
 //    Licensed under the Apache License, Version 2.0 (the "License");
@@ -15,7 +15,6 @@
 #endregion
 
 using JetBrains.Application.BuildScript.Application.Zones;
-using JetBrains.Platform.VisualStudio.SinceVs10.Shell.Zones;
 using JetBrains.ReSharper.Feature.Services;
 using JetBrains.ReSharper.Feature.Services.Daemon;
 using JetBrains.ReSharper.Feature.Services.Navigation;
@@ -25,7 +24,7 @@ using JetBrains.ReSharper.Psi.CSharp;
 namespace GammaJul.ReSharper.ForTea {
 
 	[ZoneMarker]
-	public class ZoneMarker : IPsiLanguageZone, IRequire<ISinceVs10Zone>, IRequire<ILanguageCSharpZone>, IRequire<ICodeEditingZone>, IRequire<DaemonZone>, IRequire<NavigationZone> {
+	public class ZoneMarker : IPsiLanguageZone, IRequire<ILanguageCSharpZone>, IRequire<ICodeEditingZone>, IRequire<DaemonZone>, IRequire<NavigationZone> {
 	}
 
 }
