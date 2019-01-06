@@ -477,7 +477,7 @@ namespace GammaJul.ReSharper.ForTea.Psi {
 
 			_t4Environment = t4Environment;
 			_outputAssemblies = outputAssemblies;
-			_resolveProject = new T4ResolveProject(lifetime, _solution, _shellLocks, t4Environment.PlatformID, t4Environment.TargetFrameworkId, project);
+			_resolveProject = new T4ResolveProject(lifetime, _solution, _shellLocks, t4Environment.TargetFrameworkId, project);
 
 			_moduleReferenceResolveContext = new PsiModuleResolveContext(this, _t4Environment.TargetFrameworkId, _project);
 			SourceFile = CreateSourceFile(projectFile, documentManager);

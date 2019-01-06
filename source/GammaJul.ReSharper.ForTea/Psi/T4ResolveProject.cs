@@ -29,7 +29,7 @@ using JetBrains.ProjectModel.Properties.Common;
 using JetBrains.ProjectModel.References;
 using JetBrains.Util;
 using JetBrains.Util.Dotnet.TargetFrameworkIds;
-using PlatformID = JetBrains.Application.platforms.PlatformID;
+//using PlatformID = JetBrains.Application.platforms.PlatformID;
 
 
 namespace GammaJul.ReSharper.ForTea.Psi {
@@ -200,7 +200,7 @@ namespace GammaJul.ReSharper.ForTea.Psi {
 			public override ProjectKind ProjectKind
 				=> ProjectKind.MISC_FILES_PROJECT;
 
-			public T4ResolveProjectProperties([NotNull] JetBrains.Application.platforms.PlatformID platformID, [NotNull] TargetFrameworkId targetFrameworkId)
+			public T4ResolveProjectProperties([NotNull] TargetFrameworkId targetFrameworkId)
 				: base(EmptyList<Guid>.InstanceList, Guid.Empty, new[] { targetFrameworkId }, dotNetCoreSDK: null) {
 			}
 
@@ -210,14 +210,13 @@ namespace GammaJul.ReSharper.ForTea.Psi {
 			[NotNull] Lifetime lifetime,
 			[NotNull] ISolution solution,
 			[NotNull] IShellLocks shellLocks,
-			[NotNull] PlatformID platformID,
 			[NotNull] TargetFrameworkId targetFrameworkId,
 			[NotNull] IUserDataHolder dataHolder) {
 			_shellLocks = shellLocks;
 			_targetFrameworkId = targetFrameworkId;
 			_solution = solution;
 			_dataHolder = dataHolder;
-			_projectProperties = new T4ResolveProjectProperties(platformID, targetFrameworkId);
+			_projectProperties = new T4ResolveProjectProperties(targetFrameworkId);
 			ProjectFileLocationLive = new Property<FileSystemPath>(lifetime, "ProjectFileLocationLive");
 			ProjectLocationLive = new Property<FileSystemPath>(lifetime, "ProjectLocationLive");
 			_targetFrameworkReferences = new TargetFrameworkReferences(lifetime, shellLocks, this, solution.SolutionOwner.GetComponent<AssemblyInfoDatabase>());
