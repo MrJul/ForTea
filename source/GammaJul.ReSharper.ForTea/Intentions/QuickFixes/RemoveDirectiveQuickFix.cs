@@ -16,7 +16,7 @@ namespace GammaJul.ReSharper.ForTea.Intentions.QuickFixes {
 	[QuickFix]
 	public class RemoveDirectiveQuickFix : QuickFixBase {
 
-		private readonly IgnoredAssemblyDirectiveHighlighting _highlighting;
+		[NotNull] private readonly IgnoredAssemblyDirectiveHighlighting _highlighting;
 
 		protected override Action<ITextControl> ExecutePsiTransaction(ISolution solution, IProgressIndicator progress) {
 			ITreeNode node = _highlighting.AssociatedNode;
@@ -28,13 +28,11 @@ namespace GammaJul.ReSharper.ForTea.Intentions.QuickFixes {
 			return null;
 		}
 
-		public override string Text {
-			get { return "Remove directive"; }
-		}
+		public override string Text
+			=> "Remove directive";
 
-		public override bool IsAvailable(IUserDataHolder cache) {
-			return _highlighting.IsValid();
-		}
+		public override bool IsAvailable(IUserDataHolder cache)
+			=> _highlighting.IsValid();
 
 		public RemoveDirectiveQuickFix([NotNull] IgnoredAssemblyDirectiveHighlighting highlighting) {
 			_highlighting = highlighting;

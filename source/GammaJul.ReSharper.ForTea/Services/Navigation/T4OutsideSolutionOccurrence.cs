@@ -1,4 +1,4 @@
-﻿#region License
+#region License
 //    Copyright 2012 Julien Lebosquain
 // 
 //    Licensed under the Apache License, Version 2.0 (the "License");
@@ -25,9 +25,7 @@ using JetBrains.Util;
 
 namespace GammaJul.ReSharper.ForTea.Services.Navigation {
 
-	/// <summary>
-	/// Represents an occurence of text in an include file that is located outside of the solution.
-	/// </summary>
+	/// <summary>Represents an occurence of text in an include file that is located outside of the solution.</summary>
 	public class T4OutsideSolutionOccurrence : IOccurrence {
 
 		[NotNull] private readonly IRangeMarker _rangeMarker;

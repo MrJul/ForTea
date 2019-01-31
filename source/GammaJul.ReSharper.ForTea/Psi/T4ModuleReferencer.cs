@@ -1,20 +1,3 @@
-#region License
-//    Copyright 2012 Julien Lebosquain
-// 
-//    Licensed under the Apache License, Version 2.0 (the "License");
-//    you may not use this file except in compliance with the License.
-//    You may obtain a copy of the License at
-// 
-//        http://www.apache.org/licenses/LICENSE-2.0
-// 
-//    Unless required by applicable law or agreed to in writing, software
-//    distributed under the License is distributed on an "AS IS" BASIS,
-//    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-//    See the License for the specific language governing permissions and
-//    limitations under the License.
-#endregion
-
-
 using System;
 using System.Linq;
 using GammaJul.ReSharper.ForTea.Psi.Directives;
@@ -29,33 +12,25 @@ using JetBrains.Util.Dotnet.TargetFrameworkIds;
 
 namespace GammaJul.ReSharper.ForTea.Psi {
 
-	/// <summary>
-	/// Module referencer that adds an assembly directive to a T4 file.
-	/// </summary>
+	/// <summary>Module referencer that adds an assembly directive to a T4 file.</summary>
 	[ModuleReferencer(Priority = -10)]
 	public class T4ModuleReferencer : IModuleReferencer {
 
-		private readonly T4Environment _environment;
-		private readonly DirectiveInfoManager _directiveInfoManager;
+		[NotNull] private readonly T4Environment _environment;
+		[NotNull] private readonly DirectiveInfoManager _directiveInfoManager;
 
-		public bool CanReferenceModule(IPsiModule module, IPsiModule moduleToReference) {
-			return module is T4PsiModule t4PsiModule
-				&& t4PsiModule.IsValid()
-				&& moduleToReference != null
-				&& moduleToReference.ContainingProjectModule is IAssembly assembly
-				&& _environment.TargetFrameworkId.IsReferenceAllowed(assembly.TargetFrameworkId);
-		}
-		
-		/// <summary>
-		/// Returns true if module is referenced
-		/// </summary>
-		public bool ReferenceModule(IPsiModule module, IPsiModule moduleToReference) {
-			return ReferenceModuleImpl(module, moduleToReference, null);
-		}
+		public bool CanReferenceModule(IPsiModule module, IPsiModule moduleToReference)
+			=> module is T4PsiModule t4PsiModule
+			&& t4PsiModule.IsValid()
+			&& moduleToReference != null
+			&& moduleToReference.ContainingProjectModule is IAssembly assembly
+			&& _environment.TargetFrameworkId.IsReferenceAllowed(assembly.TargetFrameworkId);
 
-		public bool ReferenceModuleWithType(IPsiModule module, ITypeElement typeToReference) {
-			return ReferenceModuleImpl(module, typeToReference.Module, typeToReference.GetContainingNamespace().QualifiedName);
-		}
+		public bool ReferenceModule(IPsiModule module, IPsiModule moduleToReference)
+			=> ReferenceModuleImpl(module, moduleToReference, null);
+
+		public bool ReferenceModuleWithType(IPsiModule module, ITypeElement typeToReference)
+			=> ReferenceModuleImpl(module, typeToReference.Module, typeToReference.GetContainingNamespace().QualifiedName);
 
 		private bool ReferenceModuleImpl([NotNull] IPsiModule module, [NotNull] IPsiModule moduleToReference, [CanBeNull] string ns) {
 			if (!CanReferenceModule(module, moduleToReference))

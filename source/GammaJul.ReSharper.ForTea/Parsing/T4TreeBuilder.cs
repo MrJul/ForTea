@@ -1,18 +1,3 @@
-﻿#region License
-//    Copyright 2012 Julien Lebosquain
-// 
-//    Licensed under the Apache License, Version 2.0 (the "License");
-//    you may not use this file except in compliance with the License.
-//    You may obtain a copy of the License at
-// 
-//        http://www.apache.org/licenses/LICENSE-2.0
-// 
-//    Unless required by applicable law or agreed to in writing, software
-//    distributed under the License is distributed on an "AS IS" BASIS,
-//    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-//    See the License for the specific language governing permissions and
-//    limitations under the License.
-#endregion
 using System;
 using System.Collections.Generic;
 using System.Globalization;
@@ -30,9 +15,7 @@ using JetBrains.Util;
 
 namespace GammaJul.ReSharper.ForTea.Parsing {
 
-	/// <summary>
-	/// Builds a T4 tree from a lexer. This is where the parsing really happens.
-	/// </summary>
+	/// <summary>Builds a T4 tree from a lexer. This is where the parsing really happens.</summary>
 	internal sealed partial class T4TreeBuilder {
 
 		[NotNull] private readonly List<IT4Include> _includes = new List<IT4Include>();
@@ -43,11 +26,10 @@ namespace GammaJul.ReSharper.ForTea.Parsing {
 		[CanBeNull] private readonly ISolution _solution;
 		[CanBeNull] private readonly T4PsiModule _macroResolveModule;
 		[NotNull] private readonly HashSet<FileSystemPath> _existingIncludePaths;
+
 		[CanBeNull] private List<T4Directive> _notClosedDirectives;
 
-		/// <summary>
-		/// Advances the lexer to the next token.
-		/// </summary>
+		/// <summary>Advances the lexer to the next token.</summary>
 		/// <returns>The type of the next token.</returns>
 		[CanBeNull]
 		private T4TokenNodeType Advance() {
@@ -55,21 +37,16 @@ namespace GammaJul.ReSharper.ForTea.Parsing {
 			return GetTokenType();
 		}
 
-		/// <summary>
-		/// Returns the type of the lexer current token.
-		/// </summary>
+		/// <summary>Returns the type of the lexer current token.</summary>
 		/// <returns>The type of the current token.</returns>
 		[CanBeNull]
-		private T4TokenNodeType GetTokenType() {
-			return (T4TokenNodeType) _builderLexer.TokenType;
-		}
+		private T4TokenNodeType GetTokenType()
+			=> (T4TokenNodeType) _builderLexer.TokenType;
 
-		/// <summary>
-		/// Creates a <see cref="IT4File"/>.
-		/// </summary>
+		/// <summary>Creates a <see cref="IT4File"/>.</summary>
 		/// <returns>An instance of <see cref="IT4File"/> containing a T4 tree.</returns>
 		[NotNull]
-		internal IT4File CreateT4Tree() {
+		public IT4File CreateT4Tree() {
 			_builderLexer.Start();
 			var file = new T4File();
 			
@@ -112,18 +89,13 @@ namespace GammaJul.ReSharper.ForTea.Parsing {
 				FixTopLevelSpace(parentElement, _notClosedDirectives);
 		}
 
-		/// <summary>
-		/// Appends an error element where a token of a given type was expected.
-		/// </summary>
+		/// <summary>Appends an error element where a token of a given type was expected.</summary>
 		/// <param name="parentElement">The parent element.</param>
 		/// <param name="missingTokenType">The missing token type.</param>
-		private void AppendMissingToken([NotNull] CompositeElement parentElement, MissingTokenType missingTokenType) {
-			AppendNewChild(parentElement, new MissingTokenErrorElement(missingTokenType));
-		}
+		private void AppendMissingToken([NotNull] CompositeElement parentElement, MissingTokenType missingTokenType)
+			=> AppendNewChild(parentElement, new MissingTokenErrorElement(missingTokenType));
 
-		/// <summary>
-		/// Gets the first token that is not a code block related token.
-		/// </summary>
+		/// <summary>Gets the first token that is not a code block related token.</summary>
 		/// <param name="parentElement">The parent element where the potential code block will be appended as a child.</param>
 		/// <returns>A <see cref="T4TokenNodeType"/>, or <c>null</c>.</returns>
 		[CanBeNull]
@@ -134,9 +106,7 @@ namespace GammaJul.ReSharper.ForTea.Parsing {
 			return tokenNodeType;
 		}
 
-		/// <summary>
-		/// Checks if the current token represents the beginning of a code block, if yes, parse every code block after the token.
-		/// </summary>
+		/// <summary>Checks if the current token represents the beginning of a code block, if yes, parse every code block after the token.</summary>
 		/// <param name="tokenNodeType">The current token type.</param>
 		/// <param name="parentElement">The parent element where the potential code block will be appended as a child.</param>
 		/// <returns><c>true</c> is a code block has been parsed, <c>false</c> otherwise.</returns>
@@ -162,18 +132,13 @@ namespace GammaJul.ReSharper.ForTea.Parsing {
 			return false;
 		}
 
-		/// <summary>
-		/// Appends a new composite element to the tree.
-		/// </summary>
+		/// <summary>Appends a new composite element to the tree.</summary>
 		/// <param name="parentElement">The parent element.</param>
 		/// <param name="childElement">The child element.</param>
-		private void AppendNewChild(CompositeElement parentElement, TreeElement childElement) {
-			_builderLexer.AppendNewChild(parentElement, childElement);
-		}
+		private void AppendNewChild(CompositeElement parentElement, TreeElement childElement)
+			=> _builderLexer.AppendNewChild(parentElement, childElement);
 
-		/// <summary>
-		/// Creates and appends a new token to the tree.
-		/// </summary>
+		/// <summary>Creates and appends a new token to the tree.</summary>
 		/// <param name="parentElement">The parent element.</param>
 		/// <param name="tokenNodeType">Type of the token node to create and add.</param>
 		private void AppendNewChild([NotNull] CompositeElement parentElement, [NotNull] T4TokenNodeType tokenNodeType) {
@@ -181,16 +146,19 @@ namespace GammaJul.ReSharper.ForTea.Parsing {
 			_builderLexer.AppendNewChild(parentElement, token);
 		}
 
+		[NotNull]
 		private LeafElementBase CreateCurrentToken() {
 			T4TokenNodeType tokenType = GetTokenType();
 			Assertion.AssertNotNull(tokenType, "tokenType == null");
-			LeafElementBase token = tokenType.Create(_builderLexer.Buffer, new TreeOffset(_builderLexer.TokenStart), new TreeOffset(_builderLexer.TokenEnd));
-			return token;
+
+			return tokenType.Create(
+				_builderLexer.Buffer,
+				new TreeOffset(_builderLexer.TokenStart),
+				new TreeOffset(_builderLexer.TokenEnd)
+			);
 		}
 
-		/// <summary>
-		/// Parses a T4 code block.
-		/// </summary>
+		/// <summary>Parses a T4 code block.</summary>
 		/// <param name="codeStartTokenNodeType">The statement start token type.</param>
 		/// <param name="codeBlock">An empty code block that will contain the parsed code block.</param>
 		[NotNull]
@@ -243,7 +211,7 @@ namespace GammaJul.ReSharper.ForTea.Parsing {
 					directiveBuilder.AddValue();
 				tokenType = Advance();
 			}
-			directiveBuilder.Finish(directive);
+			directiveBuilder.Complete(directive);
 
 			// appends the block end token if available
 			if (tokenType == T4TokenNodeTypes.BlockEnd) {
@@ -265,8 +233,7 @@ namespace GammaJul.ReSharper.ForTea.Parsing {
 		}
 
 		private void HandleIncludeDirective([NotNull] IT4Directive directive, [NotNull] CompositeElement parentElement) {
-			var fileAttr = directive.GetAttribute(_directiveInfoManager.Include.FileAttribute.Name) as T4DirectiveAttribute;
-			if (fileAttr == null)
+			if (!(directive.GetAttribute(_directiveInfoManager.Include.FileAttribute.Name) is T4DirectiveAttribute fileAttr))
 				return;
 
 			IT4Token valueToken = fileAttr.GetValueToken();
@@ -282,7 +249,12 @@ namespace GammaJul.ReSharper.ForTea.Parsing {
 			HandleInclude(valueToken.GetText(), fileAttr, parentElement, once);
 		}
 
-		private void HandleInclude([CanBeNull] string includeFileName, [NotNull] T4DirectiveAttribute fileAttr, [NotNull] CompositeElement parentElement, bool once) {
+		private void HandleInclude(
+			[CanBeNull] string includeFileName,
+			[NotNull] T4DirectiveAttribute fileAttr,
+			[NotNull] CompositeElement parentElement,
+			bool once
+		) {
 			FileSystemPath includePath = ResolveInclude(includeFileName);
 			if (includePath.IsEmpty) {
 				fileAttr.ValueError = String.Format(CultureInfo.InvariantCulture, "Unresolved file \"{0}\"", includePath);
@@ -326,13 +298,8 @@ namespace GammaJul.ReSharper.ForTea.Parsing {
 		}
 
 		[CanBeNull]
-		private IPsiSourceFile CreateIncludeSourceFile([NotNull] FileSystemPath path) {
-			if (_solution == null)
-				return null;
-
-			var sourceFileManager = _solution.GetComponent<T4OutsideSolutionSourceFileManager>();
-			return sourceFileManager.GetOrCreateSourceFile(path);
-		}
+		private IPsiSourceFile CreateIncludeSourceFile([NotNull] FileSystemPath path)
+			=> _solution?.TryGetComponent<T4OutsideSolutionSourceFileManager>()?.GetOrCreateSourceFile(path);
 
 		[NotNull]
 		private static ILexer CreateLexer([NotNull] IPsiSourceFile includeSourceFile) {
@@ -386,17 +353,14 @@ namespace GammaJul.ReSharper.ForTea.Parsing {
 			return FileSystemPath.Empty;
 		}
 
-		/// <summary>
-		/// Expands the Visual Studio macros inside a filename, eg $(SolutionDir).
-		/// </summary>
+		/// <summary>Expands the Visual Studio macros inside a filename, eg $(SolutionDir).</summary>
 		/// <param name="fileName">The file name to expand.</param>
 		/// <returns><paramref name="fileName"/> with expanded macros.</returns>
 		[NotNull]
-		private string ExpandVisualStudioMacros([NotNull] string fileName) {
-			return _sourceFile != null
+		private string ExpandVisualStudioMacros([NotNull] string fileName)
+			=> _sourceFile != null
 				? VsBuildMacroHelper.ResolveMacros(fileName, _macroResolveModule)
 				: fileName;
-		}
 
 		/// <summary>
 		/// Unclosed directives may have trailing spaces that are skipped then added at file level by the <see cref="PsiBuilderLexer"/>.
@@ -415,24 +379,32 @@ namespace GammaJul.ReSharper.ForTea.Parsing {
 			}
 		}
 
-		[CanBeNull]
-		private static ISolution GetSourceSolution([CanBeNull] IPsiSourceFile sourceFile) {
-			return sourceFile != null ? sourceFile.GetSolution() : null;
+		internal T4TreeBuilder(
+			[NotNull] T4Environment t4Environment,
+			[NotNull] DirectiveInfoManager directiveInfoManager,
+			[NotNull] ILexer lexer,
+			[CanBeNull] IPsiSourceFile sourceFile = null
+		)
+			: this(
+				t4Environment,
+				directiveInfoManager,
+				lexer,
+				sourceFile,
+				new HashSet<FileSystemPath>(),
+				sourceFile?.GetSolution(),
+				sourceFile?.PsiModule as T4PsiModule
+			) {
 		}
 
-		[CanBeNull]
-		private static T4PsiModule GetSourceModule([CanBeNull] IPsiSourceFile sourceFile) {
-			return sourceFile != null ? sourceFile.PsiModule as T4PsiModule : null;
-		}
-
-		internal T4TreeBuilder([NotNull] T4Environment t4Environment, [NotNull] DirectiveInfoManager directiveInfoManager, [NotNull] ILexer lexer,
-			[CanBeNull] IPsiSourceFile sourceFile = null)
-			: this(t4Environment, directiveInfoManager, lexer, sourceFile, new HashSet<FileSystemPath>(), GetSourceSolution(sourceFile), GetSourceModule(sourceFile)) {
-		}
-
-		private T4TreeBuilder([NotNull] T4Environment t4Environment, [NotNull] DirectiveInfoManager directiveInfoManager, [NotNull] ILexer lexer,
-			[CanBeNull] IPsiSourceFile sourceFile, [NotNull] HashSet<FileSystemPath> existingIncludePaths, [CanBeNull] ISolution solution,
-			[CanBeNull] T4PsiModule macroResolveModule) {
+		private T4TreeBuilder(
+			[NotNull] T4Environment t4Environment,
+			[NotNull] DirectiveInfoManager directiveInfoManager,
+			[NotNull] ILexer lexer,
+			[CanBeNull] IPsiSourceFile sourceFile,
+			[NotNull] HashSet<FileSystemPath> existingIncludePaths,
+			[CanBeNull] ISolution solution,
+			[CanBeNull] T4PsiModule macroResolveModule
+		) {
 			_t4Environment = t4Environment;
 			_directiveInfoManager = directiveInfoManager;
 			_builderLexer = new PsiBuilderLexer(lexer, tnt => tnt.IsWhitespace);

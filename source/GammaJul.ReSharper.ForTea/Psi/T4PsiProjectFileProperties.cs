@@ -1,18 +1,4 @@
-﻿#region License
-//    Copyright 2012 Julien Lebosquain
-// 
-//    Licensed under the Apache License, Version 2.0 (the "License");
-//    you may not use this file except in compliance with the License.
-//    You may obtain a copy of the License at
-// 
-//        http://www.apache.org/licenses/LICENSE-2.0
-// 
-//    Unless required by applicable law or agreed to in writing, software
-//    distributed under the License is distributed on an "AS IS" BASIS,
-//    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-//    See the License for the specific language governing permissions and
-//    limitations under the License.
-#endregion
+using JetBrains.Annotations;
 using JetBrains.ProjectModel;
 using JetBrains.ReSharper.Psi;
 using JetBrains.ReSharper.Psi.Impl;
@@ -21,18 +7,12 @@ namespace GammaJul.ReSharper.ForTea.Psi {
 	
 	internal sealed class T4PsiProjectFileProperties : DefaultPsiProjectFileProperties {
 
-		private readonly bool _shouldBuildPsi;
+		/// <summary>Indicates if this file should be parsed.</summary>
+		public override bool ShouldBuildPsi { get; }
 
-		/// <summary>
-		/// Indicates if this file should be parsed.
-		/// </summary>
-		public override bool ShouldBuildPsi {
-			get { return _shouldBuildPsi; }
-		}
-
-		public T4PsiProjectFileProperties(IProjectFile projectFile, IPsiSourceFile sourceFile, bool shouldBuildPsi)
+		public T4PsiProjectFileProperties([NotNull] IProjectFile projectFile, [NotNull] IPsiSourceFile sourceFile, bool shouldBuildPsi)
 			: base(projectFile, sourceFile) {
-			_shouldBuildPsi = shouldBuildPsi;
+			ShouldBuildPsi = shouldBuildPsi;
 		}
 
 	}

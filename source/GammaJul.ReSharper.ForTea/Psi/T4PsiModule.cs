@@ -1,21 +1,3 @@
-#region License
-//    Copyright 2012 Julien Lebosquain
-// 
-//    Licensed under the Apache License, Version 2.0 (the "License");
-//    you may not use this file except in compliance with the License.
-//    You may obtain a copy of the License at
-// 
-//        http://www.apache.org/licenses/LICENSE-2.0
-// 
-//    Unless required by applicable law or agreed to in writing, software
-//    distributed under the License is distributed on an "AS IS" BASIS,
-//    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-//    See the License for the specific language governing permissions and
-//    limitations under the License.
-#endregion
-
-
-using Microsoft.VisualStudio.TextTemplating.VSHost;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
@@ -31,9 +13,9 @@ using JetBrains.Metadata.Reader.API;
 using JetBrains.Metadata.Utils;
 using JetBrains.ProjectModel;
 using JetBrains.ProjectModel.Build;
+using JetBrains.ProjectModel.model2.Assemblies.Interfaces;
 using JetBrains.ProjectModel.Model2.Assemblies.Interfaces;
 using JetBrains.ProjectModel.Model2.References;
-using JetBrains.ProjectModel.model2.Assemblies.Interfaces;
 using JetBrains.ReSharper.Psi;
 using JetBrains.ReSharper.Psi.Files;
 using JetBrains.ReSharper.Psi.Impl;
@@ -46,12 +28,11 @@ using JetBrains.VsIntegration.Interop.Shim.VsShell.Shell.Hierarchy;
 using JetBrains.VsIntegration.ProjectDocuments.Projects.Builder;
 using JetBrains.VsIntegration.ProjectModel;
 using Microsoft.VisualStudio.Shell.Interop;
+using Microsoft.VisualStudio.TextTemplating.VSHost;
 
 namespace GammaJul.ReSharper.ForTea.Psi {
 
-	/// <summary>
-	/// PSI module managing a single T4 file.
-	/// </summary>
+	/// <summary>PSI module managing a single T4 file.</summary>
 	internal sealed class T4PsiModule : IProjectPsiModule, IChangeProvider {
 
 		private const string Prefix = "[T4] ";
@@ -71,43 +52,32 @@ namespace GammaJul.ReSharper.ForTea.Psi {
 		[NotNull] private readonly OutputAssemblies _outputAssemblies;
 		[NotNull] private readonly IModuleReferenceResolveContext _moduleReferenceResolveContext;
 		[NotNull] private readonly UserDataHolder _userDataHolder = new UserDataHolder();
+
 		[CanBeNull] private IModuleReferenceResolveManager _resolveManager;
 		private bool _isValid;
 
-		/// <summary>
-		/// Returns the source file associated with this PSI module.
-		/// </summary>
+		/// <summary>Returns the source file associated with this PSI module.</summary>
 		[NotNull]
-		internal IPsiSourceFile SourceFile { get; }
-
-		/// <summary>
-		/// Gets an instance of <see cref="IModuleReferenceResolveManager"/> used to resolve assemblies.
-		/// </summary>
+		public IPsiSourceFile SourceFile { get; }
+		
+		/// <summary>Gets an instance of <see cref="IModuleReferenceResolveManager"/> sed to resolve assemblies.</summary>
 		[NotNull]
 		private IModuleReferenceResolveManager ResolveManager
 			=> _resolveManager ?? (_resolveManager = _solution.GetComponent<IModuleReferenceResolveManager>());
 
-		/// <summary>
-		/// Gets the name of this PSI module.
-		/// </summary>
+		/// <summary>Gets the name of this PSI module.</summary>
 		public string Name
 			=> Prefix + SourceFile.Name;
 
-		/// <summary>
-		/// Gets the display name of this PSI module.
-		/// </summary>
+		/// <summary>Gets the display name of this PSI module.</summary>
 		public string DisplayName
 			=> Prefix + SourceFile.DisplayName;
 
-		/// <summary>
-		/// Gets the language used by this PSI module. This should be the code behind language, not the primary language.
-		/// </summary>
+		/// <summary>Gets the language used by this PSI module. This should be the code behind language, not the primary language.</summary>
 		public PsiLanguageType PsiLanguage
 			=> SourceFile.GetLanguages().FirstOrDefault(lang => !lang.Is<T4Language>()) ?? UnknownLanguage.Instance;
 
-		/// <summary>
-		/// Gets the project file type used by this PSI module: always <see cref="JetBrains.ProjectModel.ProjectFileType"/>.
-		/// </summary>
+		/// <summary>Gets the project file type used by this PSI module: always <see cref="JetBrains.ProjectModel.ProjectFileType"/>.</summary>
 		public ProjectFileType ProjectFileType
 			=> T4ProjectFileType.Instance;
 
@@ -120,43 +90,31 @@ namespace GammaJul.ReSharper.ForTea.Psi {
 		IProject IProjectPsiModule.Project
 			=> _project;
 
-		/// <summary>
-		/// TargetFrameworkId corresponding to the module. 
-		/// </summary>
+		/// <summary>TargetFrameworkId corresponding to the module.</summary>
 		public TargetFrameworkId TargetFrameworkId
 			=> _t4Environment.TargetFrameworkId;
 
-		/// <summary>
-		/// Gets the solution this PSI module is attached to.
-		/// </summary>
+		/// <summary>Gets the solution this PSI module is attached to.</summary>
 		/// <returns>An instance of <see cref="ISolution"/>.</returns>
 		public ISolution GetSolution()
 			=> _solution;
 
-		/// <summary>
-		/// Gets an instance of <see cref="IPsiServices"/> for the current solution.
-		/// </summary>
+		/// <summary>Gets an instance of <see cref="IPsiServices"/> for the current solution.</summary>
 		/// <returns>An instance of <see cref="IPsiServices"/>.</returns>
 		public IPsiServices GetPsiServices()
 			=> _solution.GetPsiServices();
 
-		/// <summary>
-		/// Gets whether the PSI module is valid.
-		/// </summary>
+		/// <summary>Gets whether the PSI module is valid.</summary>
 		/// <returns><c>true</c> if the PSI module is valid, <c>false</c> otherwise.</returns>
 		public bool IsValid()
 			=> _isValid;
 
-		/// <summary>
-		/// Gets a persistent identifier for this PSI module.
-		/// </summary>
+		/// <summary>Gets a persistent identifier for this PSI module.</summary>
 		/// <returns>A persistent identifier.</returns>
 		public string GetPersistentID()
 			=> Prefix + _projectFile.GetPersistentID();
 
-		/// <summary>
-		/// Creates a new <see cref="IAssemblyCookie"/> from an assembly full name.
-		/// </summary>
+		/// <summary>Creates a new <see cref="IAssemblyCookie"/> from an assembly full name.</summary>
 		/// <param name="assemblyNameOrFile">The assembly full name.</param>
 		/// <returns>An instance of <see cref="IAssemblyCookie"/>, or <c>null</c> if none could be created.</returns>
 		[CanBeNull]
@@ -184,9 +142,7 @@ namespace GammaJul.ReSharper.ForTea.Psi {
 			return CreateCookieCore(target);
 		}
 		
-		/// <summary>
-		/// Try to add an assembly reference to the list of assemblies.
-		/// </summary>
+		/// <summary>Try to add an assembly reference to the list of assemblies.</summary>
 		/// <param name="assemblyNameOrFile"></param>
 		/// <remarks>Does not refresh references, simply add a cookie to the cookies list.</remarks>
 		[CanBeNull]
@@ -197,9 +153,7 @@ namespace GammaJul.ReSharper.ForTea.Psi {
 			return cookie;
 		}
 		
-		/// <summary>
-		/// The <see cref="IVsHierarchy"/> representing the project file normally implements <see cref="IVsBuildMacroInfo"/>.
-		/// </summary>
+		/// <summary>The <see cref="IVsHierarchy"/> representing the project file normally implements <see cref="IVsBuildMacroInfo"/>.</summary>
 		/// <returns>An instance of <see cref="IVsBuildMacroInfo"/> if found.</returns>
 		[CanBeNull]
 		[SuppressMessage("ReSharper", "SuspiciousTypeConversion.Global")]
@@ -231,9 +185,7 @@ namespace GammaJul.ReSharper.ForTea.Psi {
 			}
 		}
 
-		/// <summary>
-		/// Called when the associated data file changed: added/removed assemblies or includes.
-		/// </summary>
+		/// <summary>Called when the associated data file changed: added/removed assemblies or includes.</summary>
 		/// <param name="dataDiff">The difference between the old and new data.</param>
 		private void OnDataFileChanged([NotNull] T4FileDataDiff dataDiff) {
 			_shellLocks.AssertWriteAccessAllowed();
@@ -249,9 +201,8 @@ namespace GammaJul.ReSharper.ForTea.Psi {
 					string assembly = removedAssembly;
 					if (components != null)
 						assembly = components.Host.ResolveAssemblyReference(assembly);
-				
-					IAssemblyCookie cookie;
-					if (!_assemblyReferences.TryGetValue(assembly, out cookie))
+
+					if (!_assemblyReferences.TryGetValue(assembly, out IAssemblyCookie cookie))
 						continue;
 
 					_assemblyReferences.Remove(assembly);
@@ -287,18 +238,17 @@ namespace GammaJul.ReSharper.ForTea.Psi {
 
 			if (hasFileChanges)
 				GetPsiServices().MarkAsDirty(SourceFile);
-			
+
 			_shellLocks.ExecuteOrQueue("T4PsiModuleChange",
 				() => _changeManager.ExecuteAfterChange(
 					() => _shellLocks.ExecuteWithWriteLock(
-						() => _changeManager.OnProviderChanged(this, changeBuilder.Result, SimpleTaskExecutor.Instance))
+						() => _changeManager.OnProviderChanged(this, changeBuilder.Result, SimpleTaskExecutor.Instance)
+					)
 				)
 			);
 		}
 		
-		/// <summary>
-		/// Resolves new VS macros, like $(SolutionDir), found in include or assembly directives.
-		/// </summary>
+		/// <summary>Resolves new VS macros, like $(SolutionDir), found in include or assembly directives.</summary>
 		/// <param name="macros">The list of macro names (eg SolutionDir) to resolve.</param>
 		/// <returns>Whether at least one macro has been processed.</returns>
 		private bool ResolveMacros([NotNull] IEnumerable<string> macros) {
@@ -316,8 +266,7 @@ namespace GammaJul.ReSharper.ForTea.Psi {
 
 				hasChanges = true;
 
-				string value;
-				bool succeeded = HResultHelpers.SUCCEEDED(vsBuildMacroInfo.GetBuildMacroValue(addedMacro, out value)) && !String.IsNullOrEmpty(value);
+				bool succeeded = HResultHelpers.SUCCEEDED(vsBuildMacroInfo.GetBuildMacroValue(addedMacro, out string value)) && !String.IsNullOrEmpty(value);
 				if (!succeeded) {
 					value = MSBuildExtensions.GetStringValue(TryGetVsHierarchy(), addedMacro, null);
 					succeeded = !String.IsNullOrEmpty(value);
@@ -330,12 +279,11 @@ namespace GammaJul.ReSharper.ForTea.Psi {
 						_resolvedMacros.Remove(addedMacro);
 				}
 			}
+
 			return hasChanges;
 		}
 
-		/// <summary>
-		/// Gets all modules referenced by this module.
-		/// </summary>
+		/// <summary>Gets all modules referenced by this module.</summary>
 		/// <returns>All referenced modules.</returns>
 		public IEnumerable<IPsiModuleReference> GetReferences(IModuleReferenceResolveContext moduleReferenceResolveContext) {
 			_shellLocks.AssertReadAccessAllowed();
@@ -389,7 +337,8 @@ namespace GammaJul.ReSharper.ForTea.Psi {
 				(pf, sf) => new T4PsiProjectFileProperties(pf, sf, true),
 				JetFunc<IProjectFile, IPsiSourceFile>.True,
 				documentManager,
-				_moduleReferenceResolveContext);
+				_moduleReferenceResolveContext
+			);
 
 		[CanBeNull]
 		private IAssemblyCookie CreateCookieCore([NotNull] AssemblyReferenceTarget target) {
@@ -419,9 +368,7 @@ namespace GammaJul.ReSharper.ForTea.Psi {
 		public IEnumerable<KeyValuePair<object, object>> EnumerateData()
 			=> _userDataHolder.EnumerateData();
 
-		/// <summary>
-		/// Disposes this instance.
-		/// </summary>
+		/// <summary>Disposes this instance.</summary>
 		/// <remarks>Does not implement <see cref="IDisposable"/>, is called when the lifetime is terminated.</remarks>
 		private void Dispose() {
 			_isValid = false;
@@ -446,7 +393,7 @@ namespace GammaJul.ReSharper.ForTea.Psi {
 				TryAddReference(assemblyName);
 		}
 
-		internal T4PsiModule(
+		public T4PsiModule(
 			[NotNull] Lifetime lifetime,
 			[NotNull] IPsiModules psiModules,
 			[NotNull] DocumentManager documentManager,
@@ -456,7 +403,8 @@ namespace GammaJul.ReSharper.ForTea.Psi {
 			[NotNull] IProjectFile projectFile,
 			[NotNull] T4FileDataCache fileDataCache,
 			[NotNull] T4Environment t4Environment,
-			[NotNull] OutputAssemblies outputAssemblies) {
+			[NotNull] OutputAssemblies outputAssemblies
+		) {
 
 			_lifetime = lifetime;
 			lifetime.OnTermination(Dispose);

@@ -1,20 +1,4 @@
-#region License
-//    Copyright 2012 Julien Lebosquain
-// 
-//    Licensed under the Apache License, Version 2.0 (the "License");
-//    you may not use this file except in compliance with the License.
-//    You may obtain a copy of the License at
-// 
-//        http://www.apache.org/licenses/LICENSE-2.0
-// 
-//    Unless required by applicable law or agreed to in writing, software
-//    distributed under the License is distributed on an "AS IS" BASIS,
-//    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-//    See the License for the specific language governing permissions and
-//    limitations under the License.
-#endregion
-
-
+using System;
 using JetBrains.DocumentModel;
 using System.Collections.Generic;
 using GammaJul.ReSharper.ForTea.Psi.Directives;
@@ -32,21 +16,16 @@ using JetBrains.Util;
 
 namespace GammaJul.ReSharper.ForTea.Psi {
 
-	/// <summary>
-	/// This class will generate a C# code-behind from a T4 file.
-	/// </summary>
+	/// <summary>This class will generate a C# code-behind from a T4 file.</summary>
 	[GeneratedDocumentService(typeof(T4ProjectFileType))]
 	public class T4GeneratedDocumentService : GeneratedDocumentServiceBase {
 
 		[NotNull] private readonly DirectiveInfoManager _directiveInfoManager;
 		
-		/// <summary>
-		/// Generates a C# file from a T4 file.
-		/// </summary>
+		/// <summary>Generates a C# file from a T4 file.</summary>
 		/// <param name="modificationInfo">The modifications that occurred in the T4 file.</param>
 		public override ISecondaryDocumentGenerationResult Generate(PrimaryFileModificationInfo modificationInfo) {
-			var t4File = modificationInfo.NewPsiFile as IT4File;
-			if (t4File == null)
+			if (!(modificationInfo.NewPsiFile is IT4File t4File))
 				return null;
 			 
 			var generator = new T4CSharpCodeGenerator(t4File, _directiveInfoManager);
@@ -69,61 +48,60 @@ namespace GammaJul.ReSharper.ForTea.Psi {
 				new RangeTranslatorWithGeneratedRangeMap(result.GeneratedRangeMap),
 				csharpLanguageService.GetPrimaryLexerFactory(),
 				t4FileDependencyManager,
-				t4File.GetNonEmptyIncludePaths());
+				t4File.GetNonEmptyIncludePaths()
+			);
 		}
 
-		/// <summary>
-		/// Gets the secondary PSI language types for a T4 file.
-		/// </summary>
+		/// <summary>Gets the secondary PSI language types for a T4 file.</summary>
 		/// <returns>Always <see cref="CSharpLanguage"/>.</returns>
-		public override IEnumerable<PsiLanguageType> GetSecondaryPsiLanguageTypes(IProject project) {
-			// TODO: handle VB
-			return new PsiLanguageType[] { CSharpLanguage.Instance };
-		}
+		public override IEnumerable<PsiLanguageType> GetSecondaryPsiLanguageTypes(IProject project)
+			=> new PsiLanguageType[] { CSharpLanguage.Instance };
 
-		public override bool IsSecondaryPsiLanguageType(IProject project, PsiLanguageType language) {
-			return language.Is<CSharpLanguage>();
-		}
+		public override bool IsSecondaryPsiLanguageType(IProject project, PsiLanguageType language)
+			=> language.Is<CSharpLanguage>();
 
-		/// <summary>
-		/// Creates a secondary lexing service for code behind generated files.
-		/// </summary>
+		/// <summary>Creates a secondary lexing service for code behind generated files.</summary>
 		/// <param name="solution">The solution.</param>
 		/// <param name="mixedLexer">The mixed lexer.</param>
 		/// <param name="sourceFile">The source file.</param>
 		/// <returns>An instance of <see cref="ISecondaryLexingProcess"/> used to lex the code behind file.</returns>
-		public override ISecondaryLexingProcess CreateSecondaryLexingService(ISolution solution, MixedLexer mixedLexer, IPsiSourceFile sourceFile = null) {
-			return CSharpLanguage.Instance != null ? new T4SecondaryLexingProcess(CSharpLanguage.Instance, mixedLexer) : null;
-		}
+		public override ISecondaryLexingProcess CreateSecondaryLexingService(
+			ISolution solution,
+			MixedLexer mixedLexer,
+			IPsiSourceFile sourceFile = null
+		)
+			=> CSharpLanguage.Instance != null ? new T4SecondaryLexingProcess(CSharpLanguage.Instance, mixedLexer) : null;
 
-		/// <summary>
-		/// Gets a lexer factory capable of handling preprocessor directives.
-		/// </summary>
+		/// <summary>Gets a lexer factory capable of handling preprocessor directives.</summary>
 		/// <param name="primaryLanguage">The primary language.</param>
 		/// <returns>Always <c>null</c> since there is no preprocessor directives in T4 files.</returns>
-		public override ILexerFactory LexerFactoryWithPreprocessor(PsiLanguageType primaryLanguage) {
-			return null;
-		}
+		public override ILexerFactory LexerFactoryWithPreprocessor(PsiLanguageType primaryLanguage)
+			=> null;
 
-		/// <summary>
-		/// Reparses the original T4 file.
-		/// </summary>
+		/// <summary>Reparses the original T4 file.</summary>
 		/// <param name="treeTextRange">The tree text range to reparse.</param>
 		/// <param name="newText">The new text to add at <paramref name="treeTextRange"/>.</param>
 		/// <param name="rangeTranslator">The range translator.</param>
 		/// <returns><c>true</c> if reparse succeeded, <c>false</c> otherwise.</returns>
-		protected override bool ReparseOriginalFile(TreeTextRange treeTextRange, string newText, RangeTranslatorWithGeneratedRangeMap rangeTranslator) {
-			var t4File = rangeTranslator.OriginalFile as IT4File;
-			return t4File != null && t4File.ReParse(treeTextRange, newText) != null;
-		}
-		
+		protected override bool ReparseOriginalFile(
+			TreeTextRange treeTextRange,
+			string newText,
+			RangeTranslatorWithGeneratedRangeMap rangeTranslator
+		)
+			=> rangeTranslator.OriginalFile is IT4File t4File
+			&& t4File.ReParse(treeTextRange, newText) != null;
+
 		/// <summary>
 		/// The process of generated document commit (in the case of primary document incremental reparse) can be overridden in this method.
 		/// Returns null if full regeneration is required.
 		/// This method is not allowed to do destructive changes due to interruptibility!
 		/// </summary>
-		public override ICollection<ICommitBuildResult> ExecuteSecondaryDocumentCommitWork(PrimaryFileModificationInfo primaryFileModificationInfo,
-			CachedPsiFile cachedPsiFile, TreeTextRange oldTreeRange, string newText) {
+		public override ICollection<ICommitBuildResult> ExecuteSecondaryDocumentCommitWork(
+			PrimaryFileModificationInfo primaryFileModificationInfo,
+			CachedPsiFile cachedPsiFile,
+			TreeTextRange oldTreeRange,
+			string newText
+		) {
 			var rangeTranslator = (RangeTranslatorWithGeneratedRangeMap) cachedPsiFile.PsiFile.SecondaryRangeTranslator;
 			if (rangeTranslator == null)
 				return null;
@@ -137,7 +115,7 @@ namespace GammaJul.ReSharper.ForTea.Psi {
 				documentRange.Document.LastModificationStamp, TextModificationSide.NotSpecified);
 
 			return new ICommitBuildResult[] {
-				new CommitBuildResult(cachedPsiFile.WorkIncrementalParse(documentChange), null, documentChange, null, TextRange.InvalidRange, string.Empty),
+				new CommitBuildResult(cachedPsiFile.WorkIncrementalParse(documentChange), null, documentChange, null, TextRange.InvalidRange, String.Empty),
 				new FixRangeTranslatorsOnSharedRangeCommitBuildResult(rangeTranslator, null, new TreeTextRange<Original>(oldTreeRange), new TreeTextRange<Generated>(range), newText)
 			};
 		}

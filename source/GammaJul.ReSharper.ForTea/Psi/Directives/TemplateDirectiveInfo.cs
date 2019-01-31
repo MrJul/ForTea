@@ -1,111 +1,68 @@
-﻿#region License
-//    Copyright 2012 Julien Lebosquain
-// 
-//    Licensed under the Apache License, Version 2.0 (the "License");
-//    you may not use this file except in compliance with the License.
-//    You may obtain a copy of the License at
-// 
-//        http://www.apache.org/licenses/LICENSE-2.0
-// 
-//    Unless required by applicable law or agreed to in writing, software
-//    distributed under the License is distributed on an "AS IS" BASIS,
-//    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-//    See the License for the specific language governing permissions and
-//    limitations under the License.
-#endregion
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using JetBrains.Annotations;
+using JetBrains.DataStructures;
 
 namespace GammaJul.ReSharper.ForTea.Psi.Directives {
 
 	public class TemplateDirectiveInfo : DirectiveInfo {
 
-		private readonly DirectiveAttributeInfo _languageAttribute;
-		private readonly DirectiveAttributeInfo _hostSpecificAttribute;
-		private readonly DirectiveAttributeInfo _debugAttribute;
-		private readonly DirectiveAttributeInfo _inheritsAttribute;
-		private readonly DirectiveAttributeInfo _cultureAttribute;
-		private readonly DirectiveAttributeInfo _compilerOptionsAttribute;
-		private readonly DirectiveAttributeInfo _linePragmasAttribute;
-		private readonly DirectiveAttributeInfo _visibilityAttribute;
-		private readonly ReadOnlyCollection<DirectiveAttributeInfo> _supportedAttributes;
+		[NotNull]
+		public DirectiveAttributeInfo CompilerOptionsAttribute { get; }
 
 		[NotNull]
-		public DirectiveAttributeInfo CompilerOptionsAttribute {
-			get { return _compilerOptionsAttribute; }
-		}
+		public DirectiveAttributeInfo CultureAttribute { get; }
 
 		[NotNull]
-		public DirectiveAttributeInfo CultureAttribute {
-			get { return _cultureAttribute; }
-		}
+		public DirectiveAttributeInfo DebugAttribute { get; }
 
 		[NotNull]
-		public DirectiveAttributeInfo DebugAttribute {
-			get { return _debugAttribute; }
-		}
+		public DirectiveAttributeInfo HostSpecificAttribute { get; }
 
 		[NotNull]
-		public DirectiveAttributeInfo HostSpecificAttribute {
-			get { return _hostSpecificAttribute; }
-		}
+		public DirectiveAttributeInfo InheritsAttribute { get; }
 
 		[NotNull]
-		public DirectiveAttributeInfo InheritsAttribute {
-			get { return _inheritsAttribute; }
-		}
+		public DirectiveAttributeInfo LanguageAttribute { get; }
 
 		[NotNull]
-		public DirectiveAttributeInfo LanguageAttribute {
-			get { return _languageAttribute; }
-		}
+		public DirectiveAttributeInfo LinePragmasAttribute { get; }
 
 		[NotNull]
-		public DirectiveAttributeInfo LinePragmasAttribute {
-			get { return _linePragmasAttribute; }
-		}
+		public DirectiveAttributeInfo VisibilityAttribute { get; }
 
-		[NotNull]
-		public DirectiveAttributeInfo VisibilityAttribute {
-			get { return _visibilityAttribute; }
-		}
-
-		public override ReadOnlyCollection<DirectiveAttributeInfo> SupportedAttributes {
-			get { return _supportedAttributes; }
-		}
+		public override ImmutableArray<DirectiveAttributeInfo> SupportedAttributes { get; }
 
 		public TemplateDirectiveInfo([NotNull] T4Environment environment)
 			: base("template") {
 
 			bool isAtLeastVs2012 = environment.VsVersion2.Major >= VsVersions.Vs2012;
 
-			_languageAttribute = new EnumDirectiveAttributeInfo("language", DirectiveAttributeOptions.None, "C#", "VB");
-			_hostSpecificAttribute = isAtLeastVs2012
+			LanguageAttribute = new EnumDirectiveAttributeInfo("language", DirectiveAttributeOptions.None, "C#", "VB");
+			HostSpecificAttribute = isAtLeastVs2012
 				? new EnumDirectiveAttributeInfo("hostspecific",DirectiveAttributeOptions.None, "true", "false", "trueFromBase")
 				: new BooleanDirectiveAttributeInfo("hostspecific", DirectiveAttributeOptions.None);
-			_debugAttribute = new BooleanDirectiveAttributeInfo("debug", DirectiveAttributeOptions.None);
-			_inheritsAttribute = new DirectiveAttributeInfo("inherits", DirectiveAttributeOptions.None);
-			_cultureAttribute = new CultureDirectiveAttributeInfo("culture", DirectiveAttributeOptions.None);
-			_compilerOptionsAttribute = new DirectiveAttributeInfo("compilerOptions", DirectiveAttributeOptions.None);
-			_linePragmasAttribute = new BooleanDirectiveAttributeInfo("linePragmas", DirectiveAttributeOptions.None);
-			_visibilityAttribute = new EnumDirectiveAttributeInfo("visibility", DirectiveAttributeOptions.None, "public", "internal");
+			DebugAttribute = new BooleanDirectiveAttributeInfo("debug", DirectiveAttributeOptions.None);
+			InheritsAttribute = new DirectiveAttributeInfo("inherits", DirectiveAttributeOptions.None);
+			CultureAttribute = new CultureDirectiveAttributeInfo("culture", DirectiveAttributeOptions.None);
+			CompilerOptionsAttribute = new DirectiveAttributeInfo("compilerOptions", DirectiveAttributeOptions.None);
+			LinePragmasAttribute = new BooleanDirectiveAttributeInfo("linePragmas", DirectiveAttributeOptions.None);
+			VisibilityAttribute = new EnumDirectiveAttributeInfo("visibility", DirectiveAttributeOptions.None, "public", "internal");
 
 			var attributes = new List<DirectiveAttributeInfo>(8) {
-				_languageAttribute,
-				_hostSpecificAttribute,
-				_debugAttribute,
-				_inheritsAttribute,
-				_cultureAttribute,
-				_compilerOptionsAttribute
+				LanguageAttribute,
+				HostSpecificAttribute,
+				DebugAttribute,
+				InheritsAttribute,
+				CultureAttribute,
+				CompilerOptionsAttribute
 			};
 
 			if (isAtLeastVs2012) {
-				attributes.Add(_linePragmasAttribute);
-				attributes.Add(_visibilityAttribute);
+				attributes.Add(LinePragmasAttribute);
+				attributes.Add(VisibilityAttribute);
 			}
 
-			_supportedAttributes = attributes.AsReadOnly();
+			SupportedAttributes = attributes.ToImmutableArray();
 		}
 
 	}

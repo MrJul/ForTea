@@ -1,18 +1,3 @@
-#region License
-//    Copyright 2012 Julien Lebosquain
-// 
-//    Licensed under the Apache License, Version 2.0 (the "License");
-//    you may not use this file except in compliance with the License.
-//    You may obtain a copy of the License at
-// 
-//        http://www.apache.org/licenses/LICENSE-2.0
-// 
-//    Unless required by applicable law or agreed to in writing, software
-//    distributed under the License is distributed on an "AS IS" BASIS,
-//    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-//    See the License for the specific language governing permissions and
-//    limitations under the License.
-#endregion
 using System;
 using GammaJul.ReSharper.ForTea.Daemon.Highlightings;
 using GammaJul.ReSharper.ForTea.Parsing;
@@ -32,9 +17,11 @@ namespace GammaJul.ReSharper.ForTea.Intentions.QuickFixes {
 
 	[QuickFix]
 	public class MoveStatementBlockQuickFix : QuickFixBase {
-		private readonly StatementAfterFeatureHighlighting _highlighting;
+
+		[NotNull] private readonly StatementAfterFeatureHighlighting _highlighting;
 
 		protected override Action<ITextControl> ExecutePsiTransaction(ISolution solution, IProgressIndicator progress) {
+
 			T4StatementBlock statementBlock = _highlighting.AssociatedNode;
 			var file = statementBlock.GetContainingFile() as IT4File;
 			Assertion.AssertNotNull(file, "file != null");
@@ -62,13 +49,11 @@ namespace GammaJul.ReSharper.ForTea.Intentions.QuickFixes {
 			};
 		}
 
-		public override string Text {
-			get { return "Move statement block before first class feature block"; }
-		}
+		public override string Text
+			=> "Move statement block before first class feature block";
 
-		public override bool IsAvailable(IUserDataHolder cache) {
-			return _highlighting.IsValid();
-		}
+		public override bool IsAvailable(IUserDataHolder cache)
+			=> _highlighting.IsValid();
 
 		public MoveStatementBlockQuickFix([NotNull] StatementAfterFeatureHighlighting highlighting) {
 			_highlighting = highlighting;

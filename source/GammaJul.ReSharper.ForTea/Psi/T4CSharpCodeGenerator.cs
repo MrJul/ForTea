@@ -1,18 +1,3 @@
-#region License
-//    Copyright 2012 Julien Lebosquain
-// 
-//    Licensed under the Apache License, Version 2.0 (the "License");
-//    you may not use this file except in compliance with the License.
-//    You may obtain a copy of the License at
-// 
-//        http://www.apache.org/licenses/LICENSE-2.0
-// 
-//    Unless required by applicable law or agreed to in writing, software
-//    distributed under the License is distributed on an "AS IS" BASIS,
-//    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-//    See the License for the specific language governing permissions and
-//    limitations under the License.
-#endregion
 using System;
 using System.Text;
 using GammaJul.ReSharper.ForTea.Psi.Directives;
@@ -26,9 +11,7 @@ using JetBrains.Util;
 
 namespace GammaJul.ReSharper.ForTea.Psi {
 
-	/// <summary>
-	/// This class generates a code-behind file from C# embedded statements and directives in the T4 file.
-	/// </summary>
+	/// <summary>This class generates a code-behind file from C# embedded statements and directives in the T4 file.</summary>
 	internal sealed class T4CSharpCodeGenerator : IRecursiveElementProcessor {
 
 		internal const string CodeCommentStart = "/*_T4\x200CCodeStart_*/";
@@ -37,21 +20,21 @@ namespace GammaJul.ReSharper.ForTea.Psi {
 		internal const string DefaultBaseClassName = "Microsoft.VisualStudio.TextTemplating.TextTransformation";
 		internal const string TransformTextMethodName = "TransformText";
 
-		private readonly IT4File _file;
-		private readonly DirectiveInfoManager _directiveInfoManager;
+		[NotNull] private readonly IT4File _file;
+		[NotNull] private readonly DirectiveInfoManager _directiveInfoManager;
+		[NotNull] private readonly GenerationResult _usingsResult;
+		[NotNull] private readonly GenerationResult _parametersResult;
+		[NotNull] private readonly GenerationResult _inheritsResult;
+		[NotNull] private readonly GenerationResult _transformTextResult;
+		[NotNull] private readonly GenerationResult _featureResult;
+
 		private int _includeDepth;
 		private bool _rootFeatureStarted;
-		private GenerationResult _usingsResult;
-		private GenerationResult _parametersResult;
-		private GenerationResult _inheritsResult;
-		private GenerationResult _transformTextResult;
-		private GenerationResult _featureResult;
 		private bool _hasHost;
 
-		bool IRecursiveElementProcessor.InteriorShouldBeProcessed(ITreeNode element) {
-			return element is IT4CodeBlock
-				|| element is IT4Include;
-		}
+		bool IRecursiveElementProcessor.InteriorShouldBeProcessed(ITreeNode element)
+			=> element is IT4CodeBlock
+			|| element is IT4Include;
 
 		void IRecursiveElementProcessor.ProcessBeforeInterior(ITreeNode element) {
 			if (element is IT4Include)
@@ -59,20 +42,17 @@ namespace GammaJul.ReSharper.ForTea.Psi {
 		}
 
 		void IRecursiveElementProcessor.ProcessAfterInterior(ITreeNode element) {
-			if (element is IT4Include) {
-				--_includeDepth;
-				return;
+			switch (element) {
+				case IT4Include _:
+					--_includeDepth;
+					return;
+				case IT4Directive directive:
+					HandleDirective(directive);
+					return;
+				case IT4CodeBlock codeBlock:
+					HandleCodeBlock(codeBlock);
+					break;
 			}
-
-			var directive = element as IT4Directive;
-			if (directive != null) {
-				HandleDirective(directive);
-				return;
-			}
-
-			var codeBlock = element as IT4CodeBlock;
-			if (codeBlock != null)
-				HandleCodeBlock(codeBlock);
 		}
 
 		bool IRecursiveElementProcessor.ProcessingIsFinished {
@@ -82,9 +62,7 @@ namespace GammaJul.ReSharper.ForTea.Psi {
 			}
 		}
 
-		/// <summary>
-		/// Handles a directive in the tree.
-		/// </summary>
+		/// <summary>Handles a directive in the tree.</summary>
 		/// <param name="directive">The directive.</param>
 		private void HandleDirective([NotNull] IT4Directive directive) {
 			if (directive.IsSpecificDirective(_directiveInfoManager.Import))
@@ -95,9 +73,7 @@ namespace GammaJul.ReSharper.ForTea.Psi {
 				HandleParameterDirective(directive);
 		}
 
-		/// <summary>
-		/// Handles an import directive, equivalent of an using directive in C#.
-		/// </summary>
+		/// <summary>Handles an import directive, equivalent of an using directive in C#.</summary>
 		/// <param name="directive">The import directive.</param>
 		private void HandleImportDirective([NotNull] IT4Directive directive) {
 			Pair<IT4Token, string> ns = directive.GetAttributeValueIgnoreOnlyWhitespace(_directiveInfoManager.Import.NamespaceAttribute.Name);
@@ -109,39 +85,35 @@ namespace GammaJul.ReSharper.ForTea.Psi {
 			_usingsResult.Builder.AppendLine(";");
 		}
 
-		/// <summary>
-		/// Handles a template directive, determining if we should output a Host property and use a base class.
-		/// </summary>
+		/// <summary>Handles a template directive, determining if we should output a Host property and use a base class.</summary>
 		/// <param name="directive">The template directive.</param>
 		private void HandleTemplateDirective([NotNull] IT4Directive directive) {
 			string value = directive.GetAttributeValue(_directiveInfoManager.Template.HostSpecificAttribute.Name);
 			_hasHost = Boolean.TrueString.Equals(value, StringComparison.OrdinalIgnoreCase);
 
-			Pair<IT4Token, string> className = directive.GetAttributeValueIgnoreOnlyWhitespace(_directiveInfoManager.Template.InheritsAttribute.Name);
-			if (className.First != null && className.Second != null)
-				_inheritsResult.AppendMapped(className.Second, className.First.GetTreeTextRange());
+			(IT4Token classNameToken, string className) = directive.GetAttributeValueIgnoreOnlyWhitespace(_directiveInfoManager.Template.InheritsAttribute.Name);
+			if (classNameToken != null && className != null)
+				_inheritsResult.AppendMapped(className, classNameToken.GetTreeTextRange());
 		}
 
-		/// <summary>
-		/// Handles a parameter directive, outputting an extra property.
-		/// </summary>
+		/// <summary>Handles a parameter directive, outputting an extra property.</summary>
 		/// <param name="directive">The parameter directive.</param>
 		private void HandleParameterDirective([NotNull] IT4Directive directive) {
-			Pair<IT4Token, string> type = directive.GetAttributeValueIgnoreOnlyWhitespace(_directiveInfoManager.Parameter.TypeAttribute.Name);
-			if (type.First == null || type.Second == null)
+			(IT4Token typeToken, string type) = directive.GetAttributeValueIgnoreOnlyWhitespace(_directiveInfoManager.Parameter.TypeAttribute.Name);
+			if (typeToken == null || type == null)
 				return;
 
-			Pair<IT4Token, string> name = directive.GetAttributeValueIgnoreOnlyWhitespace(_directiveInfoManager.Parameter.NameAttribute.Name);
-			if (name.First == null || name.Second == null)
+			(IT4Token nameToken, string name) = directive.GetAttributeValueIgnoreOnlyWhitespace(_directiveInfoManager.Parameter.NameAttribute.Name);
+			if (nameToken == null || name == null)
 				return;
 			
 			StringBuilder builder = _parametersResult.Builder;
 			builder.Append("[System.CodeDom.Compiler.GeneratedCodeAttribute] private global::");
-			_parametersResult.AppendMapped(type.Second, type.First.GetTreeTextRange());
+			_parametersResult.AppendMapped(type, typeToken.GetTreeTextRange());
 			builder.Append(' ');
-			_parametersResult.AppendMapped(name.Second, name.First.GetTreeTextRange());
+			_parametersResult.AppendMapped(name, nameToken.GetTreeTextRange());
 			builder.Append(" { get { return default(global::");
-			builder.Append(type.Second);
+			builder.Append(type);
 			builder.AppendLine("); } }");
 		}
 
@@ -181,16 +153,12 @@ namespace GammaJul.ReSharper.ForTea.Psi {
 			result.Builder.AppendLine();
 		}
 
-		/// <summary>
-		/// Gets the namespace of the current T4 file. This is always <c>null</c> for a standard (non-preprocessed) file.
-		/// </summary>
+		/// <summary>Gets the namespace of the current T4 file. This is always <c>null</c> for a standard (non-preprocessed) file.</summary>
 		/// <returns>A namespace, or <c>null</c>.</returns>
 		[CanBeNull]
 		private string GetNamespace() {
 			IPsiSourceFile sourceFile = _file.GetSourceFile();
-			if (sourceFile == null)
-				return null;
-			IProjectFile projectFile = sourceFile.ToProjectFile();
+			IProjectFile projectFile = sourceFile?.ToProjectFile();
 			if (projectFile == null || !projectFile.IsPreprocessedT4Template())
 				return null;
 
@@ -201,17 +169,10 @@ namespace GammaJul.ReSharper.ForTea.Psi {
 			return sourceFile.Properties.GetDefaultNamespace();
 		}
 
-		/// <summary>
-		/// Generates a new C# code behind.
-		/// </summary>
+		/// <summary>Generates a new C# code behind.</summary>
 		/// <returns>An instance of <see cref="GenerationResult"/> containing the C# file.</returns>
 		[NotNull]
-		internal GenerationResult Generate() {
-			_usingsResult = new GenerationResult(_file);
-			_parametersResult = new GenerationResult(_file);
-			_inheritsResult = new GenerationResult(_file);
-			_transformTextResult = new GenerationResult(_file);
-			_featureResult = new GenerationResult(_file);
+		public GenerationResult Generate() {
 			_file.ProcessDescendants(this);
 
 			var result = new GenerationResult(_file);
@@ -254,14 +215,17 @@ namespace GammaJul.ReSharper.ForTea.Psi {
 			return result;
 		}
 
-		/// <summary>
-		/// Initializes a new instance of the <see cref="T4CSharpCodeGenerator"/> class.
-		/// </summary>
+		/// <summary>Initializes a new instance of the <see cref="T4CSharpCodeGenerator"/> class.</summary>
 		/// <param name="file">The associated T4 file whose C# code behind will be generated.</param>
 		/// <param name="directiveInfoManager">An instance of <see cref="DirectiveInfoManager"/>.</param>
-		internal T4CSharpCodeGenerator([NotNull] IT4File file, [NotNull] DirectiveInfoManager directiveInfoManager) {
+		public T4CSharpCodeGenerator([NotNull] IT4File file, [NotNull] DirectiveInfoManager directiveInfoManager) {
 			_file = file;
 			_directiveInfoManager = directiveInfoManager;
+			_usingsResult = new GenerationResult(file);
+			_parametersResult = new GenerationResult(file);
+			_inheritsResult = new GenerationResult(file);
+			_transformTextResult = new GenerationResult(file);
+			_featureResult = new GenerationResult(file);
 		}
 
 	}

@@ -1,18 +1,3 @@
-#region License
-//    Copyright 2012 Julien Lebosquain
-// 
-//    Licensed under the Apache License, Version 2.0 (the "License");
-//    you may not use this file except in compliance with the License.
-//    You may obtain a copy of the License at
-// 
-//        http://www.apache.org/licenses/LICENSE-2.0
-// 
-//    Unless required by applicable law or agreed to in writing, software
-//    distributed under the License is distributed on an "AS IS" BASIS,
-//    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-//    See the License for the specific language governing permissions and
-//    limitations under the License.
-#endregion
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -29,72 +14,46 @@ using JetBrains.Util;
 
 namespace GammaJul.ReSharper.ForTea.Tree {
 
-	/// <summary>
-	/// Implementation of <see cref="IT4File"/>.
-	/// </summary>
+	/// <summary>Implementation of <see cref="IT4File"/>.</summary>
 	internal sealed class T4File : FileElementBase, IT4File {
 
-		public override PsiLanguageType Language {
-			get { return T4Language.Instance; }
-		}
+		public override PsiLanguageType Language
+			=> T4Language.Instance;
 
-		/// <summary>
-		/// Gets the node type of this element.
-		/// </summary>
-		public override NodeType NodeType {
-			get { return T4ElementTypes.T4File; }
-		}
+		/// <summary>Gets the node type of this element.</summary>
+		public override NodeType NodeType
+			=> T4ElementTypes.T4File;
 
-		/// <summary>
-		/// Gets a list of direct includes.
-		/// </summary>
+		/// <summary>Gets a list of direct includes.</summary>
 		/// <returns>A list of <see cref="IT4Include"/>.</returns>
-		public IEnumerable<IT4Include> GetIncludes() {
-			return this.Children<IT4Include>();
-		}
+		public IEnumerable<IT4Include> GetIncludes()
+			=> this.Children<IT4Include>();
 
-		public IEnumerable<FileSystemPath> GetNonEmptyIncludePaths() {
-			return GetIncludes()
+		public IEnumerable<FileSystemPath> GetNonEmptyIncludePaths()
+			=> GetIncludes()
 				.Select(include => include.Path)
 				.Where(path => path != null && !path.IsEmpty);
-		}
 
-		/// <summary>
-		/// Gets a list of directives contained in the file.
-		/// </summary>
+		/// <summary>Gets a list of directives contained in the file.</summary>
 		/// <returns>A collection of <see cref="IT4Directive"/>.</returns>
-		public IEnumerable<IT4Directive> GetDirectives() {
-			return this.Children<IT4Directive>();
-		}
+		public IEnumerable<IT4Directive> GetDirectives()
+			=> this.Children<IT4Directive>();
 
-		/// <summary>
-		/// Gets a list of statement blocks contained in the file.
-		/// </summary>
+		/// <summary>Gets a list of statement blocks contained in the file.</summary>
 		/// <returns>A collection of <see cref="T4StatementBlock"/>.</returns>
-		public IEnumerable<T4StatementBlock> GetStatementBlocks() {
-			return this.Children<T4StatementBlock>();
-		}
+		public IEnumerable<T4StatementBlock> GetStatementBlocks()
+			=> this.Children<T4StatementBlock>();
 
-		/// <summary>
-		/// Gets a list of feature blocks contained in the file.
-		/// </summary>
+		/// <summary>Gets a list of feature blocks contained in the file.</summary>
 		/// <returns>A collection of <see cref="T4FeatureBlock"/>.</returns>
-		public IEnumerable<T4FeatureBlock> GetFeatureBlocks() {
-			return this.Children<T4FeatureBlock>();
-		}
+		public IEnumerable<T4FeatureBlock> GetFeatureBlocks()
+			=> this.Children<T4FeatureBlock>();
 
-		/// <summary>
-		/// Adds a new directive before an existing one.
-		/// </summary>
+		/// <summary>Adds a new directive before an existing one.</summary>
 		/// <param name="directive">The directive to add.</param>
 		/// <param name="anchor">The existing directive where <paramref name="directive"/> will be placed before.</param>
 		/// <returns>A new instance of <see cref="IT4Directive"/>, representing <paramref name="directive"/> in the T4 file.</returns>
 		public IT4Directive AddDirectiveBefore(IT4Directive directive, IT4Directive anchor) {
-			if (directive == null)
-				throw new ArgumentNullException("directive");
-			if (anchor == null)
-				throw new ArgumentNullException("anchor");
-
 			using (WriteLockCookie.Create(IsPhysical())) {
 				directive = ModificationUtil.AddChildBefore(anchor, directive);
 
@@ -107,18 +66,11 @@ namespace GammaJul.ReSharper.ForTea.Tree {
 			}
 		}
 
-		/// <summary>
-		/// Adds a new directive after an existing one.
-		/// </summary>
+		/// <summary>Adds a new directive after an existing one.</summary>
 		/// <param name="directive">The directive to add.</param>
 		/// <param name="anchor">The existing directive where <paramref name="directive"/> will be placed after.</param>
 		/// <returns>A new instance of <see cref="IT4Directive"/>, representing <paramref name="directive"/> in the T4 file.</returns>
 		public IT4Directive AddDirectiveAfter(IT4Directive directive, IT4Directive anchor) {
-			if (directive == null)
-				throw new ArgumentNullException("directive");
-			if (anchor == null)
-				throw new ArgumentNullException("anchor");
-
 			using (WriteLockCookie.Create(IsPhysical())) {
 				directive = ModificationUtil.AddChildAfter(anchor, directive);
 
@@ -134,15 +86,10 @@ namespace GammaJul.ReSharper.ForTea.Tree {
 			}
 		}
 
-		/// <summary>
-		/// Adds a new directive.
-		/// </summary>
+		/// <summary>Adds a new directive.</summary>
 		/// <param name="directive">The directive to add.</param>
 		/// <returns>A new instance of <see cref="IT4Directive"/>, representing <paramref name="directive"/> in the T4 file.</returns>
 		public IT4Directive AddDirective(IT4Directive directive) {
-			if (directive == null)
-				throw new ArgumentNullException("directive");
-
 			IT4Directive anchor = GetDirectives().LastOrDefault();
 			if (anchor != null)
 				return AddDirectiveAfter(directive, anchor);
@@ -156,9 +103,7 @@ namespace GammaJul.ReSharper.ForTea.Tree {
 			}
 		}
 
-		/// <summary>
-		/// Removes a directive.
-		/// </summary>
+		/// <summary>Removes a directive.</summary>
 		/// <param name="directive">The directive to remove.</param>
 		public void RemoveDirective(IT4Directive directive) {
 			if (directive == null)
@@ -181,15 +126,10 @@ namespace GammaJul.ReSharper.ForTea.Tree {
 			}
 		}
 
-		/// <summary>
-		/// Adds a new statement block.
-		/// </summary>
+		/// <summary>Adds a new statement block.</summary>
 		/// <param name="statementBlock">The statement block to add.</param>
 		/// <returns>A new instance of <see cref="T4StatementBlock"/>, representing <paramref name="statementBlock"/> in the T4 file.</returns>
 		public T4StatementBlock AddStatementBlock(T4StatementBlock statementBlock) {
-			if (statementBlock == null)
-				throw new ArgumentNullException("statementBlock");
-
 			T4StatementBlock anchor = GetStatementBlocks().LastOrDefault();
 			using (WriteLockCookie.Create(IsPhysical())) {
 				return anchor == null
@@ -198,15 +138,10 @@ namespace GammaJul.ReSharper.ForTea.Tree {
 			}
 		}
 
-		/// <summary>
-		/// Adds a new feature block.
-		/// </summary>
+		/// <summary>Adds a new feature block.</summary>
 		/// <param name="featureBlock">The feature block to add.</param>
 		/// <returns>A new instance of <see cref="T4FeatureBlock"/>, representing <paramref name="featureBlock"/> in the T4 file.</returns>
 		public T4FeatureBlock AddFeatureBlock(T4FeatureBlock featureBlock) {
-			if (featureBlock == null)
-				throw new ArgumentNullException("featureBlock");
-
 			T4FeatureBlock anchor = GetFeatureBlocks().LastOrDefault();
 			using (WriteLockCookie.Create(IsPhysical())) {
 				return anchor == null
@@ -215,9 +150,7 @@ namespace GammaJul.ReSharper.ForTea.Tree {
 			}
 		}
 
-		/// <summary>
-		/// Removes a child node from the file.
-		/// </summary>
+		/// <summary>Removes a child node from the file.</summary>
 		/// <param name="node">The node to remove.</param>
 		public void RemoveChild(IT4TreeNode node) {
 			if (node == null)
@@ -227,9 +160,7 @@ namespace GammaJul.ReSharper.ForTea.Tree {
 				ModificationUtil.DeleteChild(node);
 		}
 
-		/// <summary>
-		/// Obtains the caching lexer on file text
-		/// </summary>
+		/// <summary>Obtains the caching lexer on file text.</summary>
 		public new CachingLexer CachingLexer {
 			get {
 				// TODO: this is a workaround: sometimes, TodoManager will ask for the CachingLexer

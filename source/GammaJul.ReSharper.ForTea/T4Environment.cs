@@ -1,20 +1,3 @@
-#region License
-//    Copyright 2012 Julien Lebosquain
-// 
-//    Licensed under the Apache License, Version 2.0 (the "License");
-//    you may not use this file except in compliance with the License.
-//    You may obtain a copy of the License at
-// 
-//        http://www.apache.org/licenses/LICENSE-2.0
-// 
-//    Unless required by applicable law or agreed to in writing, software
-//    distributed under the License is distributed on an "AS IS" BASIS,
-//    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-//    See the License for the specific language governing permissions and
-//    limitations under the License.
-#endregion
-
-
 using Microsoft.VisualStudio.TextTemplating.VSHost;
 using System;
 using System.Collections.Generic;
@@ -28,13 +11,10 @@ using JetBrains.VsIntegration.Shell;
 using JetBrains.Util;
 using JetBrains.Util.Dotnet.TargetFrameworkIds;
 using Microsoft.Win32;
-using PureAttribute = System.Diagnostics.Contracts.PureAttribute;
 
 namespace GammaJul.ReSharper.ForTea {
 
-	/// <summary>
-	/// Contains environment-dependent information.
-	/// </summary>
+	/// <summary>Contains environment-dependent information.</summary>
 	[ShellComponent]
 	public class T4Environment {
 
@@ -42,22 +22,19 @@ namespace GammaJul.ReSharper.ForTea {
 		[NotNull] private readonly Lazy<Optional<ITextTemplatingComponents>> _components;
 		[NotNull] private readonly string[] _textTemplatingAssemblyNames;
 		[CanBeNull] private readonly TargetFrameworkId _targetFrameworkId;
+
 		[CanBeNull] private IList<FileSystemPath> _includePaths;
 
 		[NotNull]
 		public Optional<ITextTemplatingComponents> Components
 			=> _components.Value;
 
-		/// <summary>
-		/// Gets the version of the Visual Studio we're running under, two components only, <c>Major.Minor</c>. Example: “8.0”.
-		/// </summary>
+		/// <summary>Gets the version of the Visual Studio we're running under, two components only, <c>Major.Minor</c>. Example: “8.0”.</summary>
 		[NotNull]
 		public Version2 VsVersion2
 			=> _vsEnvironmentInformation.VsVersion2;
 
-		/// <summary>
-		/// Gets the target framework ID.
-		/// </summary>
+		/// <summary>Gets the target framework ID.</summary>
 		[NotNull]
 		public TargetFrameworkId TargetFrameworkId {
 			get {
@@ -67,14 +44,10 @@ namespace GammaJul.ReSharper.ForTea {
 			}
 		}
 
-		/// <summary>
-		/// Gets the C# language version.
-		/// </summary>
+		/// <summary>Gets the C# language version.</summary>
 		public CSharpLanguageLevel CSharpLanguageLevel { get; }
 
-		/// <summary>
-		/// Gets the default included assemblies.
-		/// </summary>
+		/// <summary>Gets the default included assemblies.</summary>
 		[NotNull]
 		public IEnumerable<string> TextTemplatingAssemblyNames {
 			get {
@@ -84,15 +57,11 @@ namespace GammaJul.ReSharper.ForTea {
 			}
 		}
 
-		/// <summary>
-		/// Gets whether the current environment is supported. VS2005 and VS2008 aren't.
-		/// </summary>
+		/// <summary>Gets whether the current environment is supported. VS2005 and VS2008 aren't.</summary>
 		public bool IsSupported
 			=> _targetFrameworkId != null;
 
-		/// <summary>
-		/// Gets the common include paths from the registry.
-		/// </summary>
+		/// <summary>Gets the common include paths from the registry.</summary>
 		[NotNull]
 		public IEnumerable<FileSystemPath> IncludePaths {
 			get {
@@ -151,7 +120,10 @@ namespace GammaJul.ReSharper.ForTea {
 				.Combine(RelativePath.Parse("PublicAssemblies\\" + name + ".dll"))
 				.FullPath;
 
-		public T4Environment([NotNull] IVsEnvironmentInformation vsEnvironmentInformation, [NotNull] RawVsServiceProvider rawVsServiceProvider) {
+		public T4Environment(
+			[NotNull] IVsEnvironmentInformation vsEnvironmentInformation,
+			[NotNull] RawVsServiceProvider rawVsServiceProvider
+		) {
 			_vsEnvironmentInformation = vsEnvironmentInformation;
 			
 			_components = Lazy.Of(() => new Optional<ITextTemplatingComponents>(rawVsServiceProvider.Value.GetService<STextTemplating, ITextTemplatingComponents>()), true);

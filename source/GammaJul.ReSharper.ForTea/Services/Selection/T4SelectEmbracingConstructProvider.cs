@@ -1,18 +1,3 @@
-﻿#region License
-//    Copyright 2012 Julien Lebosquain
-// 
-//    Licensed under the Apache License, Version 2.0 (the "License");
-//    you may not use this file except in compliance with the License.
-//    You may obtain a copy of the License at
-// 
-//        http://www.apache.org/licenses/LICENSE-2.0
-// 
-//    Unless required by applicable law or agreed to in writing, software
-//    distributed under the License is distributed on an "AS IS" BASIS,
-//    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-//    See the License for the specific language governing permissions and
-//    limitations under the License.
-#endregion
 using System.Linq;
 using GammaJul.ReSharper.ForTea.Psi;
 using GammaJul.ReSharper.ForTea.Tree;
@@ -28,25 +13,17 @@ using JetBrains.Util;
 
 namespace GammaJul.ReSharper.ForTea.Services.Selection {
 
-	/// <summary>
-	/// Support for extend selection (Ctrl+W).
-	/// </summary>
+	/// <summary>Support for extend selection (Ctrl+W).</summary>
 	[ProjectFileType(typeof(T4ProjectFileType))]
 	public class T4SelectEmbracingConstructProvider : ISelectEmbracingConstructProvider {
 
-		public bool IsAvailable(IPsiSourceFile sourceFile) {
-			return sourceFile.Properties.ShouldBuildPsi;
-		}
+		public bool IsAvailable(IPsiSourceFile sourceFile)
+			=> sourceFile.Properties.ShouldBuildPsi;
 
 		public ISelectedRange GetSelectedRange(IPsiSourceFile sourceFile, DocumentRange documentRange) {
-			Pair<IT4File, IFile> pair = GetFiles(sourceFile, documentRange);
-			IT4File t4File = pair.First;
-			IFile codeBehindFile = pair.Second;
+			(IT4File t4File, IFile codeBehindFile) = GetFiles(sourceFile, documentRange);
 
-			if (t4File == null)
-				return null;
-
-			ITreeNode t4Node = t4File.FindNodeAt(documentRange);
+			ITreeNode t4Node = t4File?.FindNodeAt(documentRange);
 			if (t4Node == null)
 				return null;
 
@@ -57,11 +34,9 @@ namespace GammaJul.ReSharper.ForTea.Services.Selection {
 					.SelectNotNull(fileType => Shell.Instance.GetComponent<IProjectFileTypeServices>().TryGetService<ISelectEmbracingConstructProvider>(fileType))
 					.FirstOrDefault();
 
-				if (codeBehindProvider != null) {
-					ISelectedRange codeBehindRange = codeBehindProvider.GetSelectedRange(sourceFile, documentRange);
-					if (codeBehindRange != null)
-						return new T4CodeBehindWrappedSelection(t4File, codeBehindRange);
-				}
+				ISelectedRange codeBehindRange = codeBehindProvider?.GetSelectedRange(sourceFile, documentRange);
+				if (codeBehindRange != null)
+					return new T4CodeBehindWrappedSelection(t4File, codeBehindRange);
 			}
 
 			return new T4NodeSelection(t4File, t4Node);
@@ -71,12 +46,11 @@ namespace GammaJul.ReSharper.ForTea.Services.Selection {
 			IT4File primaryFile = null;
 			IFile secondaryFile = null;
 
-			foreach (Pair<IFile, TreeTextRange> pair in sourceFile.EnumerateIntersectingPsiFiles(documentRange)) {
-				var t4File = pair.First as IT4File;
-				if (t4File != null)
+			foreach ((IFile file, _) in sourceFile.EnumerateIntersectingPsiFiles(documentRange)) {
+				if (file is IT4File t4File)
 					primaryFile = t4File;
 				else
-					secondaryFile = pair.First;
+					secondaryFile = file;
 			}
 
 			return Pair.Of(primaryFile, secondaryFile);

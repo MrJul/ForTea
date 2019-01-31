@@ -1,18 +1,3 @@
-﻿#region License
-//    Copyright 2012 Julien Lebosquain
-// 
-//    Licensed under the Apache License, Version 2.0 (the "License");
-//    you may not use this file except in compliance with the License.
-//    You may obtain a copy of the License at
-// 
-//        http://www.apache.org/licenses/LICENSE-2.0
-// 
-//    Unless required by applicable law or agreed to in writing, software
-//    distributed under the License is distributed on an "AS IS" BASIS,
-//    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-//    See the License for the specific language governing permissions and
-//    limitations under the License.
-#endregion
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -44,48 +29,52 @@ namespace GammaJul.ReSharper.ForTea.Psi {
 		[NotNull] private readonly ChangeManager _changeManager;
 		[NotNull] private readonly T4Environment _t4Environment;
 
-		private struct ModuleWrapper {
-			internal readonly T4PsiModule Module;
-			internal readonly LifetimeDefinition LifetimeDefinition;
+		private readonly struct ModuleWrapper {
 
-			internal ModuleWrapper([NotNull] T4PsiModule module, [NotNull] LifetimeDefinition lifetimeDefinition) {
+			[NotNull] public readonly T4PsiModule Module;
+			[NotNull] public readonly LifetimeDefinition LifetimeDefinition;
+
+			public ModuleWrapper([NotNull] T4PsiModule module, [NotNull] LifetimeDefinition lifetimeDefinition) {
 				Module = module;
 				LifetimeDefinition = lifetimeDefinition;
 			}
 		}
 
-		/// <summary>
-		/// Gets all <see cref="T4PsiModule"/>s for opened files.
-		/// </summary>
+		/// <summary>Gets all <see cref="T4PsiModule"/>s for opened files.</summary>
 		/// <returns>A collection of <see cref="T4PsiModule"/>.</returns>
-		internal IEnumerable<IPsiModule> GetModules() {
+		[NotNull]
+		[ItemNotNull]
+		public IEnumerable<IPsiModule> GetModules() {
 			_shellLocks.AssertReadAccessAllowed();
 
 			return _modules.Values.Select(wrapper => (IPsiModule) wrapper.Module);
 		}
 
-		/// <summary>
-		/// Gets all source files for a given project file.
-		/// </summary>
+		/// <summary>Gets all source files for a given project file.</summary>
 		/// <param name="projectFile">The project file whose source files will be returned.</param>
 		[NotNull]
-		internal IList<IPsiSourceFile> GetPsiSourceFilesFor(IProjectFile projectFile) {
+		[ItemNotNull]
+		public IList<IPsiSourceFile> GetPsiSourceFilesFor([CanBeNull] IProjectFile projectFile) {
 			_shellLocks.AssertReadAccessAllowed();
 
-			ModuleWrapper wrapper;
-			return projectFile != null && projectFile.IsValid() && _modules.TryGetValue(projectFile, out wrapper) && wrapper.Module.IsValid()
-				? new[] { wrapper.Module.SourceFile }
-				: EmptyList<IPsiSourceFile>.InstanceList;
+			return projectFile != null
+				&& projectFile.IsValid()
+				&& _modules.TryGetValue(projectFile, out ModuleWrapper wrapper)
+				&& wrapper.Module.IsValid()
+			? new[] { wrapper.Module.SourceFile }
+			: EmptyList<IPsiSourceFile>.InstanceList;
 		}
 
-		/// <summary>
-		/// Processes changes for specific project file and returns a list of corresponding source file changes.
-		/// </summary>
+		/// <summary>Processes changes for specific project file and returns a list of corresponding source file changes.</summary>
 		/// <param name="projectFile">The project file.</param>
 		/// <param name="changeType">Type of the change.</param>
 		/// <param name="changeBuilder">The change builder used to populate changes.</param>
 		/// <returns>Whether the provider has handled the file change.</returns>
-		internal bool OnProjectFileChanged(IProjectFile projectFile, ref PsiModuleChange.ChangeType changeType, PsiModuleChangeBuilder changeBuilder) {
+		public bool OnProjectFileChanged(
+			[NotNull] IProjectFile projectFile,
+			ref PsiModuleChange.ChangeType changeType,
+			[NotNull] PsiModuleChangeBuilder changeBuilder
+		) {
 			if (!_t4Environment.IsSupported)
 				return false;
 
@@ -152,7 +141,8 @@ namespace GammaJul.ReSharper.ForTea.Psi {
 				projectFile,
 				solution.GetComponent<T4FileDataCache>(),
 				_t4Environment,
-				solution.GetComponent<OutputAssemblies>());
+				solution.GetComponent<OutputAssemblies>()
+			);
 			_modules[projectFile] = new ModuleWrapper(psiModule, lifetimeDefinition);
 			changeBuilder.AddModuleChange(psiModule, PsiModuleChange.ChangeType.Added);
 			changeBuilder.AddFileChange(psiModule.SourceFile, PsiModuleChange.ChangeType.Added);
@@ -176,23 +166,19 @@ namespace GammaJul.ReSharper.ForTea.Psi {
 			moduleWrapper.LifetimeDefinition.Terminate();
 		}
 
-		private static void ModifyFile([NotNull] PsiModuleChangeBuilder changeBuilder, ModuleWrapper moduleWrapper) {
-			changeBuilder.AddFileChange(moduleWrapper.Module.SourceFile, PsiModuleChange.ChangeType.Modified);
-		}
+		private static void ModifyFile([NotNull] PsiModuleChangeBuilder changeBuilder, ModuleWrapper moduleWrapper)
+			=> changeBuilder.AddFileChange(moduleWrapper.Module.SourceFile, PsiModuleChange.ChangeType.Modified);
 
 		private void InvalidateFilesHavingInclude([NotNull] FileSystemPath includeLocation, [NotNull] IPsiServices psiServices) {
 			psiServices.GetComponent<T4FileDependencyManager>().UpdateIncludes(includeLocation, EmptyList<FileSystemPath>.InstanceList);
 			foreach (ModuleWrapper moduleWrapper in _modules.Values) {
 				IPsiSourceFile sourceFile = moduleWrapper.Module.SourceFile;
-				var t4File = sourceFile.GetTheOnlyPsiFile(T4Language.Instance) as IT4File;
-				if (t4File != null && t4File.GetNonEmptyIncludePaths().Any(path => path == includeLocation))
+				if (sourceFile.GetTheOnlyPsiFile(T4Language.Instance) is IT4File t4File 
+				&& t4File.GetNonEmptyIncludePaths().Any(path => path == includeLocation))
 					psiServices.MarkAsDirty(sourceFile);
 			}
 		}
 		
-		/// <summary>
-		/// Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
-		/// </summary>
 		public void Dispose() {
 			using (WriteLockCookie.Create()) {
 				foreach (var wrapper in _modules.Values)
@@ -205,7 +191,8 @@ namespace GammaJul.ReSharper.ForTea.Psi {
 			[NotNull] Lifetime lifetime,
 			[NotNull] IShellLocks shellLocks,
 			[NotNull] ChangeManager changeManager,
-			[NotNull] T4Environment t4Environment) {
+			[NotNull] T4Environment t4Environment
+		) {
 			_lifetime = lifetime;
 			_shellLocks = shellLocks;
 			_changeManager = changeManager;

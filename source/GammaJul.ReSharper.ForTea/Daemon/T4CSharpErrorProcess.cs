@@ -1,20 +1,3 @@
-﻿#region License
-//    Copyright 2012 Julien Lebosquain
-// 
-//    Licensed under the Apache License, Version 2.0 (the "License");
-//    you may not use this file except in compliance with the License.
-//    You may obtain a copy of the License at
-// 
-//        http://www.apache.org/licenses/LICENSE-2.0
-// 
-//    Unless required by applicable law or agreed to in writing, software
-//    distributed under the License is distributed on an "AS IS" BASIS,
-//    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-//    See the License for the specific language governing permissions and
-//    limitations under the License.
-#endregion
-
-
 using System;
 using System.Linq;
 using GammaJul.ReSharper.ForTea.Daemon.Highlightings;
@@ -53,23 +36,21 @@ namespace GammaJul.ReSharper.ForTea.Daemon {
 				context.AddHighlighting(new MissingTransformTextMethodHighlighting(superTypeUsage));
 		}
 
-		private static bool HasTransformTextMethod([NotNull] ITypeElement typeElement) {
-			return typeElement
+		private static bool HasTransformTextMethod([NotNull] ITypeElement typeElement)
+			=> typeElement
 				.GetAllClassMembers(T4CSharpCodeGenerator.TransformTextMethodName)
 				.SelectNotNull(instance => instance.Member as IMethod)
 				.Any(IsTransformTextMethod);
-		}
 
-		private static bool IsTransformTextMethod([NotNull] IMethod method) {
-			return method.ShortName == T4CSharpCodeGenerator.TransformTextMethodName
-				&& (method.IsVirtual || method.IsOverride || method.IsAbstract)
-				&& !method.IsSealed
-				&& method.GetAccessRights() == AccessRights.PUBLIC
-				&& method.ReturnType.IsString()
-				&& method.Parameters.Count == 0;
-		}
+		private static bool IsTransformTextMethod([NotNull] IMethod method)
+			=> method.ShortName == T4CSharpCodeGenerator.TransformTextMethodName
+			&& (method.IsVirtual || method.IsOverride || method.IsAbstract)
+			&& !method.IsSealed
+			&& method.GetAccessRights() == AccessRights.PUBLIC
+			&& method.ReturnType.IsString()
+			&& method.Parameters.Count == 0;
 
-		public T4CSharpErrorProcess(IDaemonProcess process, IContextBoundSettingsStore settingsStore, ICSharpFile file)
+		public T4CSharpErrorProcess([NotNull] IDaemonProcess process, [NotNull] IContextBoundSettingsStore settingsStore, [NotNull] ICSharpFile file)
 			: base(process, settingsStore, file) {
 		}
 

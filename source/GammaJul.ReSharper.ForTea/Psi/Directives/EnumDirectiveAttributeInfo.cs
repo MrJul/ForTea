@@ -1,41 +1,27 @@
-﻿#region License
-//    Copyright 2012 Julien Lebosquain
-// 
-//    Licensed under the Apache License, Version 2.0 (the "License");
-//    you may not use this file except in compliance with the License.
-//    You may obtain a copy of the License at
-// 
-//        http://www.apache.org/licenses/LICENSE-2.0
-// 
-//    Unless required by applicable law or agreed to in writing, software
-//    distributed under the License is distributed on an "AS IS" BASIS,
-//    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-//    See the License for the specific language governing permissions and
-//    limitations under the License.
-#endregion
 using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using JetBrains.Annotations;
 using System.Linq;
+using JetBrains.Annotations;
+using JetBrains.DataStructures;
 
 namespace GammaJul.ReSharper.ForTea.Psi.Directives {
 
 	public class EnumDirectiveAttributeInfo : DirectiveAttributeInfo {
 
-		private readonly ReadOnlyCollection<string> _enumValues;
+		[NotNull] [ItemNotNull] private readonly ImmutableArray<string> _enumValues;
 		
-		public override bool IsValid(string value) {
-			return _enumValues.Contains(value, StringComparer.OrdinalIgnoreCase);
-		}
+		public override bool IsValid(string value)
+			=> _enumValues.Contains(value, StringComparer.OrdinalIgnoreCase);
 
-		public override IEnumerable<string> IntelliSenseValues {
-			get { return _enumValues; }
-		}
+		public override ImmutableArray<string> IntelliSenseValues
+			=> _enumValues;
 
-		public EnumDirectiveAttributeInfo([NotNull] string name, DirectiveAttributeOptions options, [NotNull] params string[] enumValues)
+		public EnumDirectiveAttributeInfo(
+			[NotNull] string name,
+			DirectiveAttributeOptions options,
+			[NotNull] [ItemNotNull] params string[] enumValues
+		)
 			: base(name, options) {
-			_enumValues = Array.AsReadOnly(enumValues);
+			_enumValues = enumValues.ToImmutableArray();
 		}
 
 	}

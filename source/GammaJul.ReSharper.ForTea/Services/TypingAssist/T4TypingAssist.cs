@@ -1,18 +1,3 @@
-#region License
-//    Copyright 2012 Julien Lebosquain
-// 
-//    Licensed under the Apache License, Version 2.0 (the "License");
-//    you may not use this file except in compliance with the License.
-//    You may obtain a copy of the License at
-// 
-//        http://www.apache.org/licenses/LICENSE-2.0
-// 
-//    Unless required by applicable law or agreed to in writing, software
-//    distributed under the License is distributed on an "AS IS" BASIS,
-//    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-//    See the License for the specific language governing permissions and
-//    limitations under the License.
-#endregion
 using GammaJul.ReSharper.ForTea.Parsing;
 using GammaJul.ReSharper.ForTea.Psi;
 using GammaJul.ReSharper.ForTea.Services.CodeCompletion;
@@ -34,7 +19,7 @@ namespace GammaJul.ReSharper.ForTea.Services.TypingAssist {
 	[SolutionComponent]
 	public class T4TypingAssist : TypingAssistLanguageBase<T4Language>, ITypingHandler {
 
-		private readonly ICodeCompletionSessionManager _codeCompletionSessionManager;
+		[NotNull] private readonly ICodeCompletionSessionManager _codeCompletionSessionManager;
 
 		protected override bool IsSupported(ITextControl textControl) {
 			IPsiSourceFile psiSourceFile = textControl.Document.GetPsiSourceFile(Solution);
@@ -46,9 +31,7 @@ namespace GammaJul.ReSharper.ForTea.Services.TypingAssist {
 		public bool QuickCheckAvailability(ITextControl textControl, IPsiSourceFile projectFile)
 			=> projectFile.LanguageType.Is<T4ProjectFileType>();
 
-		/// <summary>
-		/// When = is typed, insert "".
-		/// </summary>
+		/// <summary>When = is typed, insert "".</summary>
 		private bool OnEqualTyped(ITypingContext context) {
 			ITextControl textControl = context.TextControl;
 
@@ -86,9 +69,7 @@ namespace GammaJul.ReSharper.ForTea.Services.TypingAssist {
 			return true;
 		}
 
-		/// <summary>
-		/// When a " is typed, insert another ".
-		/// </summary>
+		/// <summary>When a " is typed, insert another ".</summary>
 		private bool OnQuoteTyped(ITypingContext context) {
 			ITextControl textControl = context.TextControl;
 
@@ -147,7 +128,8 @@ namespace GammaJul.ReSharper.ForTea.Services.TypingAssist {
 			[NotNull] IExternalIntellisenseHost externalIntellisenseHost,
 			[NotNull] SkippingTypingAssist skippingTypingAssist,
 			[NotNull] ITypingAssistManager typingAssistManager,
-			[NotNull] ICodeCompletionSessionManager codeCompletionSessionManager)
+			[NotNull] ICodeCompletionSessionManager codeCompletionSessionManager
+		)
 			: base(solution, settingsStore, cachingLexerService, commandProcessor, psiServices, externalIntellisenseHost, skippingTypingAssist) {
 			
 			_codeCompletionSessionManager = codeCompletionSessionManager;

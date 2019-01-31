@@ -1,18 +1,3 @@
-#region License
-//    Copyright 2012 Julien Lebosquain
-// 
-//    Licensed under the Apache License, Version 2.0 (the "License");
-//    you may not use this file except in compliance with the License.
-//    You may obtain a copy of the License at
-// 
-//        http://www.apache.org/licenses/LICENSE-2.0
-// 
-//    Unless required by applicable law or agreed to in writing, software
-//    distributed under the License is distributed on an "AS IS" BASIS,
-//    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-//    See the License for the specific language governing permissions and
-//    limitations under the License.
-#endregion
 using GammaJul.ReSharper.ForTea.Parsing;
 using GammaJul.ReSharper.ForTea.Psi;
 using GammaJul.ReSharper.ForTea.Psi.Directives;
@@ -32,19 +17,14 @@ namespace GammaJul.ReSharper.ForTea.Services.CodeCompletion {
 	[Language(typeof(T4Language))]
 	public class DirectiveAttributeValueItemsProvider : ItemsProviderOfSpecificContext<T4CodeCompletionContext> {
 
-		private readonly DirectiveInfoManager _directiveInfoManager;
+		[NotNull] private readonly DirectiveInfoManager _directiveInfoManager;
 
-		protected override LookupFocusBehaviour GetLookupFocusBehaviour(T4CodeCompletionContext context) {
-			return LookupFocusBehaviour.SoftWhenEmpty;
-		}
+		protected override LookupFocusBehaviour GetLookupFocusBehaviour(T4CodeCompletionContext context)
+			=> LookupFocusBehaviour.SoftWhenEmpty;
 
 		protected override bool IsAvailable(T4CodeCompletionContext context) {
 			ITreeNode node = context.BasicContext.File.FindNodeAt(context.BasicContext.SelectedTreeRange);
-			if (node == null)
-				return false;
-
-			var directive = node.Parent as IT4DirectiveAttribute;
-			if (directive == null)
+			if (!(node?.Parent is IT4DirectiveAttribute))
 				return false;
 
 			TokenNodeType tokenType = node.GetTokenType();
@@ -73,10 +53,7 @@ namespace GammaJul.ReSharper.ForTea.Services.CodeCompletion {
 			Assertion.AssertNotNull(directive, "directive != null");
 
 			DirectiveInfo directiveInfo = _directiveInfoManager.GetDirectiveByName(directive.GetName());
-			if (directiveInfo == null)
-				return false;
-
-			DirectiveAttributeInfo attributeInfo = directiveInfo.GetAttributeByName(attribute.GetName());
+			DirectiveAttributeInfo attributeInfo = directiveInfo?.GetAttributeByName(attribute.GetName());
 			if (attributeInfo == null)
 				return false;
 			
@@ -85,6 +62,7 @@ namespace GammaJul.ReSharper.ForTea.Services.CodeCompletion {
 				item.InitializeRanges(ranges, context.BasicContext);
 				collector.Add(item);
 			}
+
 			return true;
 		}
 
