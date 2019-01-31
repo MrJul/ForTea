@@ -1,112 +1,125 @@
 using System;
+using System.Globalization;
 using System.IO;
 using System.Linq;
-using Newtonsoft.Json.Linq;
-using Nuke.Common.Git;
-using Nuke.Common.Tools.GitVersion;
-using Nuke.Common.Tools.NuGet;
+using System.Text.RegularExpressions;
 using Nuke.Common;
+using Nuke.Common.Execution;
+using Nuke.Common.ProjectModel;
 using Nuke.Common.Tooling;
+using Nuke.Common.Tools.MSBuild;
+using Nuke.Common.Tools.NuGet;
 using Nuke.Common.Utilities;
 using Nuke.Common.Utilities.Collections;
-using static Nuke.Common.IO.HttpTasks;
-using static Nuke.Common.IO.SerializationTasks;
-using static Nuke.Common.IO.TextTasks;
-using static Nuke.Common.Tools.MSBuild.MSBuildTasks;
-using static Nuke.Common.Tools.NuGet.NuGetTasks;
-using static Nuke.Common.Tooling.NuGetPackageResolver;
 using static Nuke.Common.IO.FileSystemTasks;
 using static Nuke.Common.IO.PathConstruction;
-using static Nuke.Common.Logger;
-using static Nuke.Common.Tooling.ProcessTasks;
+using static Nuke.Common.Tools.MSBuild.MSBuildTasks;
+using static Nuke.Common.Tools.NuGet.NuGetTasks;
 
-class Build : NukeBuild
-{
-    public static int Main () => Execute<Build>(x => x.Pack);
+[CheckBuildProjectConfigurations]
+internal class Build : NukeBuild {
 
-    [Parameter] readonly string Source = "https://resharper-plugins.jetbrains.com/api/v2/package";
-    [Parameter] readonly string ApiKey;
+	/// Support plugins are available for:
+	/// - JetBrains ReSharper        https://nuke.build/resharper
+	/// - JetBrains Rider            https://nuke.build/rider
+	/// - Microsoft VisualStudio     https://nuke.build/visualstudio
+	/// - Microsoft VSCode           https://nuke.build/vscode
 
-    [GitVersion] readonly GitVersion GitVersion;
-    [GitRepository] readonly GitRepository GitRepository;
+	[Parameter] public readonly Configuration Configuration = IsLocalBuild ? Configuration.Debug : Configuration.Release;
+	[Parameter] public readonly string NuGetSource = "https://plugins.jetbrains.com/";
+	[Parameter] public readonly string NuGetApiKey;
 
-    string ProjectFile => GlobFiles(SourceDirectory, "**/*.csproj").Single();
+	[Solution]
+	private readonly Solution _solution;
 
-    Target InstallHive => _ => _
-            .Executes(() =>
-            {
-                var jsonResponse = HttpDownloadString("https://data.services.jetbrains.com/products/releases?code=RSU&latest=true");
-                var downloadUrl = JsonDeserialize<JObject>(jsonResponse)["RSU"].First["downloads"]["windows"]["link"].ToString();
-                var installer = TemporaryDirectory / new Uri(downloadUrl).Segments.Last();
-                var installationHive = MSBuildParseProject(ProjectFile).Properties["InstallationHive"];
+	private const string ForTeaProjectName = "GammaJul.ReSharper.ForTea";
 
-                if (!File.Exists(installer))
-                    HttpDownloadFile(downloadUrl, installer);
+	private static AbsolutePath SourceDirectory => RootDirectory / "source";
+	private static AbsolutePath ForTeaProjectDirectory => SourceDirectory / ForTeaProjectName;
+	private static AbsolutePath OutputDirectory => RootDirectory / "output";
 
-                Info($"Installing '{Path.GetFileNameWithoutExtension(installer)}' into '{installationHive}' hive...");
-                StartProcess(installer, $"/VsVersion=12.0;14.0;15.0 /SpecificProductNames=ReSharper /Hive={installationHive} /Silent=True")
-                        .AssertZeroExitCode();
-            });
+	public Target Clean => _ => _
+		.Before(Restore)
+		.Executes(() => {
+			SourceDirectory.GlobDirectories("**/bin", "**/obj").ForEach(DeleteDirectory);
+			EnsureCleanDirectory(OutputDirectory);
+		});
 
-    Target Clean => _ => _
-            .Executes(() =>
-            {
-                DeleteDirectories(GlobDirectories(Path.GetDirectoryName(ProjectFile), "**/bin", "**/obj"));
-                EnsureCleanDirectory(OutputDirectory);
-            });
+	public Target Restore => _ => _
+		.Executes(() => {
+			MSBuild(s => s
+				.SetTargetPath(_solution)
+				.SetTargets("Restore"));
+		});
 
-    Target Restore => _ => _
-            .DependsOn(Clean)
-            .Executes(() =>
-            {
-                MSBuild(s => DefaultMSBuildRestore);
-            });
+	public Target Compile => _ => _
+		.DependsOn(Restore)
+		.Executes(() => {
+			MSBuild(s => s
+				.SetTargetPath(_solution)
+				.SetTargets("Rebuild")
+				.SetConfiguration(Configuration)
+				.SetMaxCpuCount(Environment.ProcessorCount)
+				.SetNodeReuse(IsLocalBuild));
+		});
 
-    Target Compile => _ => _
-            .DependsOn(Restore)
-            .Executes(() =>
-            {
-                MSBuild(s => DefaultMSBuildCompile);
-            });
+	public Target Pack => _ => _
+		.DependsOn(Compile)
+		.Executes(() => {
 
-    Target Pack => _ => _
-            .DependsOn(Compile)
-            .Executes(() =>
-            {
-                var releaseNotes = ReadAllLines(RootDirectory / "CHANGELOG.md")
-                        .SkipWhile(x => !x.StartsWith("##"))
-                        .Skip(count: 1)
-                        .TakeWhile(x => !string.IsNullOrWhiteSpace(x))
-                        .Select(x => $"\u2022{x.TrimStart('-')}")
-                        .JoinNewLine();
+			var version = GetReleaseVersion();
+			var currentYear = DateTime.Now.Year.ToString(CultureInfo.InvariantCulture);
+			var releaseNotes = GetReleaseNotes();
+			var wave = GetWaveVersion();
 
-                GlobFiles(SourceDirectory, "*.nuspec")
-                        .ForEach(x => NuGetPack(s => DefaultNuGetPack
-                                .SetTargetPath(x)
-                                .SetBasePath(SourceDirectory)
-                                .SetProperty("wave", GetWaveVersion(ProjectFile) + ".0")
-                                .SetProperty("currentyear", DateTime.Now.Year.ToString())
-                                .SetProperty("releasenotes", releaseNotes)
-                                .EnableNoPackageAnalysis()));
-            });
+			NuGetPack(s => s
+				.SetTargetPath(ForTeaProjectDirectory / (ForTeaProjectName + ".nuspec"))
+				.SetBasePath(SourceDirectory)
+				.SetOutputDirectory(OutputDirectory)
+				.SetProperty("version", version)
+				.SetProperty("currentyear", currentYear)
+				.SetProperty("releasenotes", releaseNotes)
+				.SetProperty("wave", wave)
+				.SetProperty("configuration", Configuration.ToString())
+				.EnableNoPackageAnalysis());
+		});
 
-    Target Push => _ => _
-            .DependsOn(Pack)
-            .Requires(() => ApiKey)
-            .Requires(() => Configuration.EqualsOrdinalIgnoreCase("Release"))
-            .Executes(() =>
-            {
-                GlobFiles(OutputDirectory, "*.nupkg")
-                        .ForEach(x => NuGetPush(s => s
-                                .SetTargetPath(x)
-                                .SetSource(Source)
-                                .SetApiKey(ApiKey)));
-            });
+	public Target Push => _ => _
+		.DependsOn(Pack)
+		.Requires(() => NuGetApiKey)
+		.Requires(() => Configuration.Release.Equals(Configuration))
+		.Executes(() => {
+			GlobFiles(OutputDirectory, "*.nupkg")
+				.ForEach(x => NuGetPush(s => s
+					.SetTargetPath(x)
+					.SetSource(NuGetSource)
+					.SetApiKey(NuGetApiKey)));
+		});
 
-    static string GetWaveVersion (string projectFile)
-    {
-        var fullWaveVersion = GetLocalInstalledPackages(projectFile, includeDependencies: true)
-                .SingleOrDefault(x => x.Id == "Wave").NotNull("fullWaveVersion != null").Version.ToString();
-        return fullWaveVersion.Substring(startIndex: 0, length: fullWaveVersion.IndexOf(value: '.'));
-    }
+	private static string GetReleaseVersion() =>
+		File.ReadAllLines(ForTeaProjectDirectory / "Properties/AssemblyInfo.cs")
+			.Select(x => Regex.Match(x, @"^\[assembly: AssemblyVersion\(""([^""]*)""\)\]$"))
+			.Where(x => x.Success)
+			.Select(x => x.Groups[1].Value)
+			.FirstOrDefault();
+
+	private static string GetReleaseNotes() =>
+		File.ReadAllLines(RootDirectory / "CHANGELOG.md")
+			.SkipWhile(x => !x.StartsWith("##"))
+			.Skip(1)
+			.TakeWhile(x => !String.IsNullOrWhiteSpace(x))
+			.Select(x => $"\u2022{x.TrimStart('-')}")
+			.JoinNewLine();
+
+	private static string GetWaveVersion() =>
+		NuGetPackageResolver.GetLocalInstalledPackages(ForTeaProjectDirectory / (ForTeaProjectName + ".csproj"))
+			.SingleOrDefault(x => x.Id == "Wave")
+			.NotNull("fullWaveVersion != null")
+			.Version
+			.Version
+			.ToString(2);
+
+	public static int Main()
+		=> Execute<Build>(x => x.Compile);
+
 }
