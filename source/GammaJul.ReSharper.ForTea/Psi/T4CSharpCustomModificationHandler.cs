@@ -18,7 +18,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Linq.Expressions;
 using GammaJul.ReSharper.ForTea.Parsing;
 using GammaJul.ReSharper.ForTea.Psi.Directives;
 using GammaJul.ReSharper.ForTea.Tree;
@@ -35,7 +34,6 @@ using JetBrains.ReSharper.Psi.CSharp.Parsing;
 using JetBrains.ReSharper.Psi.CSharp.Tree;
 using JetBrains.ReSharper.Psi.ExtensionsAPI.Resolve;
 using JetBrains.ReSharper.Psi.ExtensionsAPI.Tree;
-using JetBrains.ReSharper.Psi.Impl.CodeStyle;
 using JetBrains.ReSharper.Psi.Impl.Shared;
 using JetBrains.ReSharper.Psi.Modules;
 using JetBrains.ReSharper.Psi.Resolve;
@@ -111,6 +109,22 @@ namespace GammaJul.ReSharper.ForTea.Psi {
 				directive = before ? t4File.AddDirectiveBefore(directive, anchor) : t4File.AddDirectiveAfter(directive, anchor);
 			else
 				directive = t4File.AddDirective(directive, _directiveInfoManager);
+
+			IFile csharpFile = usingDirective.GetContainingFile();
+			if (csharpFile != null) {
+
+				var csharpUsingRange = GetNameRange(usingDirective);
+				if (!csharpUsingRange.IsValid())
+					return false;
+
+				var t4AttributeValueRange = directive.GetAttributeValueToken(_directiveInfoManager.Import.NamespaceAttribute.Name).GetTreeTextRange();
+				if (!t4AttributeValueRange.IsValid())
+					return false;
+
+				csharpFile.GetRangeTranslator().AddProjectionItem(
+					new TreeTextRange<Generated>(csharpUsingRange),
+					new TreeTextRange<Original>(t4AttributeValueRange));
+			}
 
 			return true;
 		}
@@ -196,9 +210,8 @@ namespace GammaJul.ReSharper.ForTea.Psi {
 			return null;
 		}
 
-		public bool IsQualifiedUsingAtNestedScope(ITreeNode context, IContextBoundSettingsStore settingsStore) {
-			return (bool)SettingsStoreEx.GetValue<CSharpUsingSettings, bool>(settingsStore, (Expression<Func<CSharpUsingSettings, bool>>)CSharpUsingSettingsAccessor.QualifiedUsingAtNestedScope, (IDictionary<SettingsKey, object>)null);
-		}
+		public bool IsQualifiedUsingAtNestedScope(ITreeNode context, IContextBoundSettingsStore settingsStore)
+			=> settingsStore.GetValue(CSharpUsingSettingsAccessor.QualifiedUsingAtNestedScope);
 
 		/// <summary>
 		/// Determines whether a specified C# using directive can be removed.
@@ -323,7 +336,7 @@ namespace GammaJul.ReSharper.ForTea.Psi {
 		/// <param name="generatedFile">The generated file.</param>
 		/// <returns>An instance of <see cref="IUsingDirective"/>.</returns>
 		public IUsingDirective HandleAddImport(IPsiServices psiServices, Func<IUsingDirective> action, ITreeNode generatedAnchor, bool before, IFile generatedFile)
-			=> (IUsingDirective) HandleAddImportInternal(psiServices, action, generatedAnchor, before, CSharpLanguage.Instance, generatedFile);
+			=> HandleAddImportInternal(psiServices, action, generatedAnchor, before, CSharpLanguage.Instance, generatedFile);
 
 		public bool PreferQualifiedReference(IQualifiableReference reference)
 			=> reference.GetTreeNode().GetSettingsStore().GetValue(CSharpUsingSettingsAccessor.PreferQualifiedReference);

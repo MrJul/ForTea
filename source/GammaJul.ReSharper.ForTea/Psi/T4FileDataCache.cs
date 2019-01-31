@@ -1,4 +1,4 @@
-﻿#region License
+#region License
 //    Copyright 2012 Julien Lebosquain
 // 
 //    Licensed under the Apache License, Version 2.0 (the "License");
@@ -87,13 +87,13 @@ namespace GammaJul.ReSharper.ForTea.Psi {
 			_directiveInfoManager = directiveInfoManager;
 			_fileDataChanged = new Signal<Pair<IPsiSourceFile, T4FileDataDiff>>(lifetime, "T4FileDataCache.FileDataChanged");
 
-			lifetime.AddBracket(
+			lifetime.Bracket(
 				() => psiFiles.PsiFileCreated += OnPsiFileChanged,
 				() => psiFiles.PsiFileCreated -= OnPsiFileChanged);
-			lifetime.AddBracket(
+			lifetime.Bracket(
 				() => psiFiles.AfterPsiChanged += OnPsiChanged,
 				() => psiFiles.AfterPsiChanged -= OnPsiChanged);
-			lifetime.AddDispose(_fileDataBySourceFile);
+			lifetime.OnTermination(_fileDataBySourceFile);
 		}
 
 	}

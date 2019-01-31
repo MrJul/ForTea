@@ -8,19 +8,13 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="JetBrains.Annotations" Version="2018.2.1" />
-    <PackageReference Include="JetBrains.ReSharper.SDK" Version="2018.3.1">
+    <PackageReference Include="JetBrains.Annotations" Version="11.1.0" />
+    <PackageReference Include="JetBrains.ReSharper.SDK" Version="2018.3.2">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
     </PackageReference>
     <PackageReference Include="Microsoft.VisualStudio.TextTemplating.Interfaces.10.0" Version="10.0.30320" />
     <PackageReference Include="Microsoft.VisualStudio.Shell.Interop.8.0" Version="8.0.50728" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Reference Include="NuGet.Frameworks">
-      <HintPath>..\..\..\..\..\.nuget\packages\nuget.frameworks\4.5.0\lib\net45\NuGet.Frameworks.dll</HintPath>
-    </Reference>
   </ItemGroup>
 
 </Project>

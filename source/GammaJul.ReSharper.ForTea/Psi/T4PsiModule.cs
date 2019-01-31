@@ -459,7 +459,7 @@ namespace GammaJul.ReSharper.ForTea.Psi {
 			[NotNull] OutputAssemblies outputAssemblies) {
 
 			_lifetime = lifetime;
-			lifetime.AddAction(Dispose);
+			lifetime.OnTermination(Dispose);
 			
 			_psiModules = psiModules;
 			_assemblyFactory = assemblyFactory;
@@ -479,7 +479,7 @@ namespace GammaJul.ReSharper.ForTea.Psi {
 			_outputAssemblies = outputAssemblies;
 			_resolveProject = new T4ResolveProject(lifetime, _solution, _shellLocks, t4Environment.TargetFrameworkId, project);
 
-			_moduleReferenceResolveContext = new PsiModuleResolveContext(this, _t4Environment.TargetFrameworkId, _project);
+			_moduleReferenceResolveContext = new PsiModuleResolveContext(this, _t4Environment.TargetFrameworkId, project);
 			SourceFile = CreateSourceFile(projectFile, documentManager);
 
 			_isValid = true;

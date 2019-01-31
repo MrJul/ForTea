@@ -34,7 +34,6 @@ namespace GammaJul.ReSharper.ForTea.Services.TypingAssist {
 	[SolutionComponent]
 	public class T4TypingAssist : TypingAssistLanguageBase<T4Language>, ITypingHandler {
 
-		private readonly SkippingTypingAssist _skippingTypingAssist;
 		private readonly ICodeCompletionSessionManager _codeCompletionSessionManager;
 
 		protected override bool IsSupported(ITextControl textControl) {
@@ -78,7 +77,7 @@ namespace GammaJul.ReSharper.ForTea.Services.TypingAssist {
 				}
 
 				// ignore if a subsequent " is typed by the user
-				_skippingTypingAssist.SetCharsToSkip(textControl.Document, "\"");
+				SkippingTypingAssist.SetCharsToSkip(textControl.Document, "\"");
 
 				// popup auto completion
 				_codeCompletionSessionManager.ExecuteAutoCompletion<T4AutopopupSettingsKey>(textControl, Solution, key => key.InDirectives);
@@ -94,8 +93,8 @@ namespace GammaJul.ReSharper.ForTea.Services.TypingAssist {
 			ITextControl textControl = context.TextControl;
 
 			// the " character should be skipped to avoid double insertions
-			if (_skippingTypingAssist.ShouldSkip(textControl.Document, context.Char)) {
-				_skippingTypingAssist.SkipIfNeeded(textControl.Document, context.Char);
+			if (SkippingTypingAssist.ShouldSkip(textControl.Document, context.Char)) {
+				SkippingTypingAssist.SkipIfNeeded(textControl.Document, context.Char);
 				return true;
 			}
 
@@ -129,7 +128,7 @@ namespace GammaJul.ReSharper.ForTea.Services.TypingAssist {
 				}
 
 				// ignore if a subsequent " is typed by the user
-				_skippingTypingAssist.SetCharsToSkip(textControl.Document, "\"");
+				SkippingTypingAssist.SetCharsToSkip(textControl.Document, "\"");
 
 				// popup auto completion
 				_codeCompletionSessionManager.ExecuteAutoCompletion<T4AutopopupSettingsKey>(textControl, Solution, key => key.InDirectives);
@@ -138,13 +137,19 @@ namespace GammaJul.ReSharper.ForTea.Services.TypingAssist {
 			return true;
 		}
 
-		public T4TypingAssist([NotNull] Lifetime lifetime, [NotNull] ISolution solution, [NotNull] ISettingsStore settingsStore,
-			[NotNull] CachingLexerService cachingLexerService, [NotNull] ICommandProcessor commandProcessor, [NotNull] IPsiServices psiServices,
-			[NotNull] ITypingAssistManager typingAssistManager, [NotNull] SkippingTypingAssist skippingTypingAssist,
-			[NotNull] ICodeCompletionSessionManager codeCompletionSessionManager, IExternalIntellisenseHost externalIntellisenseHost)
-			: base(solution, settingsStore, cachingLexerService, commandProcessor, psiServices, externalIntellisenseHost,skippingTypingAssist) {
+		public T4TypingAssist(
+			[NotNull] Lifetime lifetime,
+			[NotNull] ISolution solution,
+			[NotNull] ISettingsStore settingsStore,
+			[NotNull] CachingLexerService cachingLexerService,
+			[NotNull] ICommandProcessor commandProcessor,
+			[NotNull] IPsiServices psiServices,
+			[NotNull] IExternalIntellisenseHost externalIntellisenseHost,
+			[NotNull] SkippingTypingAssist skippingTypingAssist,
+			[NotNull] ITypingAssistManager typingAssistManager,
+			[NotNull] ICodeCompletionSessionManager codeCompletionSessionManager)
+			: base(solution, settingsStore, cachingLexerService, commandProcessor, psiServices, externalIntellisenseHost, skippingTypingAssist) {
 			
-			_skippingTypingAssist = skippingTypingAssist;
 			_codeCompletionSessionManager = codeCompletionSessionManager;
 
 			typingAssistManager.AddTypingHandler(lifetime, '=', this, OnEqualTyped, IsTypingSmartParenthesisHandlerAvailable);
