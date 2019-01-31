@@ -22,14 +22,15 @@ using System.IO;
 using JetBrains.Annotations;
 using JetBrains.Application.Infra;
 using JetBrains.Application.Threading;
-using JetBrains.Metadata.Reader.API;
 using JetBrains.ProjectModel;
 using JetBrains.ProjectModel.ProjectImplementation;
 using JetBrains.ProjectModel.Properties;
 using JetBrains.ProjectModel.Properties.Common;
 using JetBrains.ProjectModel.References;
 using JetBrains.Util;
-using PlatformID = JetBrains.Application.platforms.PlatformID;
+using JetBrains.Util.Dotnet.TargetFrameworkIds;
+//using PlatformID = JetBrains.Application.platforms.PlatformID;
+
 
 namespace GammaJul.ReSharper.ForTea.Psi {
 
@@ -170,13 +171,13 @@ namespace GammaJul.ReSharper.ForTea.Psi {
 		[NotNull]
 		public IProperty<FileSystemPath> ProjectLocationLive { get; }
 
-		public TargetFrameworkScope GetTargetFramework(TargetFrameworkId targetFrameworkId)
+		public ProjectTargetFrameworkScope GetTargetFrameworkScope(TargetFrameworkId targetFrameworkId)
 			=> _targetFrameworkReferences.GetScope(targetFrameworkId);
 
 		public IEnumerable<TargetFrameworkScope> GetAllTargetFrameworks()
-			=> _targetFrameworkReferences.GetAllScopes();
+			=> _targetFrameworkReferences.GetAllProjectScopes();
 
-		public IEnumerable<TargetFrameworkId> TargetFrameworkIds
+		public IReadOnlyList<TargetFrameworkId> TargetFrameworkIds
 			=> new[] { _targetFrameworkId };
 
 		IProjectFolder IProjectFolder.GetSubFolderByPath(ProjectFolderPath projectFolderPath)
@@ -199,8 +200,8 @@ namespace GammaJul.ReSharper.ForTea.Psi {
 			public override ProjectKind ProjectKind
 				=> ProjectKind.MISC_FILES_PROJECT;
 
-			public T4ResolveProjectProperties([NotNull] PlatformID platformID, [NotNull] TargetFrameworkId targetFrameworkId)
-				: base(EmptyList<Guid>.InstanceList, platformID, Guid.Empty, new[] { targetFrameworkId }, dotNetCoreSDK: null) {
+			public T4ResolveProjectProperties([NotNull] TargetFrameworkId targetFrameworkId)
+				: base(EmptyList<Guid>.InstanceList, Guid.Empty, new[] { targetFrameworkId }, dotNetCoreSDK: null) {
 			}
 
 		}
@@ -209,14 +210,13 @@ namespace GammaJul.ReSharper.ForTea.Psi {
 			[NotNull] Lifetime lifetime,
 			[NotNull] ISolution solution,
 			[NotNull] IShellLocks shellLocks,
-			[NotNull] PlatformID platformID,
 			[NotNull] TargetFrameworkId targetFrameworkId,
 			[NotNull] IUserDataHolder dataHolder) {
 			_shellLocks = shellLocks;
 			_targetFrameworkId = targetFrameworkId;
 			_solution = solution;
 			_dataHolder = dataHolder;
-			_projectProperties = new T4ResolveProjectProperties(platformID, targetFrameworkId);
+			_projectProperties = new T4ResolveProjectProperties(targetFrameworkId);
 			ProjectFileLocationLive = new Property<FileSystemPath>(lifetime, "ProjectFileLocationLive");
 			ProjectLocationLive = new Property<FileSystemPath>(lifetime, "ProjectLocationLive");
 			_targetFrameworkReferences = new TargetFrameworkReferences(lifetime, shellLocks, this, solution.SolutionOwner.GetComponent<AssemblyInfoDatabase>());

@@ -1,4 +1,4 @@
-﻿#region License
+#region License
 
 //    Copyright 2012 Julien Lebosquain
 // 
@@ -21,6 +21,7 @@ using GammaJul.ReSharper.ForTea.Parsing;
 using JetBrains.Annotations;
 using JetBrains.ReSharper.Psi;
 using JetBrains.ReSharper.Psi.CodeStyle;
+using JetBrains.ReSharper.Psi.ExtensionsAPI.Tree;
 using JetBrains.ReSharper.Psi.Impl.CodeStyle;
 using JetBrains.ReSharper.Psi.Tree;
 using JetBrains.ReSharper.Psi.Util;
@@ -70,8 +71,9 @@ namespace GammaJul.ReSharper.ForTea.Psi.CodeStyle {
 		public override ITreeNode CreateSpace(string indent, ITreeNode replacedSpace)
 			=> T4TokenNodeTypes.Space.Create(indent);
 
-		public override ITreeNode CreateNewLine(LineEnding lineEnding)
+		public override ITreeNode CreateNewLine(LineEnding lineEnding, NodeType lineBreakType = null)
 			=> T4TokenNodeTypes.NewLine.Create(lineEnding.GetPresentation());
+
 
 		public override ITreeRange Format(
 			ITreeNode firstElement,

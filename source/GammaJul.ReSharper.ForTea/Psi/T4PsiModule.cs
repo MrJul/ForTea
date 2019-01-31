@@ -1,4 +1,4 @@
-﻿#region License
+#region License
 //    Copyright 2012 Julien Lebosquain
 // 
 //    Licensed under the Apache License, Version 2.0 (the "License");
@@ -40,7 +40,9 @@ using JetBrains.ReSharper.Psi.Impl;
 using JetBrains.ReSharper.Psi.Modules;
 using JetBrains.ReSharper.Psi.Web.Impl.PsiModules;
 using JetBrains.Util;
+using JetBrains.Util.Dotnet.TargetFrameworkIds;
 using JetBrains.Util.Logging;
+using JetBrains.VsIntegration.Interop.Shim.VsShell.Shell.Hierarchy;
 using JetBrains.VsIntegration.ProjectDocuments.Projects.Builder;
 using JetBrains.VsIntegration.ProjectModel;
 using Microsoft.VisualStudio.Shell.Interop;
@@ -475,9 +477,9 @@ namespace GammaJul.ReSharper.ForTea.Psi {
 
 			_t4Environment = t4Environment;
 			_outputAssemblies = outputAssemblies;
-			_resolveProject = new T4ResolveProject(lifetime, _solution, _shellLocks, t4Environment.PlatformID, t4Environment.TargetFrameworkId, project);
+			_resolveProject = new T4ResolveProject(lifetime, _solution, _shellLocks, t4Environment.TargetFrameworkId, project);
 
-			_moduleReferenceResolveContext = new PsiModuleResolveContext(this, _t4Environment.TargetFrameworkId, null);
+			_moduleReferenceResolveContext = new PsiModuleResolveContext(this, _t4Environment.TargetFrameworkId, _project);
 			SourceFile = CreateSourceFile(projectFile, documentManager);
 
 			_isValid = true;

@@ -1,4 +1,4 @@
-﻿#region License
+#region License
 //    Copyright 2012 Julien Lebosquain
 // 
 //    Licensed under the Apache License, Version 2.0 (the "License");
@@ -142,7 +142,7 @@ namespace GammaJul.ReSharper.ForTea.Services.TypingAssist {
 			[NotNull] CachingLexerService cachingLexerService, [NotNull] ICommandProcessor commandProcessor, [NotNull] IPsiServices psiServices,
 			[NotNull] ITypingAssistManager typingAssistManager, [NotNull] SkippingTypingAssist skippingTypingAssist,
 			[NotNull] ICodeCompletionSessionManager codeCompletionSessionManager, IExternalIntellisenseHost externalIntellisenseHost)
-			: base(solution, settingsStore, cachingLexerService, commandProcessor, psiServices, externalIntellisenseHost) {
+			: base(solution, settingsStore, cachingLexerService, commandProcessor, psiServices, externalIntellisenseHost,skippingTypingAssist) {
 			
 			_skippingTypingAssist = skippingTypingAssist;
 			_codeCompletionSessionManager = codeCompletionSessionManager;
