@@ -1,9 +1,10 @@
 using System;
 using JetBrains.Annotations;
 using JetBrains.Application.FileSystemTracker;
-using JetBrains.DataFlow;
+using JetBrains.Diagnostics;
 using JetBrains.DocumentManagers;
 using JetBrains.DocumentModel;
+using JetBrains.Lifetimes;
 using JetBrains.Metadata.Reader.API;
 using JetBrains.ProjectModel;
 using JetBrains.ReSharper.Psi;
@@ -53,7 +54,7 @@ namespace GammaJul.ReSharper.ForTea.Psi {
 		}
 
 		public T4OutsideSolutionSourceFileManager(
-			[NotNull] Lifetime lifetime,
+			Lifetime lifetime,
 			[NotNull] IProjectFileExtensions projectFileExtensions,
 			[NotNull] PsiProjectFileTypeCoordinator psiProjectFileTypeCoordinator,
 			[NotNull] DocumentManager documentManager,

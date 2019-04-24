@@ -10,7 +10,7 @@ namespace GammaJul.ReSharper.ForTea.Psi.CodeStyle {
 	[ProjectFileType(typeof(T4ProjectFileType))]
 	public class T4CSharpCustomFormattingInfoProvider : DummyCSharpCustomFormattingInfoProvider {
 
-		public override bool CanModifyInsideNodeRange(ITreeNode leftElement, ITreeNode rightElement) {
+		public override bool CanModifyInsideNodeRange(CSharpCodeFormattingContext context, ITreeNode leftElement, ITreeNode rightElement) {
 			var leftBlock = leftElement.GetT4ContainerFromCSharpNode<IT4CodeBlock>();
 			if (leftBlock != null)
 				return !(leftBlock.Parent is IT4Include);

@@ -1,9 +1,8 @@
-.vs
-/Copy.bat
-/packages
-_ReSharper*
+*.suo
 *.user
-*.nupkg
+.vs
+.tmp
 bin
 obj
-*.tmp
+/output
+/_ReSharper.Caches

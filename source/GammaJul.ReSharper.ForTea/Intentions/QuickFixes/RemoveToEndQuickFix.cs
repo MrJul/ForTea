@@ -2,6 +2,7 @@ using System;
 using GammaJul.ReSharper.ForTea.Daemon.Highlightings;
 using JetBrains.Annotations;
 using JetBrains.Application.Progress;
+using JetBrains.Diagnostics;
 using JetBrains.ProjectModel;
 using JetBrains.ReSharper.Feature.Services.QuickFixes;
 using JetBrains.ReSharper.Psi.ExtensionsAPI.Tree;

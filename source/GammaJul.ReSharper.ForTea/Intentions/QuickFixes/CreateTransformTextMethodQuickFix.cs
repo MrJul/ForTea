@@ -5,6 +5,7 @@ using GammaJul.ReSharper.ForTea.Daemon.Highlightings;
 using GammaJul.ReSharper.ForTea.Psi;
 using JetBrains.Annotations;
 using JetBrains.Application.Progress;
+using JetBrains.Diagnostics;
 using JetBrains.ProjectModel;
 using JetBrains.ReSharper.Feature.Services.Intentions;
 using JetBrains.ReSharper.Feature.Services.Intentions.CreateDeclaration;

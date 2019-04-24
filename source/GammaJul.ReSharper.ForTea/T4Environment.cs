@@ -180,6 +180,16 @@ namespace GammaJul.ReSharper.ForTea {
 					};
 					break;
 
+				case VsVersions.Vs2019:
+					_targetFrameworkId = TargetFrameworkId.Create(FrameworkIdentifier.NetFramework, new Version(4, 7, 2));
+					CSharpLanguageLevel = CSharpLanguageLevel.CSharp73;
+					_textTemplatingAssemblyNames = new[] {
+						CreateDevEnvPublicAssemblyName(vsEnvironmentInformation, "Microsoft.VisualStudio.TextTemplating.15.0"),
+						CreateDevEnvPublicAssemblyName(vsEnvironmentInformation, "Microsoft.VisualStudio.TextTemplating.Interfaces.11.0"),
+						CreateDevEnvPublicAssemblyName(vsEnvironmentInformation, "Microsoft.VisualStudio.TextTemplating.Interfaces.10.0")
+					};
+					break;
+
 				default:
 					_textTemplatingAssemblyNames = EmptyArray<string>.Instance;
 					break;

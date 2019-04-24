@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using System.Linq;
 using JetBrains.Annotations;
 using JetBrains.Application.changes;
-using JetBrains.DataFlow;
+using JetBrains.Lifetimes;
 using JetBrains.ProjectModel;
 using JetBrains.ReSharper.Psi;
 using JetBrains.ReSharper.Psi.Modules;
@@ -35,7 +35,7 @@ namespace GammaJul.ReSharper.ForTea.Psi {
 			=> base.GetPsiSourceFilesFor(projectFile).Concat(_t4PsiModuleProvider.GetPsiSourceFilesFor(projectFile));
 
 		public T4ProjectPsiModuleHandler(
-			[NotNull] Lifetime lifetime,
+			Lifetime lifetime,
 			[NotNull] IProjectPsiModuleHandler handler,
 			[NotNull] ChangeManager changeManager,
 			[NotNull] T4Environment t4Environment,

@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 using JetBrains.Annotations;
-using JetBrains.DataFlow;
+using JetBrains.Lifetimes;
 using JetBrains.ReSharper.Psi;
 using JetBrains.Util;
 
@@ -60,7 +60,7 @@ namespace GammaJul.ReSharper.ForTea.Psi {
 				_invalidator = invalidator;
 		}
 
-		public T4FileDependencyManager([NotNull] Lifetime lifetime, [NotNull] IPsiServices psiServices) {
+		public T4FileDependencyManager(Lifetime lifetime, [NotNull] IPsiServices psiServices) {
 			_psiServices = psiServices;
 
 			psiServices.Files.ObserveBeforeCommit(lifetime, OnBeforeFilesCommit);

@@ -3,11 +3,12 @@ using System.Linq;
 using GammaJul.ReSharper.ForTea.Psi.Directives;
 using GammaJul.ReSharper.ForTea.Tree;
 using JetBrains.Annotations;
+using JetBrains.Application.UI.Controls.Utils;
+using JetBrains.Diagnostics;
 using JetBrains.ProjectModel.Model2.Assemblies.Interfaces;
 using JetBrains.ReSharper.Psi;
 using JetBrains.ReSharper.Psi.Modules;
 using JetBrains.ReSharper.Psi.Transactions;
-using JetBrains.Util;
 using JetBrains.Util.Dotnet.TargetFrameworkIds;
 
 namespace GammaJul.ReSharper.ForTea.Psi {
@@ -19,12 +20,15 @@ namespace GammaJul.ReSharper.ForTea.Psi {
 		[NotNull] private readonly T4Environment _environment;
 		[NotNull] private readonly DirectiveInfoManager _directiveInfoManager;
 
-		public bool CanReferenceModule(IPsiModule module, IPsiModule moduleToReference)
+		private bool CanReferenceModule([CanBeNull] IPsiModule module, [CanBeNull] IPsiModule moduleToReference)
 			=> module is T4PsiModule t4PsiModule
 			&& t4PsiModule.IsValid()
 			&& moduleToReference != null
 			&& moduleToReference.ContainingProjectModule is IAssembly assembly
 			&& _environment.TargetFrameworkId.IsReferenceAllowed(assembly.TargetFrameworkId);
+
+		public bool CanReferenceModule(IPsiModule module, IPsiModule moduleToReference, IPresentableItem presentation)
+			=> CanReferenceModule(module, moduleToReference);
 
 		public bool ReferenceModule(IPsiModule module, IPsiModule moduleToReference)
 			=> ReferenceModuleImpl(module, moduleToReference, null);

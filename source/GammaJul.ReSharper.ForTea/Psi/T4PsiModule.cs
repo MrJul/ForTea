@@ -6,9 +6,10 @@ using JetBrains.Annotations;
 using JetBrains.Application.changes;
 using JetBrains.Application.Progress;
 using JetBrains.Application.Threading;
-using JetBrains.DataFlow;
+using JetBrains.Diagnostics;
 using JetBrains.DocumentManagers;
 using JetBrains.Interop.WinApi;
+using JetBrains.Lifetimes;
 using JetBrains.Metadata.Reader.API;
 using JetBrains.Metadata.Utils;
 using JetBrains.ProjectModel;
@@ -39,7 +40,7 @@ namespace GammaJul.ReSharper.ForTea.Psi {
 		
 		[NotNull] private readonly Dictionary<string, IAssemblyCookie> _assemblyReferences = new Dictionary<string, IAssemblyCookie>(StringComparer.OrdinalIgnoreCase);
 		[NotNull] private readonly Dictionary<string, string> _resolvedMacros = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
-		[NotNull] private readonly Lifetime _lifetime;
+		private readonly Lifetime _lifetime;
 		[NotNull] private readonly IPsiModules _psiModules;
 		[NotNull] private readonly ChangeManager _changeManager;
 		[NotNull] private readonly IAssemblyFactory _assemblyFactory;
@@ -302,7 +303,7 @@ namespace GammaJul.ReSharper.ForTea.Psi {
 
 				// Assembly that is the output of a current project: reference the project instead.
 				else {
-					IProject project = _outputAssemblies.GetProjectByOutputAssembly(cookie.Assembly);
+					IProject project = _outputAssemblies.TryGetProjectByOutputAssembly(cookie.Assembly);
 					if (project != null) {
 						psiModule = _psiModules.GetPrimaryPsiModule(project, TargetFrameworkId);
 						if (psiModule != null)
@@ -347,7 +348,6 @@ namespace GammaJul.ReSharper.ForTea.Psi {
 				? _assemblyFactory.AddRef(result, "T4", _moduleReferenceResolveContext)
 				: null;
 		}
-
 
 		public T GetData<T>(Key<T> key)
 		where T : class
@@ -394,7 +394,7 @@ namespace GammaJul.ReSharper.ForTea.Psi {
 		}
 
 		public T4PsiModule(
-			[NotNull] Lifetime lifetime,
+			Lifetime lifetime,
 			[NotNull] IPsiModules psiModules,
 			[NotNull] DocumentManager documentManager,
 			[NotNull] ChangeManager changeManager,
@@ -427,7 +427,7 @@ namespace GammaJul.ReSharper.ForTea.Psi {
 			_outputAssemblies = outputAssemblies;
 			_resolveProject = new T4ResolveProject(lifetime, _solution, _shellLocks, t4Environment.TargetFrameworkId, project);
 
-			_moduleReferenceResolveContext = new PsiModuleResolveContext(this, _t4Environment.TargetFrameworkId, project);
+			_moduleReferenceResolveContext = new PsiModuleResolveContext(this, t4Environment.TargetFrameworkId, project);
 			SourceFile = CreateSourceFile(projectFile, documentManager);
 
 			_isValid = true;

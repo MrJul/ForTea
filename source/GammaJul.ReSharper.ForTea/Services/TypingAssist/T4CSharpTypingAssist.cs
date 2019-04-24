@@ -2,7 +2,7 @@ using GammaJul.ReSharper.ForTea.Psi;
 using JetBrains.Annotations;
 using JetBrains.Application.CommandProcessing;
 using JetBrains.Application.Settings;
-using JetBrains.DataFlow;
+using JetBrains.Lifetimes;
 using JetBrains.ProjectModel;
 using JetBrains.ReSharper.Feature.Services.CodeCompletion;
 using JetBrains.ReSharper.Feature.Services.CSharp.TypingAssist;
@@ -43,7 +43,7 @@ namespace GammaJul.ReSharper.ForTea.Services.TypingAssist {
 			=> projectFile.LanguageType.Is<T4ProjectFileType>();
 
 		public T4CSharpTypingAssist(
-			[NotNull] Lifetime lifetime,
+			Lifetime lifetime,
 			[NotNull] ISolution solution,
 			[NotNull] ICommandProcessor commandProcessor,
 			[NotNull] SkippingTypingAssist skippingTypingAssist,

@@ -192,9 +192,8 @@ namespace GammaJul.ReSharper.ForTea.Psi {
 			builder.AppendFormat("public class {0} : ", ClassName);
 			if (_inheritsResult.Builder.Length == 0)
 				builder.Append(DefaultBaseClassName);
-			else {
+			else
 				result.Append(_inheritsResult);
-			}
 			builder.AppendLine(" {");
 			
 			builder.AppendFormat("[{0}] private static string __\x200CToString(object value) {{ return null; }}", SyntheticAttribute.Name);

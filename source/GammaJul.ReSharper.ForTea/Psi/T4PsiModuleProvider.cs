@@ -5,8 +5,8 @@ using GammaJul.ReSharper.ForTea.Tree;
 using JetBrains.Annotations;
 using JetBrains.Application.changes;
 using JetBrains.Application.Threading;
-using JetBrains.DataFlow;
 using JetBrains.DocumentManagers;
+using JetBrains.Lifetimes;
 using JetBrains.ProjectModel;
 using JetBrains.ProjectModel.Build;
 using JetBrains.ProjectModel.model2.Assemblies.Interfaces;
@@ -24,7 +24,7 @@ namespace GammaJul.ReSharper.ForTea.Psi {
 	public sealed class T4PsiModuleProvider : IDisposable {
 
 		[NotNull] private readonly Dictionary<IProjectFile, ModuleWrapper> _modules = new Dictionary<IProjectFile, ModuleWrapper>();
-		[NotNull] private readonly Lifetime _lifetime;
+		private readonly Lifetime _lifetime;
 		[NotNull] private readonly IShellLocks _shellLocks;
 		[NotNull] private readonly ChangeManager _changeManager;
 		[NotNull] private readonly T4Environment _t4Environment;
@@ -130,7 +130,7 @@ namespace GammaJul.ReSharper.ForTea.Psi {
 			ISolution solution = projectFile.GetSolution();
 
 			// creates a new T4PsiModule for the file
-			LifetimeDefinition lifetimeDefinition = Lifetimes.Define(_lifetime, "[T4]" + projectFile.Name);
+			LifetimeDefinition lifetimeDefinition = Lifetime.Define(_lifetime, "[T4]" + projectFile.Name);
 			var psiModule = new T4PsiModule(
 				lifetimeDefinition.Lifetime,
 				solution.GetComponent<IPsiModules>(),
@@ -188,7 +188,7 @@ namespace GammaJul.ReSharper.ForTea.Psi {
 		}
 
 		public T4PsiModuleProvider(
-			[NotNull] Lifetime lifetime,
+			Lifetime lifetime,
 			[NotNull] IShellLocks shellLocks,
 			[NotNull] ChangeManager changeManager,
 			[NotNull] T4Environment t4Environment

@@ -29,90 +29,93 @@ internal class Build : NukeBuild {
 	[Parameter] public readonly string NuGetSource = "https://plugins.jetbrains.com/";
 	[Parameter] public readonly string NuGetApiKey;
 
-	[Solution]
-	private readonly Solution _solution;
+	[Solution] private readonly Solution _solution;
 
-	private const string ForTeaProjectName = "GammaJul.ReSharper.ForTea";
+	private const string MainProjectName = "GammaJul.ReSharper.ForTea";
 
-	private static AbsolutePath SourceDirectory => RootDirectory / "source";
-	private static AbsolutePath ForTeaProjectDirectory => SourceDirectory / ForTeaProjectName;
-	private static AbsolutePath OutputDirectory => RootDirectory / "output";
+	private AbsolutePath SourceDirectory => RootDirectory / "source";
+	private AbsolutePath MainProjectDirectory => SourceDirectory / MainProjectName;
+	private AbsolutePath OutputDirectory => RootDirectory / "output" / Configuration;
 
-	public Target Clean => _ => _
-		.Before(Restore)
-		.Executes(() => {
-			SourceDirectory.GlobDirectories("**/bin", "**/obj").ForEach(DeleteDirectory);
-			EnsureCleanDirectory(OutputDirectory);
-		});
+	public Target Clean
+		=> _ => _
+			.Before(Restore)
+			.Executes(() => {
+				SourceDirectory.GlobDirectories("**/bin", "**/obj").ForEach(DeleteDirectory);
+				EnsureCleanDirectory(OutputDirectory);
+			});
 
-	public Target Restore => _ => _
-		.Executes(() => {
-			MSBuild(s => s
-				.SetTargetPath(_solution)
-				.SetTargets("Restore"));
-		});
+	public Target Restore
+		=> _ => _
+			.Executes(() => {
+				MSBuild(s => s
+					.SetTargetPath(_solution)
+					.SetTargets("Restore"));
+			});
 
-	public Target Compile => _ => _
-		.DependsOn(Restore)
-		.Executes(() => {
-			MSBuild(s => s
-				.SetTargetPath(_solution)
-				.SetTargets("Rebuild")
-				.SetConfiguration(Configuration)
-				.SetMaxCpuCount(Environment.ProcessorCount)
-				.SetNodeReuse(IsLocalBuild));
-		});
+	public Target Compile
+		=> _ => _
+			.DependsOn(Restore)
+			.Executes(() => {
+				MSBuild(s => s
+					.SetTargetPath(_solution)
+					.SetTargets("Rebuild")
+					.SetConfiguration(Configuration)
+					.SetMaxCpuCount(Environment.ProcessorCount)
+					.SetNodeReuse(IsLocalBuild));
+			});
 
-	public Target Pack => _ => _
-		.DependsOn(Compile)
-		.Executes(() => {
+	public Target Pack
+		=> _ => _
+			.DependsOn(Compile)
+			.Executes(() => {
+				var version = GetReleaseVersion();
+				var currentYear = DateTime.Now.Year.ToString(CultureInfo.InvariantCulture);
+				var releaseNotes = GetReleaseNotes();
+				var wave = GetWaveVersion();
 
-			var version = GetReleaseVersion();
-			var currentYear = DateTime.Now.Year.ToString(CultureInfo.InvariantCulture);
-			var releaseNotes = GetReleaseNotes();
-			var wave = GetWaveVersion();
+				NuGetPack(s => s
+					.SetTargetPath(MainProjectDirectory / (MainProjectName + ".nuspec"))
+					.SetBasePath(MainProjectDirectory)
+					.SetOutputDirectory(OutputDirectory)
+					.SetProperty("version", version)
+					.SetProperty("currentyear", currentYear)
+					.SetProperty("releasenotes", releaseNotes)
+					.SetProperty("wave", wave)
+					.SetProperty("configuration", Configuration.ToString())
+					.EnableNoPackageAnalysis());
+			});
 
-			NuGetPack(s => s
-				.SetTargetPath(ForTeaProjectDirectory / (ForTeaProjectName + ".nuspec"))
-				.SetBasePath(SourceDirectory)
-				.SetOutputDirectory(OutputDirectory)
-				.SetProperty("version", version)
-				.SetProperty("currentyear", currentYear)
-				.SetProperty("releasenotes", releaseNotes)
-				.SetProperty("wave", wave)
-				.SetProperty("configuration", Configuration.ToString())
-				.EnableNoPackageAnalysis());
-		});
+	public Target Push
+		=> _ => _
+			.DependsOn(Pack)
+			.Requires(() => NuGetApiKey)
+			.Requires(() => Configuration.Release.Equals(Configuration))
+			.Executes(() => {
+				GlobFiles(OutputDirectory, "*.nupkg")
+					.ForEach(x => NuGetPush(s => s
+						.SetTargetPath(x)
+						.SetSource(NuGetSource)
+						.SetApiKey(NuGetApiKey)));
+			});
 
-	public Target Push => _ => _
-		.DependsOn(Pack)
-		.Requires(() => NuGetApiKey)
-		.Requires(() => Configuration.Release.Equals(Configuration))
-		.Executes(() => {
-			GlobFiles(OutputDirectory, "*.nupkg")
-				.ForEach(x => NuGetPush(s => s
-					.SetTargetPath(x)
-					.SetSource(NuGetSource)
-					.SetApiKey(NuGetApiKey)));
-		});
-
-	private static string GetReleaseVersion() =>
-		File.ReadAllLines(ForTeaProjectDirectory / "Properties/AssemblyInfo.cs")
+	private string GetReleaseVersion()
+		=> File.ReadAllLines(MainProjectDirectory / "Properties/AssemblyInfo.cs")
 			.Select(x => Regex.Match(x, @"^\[assembly: AssemblyVersion\(""([^""]*)""\)\]$"))
 			.Where(x => x.Success)
 			.Select(x => x.Groups[1].Value)
 			.FirstOrDefault();
 
-	private static string GetReleaseNotes() =>
-		File.ReadAllLines(RootDirectory / "CHANGELOG.md")
+	private static string GetReleaseNotes()
+		=> File.ReadAllLines(RootDirectory / "CHANGELOG.md")
 			.SkipWhile(x => !x.StartsWith("##"))
 			.Skip(1)
 			.TakeWhile(x => !String.IsNullOrWhiteSpace(x))
 			.Select(x => $"\u2022{x.TrimStart('-')}")
 			.JoinNewLine();
 
-	private static string GetWaveVersion() =>
-		NuGetPackageResolver.GetLocalInstalledPackages(ForTeaProjectDirectory / (ForTeaProjectName + ".csproj"))
+	private string GetWaveVersion()
+		=> NuGetPackageResolver.GetLocalInstalledPackages(MainProjectDirectory / (MainProjectName + ".csproj"))
 			.SingleOrDefault(x => x.Id == "Wave")
 			.NotNull("fullWaveVersion != null")
 			.Version

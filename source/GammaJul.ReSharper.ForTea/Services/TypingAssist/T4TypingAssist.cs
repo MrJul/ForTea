@@ -4,7 +4,7 @@ using GammaJul.ReSharper.ForTea.Services.CodeCompletion;
 using JetBrains.Annotations;
 using JetBrains.Application.CommandProcessing;
 using JetBrains.Application.Settings;
-using JetBrains.DataFlow;
+using JetBrains.Lifetimes;
 using JetBrains.ProjectModel;
 using JetBrains.ReSharper.Feature.Services.CodeCompletion;
 using JetBrains.ReSharper.Feature.Services.TypingAssist;
@@ -12,7 +12,6 @@ using JetBrains.ReSharper.Psi;
 using JetBrains.ReSharper.Psi.Parsing;
 using JetBrains.ReSharper.Psi.CachingLexers;
 using JetBrains.TextControl;
-using JetBrains.TextControl.Util;
 
 namespace GammaJul.ReSharper.ForTea.Services.TypingAssist {
 
@@ -47,7 +46,7 @@ namespace GammaJul.ReSharper.ForTea.Services.TypingAssist {
 				return false;
 
 			// insert =
-			TextControlUtil.DeleteSelection(textControl);
+			textControl.Selection.Delete();
 			textControl.FillVirtualSpaceUntilCaret();
 			textControl.Document.InsertText(offset, "=");
 			textControl.Caret.MoveTo(offset + 1, CaretVisualPlacement.DontScrollIfVisible);
@@ -97,7 +96,7 @@ namespace GammaJul.ReSharper.ForTea.Services.TypingAssist {
 				return false;
 
 			// insert the first "
-			TextControlUtil.DeleteSelection(textControl);
+			textControl.Selection.Delete();
 			textControl.FillVirtualSpaceUntilCaret();
 			textControl.Document.InsertText(offset, "\"");
 
@@ -119,7 +118,7 @@ namespace GammaJul.ReSharper.ForTea.Services.TypingAssist {
 		}
 
 		public T4TypingAssist(
-			[NotNull] Lifetime lifetime,
+			Lifetime lifetime,
 			[NotNull] ISolution solution,
 			[NotNull] ISettingsStore settingsStore,
 			[NotNull] CachingLexerService cachingLexerService,

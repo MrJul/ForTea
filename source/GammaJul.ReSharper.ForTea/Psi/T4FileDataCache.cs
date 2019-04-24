@@ -2,6 +2,7 @@ using GammaJul.ReSharper.ForTea.Psi.Directives;
 using GammaJul.ReSharper.ForTea.Tree;
 using JetBrains.Annotations;
 using JetBrains.DataFlow;
+using JetBrains.Lifetimes;
 using JetBrains.ProjectModel;
 using JetBrains.ReSharper.Psi;
 using JetBrains.ReSharper.Psi.Files;
@@ -56,7 +57,7 @@ namespace GammaJul.ReSharper.ForTea.Psi {
 		/// <param name="lifetime">The lifetime of this class.</param>
 		/// <param name="psiFiles">The PSI manager.</param>
 		/// <param name="directiveInfoManager">An instance of <see cref="DirectiveInfoManager"/>.</param>
-		public T4FileDataCache([NotNull] Lifetime lifetime, [NotNull] PsiFiles psiFiles, [NotNull] DirectiveInfoManager directiveInfoManager) {
+		public T4FileDataCache(Lifetime lifetime, [NotNull] PsiFiles psiFiles, [NotNull] DirectiveInfoManager directiveInfoManager) {
 			_directiveInfoManager = directiveInfoManager;
 			FileDataChanged = new Signal<Pair<IPsiSourceFile, T4FileDataDiff>>(lifetime, "T4FileDataCache.FileDataChanged");
 

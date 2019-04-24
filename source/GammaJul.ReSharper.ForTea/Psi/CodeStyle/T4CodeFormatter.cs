@@ -14,9 +14,6 @@ namespace GammaJul.ReSharper.ForTea.Psi.CodeStyle {
 	[Language(typeof(T4Language))]
 	public class T4CodeFormatter : CodeFormatterBase<T4FormatSettingsKey> {
 
-		public override PsiLanguageType LanguageType
-			=> T4Language.Instance;
-
 		protected override CodeFormattingContext CreateFormatterContext(
 			CodeFormatProfile profile,
 			ITreeNode firstNode,
@@ -56,7 +53,6 @@ namespace GammaJul.ReSharper.ForTea.Psi.CodeStyle {
 		public override ITreeNode CreateNewLine(LineEnding lineEnding, NodeType lineBreakType = null)
 			=> T4TokenNodeTypes.NewLine.Create(lineEnding.GetPresentation());
 
-
 		public override ITreeRange Format(
 			ITreeNode firstElement,
 			ITreeNode lastElement,
@@ -65,8 +61,8 @@ namespace GammaJul.ReSharper.ForTea.Psi.CodeStyle {
 		)
 			=> new TreeRange(firstElement, lastElement);
 
-		public T4CodeFormatter([NotNull] CodeFormatterRequirements requirements)
-			: base(requirements) {
+		public T4CodeFormatter([NotNull] T4Language t4Language, [NotNull] CodeFormatterRequirements requirements)
+			: base(t4Language, requirements) {
 		}
 
 	}

@@ -1,7 +1,7 @@
 using System;
 using JetBrains.Annotations;
 using JetBrains.Application.changes;
-using JetBrains.DataFlow;
+using JetBrains.Lifetimes;
 using JetBrains.ProjectModel;
 using JetBrains.ReSharper.Psi.Modules;
 

@@ -3,10 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 using GammaJul.ReSharper.ForTea.Parsing;
 using JetBrains.Annotations;
+using JetBrains.Diagnostics;
 using JetBrains.ReSharper.Psi.ExtensionsAPI.Tree;
 using JetBrains.ReSharper.Psi.Tree;
 using JetBrains.ReSharper.Resources.Shell;
-using JetBrains.Util;
 
 namespace GammaJul.ReSharper.ForTea.Tree {
 

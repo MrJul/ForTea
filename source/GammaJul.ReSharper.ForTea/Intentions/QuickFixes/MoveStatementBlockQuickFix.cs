@@ -11,6 +11,7 @@ using JetBrains.ReSharper.Psi.Tree;
 using JetBrains.TextControl;
 using JetBrains.Util;
 using System.Linq;
+using JetBrains.Diagnostics;
 using JetBrains.ReSharper.Resources.Shell;
 
 namespace GammaJul.ReSharper.ForTea.Intentions.QuickFixes {
