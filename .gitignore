@@ -1,8 +1,9 @@
-*.suo
-*.user
-.vs
-.tmp
-bin
-obj
-/output
-/_ReSharper.Caches
+**.suo
+**.user
+**/.vs
+**/.tmp
+**/bin
+**/obj
+**/output
+**/_ReSharper.Caches
+**/.idea
