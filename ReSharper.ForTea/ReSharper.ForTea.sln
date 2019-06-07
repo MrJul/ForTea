@@ -5,11 +5,11 @@ VisualStudioVersion = 16.0.28803.202
 MinimumVisualStudioVersion = 15.0.27130.2003
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "_build", "build\_build.csproj", "{EA431E49-B2B4-4893-85FF-E6FB307A20A9}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Common", "Common\Common.csproj", "{E7556A8E-2ADB-46E4-B0C6-DB7A53268600}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ForTea.Core", "ForTea.Core\ForTea.Core.csproj", "{E7556A8E-2ADB-46E4-B0C6-DB7A53268600}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Rider.ForTea", "Rider.ForTea\Rider.ForTea.csproj", "{32BD9350-1B6D-4D2C-BE6F-B9E418BAD198}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ForTea.RdSupport", "ForTea.RdSupport\ForTea.RdSupport.csproj", "{32BD9350-1B6D-4D2C-BE6F-B9E418BAD198}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VisualStudio.ForTea", "VisualStudio.ForTea\VisualStudio.ForTea.csproj", "{1BEFF5F2-2357-40F9-82F0-B7FC75B92CF2}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ForTea.VsSupport", "ForTea.VsSupport\ForTea.VsSupport.csproj", "{1BEFF5F2-2357-40F9-82F0-B7FC75B92CF2}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

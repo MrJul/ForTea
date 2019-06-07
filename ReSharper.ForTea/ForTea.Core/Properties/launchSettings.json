@@ -1,0 +1,9 @@
+{
+  "profiles": {
+    "ReSharper.ForTea": {
+      "commandName": "Executable",
+      "executablePath": "%ProgramFiles(x86)%\\Microsoft Visual Studio\\2019\\Professional\\Common7\\IDE\\devenv.exe",
+      "commandLineArgs": "/RootSuffix ForTea /ReSharper.Internal"
+    }
+  }
+}

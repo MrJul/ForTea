@@ -53,7 +53,7 @@ intellij {
 }
 
 val backendPluginName = "ReSharper.ForTea"
-val riderBackedPluginName = "Rider.ForTea"
+val riderBackedPluginName = "ForTea.RdSupport"
 val backendPluginSolutionName = "ReSharper.ForTea.sln"
 
 val repoRoot = projectDir.parentFile!!
@@ -63,8 +63,8 @@ val backendPluginSolutionPath = File(backendPluginPath, backendPluginSolutionNam
 val buildConfiguration = ext.properties["BuildConfiguration"] ?: "Debug"
 
 val pluginFiles = listOf(
-  "output/Common.ForTea/$buildConfiguration/Common.ForTea",
-  "output/Rider.ForTea/$buildConfiguration/Rider.ForTea"
+  "output/ForTea.Core/$buildConfiguration/ForTea.Core",
+  "output/ForTea.RdSupport/$buildConfiguration/ForTea.RdSupport"
 )
 
 val nugetPackagesPath by lazy {
@@ -95,7 +95,7 @@ val riderSdkPackageVersion by lazy {
 val nugetConfigPath = File(repoRoot, "NuGet.Config")
 val riderSdkVersionPropsPath = File(backendPluginPath, "RiderSdkPackageVersion.props")
 
-val riderForTeaTargetsGroup = "Rider.ForTea"
+val riderForTeaTargetsGroup = "ForTea.Rider"
 
 fun File.writeTextIfChanged(content: String) {
   val bytes = content.toByteArray()
@@ -107,7 +107,7 @@ fun File.writeTextIfChanged(content: String) {
 }
 
 configure<RdgenParams> {
-  val csOutput = File(repoRoot, "ReSharper.ForTea/Common.ForTea/ProjectModel/Protocol")
+  val csOutput = File(repoRoot, "ReSharper.ForTea/ForTea.Core/ProjectModel/Protocol")
   val ktOutput = File(repoRoot, "Rider.ForTea/src/main/kotlin/com/jetbrains/fortea/protocol")
 
   verbose = true

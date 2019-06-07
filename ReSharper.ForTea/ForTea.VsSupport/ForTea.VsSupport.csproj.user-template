@@ -1,0 +1,29 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="14.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  
+  <PropertyGroup>
+    <ProjectView>ProjectFiles</ProjectView>
+  </PropertyGroup>
+  
+  <!-- Rename this file to .csproj.user to automatically copy the plugin and update VS -->
+  <!-- Edit the following property group if needed -->
+  <PropertyGroup>
+	<RsPluginVsVersion>15_3008df9b</RsPluginVsVersion>
+	<RsPluginVsHive>ForTea</RsPluginVsHive>
+	<RsPluginRsInstallSuffix>_000</RsPluginRsInstallSuffix>
+  </PropertyGroup>
+  
+  <PropertyGroup>
+  	<RsPluginRsInstallFolder>$(LOCALAPPDATA)\JetBrains\Installations\ReSharperPlatformVs$(RsPluginVsVersion)$(RsPluginVsHive)$(RsPluginRsInstallSuffix)</RsPluginRsInstallFolder>
+	<RsPluginVsExePath>$(PROGRAMFILES)\Microsoft Visual Studio\2017\Professional\Common7\IDE\devenv.exe</RsPluginVsExePath>
+    <StartProgram>$(RsPluginVsExePath)</StartProgram>
+    <StartArguments>/RootSuffix $(RsPluginVsHive) /ReSharper.Internal</StartArguments>
+  </PropertyGroup>
+  
+  <Target Name="CopyPluginToRsInstallFolder" AfterTargets="AfterBuild">
+    <Message Text="Copying assembly @(MainAssembly) to $(RsPluginRsInstallFolder)" Importance="High" />
+    <Copy SourceFiles="@(MainAssembly)" DestinationFolder="$(RsPluginRsInstallFolder)" />
+    <Exec Command="&quot;$(RsPluginVsExePath)&quot; /RootSuffix $(RsPluginVsHive) /updateconfiguration" />
+  </Target>
+  
+</Project>
