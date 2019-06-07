@@ -1,0 +1,11 @@
+<idea-plugin>
+  <name>ForTea</name>
+  <id>org.jetbrains.fortea</id>
+  <vendor url="https://jetbrains.com">JetBrains</vendor>
+  <description>Support for Microsoft T4 template language</description>
+
+  <version>0.01</version>
+  <idea-version since-build="191" until-build="192.*" />
+
+  <depends>com.intellij.modules.rider</depends>
+</idea-plugin>
