@@ -1,0 +1,28 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+	<PropertyGroup>
+		<TargetFramework>net461</TargetFramework>
+		<GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+		<AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
+		<DefineConstants>$(DefineConstants);JET_MODE_ASSERT;RIDER</DefineConstants>
+		<OutputPath>..\..\output\Rider\$(Configuration)</OutputPath>
+		<LangVersion>7.3</LangVersion>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<PackageReference Include="JetBrains.Annotations" Version="2019.1.1" />
+		<PackageReference Include="JetBrains.Rider.SDK" Version="2019.1.0">
+			<PrivateAssets>all</PrivateAssets>
+			<IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
+		</PackageReference>
+		<PackageReference Include="Microsoft.VisualStudio.TextTemplating.Interfaces.10.0" Version="10.0.30320" />
+		<PackageReference Include="Microsoft.VisualStudio.Shell.Interop.8.0" Version="8.0.50728" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<Compile Remove="**\VisualStudio\**" />
+		<EmbeddedResource Remove="**\VisualStudio\**" />
+		<None Remove="**\VisualStudio\**" />
+	</ItemGroup>
+
+</Project>

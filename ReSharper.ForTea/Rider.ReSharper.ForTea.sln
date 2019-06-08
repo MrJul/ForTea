@@ -1,0 +1,29 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.28803.202
+MinimumVisualStudioVersion = 15.0.27130.2003
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GammaJul.ReSharper.ForTea", "src\GammaJul.ReSharper.ForTea\Rider.ForTea.csproj", "{63F25238-06BA-4861-95A2-DA35A1D18B65}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "_build", "build\_build.csproj", "{EA431E49-B2B4-4893-85FF-E6FB307A20A9}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{63F25238-06BA-4861-95A2-DA35A1D18B65}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{63F25238-06BA-4861-95A2-DA35A1D18B65}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{63F25238-06BA-4861-95A2-DA35A1D18B65}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{63F25238-06BA-4861-95A2-DA35A1D18B65}.Release|Any CPU.Build.0 = Release|Any CPU
+		{EA431E49-B2B4-4893-85FF-E6FB307A20A9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EA431E49-B2B4-4893-85FF-E6FB307A20A9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {8AC999FF-8B2A-48E7-B69E-9F8CB884B0F0}
+	EndGlobalSection
+EndGlobal

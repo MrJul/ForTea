@@ -1,0 +1,5 @@
+<Project>
+  <PropertyGroup>
+    <RiderSDKVersion>[192.0.20190606.221652-eap01d]</RiderSDKVersion>
+  </PropertyGroup>
+</Project>
