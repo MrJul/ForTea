@@ -168,11 +168,13 @@ tasks {
     var files = libFiles + pluginFiles.map { "$it.dll" } + pluginFiles.map { "$it.pdb" }
     files = files.map { "$reSharperPluginPath/src/$it" }
 
+/*
     if (name == IntelliJPlugin.PREPARE_TESTING_SANDBOX_TASK_NAME) {
       val testHostPath = "$reSharperPluginPath/test/src/FSharp.Tests.Host/bin/$buildConfiguration/net461" // todo: fix
       val testHostName = "$testHostPath/JetBrains.ReSharper.Plugins.FSharp.Tests.Host"
       files = files + listOf("$testHostName.dll", "$testHostName.pdb")
     }
+*/
 
     files.forEach {
       from(it, { into("${intellij.pluginName}/dotnet") })

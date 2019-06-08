@@ -4,6 +4,6 @@ pluginManagement {
     }
 }
 
-rootProject.name = "rider-fsharp"
+rootProject.name = "Rider.ForTea"
 
 include("protocol")
