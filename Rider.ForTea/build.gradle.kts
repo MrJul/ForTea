@@ -1,12 +1,9 @@
 import com.jetbrains.rd.generator.gradle.RdgenParams
 import org.gradle.api.tasks.testing.logging.TestExceptionFormat
-import org.jetbrains.grammarkit.tasks.GenerateLexer
-import org.jetbrains.intellij.IntelliJPlugin
+// import org.jetbrains.grammarkit.tasks.GenerateLexer
 import org.jetbrains.intellij.tasks.PrepareSandboxTask
 import org.jetbrains.kotlin.daemon.common.toHexString
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
-
-// Copied from F# plugin
 
 buildscript {
   repositories {
@@ -43,51 +40,30 @@ java {
 }
 
 
-val baseVersion = "2019.2"
-val buildCounter = ext.properties["build.number"] ?: "9999"
-version = "$baseVersion.$buildCounter"
+version = "0.01"
 
 intellij {
   type = "RD"
-
-  // Download a version of Rider to compile and run with. Either set `version` to
-  // 'LATEST-TRUNK-SNAPSHOT' or 'LATEST-EAP-SNAPSHOT' or a known version.
-  // This will download from www.jetbrains.com/intellij-repository/snapshots or
-  // www.jetbrains.com/intellij-repository/releases, respectively.
-  // Note that there's no guarantee that these are kept up to date
-  // version = 'LATEST-TRUNK-SNAPSHOT'
-  // If the build isn't available in intellij-repository, use an installed version via `localPath`
-  // localPath = '/Users/matt/Library/Application Support/JetBrains/Toolbox/apps/Rider/ch-1/171.4089.265/Rider EAP.app/Contents'
-  // localPath = "C:\\Users\\Ivan.Shakhov\\AppData\\Local\\JetBrains\\Toolbox\\apps\\Rider\\ch-0\\171.4456.459"
-  // localPath = "C:\\Users\\ivan.pashchenko\\AppData\\Local\\JetBrains\\Toolbox\\apps\\Rider\\ch-0\\dev"
-  // localPath 'build/riderRD-173-SNAPSHOT'
-
-  val dir = file("build/rider")
-  if (dir.exists()) {
-    logger.lifecycle("*** Using Rider SDK from local path " + dir.absolutePath)
-    localPath = dir.absolutePath
-  } else {
-    logger.lifecycle("*** Using Rider SDK from intellij-snapshots repository")
-    version = "$baseVersion-SNAPSHOT"
-  }
-
+  version = "2019.2-SNAPSHOT"
   instrumentCode = false
   downloadSources = false
   updateSinceUntilBuild = false
-
   // Workaround for https://youtrack.jetbrains.com/issue/IDEA-179607
   setPlugins("rider-plugins-appender")
 }
 
-val repoRoot = projectDir.parentFile!!
 val reSharperPluginName = "ReSharper.ForTea"
+val riderPluginName = "Rider.ForTea"
+val reSharperPluginSolutionName = "GammaJul.ReSharper.ForTea.sln"
+
+val repoRoot = projectDir.parentFile!!
 val reSharperPluginPath = File(repoRoot, reSharperPluginName)
-val buildConfiguration = ext.properties["BuildConfiguration"] ?: "Debug"
+val riderPluginPath = File(repoRoot, riderPluginName)
+val reSharperPluginSolutionPath = File(reSharperPluginPath, reSharperPluginSolutionName)
+ val buildConfiguration = ext.properties["BuildConfiguration"] ?: "Debug"
 
-val libFiles = listOf()
-
-val pluginFiles = listOf<String>(
-//  "output/$buildConfiguration/net461/JetBrains.ReSharper.Plugins.FSharp.ProjectModelBase",
+val pluginFiles = listOf(
+  "output/$buildConfiguration/GammaJul.ReSharper.ForTea"
 )
 
 val nugetPackagesPath by lazy {
@@ -165,19 +141,14 @@ configure<RdgenParams> {
 
 tasks {
   withType<PrepareSandboxTask> {
-    var files = libFiles + pluginFiles.map { "$it.dll" } + pluginFiles.map { "$it.pdb" }
-    files = files.map { "$reSharperPluginPath/src/$it" }
+    val files = pluginFiles.map { "$it.dll" } + pluginFiles.map { "$it.pdb" }
+    val paths = files.map { File(reSharperPluginPath, it) }
+    logger.lifecycle(paths.toString())
 
-/*
-    if (name == IntelliJPlugin.PREPARE_TESTING_SANDBOX_TASK_NAME) {
-      val testHostPath = "$reSharperPluginPath/test/src/FSharp.Tests.Host/bin/$buildConfiguration/net461" // todo: fix
-      val testHostName = "$testHostPath/JetBrains.ReSharper.Plugins.FSharp.Tests.Host"
-      files = files + listOf("$testHostName.dll", "$testHostName.pdb")
-    }
-*/
-
-    files.forEach {
-      from(it, { into("${intellij.pluginName}/dotnet") })
+    paths.forEach {
+      from(it) {
+        into("${intellij.pluginName}/dotnet")
+      }
     }
 
     into("${intellij.pluginName}/projectTemplates") {
@@ -185,7 +156,7 @@ tasks {
     }
 
     doLast {
-      files.forEach {
+      paths.forEach {
         val file = file(it)
         if (!file.exists()) throw RuntimeException("File $file does not exist")
         logger.warn("$name: ${file.name} -> $destinationDir/${intellij.pluginName}/dotnet")
@@ -202,7 +173,7 @@ tasks {
 
   withType<KotlinCompile> {
     kotlinOptions.jvmTarget = "1.8"
-    // dependsOn(generateT4Lexer, "rdgen")
+    dependsOn("rdgen")
   }
 
   withType<Test> {
@@ -258,9 +229,7 @@ tasks {
     doLast {
       exec {
         executable = "dotnet"
-        val solutionFile = File(reSharperPluginPath, "GammaJul.ReSharper.ForTea.sln")
-        println(solutionFile.exists())
-        args = listOf("restore", solutionFile.canonicalPath)
+        args = listOf("restore", reSharperPluginSolutionPath.canonicalPath)
       }
     }
   }
@@ -271,7 +240,7 @@ tasks {
     doLast {
       exec {
         executable = "msbuild"
-        args = listOf("$reSharperPluginPath/ReSharper.ForTea.sln")
+        args = listOf(reSharperPluginSolutionPath.canonicalPath)
       }
     }
   }
