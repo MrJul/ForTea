@@ -9,7 +9,7 @@ namespace GammaJul.ReSharper.ForTea.Psi {
 	[ProjectFileType(typeof(T4ProjectFileType))]
 	public sealed class T4ProjectFileLanguageService : MixedProjectFileLanguageService {
 
-		[NotNull] private readonly T4Environment _t4Environment;
+		[NotNull] private readonly IT4Environment _t4Environment;
 
 		/// <summary>Gets the PSI language type, <see cref="T4Language" />.</summary>
 		protected override PsiLanguageType PsiLanguageType
@@ -28,11 +28,8 @@ namespace GammaJul.ReSharper.ForTea.Psi {
 		/// <summary>Initializes a new instance of the <see cref="T4ProjectFileLanguageService" /> class.</summary>
 		/// <param name="t4ProjectFileType">Type of the T4 project file.</param>
 		/// <param name="t4Environment">The host environment.</param>
-		public T4ProjectFileLanguageService([NotNull] T4ProjectFileType t4ProjectFileType, [NotNull] T4Environment t4Environment)
-			: base(t4ProjectFileType) {
-			_t4Environment = t4Environment;
-		}
-
+		public T4ProjectFileLanguageService([NotNull] T4ProjectFileType t4ProjectFileType, [NotNull] IT4Environment t4Environment)
+			: base(t4ProjectFileType) => _t4Environment = t4Environment;
 	}
 
 }

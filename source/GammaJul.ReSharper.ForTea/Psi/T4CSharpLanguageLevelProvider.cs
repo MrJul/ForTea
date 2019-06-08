@@ -7,12 +7,12 @@ using JetBrains.ReSharper.Psi.CSharp;
 using JetBrains.ReSharper.Psi.CSharp.Impl;
 using JetBrains.ReSharper.Psi.Modules;
 
-namespace GammaJul.ReSharper.ForTea.Psi {
-
+namespace GammaJul.ReSharper.ForTea.Psi
+{
 	[SolutionFeaturePart]
-	public class T4CSharpLanguageLevelProvider : CSharpLanguageLevelProvider {
-
-		[NotNull] private readonly T4Environment _t4Environment;
+	public class T4CSharpLanguageLevelProvider : CSharpLanguageLevelProvider
+	{
+		[NotNull] private readonly IT4Environment _t4Environment;
 
 		public override bool IsApplicable(IPsiModule psiModule)
 			=> psiModule is T4PsiModule;
@@ -24,15 +24,10 @@ namespace GammaJul.ReSharper.ForTea.Psi {
 			=> _t4Environment.CSharpLanguageLevel.ToLanguageVersion();
 
 		public T4CSharpLanguageLevelProvider(
-			[NotNull] T4Environment t4Environment,
+			[NotNull] IT4Environment t4Environment,
 			[NotNull] ILanguageLevelProjectProperty<CSharpLanguageLevel, CSharpLanguageVersion> projectProperty,
 			[CanBeNull] ILanguageLevelOverrider<CSharpLanguageLevel> languageLevelOverrider = null,
 			[CanBeNull] Lazy<ILanguageVersionModifier<CSharpLanguageVersion>> languageVersionModifier = null
-		)
-			: base(projectProperty, languageLevelOverrider, languageVersionModifier) {
-			_t4Environment = t4Environment;
-		}
-
+		) : base(projectProperty, languageLevelOverrider, languageVersionModifier) => _t4Environment = t4Environment;
 	}
-
 }

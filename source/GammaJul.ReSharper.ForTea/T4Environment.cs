@@ -16,7 +16,8 @@ namespace GammaJul.ReSharper.ForTea {
 
 	/// <summary>Contains environment-dependent information.</summary>
 	[ShellComponent]
-	public class T4Environment {
+	public class T4Environment : IT4Environment
+	{
 
 		[NotNull] private readonly IVsEnvironmentInformation _vsEnvironmentInformation;
 		[NotNull] private readonly Lazy<Optional<ITextTemplatingComponents>> _components;
@@ -72,7 +73,7 @@ namespace GammaJul.ReSharper.ForTea {
 		}
 
 		[NotNull]
-		private IList<FileSystemPath> ReadIncludePaths() {
+		public IList<FileSystemPath> ReadIncludePaths() {
 			string registryKey = _vsEnvironmentInformation.GetVisualStudioGlobalRegistryPath()
 				+ @"_Config\TextTemplating\IncludeFolders\.tt";
 

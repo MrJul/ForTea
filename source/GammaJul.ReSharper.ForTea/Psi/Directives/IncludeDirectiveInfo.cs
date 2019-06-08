@@ -13,7 +13,7 @@ namespace GammaJul.ReSharper.ForTea.Psi.Directives {
 
 		public override ImmutableArray<DirectiveAttributeInfo> SupportedAttributes { get; }
 
-		public IncludeDirectiveInfo([NotNull] T4Environment environment)
+		public IncludeDirectiveInfo([NotNull] IT4Environment environment)
 			: base("include") {
 
 			FileAttribute = new DirectiveAttributeInfo("file", DirectiveAttributeOptions.Required | DirectiveAttributeOptions.DisplayInCodeStructure);

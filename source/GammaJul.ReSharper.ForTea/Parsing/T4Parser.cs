@@ -8,7 +8,7 @@ namespace GammaJul.ReSharper.ForTea.Parsing {
 	
 	internal sealed class T4Parser : IParser {
 
-		[NotNull] private readonly T4Environment _t4Environment;
+		[NotNull] private readonly IT4Environment _t4Environment;
 		[NotNull] private readonly DirectiveInfoManager _directiveInfoManager;
 		[NotNull] private readonly ILexer _lexer;
 		[CanBeNull] private readonly IPsiSourceFile _sourceFile;
@@ -17,7 +17,7 @@ namespace GammaJul.ReSharper.ForTea.Parsing {
 			=> new T4TreeBuilder(_t4Environment, _directiveInfoManager, _lexer, _sourceFile).CreateT4Tree();
 
 		public T4Parser(
-			[NotNull] T4Environment t4Environment,
+			[NotNull] IT4Environment t4Environment,
 			[NotNull] DirectiveInfoManager directiveInfoManager,
 			[NotNull] ILexer lexer,
 			[CanBeNull] IPsiSourceFile sourceFile

@@ -45,7 +45,7 @@ namespace GammaJul.ReSharper.ForTea.Psi.Directives {
 				? null
 				: AllDirectives.FirstOrDefault(di => di.Name.Equals(directiveName, StringComparison.OrdinalIgnoreCase));
 
-		public DirectiveInfoManager([NotNull] T4Environment environment) {
+		public DirectiveInfoManager([NotNull] IT4Environment environment) {
 			Template = new TemplateDirectiveInfo(environment);
 			Parameter = new ParameterDirectiveInfo();
 			Output = new OutputDirectiveInfo();

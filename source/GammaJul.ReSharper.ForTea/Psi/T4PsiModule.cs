@@ -48,7 +48,7 @@ namespace GammaJul.ReSharper.ForTea.Psi {
 		[NotNull] private readonly IProjectFile _projectFile;
 		[NotNull] private readonly IProject _project;
 		[NotNull] private readonly ISolution _solution;
-		[NotNull] private readonly T4Environment _t4Environment;
+		[NotNull] private readonly IT4Environment _t4Environment;
 		[NotNull] private readonly T4ResolveProject _resolveProject;
 		[NotNull] private readonly OutputAssemblies _outputAssemblies;
 		[NotNull] private readonly IModuleReferenceResolveContext _moduleReferenceResolveContext;
@@ -402,7 +402,7 @@ namespace GammaJul.ReSharper.ForTea.Psi {
 			[NotNull] IShellLocks shellLocks,
 			[NotNull] IProjectFile projectFile,
 			[NotNull] T4FileDataCache fileDataCache,
-			[NotNull] T4Environment t4Environment,
+			[NotNull] IT4Environment t4Environment,
 			[NotNull] OutputAssemblies outputAssemblies
 		) {
 

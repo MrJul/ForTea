@@ -16,7 +16,7 @@ namespace GammaJul.ReSharper.ForTea.Psi {
 	[Language(typeof(T4Language))]
 	public sealed class T4LanguageService : LanguageService {
 		
-		[NotNull] private readonly T4Environment _t4Environment;
+		[NotNull] private readonly IT4Environment _t4Environment;
 		[NotNull] private readonly DirectiveInfoManager _directiveInfoManager;
 
 		/// <summary>Creates a lexer that filters tokens that have no meaning.</summary>
@@ -67,7 +67,7 @@ namespace GammaJul.ReSharper.ForTea.Psi {
 			[NotNull] T4Language t4Language,
 			[NotNull] DirectiveInfoManager directiveInfoManager,
 			[NotNull] IConstantValueService constantValueService,
-			[NotNull] T4Environment t4Environment
+			[NotNull] IT4Environment t4Environment
 		)
 			: base(t4Language, constantValueService) {
 			_t4Environment = t4Environment;

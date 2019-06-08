@@ -59,7 +59,7 @@ namespace GammaJul.ReSharper.ForTea.Psi {
 			[NotNull] PsiProjectFileTypeCoordinator psiProjectFileTypeCoordinator,
 			[NotNull] DocumentManager documentManager,
 			[NotNull] ISolution solution,
-			[NotNull] T4Environment t4Environment,
+			[NotNull] IT4Environment t4Environment,
 			[NotNull] IFileSystemTracker fileSystemTracker
 		) {
 			_projectFileExtensions = projectFileExtensions;

@@ -32,7 +32,7 @@ namespace GammaJul.ReSharper.ForTea.Psi.Directives {
 
 		public override ImmutableArray<DirectiveAttributeInfo> SupportedAttributes { get; }
 
-		public TemplateDirectiveInfo([NotNull] T4Environment environment)
+		public TemplateDirectiveInfo([NotNull] IT4Environment environment)
 			: base("template") {
 
 			bool isAtLeastVs2012 = environment.VsVersion2.Major >= VsVersions.Vs2012;

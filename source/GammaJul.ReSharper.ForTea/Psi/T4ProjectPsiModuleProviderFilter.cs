@@ -12,7 +12,7 @@ namespace GammaJul.ReSharper.ForTea.Psi {
 	public class T4ProjectPsiModuleProviderFilter : IProjectPsiModuleProviderFilter {
 
 		[NotNull] private readonly ChangeManager _changeManager;
-		[NotNull] private readonly T4Environment _t4Environment;
+		[NotNull] private readonly IT4Environment _t4Environment;
 
 		public Tuple<IProjectPsiModuleHandler, IPsiModuleDecorator> OverrideHandler(
 			Lifetime lifetime,
@@ -25,7 +25,7 @@ namespace GammaJul.ReSharper.ForTea.Psi {
 
 		public T4ProjectPsiModuleProviderFilter(
 			[NotNull] ChangeManager changeManager,
-			[NotNull] T4Environment t4Environment
+			[NotNull] IT4Environment t4Environment
 		) {
 			_changeManager = changeManager;
 			_t4Environment = t4Environment;

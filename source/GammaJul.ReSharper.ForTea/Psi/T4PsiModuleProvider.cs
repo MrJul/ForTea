@@ -27,7 +27,7 @@ namespace GammaJul.ReSharper.ForTea.Psi {
 		private readonly Lifetime _lifetime;
 		[NotNull] private readonly IShellLocks _shellLocks;
 		[NotNull] private readonly ChangeManager _changeManager;
-		[NotNull] private readonly T4Environment _t4Environment;
+		[NotNull] private readonly IT4Environment _t4Environment;
 
 		private readonly struct ModuleWrapper {
 
@@ -191,7 +191,7 @@ namespace GammaJul.ReSharper.ForTea.Psi {
 			Lifetime lifetime,
 			[NotNull] IShellLocks shellLocks,
 			[NotNull] ChangeManager changeManager,
-			[NotNull] T4Environment t4Environment
+			[NotNull] IT4Environment t4Environment
 		) {
 			_lifetime = lifetime;
 			_shellLocks = shellLocks;

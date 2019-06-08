@@ -8,14 +8,15 @@ using JetBrains.ReSharper.Psi;
 using JetBrains.ReSharper.Psi.Modules;
 using JetBrains.Util;
 
-namespace GammaJul.ReSharper.ForTea.Psi {
-
+namespace GammaJul.ReSharper.ForTea.Psi
+{
 	/// <summary>Provides <see cref="T4PsiModule"/> for T4 files opened inside the solution.</summary>
-	internal sealed class T4ProjectPsiModuleHandler : DelegatingProjectPsiModuleHandler {
-
+	internal sealed class T4ProjectPsiModuleHandler : DelegatingProjectPsiModuleHandler
+	{
 		[NotNull] private readonly T4PsiModuleProvider _t4PsiModuleProvider;
-		
-		public override IList<IPsiModule> GetAllModules() {
+
+		public override IList<IPsiModule> GetAllModules()
+		{
 			var modules = new List<IPsiModule>(base.GetAllModules());
 			modules.AddRange(_t4PsiModuleProvider.GetModules());
 			return modules;
@@ -26,7 +27,8 @@ namespace GammaJul.ReSharper.ForTea.Psi {
 			FileSystemPath oldLocation,
 			PsiModuleChange.ChangeType changeType,
 			PsiModuleChangeBuilder changeBuilder
-		) {
+		)
+		{
 			if (!_t4PsiModuleProvider.OnProjectFileChanged(projectFile, ref changeType, changeBuilder))
 				base.OnProjectFileChanged(projectFile, oldLocation, changeType, changeBuilder);
 		}
@@ -38,13 +40,9 @@ namespace GammaJul.ReSharper.ForTea.Psi {
 			Lifetime lifetime,
 			[NotNull] IProjectPsiModuleHandler handler,
 			[NotNull] ChangeManager changeManager,
-			[NotNull] T4Environment t4Environment,
+			[NotNull] IT4Environment t4Environment,
 			[NotNull] IProject project
-		)
-			: base(handler) {
-			_t4PsiModuleProvider = new T4PsiModuleProvider(lifetime, project.Locks, changeManager, t4Environment);
-		}
-
+		) : base(handler)
+			=> _t4PsiModuleProvider = new T4PsiModuleProvider(lifetime, project.Locks, changeManager, t4Environment);
 	}
-
 }

@@ -20,7 +20,7 @@ namespace GammaJul.ReSharper.ForTea.Parsing {
 	internal sealed partial class T4TreeBuilder {
 
 		[NotNull] private readonly List<IT4Include> _includes = new List<IT4Include>();
-		[NotNull] private readonly T4Environment _t4Environment;
+		[NotNull] private readonly IT4Environment _t4Environment;
 		[NotNull] private readonly DirectiveInfoManager _directiveInfoManager;
 		[NotNull] private readonly PsiBuilderLexer _builderLexer;
 		[CanBeNull] private readonly IPsiSourceFile _sourceFile;
@@ -381,24 +381,24 @@ namespace GammaJul.ReSharper.ForTea.Parsing {
 		}
 
 		internal T4TreeBuilder(
-			[NotNull] T4Environment t4Environment,
+			[NotNull] IT4Environment t4Environment,
 			[NotNull] DirectiveInfoManager directiveInfoManager,
 			[NotNull] ILexer lexer,
 			[CanBeNull] IPsiSourceFile sourceFile = null
+		) : this(
+			t4Environment,
+			directiveInfoManager,
+			lexer,
+			sourceFile,
+			new HashSet<FileSystemPath>(),
+			sourceFile?.GetSolution(),
+			sourceFile?.PsiModule as T4PsiModule
 		)
-			: this(
-				t4Environment,
-				directiveInfoManager,
-				lexer,
-				sourceFile,
-				new HashSet<FileSystemPath>(),
-				sourceFile?.GetSolution(),
-				sourceFile?.PsiModule as T4PsiModule
-			) {
+		{
 		}
 
 		private T4TreeBuilder(
-			[NotNull] T4Environment t4Environment,
+			[NotNull] IT4Environment t4Environment,
 			[NotNull] DirectiveInfoManager directiveInfoManager,
 			[NotNull] ILexer lexer,
 			[CanBeNull] IPsiSourceFile sourceFile,

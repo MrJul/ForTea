@@ -17,7 +17,7 @@ namespace GammaJul.ReSharper.ForTea.Psi {
 	[ModuleReferencer(Priority = -10)]
 	public class T4ModuleReferencer : IModuleReferencer {
 
-		[NotNull] private readonly T4Environment _environment;
+		[NotNull] private readonly IT4Environment _environment;
 		[NotNull] private readonly DirectiveInfoManager _directiveInfoManager;
 
 		private bool CanReferenceModule([CanBeNull] IPsiModule module, [CanBeNull] IPsiModule moduleToReference)
@@ -71,7 +71,7 @@ namespace GammaJul.ReSharper.ForTea.Psi {
 			return transactions.Execute("T4 Assembly Reference", action).Succeded;
 		}
 
-		public T4ModuleReferencer([NotNull] T4Environment environment, [NotNull] DirectiveInfoManager directiveInfoManager) {
+		public T4ModuleReferencer([NotNull] IT4Environment environment, [NotNull] DirectiveInfoManager directiveInfoManager) {
 			_environment = environment;
 			_directiveInfoManager = directiveInfoManager;
 		}
