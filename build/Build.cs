@@ -49,6 +49,7 @@ internal class Build : NukeBuild {
 		=> _ => _
 			.Executes(() => {
 				MSBuild(s => s
+					.SetToolPath("msbuild")
 					.SetTargetPath(_solution)
 					.SetTargets("Restore"));
 			});
@@ -58,6 +59,7 @@ internal class Build : NukeBuild {
 			.DependsOn(Restore)
 			.Executes(() => {
 				MSBuild(s => s
+					.SetToolPath("msbuild")
 					.SetTargetPath(_solution)
 					.SetTargets("Rebuild")
 					.SetConfiguration(Configuration)
