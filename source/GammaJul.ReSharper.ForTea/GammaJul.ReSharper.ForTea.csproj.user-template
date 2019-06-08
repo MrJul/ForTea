@@ -9,7 +9,7 @@
   <!-- Edit the following property group if needed -->
   <PropertyGroup>
 	<RsPluginVsVersion>15_3008df9b</RsPluginVsVersion>
-	<RsPluginVsHive>RsDev</RsPluginVsHive>
+	<RsPluginVsHive>ForTea</RsPluginVsHive>
 	<RsPluginRsInstallSuffix>_000</RsPluginRsInstallSuffix>
   </PropertyGroup>
   
