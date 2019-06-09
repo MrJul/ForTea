@@ -22,7 +22,7 @@ namespace GammaJul.ReSharper.ForTea.Psi {
 		}
 
 		[NotNull]
-		public static string ResolveMacros([NotNull] string stringWithMacros, [CanBeNull] T4PsiModule t4PsiModule) {
+		public static string ResolveMacros([NotNull] string stringWithMacros, [CanBeNull] IT4PsiModule t4PsiModule) {
 			if (String.IsNullOrEmpty(stringWithMacros)
 			|| t4PsiModule == null
 			|| stringWithMacros.IndexOf("$(", StringComparison.Ordinal) < 0)

@@ -10,7 +10,7 @@ using JetBrains.ReSharper.Psi.Modules;
 
 namespace GammaJul.ReSharper.ForTea.Psi
 {
-	/// <summary>Provides <see cref="T4PsiModule"/> for T4 files opened outside of the solution.</summary>
+	/// <summary>Provides <see cref="IT4PsiModule"/> for T4 files opened outside of the solution.</summary>
 	[MiscFilesProjectPsiModuleProvider]
 	public sealed class T4MiscFilesProjectPsiModuleProvider : IMiscFilesProjectPsiModuleProvider
 	{
@@ -37,7 +37,14 @@ namespace GammaJul.ReSharper.ForTea.Psi
 			Lifetime lifetime,
 			[NotNull] IShellLocks shellLocks,
 			[NotNull] ChangeManager changeManager,
-			[NotNull] IT4Environment t4Environment
-		) => _t4PsiModuleProvider = new T4PsiModuleProvider(lifetime, shellLocks, changeManager, t4Environment);
+			[NotNull] IT4Environment t4Environment,
+			[NotNull] IT4PsiModuleFactory moduleFactory
+		) => _t4PsiModuleProvider = new T4PsiModuleProvider(
+			lifetime,
+			shellLocks,
+			changeManager,
+			t4Environment,
+			moduleFactory
+		);
 	}
 }

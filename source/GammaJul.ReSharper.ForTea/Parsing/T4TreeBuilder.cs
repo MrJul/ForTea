@@ -25,7 +25,7 @@ namespace GammaJul.ReSharper.ForTea.Parsing {
 		[NotNull] private readonly PsiBuilderLexer _builderLexer;
 		[CanBeNull] private readonly IPsiSourceFile _sourceFile;
 		[CanBeNull] private readonly ISolution _solution;
-		[CanBeNull] private readonly T4PsiModule _macroResolveModule;
+		[CanBeNull] private readonly IT4PsiModule _macroResolveModule;
 		[NotNull] private readonly HashSet<FileSystemPath> _existingIncludePaths;
 
 		[CanBeNull] private List<T4Directive> _notClosedDirectives;
@@ -235,16 +235,20 @@ namespace GammaJul.ReSharper.ForTea.Parsing {
 
 		private void HandleIncludeDirective([NotNull] IT4Directive directive, [NotNull] CompositeElement parentElement) {
 			if (!(directive.GetAttribute(_directiveInfoManager.Include.FileAttribute.Name) is T4DirectiveAttribute fileAttr))
+			{
 				return;
+			}
 
 			IT4Token valueToken = fileAttr.GetValueToken();
 			if (valueToken == null)
+			{
 				return;
+			}
 
 			bool once = false;
-			if (_t4Environment.VsVersion2.Major >= VsVersions.Vs2013) {
+			if (_t4Environment.ShouldCheckDoubleInclusion) {
 				string onceString = directive.GetAttributeValue(_directiveInfoManager.Include.OnceAttribute.Name);
-				once = Boolean.TrueString.Equals(onceString, StringComparison.OrdinalIgnoreCase);
+				once = bool.TrueString.Equals(onceString, StringComparison.OrdinalIgnoreCase);
 			}
 
 			HandleInclude(valueToken.GetText(), fileAttr, parentElement, once);
@@ -392,7 +396,7 @@ namespace GammaJul.ReSharper.ForTea.Parsing {
 			sourceFile,
 			new HashSet<FileSystemPath>(),
 			sourceFile?.GetSolution(),
-			sourceFile?.PsiModule as T4PsiModule
+			sourceFile?.PsiModule as IT4PsiModule
 		)
 		{
 		}
@@ -404,7 +408,7 @@ namespace GammaJul.ReSharper.ForTea.Parsing {
 			[CanBeNull] IPsiSourceFile sourceFile,
 			[NotNull] HashSet<FileSystemPath> existingIncludePaths,
 			[CanBeNull] ISolution solution,
-			[CanBeNull] T4PsiModule macroResolveModule
+			[CanBeNull] IT4PsiModule macroResolveModule
 		) {
 			_t4Environment = t4Environment;
 			_directiveInfoManager = directiveInfoManager;

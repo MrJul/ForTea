@@ -2,10 +2,10 @@ using System.Collections.Generic;
 using JetBrains.Annotations;
 using JetBrains.DataStructures;
 
-namespace GammaJul.ReSharper.ForTea.Psi.Directives {
-
-	public class TemplateDirectiveInfo : DirectiveInfo {
-
+namespace GammaJul.ReSharper.ForTea.Psi.Directives
+{
+	public class TemplateDirectiveInfo : DirectiveInfo
+	{
 		[NotNull]
 		public DirectiveAttributeInfo CompilerOptionsAttribute { get; }
 
@@ -32,23 +32,20 @@ namespace GammaJul.ReSharper.ForTea.Psi.Directives {
 
 		public override ImmutableArray<DirectiveAttributeInfo> SupportedAttributes { get; }
 
-		public TemplateDirectiveInfo([NotNull] IT4Environment environment)
-			: base("template") {
-
-			bool isAtLeastVs2012 = environment.VsVersion2.Major >= VsVersions.Vs2012;
-
+		public TemplateDirectiveInfo([NotNull] IT4Environment environment) : base("template")
+		{
 			LanguageAttribute = new EnumDirectiveAttributeInfo("language", DirectiveAttributeOptions.None, "C#", "VB");
-			HostSpecificAttribute = isAtLeastVs2012
-				? new EnumDirectiveAttributeInfo("hostspecific",DirectiveAttributeOptions.None, "true", "false", "trueFromBase")
-				: new BooleanDirectiveAttributeInfo("hostspecific", DirectiveAttributeOptions.None);
+			HostSpecificAttribute = BuildHostSpecificAttribute(environment);
 			DebugAttribute = new BooleanDirectiveAttributeInfo("debug", DirectiveAttributeOptions.None);
 			InheritsAttribute = new DirectiveAttributeInfo("inherits", DirectiveAttributeOptions.None);
 			CultureAttribute = new CultureDirectiveAttributeInfo("culture", DirectiveAttributeOptions.None);
 			CompilerOptionsAttribute = new DirectiveAttributeInfo("compilerOptions", DirectiveAttributeOptions.None);
 			LinePragmasAttribute = new BooleanDirectiveAttributeInfo("linePragmas", DirectiveAttributeOptions.None);
-			VisibilityAttribute = new EnumDirectiveAttributeInfo("visibility", DirectiveAttributeOptions.None, "public", "internal");
+			VisibilityAttribute =
+				new EnumDirectiveAttributeInfo("visibility", DirectiveAttributeOptions.None, "public", "internal");
 
-			var attributes = new List<DirectiveAttributeInfo>(8) {
+			var attributes = new List<DirectiveAttributeInfo>(8)
+			{
 				LanguageAttribute,
 				HostSpecificAttribute,
 				DebugAttribute,
@@ -57,7 +54,8 @@ namespace GammaJul.ReSharper.ForTea.Psi.Directives {
 				CompilerOptionsAttribute
 			};
 
-			if (isAtLeastVs2012) {
+			if (environment.ShouldSupportAdvancedAttributes)
+			{
 				attributes.Add(LinePragmasAttribute);
 				attributes.Add(VisibilityAttribute);
 			}
@@ -65,6 +63,18 @@ namespace GammaJul.ReSharper.ForTea.Psi.Directives {
 			SupportedAttributes = attributes.ToImmutableArray();
 		}
 
-	}
+		private static EnumDirectiveAttributeInfo BuildHostSpecificAttribute(IT4Environment environment)
+		{
+			if (!environment.ShouldProvideExtendedSupportForHostSpecificAttribute)
+				return new BooleanDirectiveAttributeInfo("hostspecific", DirectiveAttributeOptions.None);
 
+			return new EnumDirectiveAttributeInfo(
+				"hostspecific",
+				DirectiveAttributeOptions.None,
+				"true",
+				"false",
+				"trueFromBase"
+			);
+		}
+	}
 }

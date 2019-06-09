@@ -18,30 +18,31 @@ using JetBrains.Util;
 namespace GammaJul.ReSharper.ForTea.Psi {
 
 	/// <summary>
-	/// Manages <see cref="T4PsiModule"/> for T4 files.
+	/// Manages <see cref="IT4PsiModule"/> for T4 files.
 	/// Contains common implementation for <see cref="T4ProjectPsiModuleHandler"/> and <see cref="T4MiscFilesProjectPsiModuleProvider"/>.
 	/// </summary>
-	public sealed class T4PsiModuleProvider : IDisposable {
+	internal sealed class T4PsiModuleProvider : IDisposable {
 
 		[NotNull] private readonly Dictionary<IProjectFile, ModuleWrapper> _modules = new Dictionary<IProjectFile, ModuleWrapper>();
 		private readonly Lifetime _lifetime;
 		[NotNull] private readonly IShellLocks _shellLocks;
 		[NotNull] private readonly ChangeManager _changeManager;
 		[NotNull] private readonly IT4Environment _t4Environment;
-
+		[NotNull] private readonly IT4PsiModuleFactory _moduleFactory;
+		
 		private readonly struct ModuleWrapper {
 
-			[NotNull] public readonly T4PsiModule Module;
+			[NotNull] public readonly IT4PsiModule Module;
 			[NotNull] public readonly LifetimeDefinition LifetimeDefinition;
 
-			public ModuleWrapper([NotNull] T4PsiModule module, [NotNull] LifetimeDefinition lifetimeDefinition) {
+			public ModuleWrapper([NotNull] IT4PsiModule module, [NotNull] LifetimeDefinition lifetimeDefinition) {
 				Module = module;
 				LifetimeDefinition = lifetimeDefinition;
 			}
 		}
 
-		/// <summary>Gets all <see cref="T4PsiModule"/>s for opened files.</summary>
-		/// <returns>A collection of <see cref="T4PsiModule"/>.</returns>
+		/// <summary>Gets all <see cref="IT4PsiModule"/>s for opened files.</summary>
+		/// <returns>A collection of <see cref="IT4PsiModule"/>.</returns>
 		[NotNull]
 		[ItemNotNull]
 		public IEnumerable<IPsiModule> GetModules() {
@@ -131,7 +132,7 @@ namespace GammaJul.ReSharper.ForTea.Psi {
 
 			// creates a new T4PsiModule for the file
 			LifetimeDefinition lifetimeDefinition = Lifetime.Define(_lifetime, "[T4]" + projectFile.Name);
-			var psiModule = new T4PsiModule(
+			IT4PsiModule psiModule = _moduleFactory.Produce(
 				lifetimeDefinition.Lifetime,
 				solution.GetComponent<IPsiModules>(),
 				solution.GetComponent<DocumentManager>(),
@@ -186,17 +187,17 @@ namespace GammaJul.ReSharper.ForTea.Psi {
 				_modules.Clear();
 			}
 		}
-
-		public T4PsiModuleProvider(
+		internal T4PsiModuleProvider(
 			Lifetime lifetime,
 			[NotNull] IShellLocks shellLocks,
 			[NotNull] ChangeManager changeManager,
-			[NotNull] IT4Environment t4Environment
-		) {
+			[NotNull] IT4Environment t4Environment,
+			[NotNull] IT4PsiModuleFactory moduleFactory) {
 			_lifetime = lifetime;
 			_shellLocks = shellLocks;
 			_changeManager = changeManager;
 			_t4Environment = t4Environment;
+			_moduleFactory = moduleFactory;
 		}
 
 	}

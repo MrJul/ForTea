@@ -10,7 +10,7 @@ using JetBrains.Util;
 
 namespace GammaJul.ReSharper.ForTea.Psi
 {
-	/// <summary>Provides <see cref="T4PsiModule"/> for T4 files opened inside the solution.</summary>
+	/// <summary>Provides <see cref="IT4PsiModule"/> for T4 files opened inside the solution.</summary>
 	internal sealed class T4ProjectPsiModuleHandler : DelegatingProjectPsiModuleHandler
 	{
 		[NotNull] private readonly T4PsiModuleProvider _t4PsiModuleProvider;
@@ -19,6 +19,7 @@ namespace GammaJul.ReSharper.ForTea.Psi
 		{
 			var modules = new List<IPsiModule>(base.GetAllModules());
 			modules.AddRange(_t4PsiModuleProvider.GetModules());
+
 			return modules;
 		}
 
@@ -41,8 +42,14 @@ namespace GammaJul.ReSharper.ForTea.Psi
 			[NotNull] IProjectPsiModuleHandler handler,
 			[NotNull] ChangeManager changeManager,
 			[NotNull] IT4Environment t4Environment,
-			[NotNull] IProject project
-		) : base(handler)
-			=> _t4PsiModuleProvider = new T4PsiModuleProvider(lifetime, project.Locks, changeManager, t4Environment);
+			[NotNull] IProject project,
+			[NotNull] IT4PsiModuleFactory moduleFactory
+		) : base(handler) => _t4PsiModuleProvider = new T4PsiModuleProvider(
+			lifetime,
+			project.Locks,
+			changeManager,
+			t4Environment,
+			moduleFactory
+		);
 	}
 }

@@ -15,7 +15,7 @@ namespace GammaJul.ReSharper.ForTea.Psi
 		[NotNull] private readonly IT4Environment _t4Environment;
 
 		public override bool IsApplicable(IPsiModule psiModule)
-			=> psiModule is T4PsiModule;
+			=> psiModule is IT4PsiModule;
 
 		public override CSharpLanguageLevel GetLanguageLevel(IPsiModule psiModule)
 			=> _t4Environment.CSharpLanguageLevel;
