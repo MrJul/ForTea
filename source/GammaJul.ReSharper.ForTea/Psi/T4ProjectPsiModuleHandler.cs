@@ -42,12 +42,14 @@ namespace GammaJul.ReSharper.ForTea.Psi
 			[NotNull] IProjectPsiModuleHandler handler,
 			[NotNull] ChangeManager changeManager,
 			[NotNull] IT4Environment t4Environment,
-			[NotNull] IProject project
+			[NotNull] IProject project,
+			[NotNull] IT4MacroResolver resolver
 		) : base(handler) => _t4PsiModuleProvider = new T4PsiModuleProvider(
 			lifetime,
 			project.Locks,
 			changeManager,
-			t4Environment
+			t4Environment,
+			resolver
 		);
 	}
 }

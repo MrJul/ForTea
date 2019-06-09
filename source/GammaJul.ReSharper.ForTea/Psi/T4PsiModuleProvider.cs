@@ -29,7 +29,8 @@ namespace GammaJul.ReSharper.ForTea.Psi {
 		[NotNull] private readonly IShellLocks _shellLocks;
 		[NotNull] private readonly ChangeManager _changeManager;
 		[NotNull] private readonly IT4Environment _t4Environment;
-		
+		[NotNull] private readonly IT4MacroResolver _resolver;
+
 		private readonly struct ModuleWrapper {
 
 			[NotNull] public readonly IT4PsiModule Module;
@@ -139,10 +140,11 @@ namespace GammaJul.ReSharper.ForTea.Psi {
 				_changeManager,
 				solution.GetComponent<IAssemblyFactory>(),
 				_shellLocks,
-				projectFile,
+				ProjectInfo.FromFile(projectFile),
 				solution.GetComponent<T4FileDataCache>(),
 				_t4Environment,
-				solution.GetComponent<OutputAssemblies>()
+				solution.GetComponent<OutputAssemblies>(),
+				_resolver
 			);
 			_modules[projectFile] = new ModuleWrapper(psiModule, lifetimeDefinition);
 			changeBuilder.AddModuleChange(psiModule, PsiModuleChange.ChangeType.Added);
@@ -192,13 +194,15 @@ namespace GammaJul.ReSharper.ForTea.Psi {
 			Lifetime lifetime,
 			[NotNull] IShellLocks shellLocks,
 			[NotNull] ChangeManager changeManager,
-			[NotNull] IT4Environment t4Environment
+			[NotNull] IT4Environment t4Environment,
+			[NotNull] IT4MacroResolver resolver
 		)
 		{
 			_lifetime = lifetime;
 			_shellLocks = shellLocks;
 			_changeManager = changeManager;
 			_t4Environment = t4Environment;
+			_resolver = resolver;
 		}
 
 	}

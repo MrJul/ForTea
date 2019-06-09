@@ -1,11 +1,17 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
+using GammaJul.ReSharper.ForTea.Psi;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using JetBrains.Annotations;
 using JetBrains.Application.changes;
 using JetBrains.Application.Progress;
 using JetBrains.Application.Threading;
+using JetBrains.Collections;
+using JetBrains.DocumentManagers;
+using JetBrains.Lifetimes;
+using JetBrains.Metadata.Reader.API;
 using JetBrains.Diagnostics;
 using JetBrains.DocumentManagers;
 using JetBrains.Interop.WinApi;
@@ -24,37 +30,26 @@ using JetBrains.ReSharper.Psi.Modules;
 using JetBrains.ReSharper.Psi.Web.Impl.PsiModules;
 using JetBrains.Util;
 using JetBrains.Util.Dotnet.TargetFrameworkIds;
-using JetBrains.Util.Logging;
-using JetBrains.VsIntegration.Interop.Shim.VsShell.Shell.Hierarchy;
-using JetBrains.VsIntegration.ProjectDocuments.Projects.Builder;
-using JetBrains.VsIntegration.ProjectModel;
-using Microsoft.VisualStudio.Shell.Interop;
-using Microsoft.VisualStudio.TextTemplating.VSHost;
 
-namespace GammaJul.ReSharper.ForTea.Psi {
+namespace GammaJul.ReSharper.ForTea.VisualStudio {
 
 	/// <summary>PSI module managing a single T4 file.</summary>
-	internal sealed class T4PsiModule : IProjectPsiModule, IChangeProvider {
+	internal sealed class T4PsiModule : IChangeProvider, IT4PsiModule
+	{
 
 		private const string Prefix = "[T4] ";
-		
-		[NotNull] private readonly Dictionary<string, IAssemblyCookie> _assemblyReferences = new Dictionary<string, IAssemblyCookie>(StringComparer.OrdinalIgnoreCase);
-		[NotNull] private readonly Dictionary<string, string> _resolvedMacros = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
 		private readonly Lifetime _lifetime;
+		[NotNull] private readonly T4AssemblyReferenceManager _assemblyReferenceManager;
+		[NotNull] private readonly Dictionary<string, string> _resolvedMacros = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
 		[NotNull] private readonly IPsiModules _psiModules;
 		[NotNull] private readonly ChangeManager _changeManager;
-		[NotNull] private readonly IAssemblyFactory _assemblyFactory;
 		[NotNull] private readonly IShellLocks _shellLocks;
-		[NotNull] private readonly IProjectFile _projectFile;
-		[NotNull] private readonly IProject _project;
-		[NotNull] private readonly ISolution _solution;
 		[NotNull] private readonly IT4Environment _t4Environment;
-		[NotNull] private readonly T4ResolveProject _resolveProject;
+		[NotNull] private readonly ProjectInfo _projectInfo;
 		[NotNull] private readonly OutputAssemblies _outputAssemblies;
-		[NotNull] private readonly IModuleReferenceResolveContext _moduleReferenceResolveContext;
 		[NotNull] private readonly UserDataHolder _userDataHolder = new UserDataHolder();
+		[NotNull] private readonly IT4MacroResolver _resolver;
 
-		[CanBeNull] private IModuleReferenceResolveManager _resolveManager;
 		private bool _isValid;
 
 		/// <summary>Returns the source file associated with this PSI module.</summary>
@@ -89,7 +84,7 @@ namespace GammaJul.ReSharper.ForTea.Psi {
 			=> new[] { SourceFile };
 
 		IProject IProjectPsiModule.Project
-			=> _project;
+			=> _projectInfo.Project;
 
 		/// <summary>TargetFrameworkId corresponding to the module.</summary>
 		public TargetFrameworkId TargetFrameworkId
@@ -98,12 +93,12 @@ namespace GammaJul.ReSharper.ForTea.Psi {
 		/// <summary>Gets the solution this PSI module is attached to.</summary>
 		/// <returns>An instance of <see cref="ISolution"/>.</returns>
 		public ISolution GetSolution()
-			=> _solution;
+			=> _projectInfo.Solution;
 
 		/// <summary>Gets an instance of <see cref="IPsiServices"/> for the current solution.</summary>
 		/// <returns>An instance of <see cref="IPsiServices"/>.</returns>
 		public IPsiServices GetPsiServices()
-			=> _solution.GetPsiServices();
+			=> _projectInfo.Solution.GetPsiServices();
 
 		/// <summary>Gets whether the PSI module is valid.</summary>
 		/// <returns><c>true</c> if the PSI module is valid, <c>false</c> otherwise.</returns>
@@ -113,76 +108,20 @@ namespace GammaJul.ReSharper.ForTea.Psi {
 		/// <summary>Gets a persistent identifier for this PSI module.</summary>
 		/// <returns>A persistent identifier.</returns>
 		public string GetPersistentID()
-			=> Prefix + _projectFile.GetPersistentID();
+			=> Prefix + _projectInfo.ProjectFile.GetPersistentID();
 
-		/// <summary>Creates a new <see cref="IAssemblyCookie"/> from an assembly full name.</summary>
-		/// <param name="assemblyNameOrFile">The assembly full name.</param>
-		/// <returns>An instance of <see cref="IAssemblyCookie"/>, or <c>null</c> if none could be created.</returns>
-		[CanBeNull]
-		private IAssemblyCookie CreateCookie(string assemblyNameOrFile) {
-			if (assemblyNameOrFile == null || (assemblyNameOrFile = assemblyNameOrFile.Trim()).Length == 0)
-				return null;
-
-			AssemblyReferenceTarget target = null;
-
-			// assembly path
-			FileSystemPath path = FileSystemPath.TryParse(assemblyNameOrFile);
-			if (!path.IsEmpty && path.IsAbsolute)
-				target = new AssemblyReferenceTarget(AssemblyNameInfo.Empty, path);
-			
-			// assembly name
-			else {
-				AssemblyNameInfo nameInfo = AssemblyNameInfo.TryParse(assemblyNameOrFile);
-				if (nameInfo != null)
-					target = new AssemblyReferenceTarget(nameInfo, FileSystemPath.Empty);
-			}
-
-			if (target == null)
-				return null;
-			
-			return CreateCookieCore(target);
-		}
-		
-		/// <summary>Try to add an assembly reference to the list of assemblies.</summary>
-		/// <param name="assemblyNameOrFile"></param>
-		/// <remarks>Does not refresh references, simply add a cookie to the cookies list.</remarks>
-		[CanBeNull]
-		private IAssemblyCookie TryAddReference([NotNull] string assemblyNameOrFile) {
-			var cookie = CreateCookie(assemblyNameOrFile);
-			if (cookie != null)
-				_assemblyReferences.Add(assemblyNameOrFile, cookie);
-			return cookie;
-		}
-		
-		/// <summary>The <see cref="IVsHierarchy"/> representing the project file normally implements <see cref="IVsBuildMacroInfo"/>.</summary>
-		/// <returns>An instance of <see cref="IVsBuildMacroInfo"/> if found.</returns>
-		[CanBeNull]
-		[SuppressMessage("ReSharper", "SuspiciousTypeConversion.Global")]
-		private IVsBuildMacroInfo TryGetVsBuildMacroInfo()
-			=> TryGetVsHierarchy() as IVsBuildMacroInfo;
-
-		[CanBeNull]
-		private IVsHierarchy TryGetVsHierarchy() {
-			var synchronizer = _solution.TryGetComponent<ProjectModelSynchronizer>();
-			if (synchronizer == null)
-				return null;
-
-			VsHierarchyItem hierarchyItem = synchronizer.TryGetHierarchyItemByProjectItem(_projectFile, false);
-			if (hierarchyItem == null)
-				return null;
-
-			return hierarchyItem.Hierarchy;
-		}
 
 		private void OnDataFileChanged(Pair<IPsiSourceFile, T4FileDataDiff> pair) {
-			if (pair.First != SourceFile)
+			(IPsiSourceFile first, T4FileDataDiff second) = pair;
+
+			if (first != SourceFile)
 				return;
 
 			if (_shellLocks.IsWriteAccessAllowed())
-				OnDataFileChanged(pair.Second);
+				OnDataFileChanged(second);
 			else {
 				_shellLocks.ExecuteOrQueue(_lifetime, "T4PsiModuleOnFileDataChanged",
-					() => _shellLocks.ExecuteWithWriteLock(() => OnDataFileChanged(pair.Second)));
+					() => _shellLocks.ExecuteWithWriteLock(() => OnDataFileChanged(second)));
 			}
 		}
 
@@ -191,44 +130,16 @@ namespace GammaJul.ReSharper.ForTea.Psi {
 		private void OnDataFileChanged([NotNull] T4FileDataDiff dataDiff) {
 			_shellLocks.AssertWriteAccessAllowed();
 
-			bool hasFileChanges = ResolveMacros(dataDiff.AddedMacros);
-			bool hasChanges = hasFileChanges;
-			
-			ITextTemplatingComponents components = _t4Environment.Components.CanBeNull;
-			using (components.With(TryGetVsHierarchy(), _projectFile.Location)) {
-				
-				// removes the assembly references from the old assembly directives
-				foreach (string removedAssembly in dataDiff.RemovedAssemblies) {
-					string assembly = removedAssembly;
-					if (components != null)
-						assembly = components.Host.ResolveAssemblyReference(assembly);
+			bool hasMacroChanges = ResolveMacros(dataDiff.AddedMacros);
+			bool hasChanges = hasMacroChanges;
 
-					if (!_assemblyReferences.TryGetValue(assembly, out IAssemblyCookie cookie))
-						continue;
-
-					_assemblyReferences.Remove(assembly);
-					hasChanges = true;
-					cookie.Dispose();
-				}
-
-				// adds assembly references from the new assembly directives
-				foreach (string addedAssembly in dataDiff.AddedAssemblies) {
-					string assembly = addedAssembly;
-					if (components != null)
-						assembly = components.Host.ResolveAssemblyReference(assembly);
-
-					if (assembly == null)
-						continue;
-
-					if (_assemblyReferences.ContainsKey(assembly))
-						continue;
-
-					IAssemblyCookie cookie = TryAddReference(assembly);
-					if (cookie != null)
-						hasChanges = true;
-				}
-
-			}
+			_resolver.InvalidateAssemblies(
+				dataDiff,
+				_t4Environment.Components.CanBeNull,
+				ref hasChanges,
+				_projectInfo,
+				_assemblyReferenceManager
+			);
 			
 			if (!hasChanges)
 				return;
@@ -237,7 +148,7 @@ namespace GammaJul.ReSharper.ForTea.Psi {
 			var changeBuilder = new PsiModuleChangeBuilder();
 			changeBuilder.AddModuleChange(this, PsiModuleChange.ChangeType.Modified);
 
-			if (hasFileChanges)
+			if (hasMacroChanges)
 				GetPsiServices().MarkAsDirty(SourceFile);
 
 			_shellLocks.ExecuteOrQueue("T4PsiModuleChange",
@@ -248,40 +159,28 @@ namespace GammaJul.ReSharper.ForTea.Psi {
 				)
 			);
 		}
-		
+
 		/// <summary>Resolves new VS macros, like $(SolutionDir), found in include or assembly directives.</summary>
 		/// <param name="macros">The list of macro names (eg SolutionDir) to resolve.</param>
 		/// <returns>Whether at least one macro has been processed.</returns>
-		private bool ResolveMacros([NotNull] IEnumerable<string> macros) {
-			bool hasChanges = false;
+		private bool ResolveMacros([NotNull] IEnumerable<string> macros)
+		{
+			var result = _resolver.Resolve(macros, _projectInfo);
 
-			IVsBuildMacroInfo vsBuildMacroInfo = null;
-			foreach (string addedMacro in macros) {
-				if (vsBuildMacroInfo == null) {
-					vsBuildMacroInfo = TryGetVsBuildMacroInfo();
-					if (vsBuildMacroInfo == null) {
-						Logger.LogError("Couldn't get IVsBuildMacroInfo");
-						break;
-					}
-				}
+			if (result.IsEmpty())
+			{
+				return false;
+			}
 
-				hasChanges = true;
-
-				bool succeeded = HResultHelpers.SUCCEEDED(vsBuildMacroInfo.GetBuildMacroValue(addedMacro, out string value)) && !String.IsNullOrEmpty(value);
-				if (!succeeded) {
-					value = MSBuildExtensions.GetStringValue(TryGetVsHierarchy(), addedMacro, null);
-					succeeded = !String.IsNullOrEmpty(value);
-				}
-				
-				lock (_resolvedMacros) {
-					if (succeeded)
-						_resolvedMacros[addedMacro] = value;
-					else
-						_resolvedMacros.Remove(addedMacro);
+			lock (_resolvedMacros)
+			{
+				foreach (var (key, value) in result)
+				{
+					_resolvedMacros[key] = value;
 				}
 			}
 
-			return hasChanges;
+			return true;
 		}
 
 		/// <summary>Gets all modules referenced by this module.</summary>
@@ -291,7 +190,7 @@ namespace GammaJul.ReSharper.ForTea.Psi {
 			
 			var references = new PsiModuleReferenceAccumulator(TargetFrameworkId);
 			
-			foreach (IAssemblyCookie cookie in _assemblyReferences.Values) {
+			foreach (IAssemblyCookie cookie in _assemblyReferenceManager.References.Values) {
 				if (cookie.Assembly == null)
 					continue;
 
@@ -316,16 +215,18 @@ namespace GammaJul.ReSharper.ForTea.Psi {
 		}
 
 		[NotNull]
-		public IDictionary<string, string> GetResolvedMacros() {
-			lock (_resolvedMacros) {
-				if (_resolvedMacros.Count > 0)
-					return new Dictionary<string, string>(_resolvedMacros);
-				return EmptyDictionary<string, string>.Instance;
+		public IDictionary<string, string> GetResolvedMacros()
+		{
+			lock (_resolvedMacros)
+			{
+				if (_resolvedMacros.IsEmpty())
+					return EmptyDictionary<string, string>.Instance;
+
+				return new Dictionary<string, string>(_resolvedMacros);
 			}
 		}
 
-		object IChangeProvider.Execute(IChangeMap changeMap)
-			=> null;
+		object IChangeProvider.Execute(IChangeMap changeMap) => null;
 
 		ICollection<PreProcessingDirective> IPsiModule.GetAllDefines()
 			=> EmptyList<PreProcessingDirective>.InstanceList;
@@ -338,17 +239,9 @@ namespace GammaJul.ReSharper.ForTea.Psi {
 				(pf, sf) => new T4PsiProjectFileProperties(pf, sf, true),
 				JetFunc<IProjectFile, IPsiSourceFile>.True,
 				documentManager,
-				_moduleReferenceResolveContext
+				_assemblyReferenceManager.ModuleReferenceResolveContext
 			);
-
-		[CanBeNull]
-		private IAssemblyCookie CreateCookieCore([NotNull] AssemblyReferenceTarget target) {
-			FileSystemPath result = ResolveManager.Resolve(target, _resolveProject, _moduleReferenceResolveContext);
-			return result != null
-				? _assemblyFactory.AddRef(result, "T4", _moduleReferenceResolveContext)
-				: null;
-		}
-
+		
 		public T GetData<T>(Key<T> key)
 		where T : class
 			=> _userDataHolder.GetData(key);
@@ -374,23 +267,23 @@ namespace GammaJul.ReSharper.ForTea.Psi {
 			_isValid = false;
 
 			// Removes the references.
-			IAssemblyCookie[] assemblyCookies = _assemblyReferences.Values.ToArray();
+			IAssemblyCookie[] assemblyCookies = _assemblyReferenceManager.References.Values.ToArray();
 			if (assemblyCookies.Length > 0) {
 				_shellLocks.ExecuteWithWriteLock(() => {
 					foreach (IAssemblyCookie assemblyCookie in assemblyCookies)
 						assemblyCookie.Dispose();
 				});
-				_assemblyReferences.Clear();
+				_assemblyReferenceManager.References.Clear();
 			}
 
-			_resolveProject.Dispose();
+			_assemblyReferenceManager.Dispose();
 		}
 
 		private void AddBaseReferences() {
-			TryAddReference("mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089");
-			TryAddReference("System, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089");
+			_assemblyReferenceManager.TryAddReference("mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089");
+			_assemblyReferenceManager.TryAddReference("System, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089");
 			foreach (string assemblyName in _t4Environment.TextTemplatingAssemblyNames)
-				TryAddReference(assemblyName);
+				_assemblyReferenceManager.TryAddReference(assemblyName);
 		}
 
 		public T4PsiModule(
@@ -400,41 +293,44 @@ namespace GammaJul.ReSharper.ForTea.Psi {
 			[NotNull] ChangeManager changeManager,
 			[NotNull] IAssemblyFactory assemblyFactory,
 			[NotNull] IShellLocks shellLocks,
-			[NotNull] IProjectFile projectFile,
+			[NotNull] ProjectInfo projectInfo,
 			[NotNull] T4FileDataCache fileDataCache,
 			[NotNull] IT4Environment t4Environment,
-			[NotNull] OutputAssemblies outputAssemblies
-		) {
-
+			[NotNull] OutputAssemblies outputAssemblies,
+			[NotNull] IT4MacroResolver resolver
+		)
+		{
 			_lifetime = lifetime;
 			lifetime.OnTermination(Dispose);
-			
+
 			_psiModules = psiModules;
-			_assemblyFactory = assemblyFactory;
 			_changeManager = changeManager;
 			_shellLocks = shellLocks;
+			_projectInfo = projectInfo;
+			var resolveProject = new T4ResolveProject(
+				lifetime,
+				_projectInfo.Solution,
+				_shellLocks,
+				t4Environment.TargetFrameworkId,
+				_projectInfo.Project
+			);
 
-			_projectFile = projectFile;
-			IProject project = projectFile.GetProject();
-			Assertion.AssertNotNull(project, "project != null");
-			_project = project;
-			_solution = project.GetSolution();
+			var resolveContext = new PsiModuleResolveContext(this, t4Environment.TargetFrameworkId, _projectInfo.Project);
+			_assemblyReferenceManager = new T4AssemblyReferenceManager(assemblyFactory, _projectInfo, resolveProject, resolveContext);
 
 			changeManager.RegisterChangeProvider(lifetime, this);
 			changeManager.AddDependency(lifetime, psiModules, this);
 
 			_t4Environment = t4Environment;
 			_outputAssemblies = outputAssemblies;
-			_resolveProject = new T4ResolveProject(lifetime, _solution, _shellLocks, t4Environment.TargetFrameworkId, project);
 
-			_moduleReferenceResolveContext = new PsiModuleResolveContext(this, t4Environment.TargetFrameworkId, project);
-			SourceFile = CreateSourceFile(projectFile, documentManager);
+			SourceFile = CreateSourceFile(_projectInfo.ProjectFile, documentManager);
 
 			_isValid = true;
 			fileDataCache.FileDataChanged.Advise(lifetime, OnDataFileChanged);
 			AddBaseReferences();
+
+			_resolver = resolver;
 		}
-
 	}
-
 }
