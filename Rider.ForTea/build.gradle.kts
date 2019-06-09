@@ -60,10 +60,10 @@ val repoRoot = projectDir.parentFile!!
 val reSharperPluginPath = File(repoRoot, reSharperPluginName)
 val riderPluginPath = File(repoRoot, riderPluginName)
 val reSharperPluginSolutionPath = File(reSharperPluginPath, reSharperPluginSolutionName)
- val buildConfiguration = ext.properties["BuildConfiguration"] ?: "Debug"
+val buildConfiguration = ext.properties["BuildConfiguration"] ?: "Debug"
 
 val pluginFiles = listOf(
-  "output/$buildConfiguration/GammaJul.ReSharper.ForTea"
+  "output/Rider/$buildConfiguration/Rider.ForTea"
 )
 
 val nugetPackagesPath by lazy {
