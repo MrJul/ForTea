@@ -20,7 +20,7 @@ namespace GammaJul.ReSharper.ForTea.Psi.Directives {
 			OnceAttribute = new BooleanDirectiveAttributeInfo("once", DirectiveAttributeOptions.None);
 
 			SupportedAttributes = ImmutableArray.FromArguments(
-				environment.VsVersion2.Major >= 12
+				environment.ShouldSupportOnceAttribute
 					? new[] { FileAttribute, OnceAttribute }
 					: new[] { FileAttribute }
 			);

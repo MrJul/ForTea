@@ -15,30 +15,12 @@ namespace GammaJul.ReSharper.ForTea
 		/// Indicates whether plugin should support 'once' attribute in 'include' directive.
 		/// </summary>
 		// <#@ include file="foo" once="true" #>
-		bool ShouldCheckDoubleInclusion { get; }
-		
-		/// <summary>
-		/// Indicates whether plugin should support 'trueFromBase' value
-		///   in 'hostspecific' attribute
-		///   in 'template' directive.
-		/// See
-		/// <a href="https://docs.microsoft.com/en-us/visualstudio/modeling/t4-template-directive?view=vs-2019#hostspecific-attribute">
-		///   Documentation
-		/// </a>
-		/// </summary>
-		// <# template hostspecific="trueFromBase" language="C#" #>
-		bool ShouldProvideExtendedSupportForHostSpecificAttribute { get; }
+		bool ShouldSupportOnceAttribute { get; }
 
 		/// <summary>
 		/// Indicates whether plugin should support 'linePragmas' and 'visibility' attributes
 		/// </summary>
 		bool ShouldSupportAdvancedAttributes { get; }
-		
-		/// <summary>
-		/// Gets the version of the Visual Studio we're running under,
-		/// two components only, <c>Major.Minor</c>. Example: “8.0”.
-		/// </summary>
-		Version2 VsVersion2 { get; }
 
 		/// <summary>Gets the target framework ID.</summary>
 		TargetFrameworkId TargetFrameworkId { get; }

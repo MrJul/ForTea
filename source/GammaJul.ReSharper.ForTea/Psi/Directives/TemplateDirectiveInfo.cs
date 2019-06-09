@@ -65,7 +65,7 @@ namespace GammaJul.ReSharper.ForTea.Psi.Directives
 
 		private static EnumDirectiveAttributeInfo BuildHostSpecificAttribute(IT4Environment environment)
 		{
-			if (!environment.ShouldProvideExtendedSupportForHostSpecificAttribute)
+			if (!environment.ShouldSupportAdvancedAttributes)
 				return new BooleanDirectiveAttributeInfo("hostspecific", DirectiveAttributeOptions.None);
 
 			return new EnumDirectiveAttributeInfo(

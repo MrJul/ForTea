@@ -16,30 +16,27 @@ namespace GammaJul.ReSharper.ForTea.VisualStudio {
 
 	/// <summary>Contains environment-dependent information.</summary>
 	[ShellComponent]
-	public class T4Environment : IT4Environment
+	public sealed class T4Environment : IT4Environment
 	{
-
 		[NotNull] private readonly IVsEnvironmentInformation _vsEnvironmentInformation;
 		[NotNull] private readonly Lazy<Optional<ITextTemplatingComponents>> _components;
 		[NotNull] private readonly string[] _textTemplatingAssemblyNames;
 		[CanBeNull] private readonly TargetFrameworkId _targetFrameworkId;
-
 		[CanBeNull] private IList<FileSystemPath> _includePaths;
 
 		[NotNull]
-		public Optional<ITextTemplatingComponents> Components
-			=> _components.Value;
+		public Optional<ITextTemplatingComponents> Components => _components.Value;
 
-		public bool ShouldCheckDoubleInclusion => VsVersion2.Major >= VsVersions.Vs2013;
-		public bool ShouldProvideExtendedSupportForHostSpecificAttribute => VsVersion2.Major >= VsVersions.Vs2012;
+		public bool ShouldSupportOnceAttribute => VsVersion2.Major >= VsVersions.Vs2013;
 		public bool ShouldSupportAdvancedAttributes => VsVersion2.Major >= VsVersions.Vs2012;
 
 		/// <summary>
-		/// Gets the version of the Visual Studio we're running under, two components only, <c>Major.Minor</c>. Example: “8.0”.
+		/// Gets the version of the Visual Studio we're running under,
+		/// two components only, <c>Major.Minor</c>.
+		/// Example: “8.0”.
 		/// </summary>
 		[NotNull]
-		public Version2 VsVersion2
-			=> _vsEnvironmentInformation.VsVersion2;
+		private Version2 VsVersion2 => _vsEnvironmentInformation.VsVersion2;
 
 		/// <summary>Gets the target framework ID.</summary>
 		[NotNull]

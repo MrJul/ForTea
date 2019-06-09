@@ -246,7 +246,7 @@ namespace GammaJul.ReSharper.ForTea.Parsing {
 			}
 
 			bool once = false;
-			if (_t4Environment.ShouldCheckDoubleInclusion) {
+			if (_t4Environment.ShouldSupportOnceAttribute) {
 				string onceString = directive.GetAttributeValue(_directiveInfoManager.Include.OnceAttribute.Name);
 				once = bool.TrueString.Equals(onceString, StringComparison.OrdinalIgnoreCase);
 			}
