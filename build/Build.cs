@@ -33,9 +33,9 @@ internal class Build : NukeBuild {
 
 	private const string MainProjectName = "GammaJul.ReSharper.ForTea";
 
-	private AbsolutePath SourceDirectory => RootDirectory / "source";
+	private AbsolutePath SourceDirectory => RootDirectory / "src";
 	private AbsolutePath MainProjectDirectory => SourceDirectory / MainProjectName;
-	private AbsolutePath OutputDirectory => RootDirectory / "output" / Configuration;
+	private AbsolutePath OutputDirectory => RootDirectory / "output" / "ReSharper" / Configuration;
 
 	public Target Clean
 		=> _ => _
@@ -93,13 +93,11 @@ internal class Build : NukeBuild {
 			.DependsOn(Pack)
 			.Requires(() => NuGetApiKey)
 			.Requires(() => Configuration.Release.Equals(Configuration))
-			.Executes(() => {
-				GlobFiles(OutputDirectory, "*.nupkg")
-					.ForEach(x => NuGetPush(s => s
-						.SetTargetPath(x)
-						.SetSource(NuGetSource)
-						.SetApiKey(NuGetApiKey)));
-			});
+			.Executes(() => GlobFiles(OutputDirectory, "*.nupkg")
+				.ForEach(x => NuGetPush(s => s
+					.SetTargetPath(x)
+					.SetSource(NuGetSource)
+					.SetApiKey(NuGetApiKey))));
 
 	private string GetReleaseVersion()
 		=> File.ReadAllLines(MainProjectDirectory / "Properties/AssemblyInfo.cs")
@@ -109,8 +107,8 @@ internal class Build : NukeBuild {
 			.FirstOrDefault();
 
 	private static string GetReleaseNotes()
-		=> File.ReadAllLines(RootDirectory / "CHANGELOG.md")
-			.SkipWhile(x => !x.StartsWith("##"))
+		=> File.ReadAllLines(RootDirectory.Parent / "CHANGELOG.md")
+			.SkipWhile(x => !x.StartsWith("##", StringComparison.Ordinal))
 			.Skip(1)
 			.TakeWhile(x => !String.IsNullOrWhiteSpace(x))
 			.Select(x => $"\u2022{x.TrimStart('-')}")

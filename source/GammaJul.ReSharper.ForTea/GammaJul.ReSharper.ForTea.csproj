@@ -1,11 +1,11 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>net461</TargetFramework>
     <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
     <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
     <DefineConstants>$(DefineConstants);JET_MODE_ASSERT</DefineConstants>
-    <OutputPath>..\..\output\$(Configuration)</OutputPath>
+    <OutputPath>..\..\output\ReSharper\$(Configuration)</OutputPath>
     <LangVersion>7.3</LangVersion>
   </PropertyGroup>
 
