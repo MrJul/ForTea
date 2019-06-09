@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using GammaJul.ReSharper.ForTea.Tree;
+using GammaJul.ReSharper.ForTea.VisualStudio;
 using JetBrains.Annotations;
 using JetBrains.Application.changes;
 using JetBrains.Application.Threading;
@@ -28,7 +29,6 @@ namespace GammaJul.ReSharper.ForTea.Psi {
 		[NotNull] private readonly IShellLocks _shellLocks;
 		[NotNull] private readonly ChangeManager _changeManager;
 		[NotNull] private readonly IT4Environment _t4Environment;
-		[NotNull] private readonly IT4PsiModuleFactory _moduleFactory;
 		
 		private readonly struct ModuleWrapper {
 
@@ -132,7 +132,7 @@ namespace GammaJul.ReSharper.ForTea.Psi {
 
 			// creates a new T4PsiModule for the file
 			LifetimeDefinition lifetimeDefinition = Lifetime.Define(_lifetime, "[T4]" + projectFile.Name);
-			IT4PsiModule psiModule = _moduleFactory.Produce(
+			IT4PsiModule psiModule = new T4PsiModule(
 				lifetimeDefinition.Lifetime,
 				solution.GetComponent<IPsiModules>(),
 				solution.GetComponent<DocumentManager>(),
@@ -187,17 +187,18 @@ namespace GammaJul.ReSharper.ForTea.Psi {
 				_modules.Clear();
 			}
 		}
+
 		internal T4PsiModuleProvider(
 			Lifetime lifetime,
 			[NotNull] IShellLocks shellLocks,
 			[NotNull] ChangeManager changeManager,
-			[NotNull] IT4Environment t4Environment,
-			[NotNull] IT4PsiModuleFactory moduleFactory) {
+			[NotNull] IT4Environment t4Environment
+		)
+		{
 			_lifetime = lifetime;
 			_shellLocks = shellLocks;
 			_changeManager = changeManager;
 			_t4Environment = t4Environment;
-			_moduleFactory = moduleFactory;
 		}
 
 	}

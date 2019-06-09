@@ -37,14 +37,12 @@ namespace GammaJul.ReSharper.ForTea.Psi
 			Lifetime lifetime,
 			[NotNull] IShellLocks shellLocks,
 			[NotNull] ChangeManager changeManager,
-			[NotNull] IT4Environment t4Environment,
-			[NotNull] IT4PsiModuleFactory moduleFactory
+			[NotNull] IT4Environment t4Environment
 		) => _t4PsiModuleProvider = new T4PsiModuleProvider(
 			lifetime,
 			shellLocks,
 			changeManager,
-			t4Environment,
-			moduleFactory
+			t4Environment
 		);
 	}
 }
