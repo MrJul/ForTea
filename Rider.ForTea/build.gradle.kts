@@ -52,18 +52,19 @@ intellij {
   setPlugins("rider-plugins-appender")
 }
 
-val reSharperPluginName = "ReSharper.ForTea"
-val riderPluginName = "Rider.ForTea"
-val reSharperPluginSolutionName = "GammaJul.ReSharper.ForTea.sln"
+val backendPluginName = "ReSharper.ForTea"
+val riderBackedPluginName = "Rider.ForTea"
+val backendPluginSolutionName = "ReSharper.ForTea.sln"
 
 val repoRoot = projectDir.parentFile!!
-val reSharperPluginPath = File(repoRoot, reSharperPluginName)
-val riderPluginPath = File(repoRoot, riderPluginName)
-val reSharperPluginSolutionPath = File(reSharperPluginPath, reSharperPluginSolutionName)
+val backendPluginPath = File(repoRoot, backendPluginName)
+val riderBackendPluginPath = File(repoRoot, riderBackedPluginName)
+val backendPluginSolutionPath = File(backendPluginPath, backendPluginSolutionName)
 val buildConfiguration = ext.properties["BuildConfiguration"] ?: "Debug"
 
 val pluginFiles = listOf(
-  "output/Rider/$buildConfiguration/Rider.ForTea"
+  "output/Common.ForTea/$buildConfiguration/Common.ForTea",
+  "output/Rider.ForTea/$buildConfiguration/Rider.ForTea"
 )
 
 val nugetPackagesPath by lazy {
@@ -92,7 +93,7 @@ val riderSdkPackageVersion by lazy {
 }
 
 val nugetConfigPath = File(repoRoot, "NuGet.Config")
-val riderSdkVersionPropsPath = File(reSharperPluginPath, "RiderSdkPackageVersion.props")
+val riderSdkVersionPropsPath = File(backendPluginPath, "RiderSdkPackageVersion.props")
 
 val riderForTeaTargetsGroup = "Rider.ForTea"
 
@@ -106,7 +107,7 @@ fun File.writeTextIfChanged(content: String) {
 }
 
 configure<RdgenParams> {
-  val csOutput = File(repoRoot, "ReSharper.ForTea/src/ForTea.ProjectModelBase/src/Protocol")
+  val csOutput = File(repoRoot, "ReSharper.ForTea/Common.ForTea/ProjectModel/Protocol")
   val ktOutput = File(repoRoot, "Rider.ForTea/src/main/kotlin/com/jetbrains/fortea/protocol")
 
   verbose = true
@@ -142,7 +143,7 @@ configure<RdgenParams> {
 tasks {
   withType<PrepareSandboxTask> {
     val files = pluginFiles.map { "$it.dll" } + pluginFiles.map { "$it.pdb" }
-    val paths = files.map { File(reSharperPluginPath, it) }
+    val paths = files.map { File(backendPluginPath, it) }
     logger.lifecycle(paths.toString())
 
     paths.forEach {
@@ -229,7 +230,7 @@ tasks {
     doLast {
       exec {
         executable = "dotnet"
-        args = listOf("restore", reSharperPluginSolutionPath.canonicalPath)
+        args = listOf("restore", backendPluginSolutionPath.canonicalPath)
       }
     }
   }
@@ -240,7 +241,7 @@ tasks {
     doLast {
       exec {
         executable = "msbuild"
-        args = listOf(reSharperPluginSolutionPath.canonicalPath)
+        args = listOf(backendPluginSolutionPath.canonicalPath)
       }
     }
   }
