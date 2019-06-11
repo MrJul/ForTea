@@ -1,7 +1,6 @@
 using JetBrains.Annotations;
 using JetBrains.Diagnostics;
 using JetBrains.ProjectModel;
-using Microsoft.Build.Evaluation;
 
 namespace GammaJul.ReSharper.ForTea
 {

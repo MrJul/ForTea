@@ -18,7 +18,6 @@ namespace GammaJul.ReSharper.ForTea
 
 		void InvalidateAssemblies(
 			[NotNull] T4FileDataDiff dataDiff,
-			[CanBeNull] ITextTemplatingComponents components,
 			ref bool hasChanges,
 			[NotNull] ProjectInfo info,
 			[NotNull] T4AssemblyReferenceManager referenceManager

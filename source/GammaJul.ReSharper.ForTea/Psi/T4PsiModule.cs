@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using GammaJul.ReSharper.ForTea.Common;
 using GammaJul.ReSharper.ForTea.Psi;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
@@ -31,7 +32,7 @@ using JetBrains.ReSharper.Psi.Web.Impl.PsiModules;
 using JetBrains.Util;
 using JetBrains.Util.Dotnet.TargetFrameworkIds;
 
-namespace GammaJul.ReSharper.ForTea.VisualStudio {
+namespace GammaJul.ReSharper.ForTea.Psi {
 
 	/// <summary>PSI module managing a single T4 file.</summary>
 	internal sealed class T4PsiModule : IChangeProvider, IT4PsiModule
@@ -135,7 +136,6 @@ namespace GammaJul.ReSharper.ForTea.VisualStudio {
 
 			_resolver.InvalidateAssemblies(
 				dataDiff,
-				_t4Environment.Components.CanBeNull,
 				ref hasChanges,
 				_projectInfo,
 				_assemblyReferenceManager

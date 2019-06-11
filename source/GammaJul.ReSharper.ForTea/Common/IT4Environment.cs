@@ -1,16 +1,12 @@
 using System.Collections.Generic;
-using JetBrains.Application.Components;
 using JetBrains.ReSharper.Psi.CSharp;
 using JetBrains.Util;
 using JetBrains.Util.Dotnet.TargetFrameworkIds;
-using Microsoft.VisualStudio.TextTemplating.VSHost;
 
 namespace GammaJul.ReSharper.ForTea
 {
 	public interface IT4Environment
 	{
-		Optional<ITextTemplatingComponents> Components { get; }
-
 		/// <summary>
 		/// Indicates whether plugin should support 'once' attribute in 'include' directive.
 		/// </summary>

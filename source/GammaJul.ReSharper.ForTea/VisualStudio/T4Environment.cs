@@ -19,13 +19,9 @@ namespace GammaJul.ReSharper.ForTea.VisualStudio {
 	public sealed class T4Environment : IT4Environment
 	{
 		[NotNull] private readonly IVsEnvironmentInformation _vsEnvironmentInformation;
-		[NotNull] private readonly Lazy<Optional<ITextTemplatingComponents>> _components;
 		[NotNull] private readonly string[] _textTemplatingAssemblyNames;
 		[CanBeNull] private readonly TargetFrameworkId _targetFrameworkId;
 		[CanBeNull] private IList<FileSystemPath> _includePaths;
-
-		[NotNull]
-		public Optional<ITextTemplatingComponents> Components => _components.Value;
 
 		public bool ShouldSupportOnceAttribute => VsVersion2.Major >= VsVersions.Vs2013;
 		public bool ShouldSupportAdvancedAttributes => VsVersion2.Major >= VsVersions.Vs2012;
@@ -124,13 +120,9 @@ namespace GammaJul.ReSharper.ForTea.VisualStudio {
 				.Combine(RelativePath.Parse("PublicAssemblies\\" + name + ".dll"))
 				.FullPath;
 
-		public T4Environment(
-			[NotNull] IVsEnvironmentInformation vsEnvironmentInformation,
-			[NotNull] RawVsServiceProvider rawVsServiceProvider
-		) {
+		public T4Environment([NotNull] IVsEnvironmentInformation vsEnvironmentInformation)
+		{
 			_vsEnvironmentInformation = vsEnvironmentInformation;
-			
-			_components = Lazy.Of(() => new Optional<ITextTemplatingComponents>(rawVsServiceProvider.Value.GetService<STextTemplating, ITextTemplatingComponents>()), true);
 
 			switch (vsEnvironmentInformation.VsVersion2.Major) {
 				
