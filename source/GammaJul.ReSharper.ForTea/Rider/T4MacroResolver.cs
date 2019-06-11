@@ -11,7 +11,16 @@ namespace GammaJul.ReSharper.ForTea.Rider
 	{
 		public IReadOnlyDictionary<string, string> Resolve(
 			IEnumerable<string> macros,
-			ProjectInfo info
+			T4TemplateInfo info
 		) => EmptyDictionary<string, string>.InstanceReadOnly;
+
+		public void InvalidateAssemblies(
+			T4FileDataDiff dataDiff,
+			ref bool hasChanges,
+			T4TemplateInfo info,
+			T4AssemblyReferenceManager referenceManager
+		)
+		{
+		}
 	}
 }

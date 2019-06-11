@@ -46,7 +46,7 @@ namespace GammaJul.ReSharper.ForTea.Psi {
 		[NotNull] private readonly ChangeManager _changeManager;
 		[NotNull] private readonly IShellLocks _shellLocks;
 		[NotNull] private readonly IT4Environment _t4Environment;
-		[NotNull] private readonly ProjectInfo _projectInfo;
+		[NotNull] private readonly T4TemplateInfo _t4TemplateInfo;
 		[NotNull] private readonly OutputAssemblies _outputAssemblies;
 		[NotNull] private readonly UserDataHolder _userDataHolder = new UserDataHolder();
 		[NotNull] private readonly IT4MacroResolver _resolver;
@@ -85,7 +85,7 @@ namespace GammaJul.ReSharper.ForTea.Psi {
 			=> new[] { SourceFile };
 
 		IProject IProjectPsiModule.Project
-			=> _projectInfo.Project;
+			=> _t4TemplateInfo.Project;
 
 		/// <summary>TargetFrameworkId corresponding to the module.</summary>
 		public TargetFrameworkId TargetFrameworkId
@@ -94,12 +94,12 @@ namespace GammaJul.ReSharper.ForTea.Psi {
 		/// <summary>Gets the solution this PSI module is attached to.</summary>
 		/// <returns>An instance of <see cref="ISolution"/>.</returns>
 		public ISolution GetSolution()
-			=> _projectInfo.Solution;
+			=> _t4TemplateInfo.Solution;
 
 		/// <summary>Gets an instance of <see cref="IPsiServices"/> for the current solution.</summary>
 		/// <returns>An instance of <see cref="IPsiServices"/>.</returns>
 		public IPsiServices GetPsiServices()
-			=> _projectInfo.Solution.GetPsiServices();
+			=> _t4TemplateInfo.Solution.GetPsiServices();
 
 		/// <summary>Gets whether the PSI module is valid.</summary>
 		/// <returns><c>true</c> if the PSI module is valid, <c>false</c> otherwise.</returns>
@@ -109,7 +109,7 @@ namespace GammaJul.ReSharper.ForTea.Psi {
 		/// <summary>Gets a persistent identifier for this PSI module.</summary>
 		/// <returns>A persistent identifier.</returns>
 		public string GetPersistentID()
-			=> Prefix + _projectInfo.ProjectFile.GetPersistentID();
+			=> Prefix + _t4TemplateInfo.File.GetPersistentID();
 
 
 		private void OnDataFileChanged(Pair<IPsiSourceFile, T4FileDataDiff> pair) {
@@ -137,7 +137,7 @@ namespace GammaJul.ReSharper.ForTea.Psi {
 			_resolver.InvalidateAssemblies(
 				dataDiff,
 				ref hasChanges,
-				_projectInfo,
+				_t4TemplateInfo,
 				_assemblyReferenceManager
 			);
 			
@@ -165,7 +165,7 @@ namespace GammaJul.ReSharper.ForTea.Psi {
 		/// <returns>Whether at least one macro has been processed.</returns>
 		private bool ResolveMacros([NotNull] IEnumerable<string> macros)
 		{
-			var result = _resolver.Resolve(macros, _projectInfo);
+			var result = _resolver.Resolve(macros, _t4TemplateInfo);
 
 			if (result.IsEmpty())
 			{
@@ -293,7 +293,7 @@ namespace GammaJul.ReSharper.ForTea.Psi {
 			[NotNull] ChangeManager changeManager,
 			[NotNull] IAssemblyFactory assemblyFactory,
 			[NotNull] IShellLocks shellLocks,
-			[NotNull] ProjectInfo projectInfo,
+			[NotNull] T4TemplateInfo t4TemplateInfo,
 			[NotNull] T4FileDataCache fileDataCache,
 			[NotNull] IT4Environment t4Environment,
 			[NotNull] OutputAssemblies outputAssemblies,
@@ -306,17 +306,17 @@ namespace GammaJul.ReSharper.ForTea.Psi {
 			_psiModules = psiModules;
 			_changeManager = changeManager;
 			_shellLocks = shellLocks;
-			_projectInfo = projectInfo;
+			_t4TemplateInfo = t4TemplateInfo;
 			var resolveProject = new T4ResolveProject(
 				lifetime,
-				_projectInfo.Solution,
+				_t4TemplateInfo.Solution,
 				_shellLocks,
 				t4Environment.TargetFrameworkId,
-				_projectInfo.Project
+				_t4TemplateInfo.Project
 			);
 
-			var resolveContext = new PsiModuleResolveContext(this, t4Environment.TargetFrameworkId, _projectInfo.Project);
-			_assemblyReferenceManager = new T4AssemblyReferenceManager(assemblyFactory, _projectInfo, resolveProject, resolveContext);
+			var resolveContext = new PsiModuleResolveContext(this, t4Environment.TargetFrameworkId, _t4TemplateInfo.Project);
+			_assemblyReferenceManager = new T4AssemblyReferenceManager(assemblyFactory, _t4TemplateInfo, resolveProject, resolveContext);
 
 			changeManager.RegisterChangeProvider(lifetime, this);
 			changeManager.AddDependency(lifetime, psiModules, this);
@@ -324,7 +324,7 @@ namespace GammaJul.ReSharper.ForTea.Psi {
 			_t4Environment = t4Environment;
 			_outputAssemblies = outputAssemblies;
 
-			SourceFile = CreateSourceFile(_projectInfo.ProjectFile, documentManager);
+			SourceFile = CreateSourceFile(_t4TemplateInfo.File, documentManager);
 
 			_isValid = true;
 			fileDataCache.FileDataChanged.Advise(lifetime, OnDataFileChanged);

@@ -16,7 +16,7 @@ namespace GammaJul.ReSharper.ForTea
 	{
 		[CanBeNull] private IModuleReferenceResolveManager _resolveManager;
 		[NotNull] private readonly IAssemblyFactory _assemblyFactory;
-		[NotNull] private readonly ProjectInfo _projectInfo;
+		[NotNull] private readonly T4TemplateInfo _t4TemplateInfo;
 		[NotNull] private readonly T4ResolveProject _resolveProject;
 
 		[NotNull]
@@ -29,17 +29,17 @@ namespace GammaJul.ReSharper.ForTea
 		/// <summary>Gets an instance of <see cref="IModuleReferenceResolveManager"/> sed to resolve assemblies.</summary>
 		[NotNull]
 		private IModuleReferenceResolveManager ResolveManager
-			=> _resolveManager ?? (_resolveManager = _projectInfo.Solution.GetComponent<IModuleReferenceResolveManager>());
+			=> _resolveManager ?? (_resolveManager = _t4TemplateInfo.Solution.GetComponent<IModuleReferenceResolveManager>());
 
 		internal T4AssemblyReferenceManager(
 			[NotNull] IAssemblyFactory assemblyFactory,
-			[NotNull] ProjectInfo projectInfo,
+			[NotNull] T4TemplateInfo t4TemplateInfo,
 			[NotNull] T4ResolveProject resolveProject,
 			[NotNull] IModuleReferenceResolveContext moduleReferenceResolveContext
 		)
 		{
 			_assemblyFactory = assemblyFactory;
-			_projectInfo = projectInfo;
+			_t4TemplateInfo = t4TemplateInfo;
 			_resolveProject = resolveProject;
 			ModuleReferenceResolveContext = moduleReferenceResolveContext;
 		}

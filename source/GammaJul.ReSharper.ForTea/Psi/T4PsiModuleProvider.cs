@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using GammaJul.ReSharper.ForTea.Tree;
-using GammaJul.ReSharper.ForTea.VisualStudio;
 using JetBrains.Annotations;
 using JetBrains.Application.changes;
 using JetBrains.Application.Threading;
@@ -140,7 +139,7 @@ namespace GammaJul.ReSharper.ForTea.Psi {
 				_changeManager,
 				solution.GetComponent<IAssemblyFactory>(),
 				_shellLocks,
-				ProjectInfo.FromFile(projectFile),
+				T4TemplateInfo.FromFile(projectFile),
 				solution.GetComponent<T4FileDataCache>(),
 				_t4Environment,
 				solution.GetComponent<OutputAssemblies>(),
