@@ -21,13 +21,7 @@
     </ItemGroup>
 
     <ItemGroup>
-        <Compile Remove="**\Rider\**" />
-        <EmbeddedResource Remove="**\Rider\**" />
-        <None Remove="**\Rider\**" />
-    </ItemGroup>
-
-    <ItemGroup>
-      <ProjectReference Include="..\Common\Common.csproj" />
+      <ProjectReference Include="..\Core\Core.csproj" />
     </ItemGroup>
 
 </Project>
