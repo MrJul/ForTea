@@ -79,7 +79,7 @@ namespace GammaJul.ReSharper.ForTea.Psi {
 			=> T4ProjectFileType.Instance;
 
 		IModule IPsiModule.ContainingProjectModule
-			=> null;
+			=> _t4TemplateInfo.Project;
 
 		IEnumerable<IPsiSourceFile> IPsiModule.SourceFiles
 			=> new[] { SourceFile };
