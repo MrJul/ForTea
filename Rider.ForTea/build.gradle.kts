@@ -13,12 +13,12 @@ buildscript {
   }
   dependencies {
     classpath("com.jetbrains.rd:rd-gen:0.192.2")
-    classpath("org.jetbrains.kotlin:kotlin-gradle-plugin:1.3.10")
+    classpath("org.jetbrains.kotlin:kotlin-gradle-plugin:1.3.31")
   }
 }
 
 plugins {
-  id("org.jetbrains.intellij") version "0.4.7"
+  id("org.jetbrains.intellij") version "0.4.9"
   id("org.jetbrains.grammarkit") version "2018.1.7"
   kotlin("jvm") version "1.3.31"
 }
@@ -44,7 +44,7 @@ version = "0.01"
 
 intellij {
   type = "RD"
-  version = "2019.2-SNAPSHOT"
+  version = "2019.1.2"
   instrumentCode = false
   downloadSources = false
   updateSinceUntilBuild = false
@@ -244,13 +244,6 @@ tasks {
         args = listOf(backendPluginSolutionPath.canonicalPath)
       }
     }
-  }
-
-  task<Wrapper>("wrapper") {
-    gradleVersion = "4.10"
-    distributionType = Wrapper.DistributionType.ALL
-    distributionUrl =
-      "https://cache-redirector.jetbrains.com/services.gradle.org/distributions/gradle-$gradleVersion-all.zip"
   }
 }
 
