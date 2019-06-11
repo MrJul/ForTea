@@ -5,7 +5,54 @@
   <description>Support for Microsoft T4 template language</description>
 
   <version>0.01</version>
-  <idea-version since-build="191" until-build="192.*" />
+  <idea-version since-build="191" until-build="192.*"/>
 
   <depends>com.intellij.modules.rider</depends>
+
+  <extensions defaultExtensionNs="com.intellij">
+    <!-- custom language description -->
+    <fileTypeFactory
+        id="T4"
+        implementation="com.jetbrains.fortea.language.T4FileTypeFactory"/>
+    <lang.parserDefinition
+        language="T4"
+        implementationClass="com.jetbrains.fortea.language.T4ParserDefinition"/>
+    <lang.syntaxHighlighterFactory
+        language="T4"
+        implementationClass="com.jetbrains.fortea.language.T4HighlighterProvider"/>
+
+    <!-- delegation to backend -->
+    <lang.documentationProvider
+        language="T4"
+        implementationClass="com.jetbrains.rdclient.quickDoc.FrontendDocumentationProvider"/>
+    <backend.typedHandler
+        language="T4"
+        implementationClass="com.jetbrains.rdclient.editorActions.FrontendTypedHandler"/>
+    <codeInsight.parameterInfo
+        language="T4"
+        implementationClass="com.jetbrains.rdclient.parameterInfo.FrontendParameterInfoHandler"/>
+    <backend.autoPopup.support
+        language="T4"
+        implementationClass="com.jetbrains.rider.completion.BackendAndGenericIJ"/>
+    <completion.contributor
+        language="T4"
+        implementationClass="com.jetbrains.rdclient.completion.ProtocolCompletionContributor"/>
+    <backend.markup.adapterFactory
+        language="T4"
+        implementationClass="com.jetbrains.rdclient.daemon.FrontendMarkupAdapterFactory"/>
+    <backend.actions.support
+        language="T4"
+        implementationClass="com.jetbrains.rider.actions.RiderActionSupportPolicy"/>
+    <code.cleanup.support
+        language="T4"
+        implementationClass="com.jetbrains.rider.actions.impl.cleanup.BackendCodeCleanupSupportPolicy"/>
+    <backend.auto.import.support
+        language="T4"
+        implementationClass="com.jetbrains.rider.intentions.RiderAutoImportSupportPolicy"/>
+    <lang.altEnter
+        language="T4"
+        implementationClass="com.jetbrains.rider.intentions.altEnter.ReSharperBulbMenuModelFactory"/>
+    <!-- <langCodeStyleSettingsProvider implementation="com.jetbrains.rider.settings.XamlCodeStyleSettingsProvider"/>-->
+    <!-- <lineIndentProvider implementation="com.jetbrains.rider.editorActions.XamlDummyLineIndentProvider"/>-->
+  </extensions>
 </idea-plugin>
