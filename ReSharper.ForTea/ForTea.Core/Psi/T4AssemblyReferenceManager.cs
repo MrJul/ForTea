@@ -11,12 +11,12 @@ using JetBrains.Util;
 
 namespace GammaJul.ForTea.Core.Psi
 {
-	public sealed class T4AssemblyReferenceManager : IDisposable
+	public sealed class T4AssemblyReferenceManager
 	{
 		[CanBeNull] private IModuleReferenceResolveManager _resolveManager;
 		[NotNull] private readonly IAssemblyFactory _assemblyFactory;
 		[NotNull] private readonly T4TemplateInfo _t4TemplateInfo;
-		[NotNull] private readonly T4ResolveProject _resolveProject;
+		[NotNull] private readonly IProject _resolveProject;
 
 		[NotNull]
 		public IModuleReferenceResolveContext ModuleReferenceResolveContext { get; }
@@ -33,7 +33,7 @@ namespace GammaJul.ForTea.Core.Psi
 		internal T4AssemblyReferenceManager(
 			[NotNull] IAssemblyFactory assemblyFactory,
 			[NotNull] T4TemplateInfo t4TemplateInfo,
-			[NotNull] T4ResolveProject resolveProject,
+			[NotNull] IProject resolveProject,
 			[NotNull] IModuleReferenceResolveContext moduleReferenceResolveContext
 		)
 		{
@@ -100,8 +100,5 @@ namespace GammaJul.ForTea.Core.Psi
 				? _assemblyFactory.AddRef(result, "T4", ModuleReferenceResolveContext)
 				: null;
 		}
-
-		public void Dispose() =>
-			_resolveProject.Dispose();
 	}
 }

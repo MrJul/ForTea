@@ -22,7 +22,7 @@ using JetBrains.ReSharper.Psi.Web.Impl.PsiModules;
 using JetBrains.Util;
 using JetBrains.Util.Dotnet.TargetFrameworkIds;
 
-namespace GammaJul.ForTea.Core.Psi {
+namespace GammaJul.ForTea.Core.Psi.Modules {
 
 	/// <summary>PSI module managing a single T4 file.</summary>
 	internal sealed class T4PsiModule : IChangeProvider, IT4PsiModule
@@ -248,20 +248,23 @@ namespace GammaJul.ForTea.Core.Psi {
 
 		/// <summary>Disposes this instance.</summary>
 		/// <remarks>Does not implement <see cref="IDisposable"/>, is called when the lifetime is terminated.</remarks>
-		private void Dispose() {
+		private void Dispose()
+		{
 			_isValid = false;
 
 			// Removes the references.
 			IAssemblyCookie[] assemblyCookies = _assemblyReferenceManager.References.Values.ToArray();
-			if (assemblyCookies.Length > 0) {
-				_shellLocks.ExecuteWithWriteLock(() => {
-					foreach (IAssemblyCookie assemblyCookie in assemblyCookies)
-						assemblyCookie.Dispose();
-				});
-				_assemblyReferenceManager.References.Clear();
-			}
 
-			_assemblyReferenceManager.Dispose();
+			if (assemblyCookies.Length <= 0) return;
+
+			_shellLocks.ExecuteWithWriteLock(() =>
+			{
+				foreach (IAssemblyCookie assemblyCookie in assemblyCookies)
+				{
+					assemblyCookie.Dispose();
+				}
+			});
+			_assemblyReferenceManager.References.Clear();
 		}
 
 		private void AddBaseReferences() {
@@ -293,16 +296,9 @@ namespace GammaJul.ForTea.Core.Psi {
 			_shellLocks = shellLocks;
 			_t4TemplateInfo = t4TemplateInfo;
 			_t4Environment = t4Environment;
-			var resolveProject = new T4ResolveProject(
-				lifetime,
-				_t4TemplateInfo.Solution,
-				_shellLocks,
-				t4Environment.TargetFrameworkId,
-				_t4TemplateInfo.Project
-			);
 
 			var resolveContext = new PsiModuleResolveContext(this, t4Environment.TargetFrameworkId, _t4TemplateInfo.Project);
-			_assemblyReferenceManager = new T4AssemblyReferenceManager(assemblyFactory, _t4TemplateInfo, resolveProject, resolveContext);
+			_assemblyReferenceManager = new T4AssemblyReferenceManager(assemblyFactory, _t4TemplateInfo, _t4TemplateInfo.Project, resolveContext);
 
 			changeManager.RegisterChangeProvider(lifetime, this);
 			changeManager.AddDependency(lifetime, psiModules, this);
