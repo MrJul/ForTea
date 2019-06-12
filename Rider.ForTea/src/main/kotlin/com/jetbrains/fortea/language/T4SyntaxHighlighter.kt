@@ -1,8 +1,5 @@
-package com.jetbrains.rider.ideaInterop.fileTypes.xaml
+package com.jetbrains.fortea.language
 
-import com.jetbrains.fortea.language.T4Language
 import com.jetbrains.rider.ideaInterop.fileTypes.RiderDummySyntaxHighlighter
 
-class T4SyntaxHighlighter : RiderDummySyntaxHighlighter(T4Language) {
-
-}
+class T4SyntaxHighlighter : RiderDummySyntaxHighlighter(T4Language)

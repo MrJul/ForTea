@@ -5,7 +5,6 @@ import com.intellij.openapi.project.Project
 import com.intellij.psi.tree.IElementType
 import com.jetbrains.rider.ideaInterop.fileTypes.RiderFileElementType
 import com.jetbrains.rider.ideaInterop.fileTypes.RiderParserDefinitionBase
-import com.jetbrains.rider.ideaInterop.fileTypes.xaml.T4SyntaxHighlighter
 
 class T4ParserDefinition : RiderParserDefinitionBase(t4FileElementType, T4FileType) {
     companion object {
