@@ -12,7 +12,7 @@ using JetBrains.Util;
 
 namespace GammaJul.ForTea.Core.Psi
 {
-	/// <summary>Provides <see cref="IT4PsiModule"/> for T4 files opened outside of the solution.</summary>
+	/// <summary>Provides <see cref="IT4FilePsiModule"/> for T4 files opened outside of the solution.</summary>
 	[MiscFilesProjectPsiModuleProvider]
 	public sealed class T4MiscFilesProjectPsiModuleProvider : IMiscFilesProjectPsiModuleProvider
 	{
@@ -40,13 +40,15 @@ namespace GammaJul.ForTea.Core.Psi
 			[NotNull] IShellLocks shellLocks,
 			[NotNull] ChangeManager changeManager,
 			[NotNull] IT4Environment t4Environment,
-			[NotNull] IT4MacroResolver resolver
+			[NotNull] IT4MacroResolver resolver,
+			[NotNull] PsiProjectFileTypeCoordinator coordinator
 		) => _t4PsiModuleProvider = new T4PsiModuleProvider(
 			lifetime,
 			shellLocks,
 			changeManager,
 			t4Environment,
-			resolver
+			resolver,
+			coordinator
 		);
 	}
 }

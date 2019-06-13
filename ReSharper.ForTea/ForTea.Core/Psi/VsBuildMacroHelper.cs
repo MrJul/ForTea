@@ -23,13 +23,13 @@ namespace GammaJul.ForTea.Core.Psi {
 		}
 
 		[NotNull]
-		public static string ResolveMacros([NotNull] string stringWithMacros, [CanBeNull] IT4PsiModule t4PsiModule) {
+		public static string ResolveMacros([NotNull] string stringWithMacros, [CanBeNull] IT4FilePsiModule t4FilePsiModule) {
 			if (String.IsNullOrEmpty(stringWithMacros)
-			|| t4PsiModule == null
+			|| t4FilePsiModule == null
 			|| stringWithMacros.IndexOf("$(", StringComparison.Ordinal) < 0)
 				return stringWithMacros;
 
-			IDictionary<string, string> macroValues = t4PsiModule.GetResolvedMacros();
+			IDictionary<string, string> macroValues = t4FilePsiModule.GetResolvedMacros();
 			if (macroValues.Count == 0)
 				return stringWithMacros;
 

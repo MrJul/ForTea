@@ -7,11 +7,8 @@ using GammaJul.ForTea.Core.Tree;
 using JetBrains.Annotations;
 using JetBrains.Application.changes;
 using JetBrains.Application.Threading;
-using JetBrains.DocumentManagers;
 using JetBrains.Lifetimes;
 using JetBrains.ProjectModel;
-using JetBrains.ProjectModel.Build;
-using JetBrains.ProjectModel.model2.Assemblies.Interfaces;
 using JetBrains.ReSharper.Psi;
 using JetBrains.ReSharper.Psi.Modules;
 using JetBrains.ReSharper.Resources.Shell;
@@ -20,7 +17,7 @@ using JetBrains.Util;
 namespace GammaJul.ForTea.Core.Psi {
 
 	/// <summary>
-	/// Manages <see cref="IT4PsiModule"/> for T4 files.
+	/// Manages <see cref="IT4FilePsiModule"/> for T4 files.
 	/// Contains common implementation for <see cref="T4ProjectPsiModuleHandler"/> and <see cref="T4MiscFilesProjectPsiModuleProvider"/>.
 	/// </summary>
 	internal sealed class T4PsiModuleProvider : IDisposable {
@@ -31,20 +28,21 @@ namespace GammaJul.ForTea.Core.Psi {
 		[NotNull] private readonly ChangeManager _changeManager;
 		[NotNull] private readonly IT4Environment _t4Environment;
 		[NotNull] private readonly IT4MacroResolver _resolver;
+		[NotNull] private readonly PsiProjectFileTypeCoordinator _coordinator;
 
 		private readonly struct ModuleWrapper {
 
-			[NotNull] public readonly IT4PsiModule Module;
+			[NotNull] public readonly T4FilePsiModule Module;
 			[NotNull] public readonly LifetimeDefinition LifetimeDefinition;
 
-			public ModuleWrapper([NotNull] IT4PsiModule module, [NotNull] LifetimeDefinition lifetimeDefinition) {
+			public ModuleWrapper([NotNull] T4FilePsiModule module, [NotNull] LifetimeDefinition lifetimeDefinition) {
 				Module = module;
 				LifetimeDefinition = lifetimeDefinition;
 			}
 		}
 
-		/// <summary>Gets all <see cref="IT4PsiModule"/>s for opened files.</summary>
-		/// <returns>A collection of <see cref="IT4PsiModule"/>.</returns>
+		/// <summary>Gets all <see cref="IT4FilePsiModule"/>s for opened files.</summary>
+		/// <returns>A collection of <see cref="IT4FilePsiModule"/>.</returns>
 		[NotNull]
 		[ItemNotNull]
 		public IEnumerable<IPsiModule> GetModules() {
@@ -134,18 +132,14 @@ namespace GammaJul.ForTea.Core.Psi {
 
 			// creates a new T4PsiModule for the file
 			LifetimeDefinition lifetimeDefinition = Lifetime.Define(_lifetime, "[T4]" + projectFile.Name);
-			IT4PsiModule psiModule = new T4PsiModule(
+			var psiModule = new T4FilePsiModule(
 				lifetimeDefinition.Lifetime,
-				solution.GetComponent<IPsiModules>(),
-				solution.GetComponent<DocumentManager>(),
-				_changeManager,
-				solution.GetComponent<IAssemblyFactory>(),
-				_shellLocks,
 				T4TemplateInfo.FromFile(projectFile),
-				solution.GetComponent<T4FileDataCache>(),
+				_changeManager,
+				_shellLocks,
 				_t4Environment,
-				solution.GetComponent<OutputAssemblies>(),
-				_resolver
+				_resolver,
+				_coordinator
 			);
 			_modules[projectFile] = new ModuleWrapper(psiModule, lifetimeDefinition);
 			changeBuilder.AddModuleChange(psiModule, PsiModuleChange.ChangeType.Added);
@@ -196,7 +190,8 @@ namespace GammaJul.ForTea.Core.Psi {
 			[NotNull] IShellLocks shellLocks,
 			[NotNull] ChangeManager changeManager,
 			[NotNull] IT4Environment t4Environment,
-			[NotNull] IT4MacroResolver resolver
+			[NotNull] IT4MacroResolver resolver,
+			[NotNull] PsiProjectFileTypeCoordinator coordinator
 		)
 		{
 			_lifetime = lifetime;
@@ -204,6 +199,7 @@ namespace GammaJul.ForTea.Core.Psi {
 			_changeManager = changeManager;
 			_t4Environment = t4Environment;
 			_resolver = resolver;
+			_coordinator = coordinator;
 		}
 
 	}

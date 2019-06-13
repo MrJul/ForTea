@@ -23,7 +23,7 @@ namespace GammaJul.ForTea.Core.Psi {
 		[NotNull] private readonly DirectiveInfoManager _directiveInfoManager;
 
 		private bool CanReferenceModule([CanBeNull] IPsiModule module, [CanBeNull] IPsiModule moduleToReference)
-			=> module is IT4PsiModule t4PsiModule
+			=> module is T4FilePsiModule t4PsiModule
 			&& t4PsiModule.IsValid()
 			&& moduleToReference != null
 			&& moduleToReference.ContainingProjectModule is IAssembly assembly
@@ -42,7 +42,7 @@ namespace GammaJul.ForTea.Core.Psi {
 			if (!CanReferenceModule(module, moduleToReference))
 				return false;
 
-			var t4PsiModule = (IT4PsiModule) module;
+			var t4PsiModule = (IT4FilePsiModule) module;
 			var assembly = (IAssembly) moduleToReference.ContainingProjectModule;
 			Assertion.AssertNotNull(assembly, "assembly != null");
 

@@ -27,7 +27,7 @@ namespace GammaJul.ForTea.Core.Parsing {
 		[NotNull] private readonly PsiBuilderLexer _builderLexer;
 		[CanBeNull] private readonly IPsiSourceFile _sourceFile;
 		[CanBeNull] private readonly ISolution _solution;
-		[CanBeNull] private readonly IT4PsiModule _macroResolveModule;
+		[CanBeNull] private readonly IT4FilePsiModule _macroResolveModule;
 		[NotNull] private readonly HashSet<FileSystemPath> _existingIncludePaths;
 
 		[CanBeNull] private List<T4Directive> _notClosedDirectives;
@@ -398,7 +398,7 @@ namespace GammaJul.ForTea.Core.Parsing {
 			sourceFile,
 			new HashSet<FileSystemPath>(),
 			sourceFile?.GetSolution(),
-			sourceFile?.PsiModule as IT4PsiModule
+			sourceFile?.PsiModule as IT4FilePsiModule
 		)
 		{
 		}
@@ -410,7 +410,7 @@ namespace GammaJul.ForTea.Core.Parsing {
 			[CanBeNull] IPsiSourceFile sourceFile,
 			[NotNull] HashSet<FileSystemPath> existingIncludePaths,
 			[CanBeNull] ISolution solution,
-			[CanBeNull] IT4PsiModule macroResolveModule
+			[CanBeNull] IT4FilePsiModule macroResolveModule
 		) {
 			_t4Environment = t4Environment;
 			_directiveInfoManager = directiveInfoManager;

@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using GammaJul.ForTea.Core.Common;
 using JetBrains.Annotations;
 using JetBrains.Application.changes;
@@ -15,87 +14,58 @@ using JetBrains.ProjectModel.Build;
 using JetBrains.ProjectModel.model2.Assemblies.Interfaces;
 using JetBrains.ProjectModel.Model2.Assemblies.Interfaces;
 using JetBrains.ReSharper.Psi;
-using JetBrains.ReSharper.Psi.Files;
 using JetBrains.ReSharper.Psi.Impl;
 using JetBrains.ReSharper.Psi.Modules;
 using JetBrains.ReSharper.Psi.Web.Impl.PsiModules;
 using JetBrains.Util;
-using JetBrains.Util.Dotnet.TargetFrameworkIds;
 
 namespace GammaJul.ForTea.Core.Psi.Modules {
 
 	/// <summary>PSI module managing a single T4 file.</summary>
-	internal sealed class T4PsiModule : IChangeProvider, IT4PsiModule
+	internal sealed class T4FilePsiModule : ProjectPsiModuleBase, IT4FilePsiModule
 	{
-
-		private const string Prefix = "[T4] ";
 		private readonly Lifetime _lifetime;
 		[NotNull] private readonly T4AssemblyReferenceManager _assemblyReferenceManager;
-		[NotNull] private readonly Dictionary<string, string> _resolvedMacros = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
 		[NotNull] private readonly IPsiModules _psiModules;
 		[NotNull] private readonly ChangeManager _changeManager;
 		[NotNull] private readonly IShellLocks _shellLocks;
 		[NotNull] private readonly IT4Environment _t4Environment;
-		[NotNull] private readonly T4TemplateInfo _t4TemplateInfo;
+		[NotNull] private readonly T4TemplateInfo _info;
 		[NotNull] private readonly OutputAssemblies _outputAssemblies;
-		[NotNull] private readonly UserDataHolder _userDataHolder = new UserDataHolder();
 		[NotNull] private readonly IT4MacroResolver _resolver;
 
-		private bool _isValid;
+		[NotNull] private readonly Dictionary<string, string> _resolvedMacros
+			= new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
 
+		private IChangeProvider ChangeProvider { get; } = MyChangeProvider.Instance;
+
+		private sealed class MyChangeProvider : IChangeProvider
+		{
+			[CanBeNull] private static MyChangeProvider instance;
+
+			private MyChangeProvider()
+			{
+			}
+
+			public object Execute(IChangeMap changeMap) => null;
+			[NotNull]
+			public static MyChangeProvider Instance => instance ?? (instance = new MyChangeProvider());
+		}
+		/// <summary>
+		/// Gets the language used by this PSI module.
+		/// This should be the code behind language, not the primary language.
+		/// </summary>
+		public override PsiLanguageType PsiLanguage => T4Language.Instance;
+
+		/// <summary>
+		/// Gets the project file type used by this PSI module:
+		/// always <see cref="JetBrains.ProjectModel.ProjectFileType"/>.
+		/// </summary>
+		public override ProjectFileType ProjectFileType => T4ProjectFileType.Instance;
+		
 		/// <summary>Returns the source file associated with this PSI module.</summary>
 		[NotNull]
 		public IPsiSourceFile SourceFile { get; }
-
-		/// <summary>Gets the name of this PSI module.</summary>
-		public string Name
-			=> Prefix + SourceFile.Name;
-
-		/// <summary>Gets the display name of this PSI module.</summary>
-		public string DisplayName
-			=> Prefix + SourceFile.DisplayName;
-
-		/// <summary>Gets the language used by this PSI module. This should be the code behind language, not the primary language.</summary>
-		public PsiLanguageType PsiLanguage
-			=> SourceFile.GetLanguages().FirstOrDefault(lang => !lang.Is<T4Language>()) ?? UnknownLanguage.Instance;
-
-		/// <summary>Gets the project file type used by this PSI module: always <see cref="JetBrains.ProjectModel.ProjectFileType"/>.</summary>
-		public ProjectFileType ProjectFileType
-			=> T4ProjectFileType.Instance;
-
-		IModule IPsiModule.ContainingProjectModule
-			=> _t4TemplateInfo.Project;
-
-		IEnumerable<IPsiSourceFile> IPsiModule.SourceFiles
-			=> new[] { SourceFile };
-
-		IProject IProjectPsiModule.Project
-			=> _t4TemplateInfo.Project;
-
-		/// <summary>TargetFrameworkId corresponding to the module.</summary>
-		public TargetFrameworkId TargetFrameworkId
-			=> _t4Environment.TargetFrameworkId;
-
-		/// <summary>Gets the solution this PSI module is attached to.</summary>
-		/// <returns>An instance of <see cref="ISolution"/>.</returns>
-		public ISolution GetSolution()
-			=> _t4TemplateInfo.Solution;
-
-		/// <summary>Gets an instance of <see cref="IPsiServices"/> for the current solution.</summary>
-		/// <returns>An instance of <see cref="IPsiServices"/>.</returns>
-		public IPsiServices GetPsiServices()
-			=> _t4TemplateInfo.Solution.GetPsiServices();
-
-		/// <summary>Gets whether the PSI module is valid.</summary>
-		/// <returns><c>true</c> if the PSI module is valid, <c>false</c> otherwise.</returns>
-		public bool IsValid()
-			=> _isValid;
-
-		/// <summary>Gets a persistent identifier for this PSI module.</summary>
-		/// <returns>A persistent identifier.</returns>
-		public string GetPersistentID()
-			=> Prefix + _t4TemplateInfo.File.GetPersistentID();
-
 
 		private void OnDataFileChanged(Pair<IPsiSourceFile, T4FileDataDiff> pair) {
 			(IPsiSourceFile first, T4FileDataDiff second) = pair;
@@ -122,7 +92,7 @@ namespace GammaJul.ForTea.Core.Psi.Modules {
 			_resolver.InvalidateAssemblies(
 				dataDiff,
 				ref hasChanges,
-				_t4TemplateInfo,
+				_info,
 				_assemblyReferenceManager
 			);
 			
@@ -139,7 +109,7 @@ namespace GammaJul.ForTea.Core.Psi.Modules {
 			_shellLocks.ExecuteOrQueue("T4PsiModuleChange",
 				() => _changeManager.ExecuteAfterChange(
 					() => _shellLocks.ExecuteWithWriteLock(
-						() => _changeManager.OnProviderChanged(this, changeBuilder.Result, SimpleTaskExecutor.Instance)
+						() => _changeManager.OnProviderChanged(ChangeProvider, changeBuilder.Result, SimpleTaskExecutor.Instance)
 					)
 				)
 			);
@@ -150,7 +120,7 @@ namespace GammaJul.ForTea.Core.Psi.Modules {
 		/// <returns>Whether at least one macro has been processed.</returns>
 		private bool ResolveMacros([NotNull] IEnumerable<string> macros)
 		{
-			var result = _resolver.Resolve(macros, _t4TemplateInfo);
+			var result = _resolver.Resolve(macros, _info);
 
 			if (result.IsEmpty())
 			{
@@ -170,7 +140,7 @@ namespace GammaJul.ForTea.Core.Psi.Modules {
 
 		/// <summary>Gets all modules referenced by this module.</summary>
 		/// <returns>All referenced modules.</returns>
-		public IEnumerable<IPsiModuleReference> GetReferences(IModuleReferenceResolveContext moduleReferenceResolveContext) {
+		protected override IEnumerable<IPsiModuleReference> GetReferencesInternal() {
 			_shellLocks.AssertReadAccessAllowed();
 			
 			var references = new PsiModuleReferenceAccumulator(TargetFrameworkId);
@@ -211,11 +181,6 @@ namespace GammaJul.ForTea.Core.Psi.Modules {
 			}
 		}
 
-		object IChangeProvider.Execute(IChangeMap changeMap) => null;
-
-		ICollection<PreProcessingDirective> IPsiModule.GetAllDefines()
-			=> EmptyList<PreProcessingDirective>.InstanceList;
-
 		[NotNull]
 		private PsiProjectFile CreateSourceFile([NotNull] IProjectFile projectFile, [NotNull] DocumentManager documentManager)
 			=> new PsiProjectFile(
@@ -226,32 +191,11 @@ namespace GammaJul.ForTea.Core.Psi.Modules {
 				documentManager,
 				_assemblyReferenceManager.ModuleReferenceResolveContext
 			);
-		
-		public T GetData<T>(Key<T> key)
-		where T : class
-			=> _userDataHolder.GetData(key);
-
-		public void PutData<T>(Key<T> key, T val)
-		where T : class
-			=> _userDataHolder.PutData(key, val);
-
-		public T GetOrCreateDataUnderLock<T>(Key<T> key, Func<T> factory)
-		where T : class
-			=> _userDataHolder.GetOrCreateDataUnderLock(key, factory);
-
-		public T GetOrCreateDataUnderLock<T, TState>(Key<T> key, TState state, Func<TState, T> factory)
-		where T : class
-			=> _userDataHolder.GetOrCreateDataUnderLock(key, state, factory);
-
-		public IEnumerable<KeyValuePair<object, object>> EnumerateData()
-			=> _userDataHolder.EnumerateData();
 
 		/// <summary>Disposes this instance.</summary>
 		/// <remarks>Does not implement <see cref="IDisposable"/>, is called when the lifetime is terminated.</remarks>
 		private void Dispose()
 		{
-			_isValid = false;
-
 			// Removes the references.
 			IAssemblyCookie[] assemblyCookies = _assemblyReferenceManager.References.Values.ToArray();
 
@@ -274,41 +218,47 @@ namespace GammaJul.ForTea.Core.Psi.Modules {
 				_assemblyReferenceManager.TryAddReference(assemblyName);
 		}
 
-		public T4PsiModule(
+		public T4FilePsiModule(
 			Lifetime lifetime,
-			[NotNull] IPsiModules psiModules,
-			[NotNull] DocumentManager documentManager,
+			[NotNull] T4TemplateInfo info,
 			[NotNull] ChangeManager changeManager,
-			[NotNull] IAssemblyFactory assemblyFactory,
 			[NotNull] IShellLocks shellLocks,
-			[NotNull] T4TemplateInfo t4TemplateInfo,
-			[NotNull] T4FileDataCache fileDataCache,
 			[NotNull] IT4Environment t4Environment,
-			[NotNull] OutputAssemblies outputAssemblies,
-			[NotNull] IT4MacroResolver resolver
+			[NotNull] IT4MacroResolver resolver,
+			[NotNull] PsiProjectFileTypeCoordinator coordinator
+		) : base(
+			info.Project,
+			info.File.Location.ConvertToRelativePath(info.Project.Location).FullPath,
+			coordinator,
+			t4Environment.TargetFrameworkId
 		)
 		{
 			_lifetime = lifetime;
 			lifetime.OnTermination(Dispose);
 
-			_psiModules = psiModules;
+			_psiModules = info.Solution.GetComponent<IPsiModules>();
 			_changeManager = changeManager;
 			_shellLocks = shellLocks;
-			_t4TemplateInfo = t4TemplateInfo;
+			_info = info;
 			_t4Environment = t4Environment;
 
-			var resolveContext = new PsiModuleResolveContext(this, t4Environment.TargetFrameworkId, _t4TemplateInfo.Project);
-			_assemblyReferenceManager = new T4AssemblyReferenceManager(assemblyFactory, _t4TemplateInfo, _t4TemplateInfo.Project, resolveContext);
+			IModuleReferenceResolveContext resolveContext = this.GetResolveContextEx(info.File);
+			
+			_assemblyReferenceManager = new T4AssemblyReferenceManager(
+				info.Solution.GetComponent<IAssemblyFactory>(),
+				_info,
+				_info.Project, resolveContext
+			);
 
-			changeManager.RegisterChangeProvider(lifetime, this);
-			changeManager.AddDependency(lifetime, psiModules, this);
+			changeManager.RegisterChangeProvider(lifetime, ChangeProvider);
+			changeManager.AddDependency(lifetime, _psiModules, ChangeProvider);
 
-			_outputAssemblies = outputAssemblies;
+			_outputAssemblies = info.Solution.GetComponent<OutputAssemblies>();
 
-			SourceFile = CreateSourceFile(_t4TemplateInfo.File, documentManager);
+			var documentManager = info.Solution.GetComponent<DocumentManager>();
+			SourceFile = CreateSourceFile(_info.File, documentManager);
 
-			_isValid = true;
-			fileDataCache.FileDataChanged.Advise(lifetime, OnDataFileChanged);
+			info.Solution.GetComponent<T4FileDataCache>().FileDataChanged.Advise(lifetime, OnDataFileChanged);
 			AddBaseReferences();
 
 			_resolver = resolver;
