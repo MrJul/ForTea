@@ -1,6 +1,5 @@
 using System.Collections.Generic;
 using GammaJul.ForTea.Core.Common;
-using GammaJul.ForTea.Core.Psi.Modules;
 using JetBrains.Annotations;
 using JetBrains.Application.changes;
 using JetBrains.Application.Threading;
@@ -10,7 +9,7 @@ using JetBrains.ReSharper.Psi;
 using JetBrains.ReSharper.Psi.Modules;
 using JetBrains.Util;
 
-namespace GammaJul.ForTea.Core.Psi
+namespace GammaJul.ForTea.Core.Psi.Modules
 {
 	/// <summary>Provides <see cref="IT4FilePsiModule"/> for T4 files opened outside of the solution.</summary>
 	[MiscFilesProjectPsiModuleProvider]

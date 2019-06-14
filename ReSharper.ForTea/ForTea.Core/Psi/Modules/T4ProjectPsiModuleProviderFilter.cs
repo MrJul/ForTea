@@ -7,7 +7,7 @@ using JetBrains.ProjectModel;
 using JetBrains.ReSharper.Psi;
 using JetBrains.ReSharper.Psi.Modules;
 
-namespace GammaJul.ForTea.Core.Psi {
+namespace GammaJul.ForTea.Core.Psi.Modules {
 
 	/// <summary>Provides a <see cref="T4ProjectPsiModuleHandler"/> for a given project.</summary>
 	[SolutionComponent]
