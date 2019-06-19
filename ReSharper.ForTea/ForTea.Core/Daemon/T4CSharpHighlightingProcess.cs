@@ -82,23 +82,23 @@ namespace GammaJul.ForTea.Core.Daemon {
 				return null;
 
 			if (tokenType.IsKeyword)
-				return VsPredefinedHighlighterIds.Keyword;
+				return PredefinedHighlighterIds.Keyword;
 			if (tokenType.IsComment)
-				return VsPredefinedHighlighterIds.Comment;
+				return PredefinedHighlighterIds.Comment;
 			if (tokenType.IsStringLiteral) {
 				// TODO: see why this highlighter fails (no MEF classification)
 				//if (element.GetText().IndexOf('@') == 0)
 				//	return T4CSharpVerbatimStringHighlighting.Instance;
-				return VsPredefinedHighlighterIds.String;
+				return PredefinedHighlighterIds.String;
 			}
 			if (tokenType.IsConstantLiteral) {
 				if (tokenType == CSharpTokenType.CHARACTER_LITERAL)
-					return VsPredefinedHighlighterIds.String;
-				return VsPredefinedHighlighterIds.Number;
+					return PredefinedHighlighterIds.String;
+				return PredefinedHighlighterIds.Number;
 			}
 
 			if (_csharpOperators[tokenType])
-				return VsPredefinedHighlighterIds.Operator;
+				return PredefinedHighlighterIds.Operator;
 			
 			if (tokenType.IsIdentifier) {
 				
@@ -108,7 +108,7 @@ namespace GammaJul.ForTea.Core.Daemon {
 				if ((element.Parent as IReferenceName)?.Reference.Resolve().DeclaredElement is ITypeElement typeElement)
 					return GetTypeElementHighlightingAttributeId(typeElement);
 
-				return VsPredefinedHighlighterIds.Identifier;
+				return PredefinedHighlighterIds.Identifier;
 			}
 
 			return null;

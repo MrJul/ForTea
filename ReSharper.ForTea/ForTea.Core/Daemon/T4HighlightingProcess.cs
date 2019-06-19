@@ -25,18 +25,18 @@ namespace GammaJul.ForTea.Core.Daemon {
 				return null;
 			
 			if (tokenType.IsTag)
-				return VsPredefinedHighlighterIds.HtmlServerSideScript;
+				return PredefinedHighlighterIds.HtmlServerSideScript;
 
 			if (tokenType == T4TokenNodeTypes.Equal)
-				return VsPredefinedHighlighterIds.HtmlOperator;
+				return PredefinedHighlighterIds.Operator;
 
 			if (tokenType == T4TokenNodeTypes.Quote || tokenType == T4TokenNodeTypes.Value)
-				return VsPredefinedHighlighterIds.HtmlAttributeValue;
+				return PredefinedHighlighterIds.AttributeValue;
 
 			if (tokenType == T4TokenNodeTypes.Name) {
 				return element.Parent is IT4Directive
-					? VsPredefinedHighlighterIds.HtmlElementName
-					: VsPredefinedHighlighterIds.HtmlAttributeName;
+					? PredefinedHighlighterIds.Directive
+					: PredefinedHighlighterIds.AttributeName;
 			}
 
 			return null;
