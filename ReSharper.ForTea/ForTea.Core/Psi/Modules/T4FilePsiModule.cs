@@ -37,20 +37,8 @@ namespace GammaJul.ForTea.Core.Psi.Modules {
 		[NotNull] private readonly Dictionary<string, string> _resolvedMacros
 			= new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
 
-		private IChangeProvider ChangeProvider { get; } = MyChangeProvider.Instance;
+		private IChangeProvider ChangeProvider => FakeChangeProvider.Instance;
 
-		private sealed class MyChangeProvider : IChangeProvider
-		{
-			[CanBeNull] private static MyChangeProvider instance;
-
-			private MyChangeProvider()
-			{
-			}
-
-			public object Execute(IChangeMap changeMap) => null;
-			[NotNull]
-			public static MyChangeProvider Instance => instance ?? (instance = new MyChangeProvider());
-		}
 		/// <summary>
 		/// Gets the language used by this PSI module.
 		/// This should be the code behind language, not the primary language.
