@@ -1,32 +1,25 @@
-import com.jetbrains.rd.generator.gradle.RdgenParams
 import org.gradle.api.tasks.testing.logging.TestExceptionFormat
-// import org.jetbrains.grammarkit.tasks.GenerateLexer
 import org.jetbrains.intellij.tasks.PrepareSandboxTask
 import org.jetbrains.kotlin.daemon.common.toHexString
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 buildscript {
   repositories {
-    maven { setUrl("https://cache-redirector.jetbrains.com/www.myget.org/F/rd-snapshots/maven") }
     maven { setUrl("https://cache-redirector.jetbrains.com/dl.bintray.com/kotlin/kotlin-eap") }
     mavenCentral()
   }
   dependencies {
-    classpath("com.jetbrains.rd:rd-gen:0.192.2")
     classpath("org.jetbrains.kotlin:kotlin-gradle-plugin:1.3.31")
   }
 }
 
 plugins {
   id("org.jetbrains.intellij") version "0.4.9"
-  id("org.jetbrains.grammarkit") version "2018.1.7"
   kotlin("jvm") version "1.3.31"
 }
 
 apply {
   plugin("kotlin")
-  plugin("com.jetbrains.rdgen")
-  plugin("org.jetbrains.grammarkit")
 }
 
 repositories {
@@ -106,40 +99,6 @@ fun File.writeTextIfChanged(content: String) {
   }
 }
 
-configure<RdgenParams> {
-  val csOutput = File(repoRoot, "ReSharper.ForTea/ForTea.Core/ProjectModel/Protocol")
-  val ktOutput = File(repoRoot, "Rider.ForTea/src/main/kotlin/com/jetbrains/fortea/protocol")
-
-  verbose = true
-  hashFolder = "build/rdgen"
-  logger.info("Configuring rdgen params")
-  classpath({
-    logger.info("Calculating classpath for rdgen, intellij.ideaDependency is ${intellij.ideaDependency}")
-    val sdkPath = intellij.ideaDependency.classes
-    val rdLibDirectory = File(sdkPath, "lib/rd").canonicalFile
-
-    "$rdLibDirectory/rider-model.jar"
-  })
-  sources(File(repoRoot, "Rider.ForTea/protocol/src/kotlin/model"))
-  packages = "model"
-
-  generator {
-    language = "kotlin"
-    transform = "asis"
-    root = "com.jetbrains.rider.model.nova.ide.IdeRoot"
-    namespace = "com.jetbrains.rider.model"
-    directory = "$ktOutput"
-  }
-
-  generator {
-    language = "csharp"
-    transform = "reversed"
-    root = "com.jetbrains.rider.model.nova.ide.IdeRoot"
-    namespace = "JetBrains.Rider.Model"
-    directory = "$csOutput"
-  }
-}
-
 tasks {
   withType<PrepareSandboxTask> {
     val files = pluginFiles.map { "$it.dll" } + pluginFiles.map { "$it.pdb" }
@@ -165,16 +124,8 @@ tasks {
     }
   }
 
-//  val generateT4Lexer = task<GenerateLexer>("generateT4Lexer") {
-//    source = "src/main/java/com/jetbrains/rider/ideaInterop/fileTypes/fsharp/lexer/_FSharpLexer.flex"
-//    targetDir = "src/main/java/com/jetbrains/rider/ideaInterop/fileTypes/fsharp/lexer"
-//    targetClass = "_FSharpLexer"
-//    purgeOldFiles = true
-//  }
-
   withType<KotlinCompile> {
     kotlinOptions.jvmTarget = "1.8"
-    dependsOn("rdgen")
   }
 
   withType<Test> {
@@ -226,7 +177,7 @@ tasks {
 
   create("prepare") {
     group = riderForTeaTargetsGroup
-    dependsOn("rdgen", "writeNuGetConfig", "writeRiderSdkVersionProps")
+    dependsOn("writeNuGetConfig", "writeRiderSdkVersionProps")
     doLast {
       exec {
         executable = "dotnet"
