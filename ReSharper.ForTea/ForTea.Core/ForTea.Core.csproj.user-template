@@ -23,7 +23,6 @@
   <Target Name="CopyPluginToRsInstallFolder" AfterTargets="AfterBuild">
     <Message Text="Copying assembly @(MainAssembly) to $(RsPluginRsInstallFolder)" Importance="High" />
     <Copy SourceFiles="@(MainAssembly)" DestinationFolder="$(RsPluginRsInstallFolder)" />
-    <Exec Command="&quot;$(RsPluginVsExePath)&quot; /RootSuffix $(RsPluginVsHive) /updateconfiguration" />
   </Target>
   
 </Project>

@@ -1,15 +1,29 @@
 using System;
+using System.Linq;
+using System.Collections.Generic;
+using System.Runtime.InteropServices;
+using JetBrains.Annotations;
+
+using JetBrains.Core;
+using JetBrains.Diagnostics;
+using JetBrains.Collections;
+using JetBrains.Collections.Viewable;
+using JetBrains.Lifetimes;
+using JetBrains.Serialization;
 using JetBrains.Rd;
 using JetBrains.Rd.Base;
+using JetBrains.Rd.Impl;
+using JetBrains.Rd.Tasks;
 using JetBrains.Rd.Util;
-using JetBrains.Rider.Model;
+using JetBrains.Rd.Text;
+
 
 // ReSharper disable RedundantEmptyObjectCreationArgumentList
 // ReSharper disable InconsistentNaming
 // ReSharper disable RedundantOverflowCheckingContext
 
 
-namespace GammaJul.ForTea.Core.ProjectModel.Protocol
+namespace JetBrains.Rider.Model
 {
   
   
