@@ -55,6 +55,10 @@ namespace GammaJul.ForTea.Core.Psi.Modules {
 		[NotNull]
 		public IPsiSourceFile SourceFile { get; }
 
+		[NotNull]
+		[ItemNotNull]
+		protected override IEnumerable<IPsiSourceFile> GetSourceFiles() => new[] {SourceFile};
+
 		private void OnDataFileChanged(Pair<IPsiSourceFile, T4FileDataDiff> pair) {
 			(IPsiSourceFile first, T4FileDataDiff second) = pair;
 
@@ -216,7 +220,7 @@ namespace GammaJul.ForTea.Core.Psi.Modules {
 			[NotNull] PsiProjectFileTypeCoordinator coordinator
 		) : base(
 			info.Project,
-			info.File.Location.ConvertToRelativePath(info.Project.Location).FullPath,
+			info.File.Location.TryMakeRelativeTo(info.Project.Location).FullPath,
 			coordinator,
 			t4Environment.TargetFrameworkId
 		)
@@ -229,9 +233,10 @@ namespace GammaJul.ForTea.Core.Psi.Modules {
 			_shellLocks = shellLocks;
 			_info = info;
 			_t4Environment = t4Environment;
+			_resolver = resolver;
 
 			IModuleReferenceResolveContext resolveContext = this.GetResolveContextEx(info.File);
-			
+
 			_assemblyReferenceManager = new T4AssemblyReferenceManager(
 				info.Solution.GetComponent<IAssemblyFactory>(),
 				_info,
@@ -248,8 +253,6 @@ namespace GammaJul.ForTea.Core.Psi.Modules {
 
 			info.Solution.GetComponent<T4FileDataCache>().FileDataChanged.Advise(lifetime, OnDataFileChanged);
 			AddBaseReferences();
-
-			_resolver = resolver;
 		}
 	}
 }
