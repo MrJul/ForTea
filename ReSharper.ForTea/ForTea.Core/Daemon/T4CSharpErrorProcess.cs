@@ -25,7 +25,7 @@ namespace GammaJul.ForTea.Core.Daemon {
 
 			IDeclaredTypeUsage superTypeUsage = classDeclarationParam.SuperTypeUsageNodes.FirstOrDefault();
 			if (superTypeUsage == null
-			|| T4CSharpCodeGenerator.DefaultBaseClassName.Equals(superTypeUsage.GetText(), StringComparison.Ordinal))
+			|| T4CSharpCodeGenerator.DefaultBaseClassFullName.Equals(superTypeUsage.GetText(), StringComparison.Ordinal))
 				return;
 
 			ITypeElement typeElement = CSharpTypeFactory.CreateDeclaredType(superTypeUsage).GetTypeElement();

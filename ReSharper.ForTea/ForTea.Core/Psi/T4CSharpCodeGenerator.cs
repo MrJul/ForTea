@@ -1,4 +1,6 @@
 using System;
+using System.IO;
+using System.Reflection;
 using System.Text;
 using GammaJul.ForTea.Core.Psi.Directives;
 using GammaJul.ForTea.Core.Tree;
@@ -9,16 +11,18 @@ using JetBrains.ReSharper.Psi;
 using JetBrains.ReSharper.Psi.Tree;
 using JetBrains.Util;
 
-namespace GammaJul.ForTea.Core.Psi {
-
+namespace GammaJul.ForTea.Core.Psi
+{
 	/// <summary>This class generates a code-behind file from C# embedded statements and directives in the T4 file.</summary>
-	internal sealed class T4CSharpCodeGenerator : IRecursiveElementProcessor {
-
+	internal sealed class T4CSharpCodeGenerator : IRecursiveElementProcessor
+	{
 		internal const string CodeCommentStart = "/*_T4\x200CCodeStart_*/";
 		internal const string CodeCommentEnd = "/*_T4\x200CCodeEnd_*/";
 		internal const string ClassName = "Generated\x200CTransformation";
-		internal const string DefaultBaseClassName = "Microsoft.VisualStudio.TextTemplating.TextTransformation";
 		internal const string TransformTextMethodName = "TransformText";
+
+		internal const string DefaultBaseClassFullName =
+			"Microsoft.VisualStudio.TextTemplating." + "TextTransformation";
 
 		[NotNull] private readonly IT4File _file;
 		[NotNull] private readonly DirectiveInfoManager _directiveInfoManager;
@@ -27,10 +31,13 @@ namespace GammaJul.ForTea.Core.Psi {
 		[NotNull] private readonly T4CSharpCodeGenerationResult _inheritsResult;
 		[NotNull] private readonly T4CSharpCodeGenerationResult _transformTextResult;
 		[NotNull] private readonly T4CSharpCodeGenerationResult _featureResult;
+		[NotNull] private readonly Lazy<string> baseClassDescription;
 
 		private int _includeDepth;
 		private bool _rootFeatureStarted;
 		private bool _hasHost;
+
+		private bool HasBaseClass => !_inheritsResult.Builder.IsEmpty();
 
 		bool IRecursiveElementProcessor.InteriorShouldBeProcessed(ITreeNode element)
 			=> element is IT4CodeBlock
@@ -174,44 +181,81 @@ namespace GammaJul.ForTea.Core.Psi {
 		[NotNull]
 		public T4CSharpCodeGenerationResult Generate() {
 			_file.ProcessDescendants(this);
-
 			var result = new T4CSharpCodeGenerationResult(_file);
-			StringBuilder builder = result.Builder;
-
 			string ns = GetNamespace();
-			bool hasNamespace = !String.IsNullOrEmpty(ns);
-			if (hasNamespace) {
-				builder.AppendFormat("namespace {0} {{", ns);
-				builder.AppendLine();
-			}
-			builder.AppendLine("using System;");
-			result.Append(_usingsResult);
-			builder.AppendFormat("[{0}]", SyntheticAttribute.Name);
-			builder.AppendLine();
-
-			builder.AppendFormat("public class {0} : ", ClassName);
-			if (_inheritsResult.Builder.Length == 0)
-				builder.Append(DefaultBaseClassName);
-			else
-				result.Append(_inheritsResult);
-			builder.AppendLine(" {");
-			
-			builder.AppendFormat("[{0}] private static string __\x200CToString(object value) {{ return null; }}", SyntheticAttribute.Name);
-			builder.AppendLine();
-			if (_hasHost)
-				builder.AppendLine("public virtual Microsoft.VisualStudio.TextTemplating.ITextTemplatingEngineHost Host { get; set; }");
-			result.Append(_parametersResult);
-			builder.AppendFormat("[System.CodeDom.Compiler.GeneratedCodeAttribute] public override string {0}() {{", TransformTextMethodName);
-			builder.AppendLine();
-			result.Append(_transformTextResult);
-			builder.AppendLine();
-			builder.AppendLine("return GenerationEnvironment.ToString();");
-			builder.AppendLine("}");
-			result.Append(_featureResult);
-			builder.AppendLine("}");
+			bool hasNamespace = !string.IsNullOrEmpty(ns);
 			if (hasNamespace)
-				builder.AppendLine("}");
+			{
+				result.Builder.AppendLine($"namespace {ns} {{");
+				AppendNamespaceContents(result);
+				result.Builder.AppendLine("}");
+			}
+			else
+			{
+				AppendNamespaceContents(result);
+			}
+
 			return result;
+		}
+
+		private void AppendNamespaceContents(T4CSharpCodeGenerationResult result)
+		{
+			result.Builder.AppendLine("using System;");
+			result.Append(_usingsResult);
+			
+			AppendBaseClass(result.Builder);
+			AppendClass(result);
+		}
+
+		private void AppendClass(T4CSharpCodeGenerationResult result)
+		{
+			result.Builder.AppendLine($"[{SyntheticAttribute.Name}]");
+			result.Builder.Append($"public class {ClassName} : ");
+			AppendBaseClassName(result);
+			result.Builder.AppendLine();
+			result.Builder.AppendLine("{");
+			result.Builder.AppendLine($"[{SyntheticAttribute.Name}]");
+			result.Builder.AppendLine($"private static string __\x200CToString(object value) {{ return null; }}");
+			if (_hasHost)
+				result.Builder.AppendLine("public virtual Microsoft.VisualStudio.TextTemplating.ITextTemplatingEngineHost Host { get; set; }");
+			result.Append(_parametersResult);
+			result.Builder.AppendLine($"[System.CodeDom.Compiler.GeneratedCodeAttribute(\"Rider\", \"whatever\")] public override string {TransformTextMethodName}() {{");
+			result.Append(_transformTextResult);
+			result.Builder.AppendLine();
+			result.Builder.AppendLine("return GenerationEnvironment.ToString();");
+			result.Builder.AppendLine("}");
+			result.Append(_featureResult);
+			result.Builder.AppendLine("}");
+		}
+
+		private void AppendBaseClassName(T4CSharpCodeGenerationResult result)
+		{
+			if (HasBaseClass)
+			{
+				result.Append(_inheritsResult);
+			}
+			else
+			{
+				result.Builder.Append("TextTransformation");
+			}
+		}
+
+		private string ReadBaseClass()
+		{
+			Assembly assembly = Assembly.GetExecutingAssembly();
+			const string name = "GammaJul.ForTea.Core.TextTransformation.cs";
+			// ReSharper disable once AssignNullToNotNullAttribute
+			using (Stream stream = assembly.GetManifestResourceStream(name))
+			using (var reader = new StreamReader(stream))
+			{
+				return reader.ReadToEnd();
+			}
+		}
+		
+		private void AppendBaseClass([NotNull] StringBuilder builder)
+		{
+			if (HasBaseClass) return;
+			builder.AppendLine(baseClassDescription.Value);
 		}
 
 		/// <summary>Initializes a new instance of the <see cref="T4CSharpCodeGenerator"/> class.</summary>
@@ -225,6 +269,7 @@ namespace GammaJul.ForTea.Core.Psi {
 			_inheritsResult = new T4CSharpCodeGenerationResult(file);
 			_transformTextResult = new T4CSharpCodeGenerationResult(file);
 			_featureResult = new T4CSharpCodeGenerationResult(file);
+			baseClassDescription = Lazy.Of(ReadBaseClass, false);
 		}
 
 	}

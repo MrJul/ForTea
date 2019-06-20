@@ -19,4 +19,11 @@
         </PackageReference>
     </ItemGroup>
 
+    <ItemGroup>
+        <Compile Remove="TextTransformation.cs"/>
+    </ItemGroup>
+
+    <ItemGroup>
+        <EmbeddedResource Include="TextTransformation.cs"/>
+    </ItemGroup>
 </Project>
