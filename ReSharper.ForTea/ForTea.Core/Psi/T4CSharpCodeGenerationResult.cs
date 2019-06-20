@@ -9,7 +9,7 @@ using JetBrains.ReSharper.Psi.Tree;
 namespace GammaJul.ForTea.Core.Psi {
 
 	/// <summary>Holds a generated result for code-behind generation.</summary>
-	internal sealed class GenerationResult {
+	internal sealed class T4CSharpCodeGenerationResult {
 
 		/// <summary>Gets the string builder containing the generated text.</summary>
 		[NotNull]
@@ -50,9 +50,9 @@ namespace GammaJul.ForTea.Core.Psi {
 			);
 		}
 
-		/// <summary>Appends another <see cref="GenerationResult"/> to this result.</summary>
+		/// <summary>Appends another <see cref="T4CSharpCodeGenerationResult"/> to this result.</summary>
 		/// <param name="otherResult">The other result to append.</param>
-		public void Append([CanBeNull] GenerationResult otherResult) {
+		public void Append([CanBeNull] T4CSharpCodeGenerationResult otherResult) {
 			if (otherResult == null || otherResult.Builder.Length == 0)
 				return;
 
@@ -61,9 +61,9 @@ namespace GammaJul.ForTea.Core.Psi {
 			GeneratedRangeMap.AppendWithShiftToGenerated(otherResult.GeneratedRangeMap, offset);
 		}
 		
-		/// <summary>Creates a new instance of <see cref="GenerationResult"/> for a given file.</summary>
+		/// <summary>Creates a new instance of <see cref="T4CSharpCodeGenerationResult"/> for a given file.</summary>
 		/// <param name="file">The T4 file that will be used for code-behind generation.</param>
-		public GenerationResult([NotNull] IT4File file) {
+		public T4CSharpCodeGenerationResult([NotNull] IT4File file) {
 			Builder = new StringBuilder(1024);
 			GeneratedRangeMap = new GeneratedRangeMapTree(file);
 		}

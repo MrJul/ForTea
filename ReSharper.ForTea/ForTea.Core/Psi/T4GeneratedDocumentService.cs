@@ -18,9 +18,11 @@ namespace GammaJul.ForTea.Core.Psi {
 
 	/// <summary>This class will generate a C# code-behind from a T4 file.</summary>
 	[GeneratedDocumentService(typeof(T4ProjectFileType))]
-	public class T4GeneratedDocumentService : GeneratedDocumentServiceBase {
-
-		[NotNull] private readonly DirectiveInfoManager _directiveInfoManager;
+	public class T4GeneratedDocumentService : GeneratedDocumentServiceBase
+	{
+		private static IEnumerable<PsiLanguageType> PsiLanguageTypes => new PsiLanguageType[] {CSharpLanguage.Instance};
+		
+		[NotNull] private readonly DirectiveInfoManager directiveInfoManager;
 		
 		/// <summary>Generates a C# file from a T4 file.</summary>
 		/// <param name="modificationInfo">The modifications that occurred in the T4 file.</param>
@@ -28,8 +30,8 @@ namespace GammaJul.ForTea.Core.Psi {
 			if (!(modificationInfo.NewPsiFile is IT4File t4File))
 				return null;
 			 
-			var generator = new T4CSharpCodeGenerator(t4File, _directiveInfoManager);
-			GenerationResult result = generator.Generate();
+			var generator = new T4CSharpCodeGenerator(t4File, directiveInfoManager);
+			T4CSharpCodeGenerationResult result = generator.Generate();
 
 			LanguageService csharpLanguageService = CSharpLanguage.Instance.LanguageService();
 			if (csharpLanguageService == null)
@@ -54,8 +56,7 @@ namespace GammaJul.ForTea.Core.Psi {
 
 		/// <summary>Gets the secondary PSI language types for a T4 file.</summary>
 		/// <returns>Always <see cref="CSharpLanguage"/>.</returns>
-		public override IEnumerable<PsiLanguageType> GetSecondaryPsiLanguageTypes(IProject project)
-			=> new PsiLanguageType[] { CSharpLanguage.Instance };
+		public override IEnumerable<PsiLanguageType> GetSecondaryPsiLanguageTypes(IProject project) => PsiLanguageTypes;
 
 		public override bool IsSecondaryPsiLanguageType(IProject project, PsiLanguageType language)
 			=> language.Is<CSharpLanguage>();
@@ -86,12 +87,12 @@ namespace GammaJul.ForTea.Core.Psi {
 			TreeTextRange treeTextRange,
 			string newText,
 			RangeTranslatorWithGeneratedRangeMap rangeTranslator
-		)
-			=> rangeTranslator.OriginalFile is IT4File t4File
-			&& t4File.ReParse(treeTextRange, newText) != null;
+		) => rangeTranslator.OriginalFile is IT4File t4File
+		     && t4File.ReParse(treeTextRange, newText) != null;
 
 		/// <summary>
-		/// The process of generated document commit (in the case of primary document incremental reparse) can be overridden in this method.
+		/// The process of generated document commit (in the case of primary document incremental reparse)
+		/// can be overridden in this method.
 		/// Returns null if full regeneration is required.
 		/// This method is not allowed to do destructive changes due to interruptibility!
 		/// </summary>
@@ -119,10 +120,8 @@ namespace GammaJul.ForTea.Core.Psi {
 			};
 		}
 		
-		public T4GeneratedDocumentService([NotNull] DirectiveInfoManager directiveInfoManager) {
-			_directiveInfoManager = directiveInfoManager;
-		}
-
+		public T4GeneratedDocumentService([NotNull] DirectiveInfoManager directiveInfoManager) =>
+			this.directiveInfoManager = directiveInfoManager;
 	}
 
 }

@@ -22,11 +22,11 @@ namespace GammaJul.ForTea.Core.Psi {
 
 		[NotNull] private readonly IT4File _file;
 		[NotNull] private readonly DirectiveInfoManager _directiveInfoManager;
-		[NotNull] private readonly GenerationResult _usingsResult;
-		[NotNull] private readonly GenerationResult _parametersResult;
-		[NotNull] private readonly GenerationResult _inheritsResult;
-		[NotNull] private readonly GenerationResult _transformTextResult;
-		[NotNull] private readonly GenerationResult _featureResult;
+		[NotNull] private readonly T4CSharpCodeGenerationResult _usingsResult;
+		[NotNull] private readonly T4CSharpCodeGenerationResult _parametersResult;
+		[NotNull] private readonly T4CSharpCodeGenerationResult _inheritsResult;
+		[NotNull] private readonly T4CSharpCodeGenerationResult _transformTextResult;
+		[NotNull] private readonly T4CSharpCodeGenerationResult _featureResult;
 
 		private int _includeDepth;
 		private bool _rootFeatureStarted;
@@ -127,7 +127,7 @@ namespace GammaJul.ForTea.Core.Psi {
 			if (codeToken == null)
 				return;
 
-			GenerationResult result;
+			T4CSharpCodeGenerationResult result;
 			var expressionBlock = codeBlock as T4ExpressionBlock;
 
 			if (expressionBlock != null) {
@@ -170,12 +170,12 @@ namespace GammaJul.ForTea.Core.Psi {
 		}
 
 		/// <summary>Generates a new C# code behind.</summary>
-		/// <returns>An instance of <see cref="GenerationResult"/> containing the C# file.</returns>
+		/// <returns>An instance of <see cref="T4CSharpCodeGenerationResult"/> containing the C# file.</returns>
 		[NotNull]
-		public GenerationResult Generate() {
+		public T4CSharpCodeGenerationResult Generate() {
 			_file.ProcessDescendants(this);
 
-			var result = new GenerationResult(_file);
+			var result = new T4CSharpCodeGenerationResult(_file);
 			StringBuilder builder = result.Builder;
 
 			string ns = GetNamespace();
@@ -220,11 +220,11 @@ namespace GammaJul.ForTea.Core.Psi {
 		public T4CSharpCodeGenerator([NotNull] IT4File file, [NotNull] DirectiveInfoManager directiveInfoManager) {
 			_file = file;
 			_directiveInfoManager = directiveInfoManager;
-			_usingsResult = new GenerationResult(file);
-			_parametersResult = new GenerationResult(file);
-			_inheritsResult = new GenerationResult(file);
-			_transformTextResult = new GenerationResult(file);
-			_featureResult = new GenerationResult(file);
+			_usingsResult = new T4CSharpCodeGenerationResult(file);
+			_parametersResult = new T4CSharpCodeGenerationResult(file);
+			_inheritsResult = new T4CSharpCodeGenerationResult(file);
+			_transformTextResult = new T4CSharpCodeGenerationResult(file);
+			_featureResult = new T4CSharpCodeGenerationResult(file);
 		}
 
 	}
