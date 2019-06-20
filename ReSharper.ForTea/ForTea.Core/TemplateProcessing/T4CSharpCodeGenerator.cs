@@ -1,7 +1,7 @@
 using System;
 using System.Text;
+using GammaJul.ForTea.Core.Psi;
 using GammaJul.ForTea.Core.Psi.Directives;
-using GammaJul.ForTea.Core.TemplateProcessing;
 using GammaJul.ForTea.Core.Tree;
 using JetBrains.Annotations;
 using JetBrains.Application;
@@ -10,7 +10,7 @@ using JetBrains.ReSharper.Psi;
 using JetBrains.ReSharper.Psi.Tree;
 using JetBrains.Util;
 
-namespace GammaJul.ForTea.Core.Psi
+namespace GammaJul.ForTea.Core.TemplateProcessing
 {
 	/// <summary>This class generates a code-behind file from C# embedded statements and directives in the T4 file.</summary>
 	internal sealed class T4CSharpCodeGenerator : IRecursiveElementProcessor
@@ -23,43 +23,56 @@ namespace GammaJul.ForTea.Core.Psi
 		internal const string DefaultBaseClassFullName =
 			"Microsoft.VisualStudio.TextTemplating." + T4TemplateBaseProvider.DefaultBaseClassName;
 
-		[NotNull] private readonly IT4File _file;
-		[NotNull] private readonly DirectiveInfoManager _directiveInfoManager;
-		[NotNull] private readonly T4CSharpCodeGenerationResult _usingsResult;
-		[NotNull] private readonly T4CSharpCodeGenerationResult _parametersResult;
-		[NotNull] private readonly T4CSharpCodeGenerationResult _inheritsResult;
-		[NotNull] private readonly T4CSharpCodeGenerationResult _transformTextResult;
-		[NotNull] private readonly T4CSharpCodeGenerationResult _featureResult;
+		[NotNull]
+		private IT4File File { get; }
 
-		private int _includeDepth;
-		private bool _rootFeatureStarted;
-		private bool _hasHost;
+		[NotNull]
+		private DirectiveInfoManager DirectiveInfoManager { get; }
+
+		[NotNull]
+		private T4CSharpCodeGenerationResult UsingsResult { get; }
+
+		[NotNull]
+		private T4CSharpCodeGenerationResult ParametersResult { get; }
+
+		[NotNull]
+		private T4CSharpCodeGenerationResult InheritsResult { get; }
+
+		[NotNull]
+		private T4CSharpCodeGenerationResult TransformTextResult { get; }
+
+		[NotNull]
+		private T4CSharpCodeGenerationResult FeatureResult { get; }
 
 		[NotNull]
 		private T4TemplateBaseProvider Provider { get; }
 		
-		private bool HasBaseClass => !_inheritsResult.Builder.IsEmpty();
+		private bool ShouldInsertSyntheticAttributes { get; }
 
-		bool IRecursiveElementProcessor.InteriorShouldBeProcessed(ITreeNode element)
-			=> element is IT4CodeBlock
-			|| element is IT4Include;
+		private int IncludeDepth { get; set; }
+		private bool RootFeatureStarted { get; set; }
+		private bool HasHost { get; set; }
+		private bool HasBaseClass => !InheritsResult.Builder.IsEmpty();
+
+		bool IRecursiveElementProcessor.InteriorShouldBeProcessed(ITreeNode element) =>
+			element is IT4CodeBlock || element is IT4Include;
 
 		void IRecursiveElementProcessor.ProcessBeforeInterior(ITreeNode element) {
 			if (element is IT4Include)
-				++_includeDepth;
+				++IncludeDepth;
 		}
 
 		void IRecursiveElementProcessor.ProcessAfterInterior(ITreeNode element) {
 			switch (element) {
 				case IT4Include _:
-					--_includeDepth;
+					--IncludeDepth;
 					return;
 				case IT4Directive directive:
 					HandleDirective(directive);
 					return;
 				case IT4CodeBlock codeBlock:
 					HandleCodeBlock(codeBlock);
-					break;
+					return;
 			}
 		}
 
@@ -70,61 +83,74 @@ namespace GammaJul.ForTea.Core.Psi
 			}
 		}
 
+		#region Directive Handling
 		/// <summary>Handles a directive in the tree.</summary>
 		/// <param name="directive">The directive.</param>
-		private void HandleDirective([NotNull] IT4Directive directive) {
-			if (directive.IsSpecificDirective(_directiveInfoManager.Import))
+		private void HandleDirective([NotNull] IT4Directive directive)
+		{
+			if (directive.IsSpecificDirective(DirectiveInfoManager.Import))
 				HandleImportDirective(directive);
-			else if (directive.IsSpecificDirective(_directiveInfoManager.Template))
+			else if (directive.IsSpecificDirective(DirectiveInfoManager.Template))
 				HandleTemplateDirective(directive);
-			else if (directive.IsSpecificDirective(_directiveInfoManager.Parameter))
+			else if (directive.IsSpecificDirective(DirectiveInfoManager.Parameter))
 				HandleParameterDirective(directive);
 		}
 
 		/// <summary>Handles an import directive, equivalent of an using directive in C#.</summary>
 		/// <param name="directive">The import directive.</param>
-		private void HandleImportDirective([NotNull] IT4Directive directive) {
-			Pair<IT4Token, string> ns = directive.GetAttributeValueIgnoreOnlyWhitespace(_directiveInfoManager.Import.NamespaceAttribute.Name);
+		private void HandleImportDirective([NotNull] IT4Directive directive)
+		{
+			Pair<IT4Token, string> ns =
+				directive.GetAttributeValueIgnoreOnlyWhitespace(DirectiveInfoManager.Import.NamespaceAttribute.Name);
+
 			if (ns.First == null || ns.Second == null)
 				return;
 
-			_usingsResult.Builder.Append("using ");
-			_usingsResult.AppendMapped(ns.Second, ns.First.GetTreeTextRange());
-			_usingsResult.Builder.AppendLine(";");
+			UsingsResult.Builder.Append("using ");
+			UsingsResult.AppendMapped(ns.Second, ns.First.GetTreeTextRange());
+			UsingsResult.Builder.AppendLine(";");
 		}
 
 		/// <summary>Handles a template directive, determining if we should output a Host property and use a base class.</summary>
 		/// <param name="directive">The template directive.</param>
-		private void HandleTemplateDirective([NotNull] IT4Directive directive) {
-			string value = directive.GetAttributeValue(_directiveInfoManager.Template.HostSpecificAttribute.Name);
-			_hasHost = Boolean.TrueString.Equals(value, StringComparison.OrdinalIgnoreCase);
+		private void HandleTemplateDirective([NotNull] IT4Directive directive)
+		{
+			string value = directive.GetAttributeValue(DirectiveInfoManager.Template.HostSpecificAttribute.Name);
+			HasHost = Boolean.TrueString.Equals(value, StringComparison.OrdinalIgnoreCase);
 
-			(IT4Token classNameToken, string className) = directive.GetAttributeValueIgnoreOnlyWhitespace(_directiveInfoManager.Template.InheritsAttribute.Name);
+			(IT4Token classNameToken, string className) =
+				directive.GetAttributeValueIgnoreOnlyWhitespace(DirectiveInfoManager.Template.InheritsAttribute.Name);
 			if (classNameToken != null && className != null)
-				_inheritsResult.AppendMapped(className, classNameToken.GetTreeTextRange());
+				InheritsResult.AppendMapped(className, classNameToken.GetTreeTextRange());
 		}
 
 		/// <summary>Handles a parameter directive, outputting an extra property.</summary>
 		/// <param name="directive">The parameter directive.</param>
-		private void HandleParameterDirective([NotNull] IT4Directive directive) {
-			(IT4Token typeToken, string type) = directive.GetAttributeValueIgnoreOnlyWhitespace(_directiveInfoManager.Parameter.TypeAttribute.Name);
+		private void HandleParameterDirective([NotNull] IT4Directive directive)
+		{
+			(IT4Token typeToken, string type) =
+				directive.GetAttributeValueIgnoreOnlyWhitespace(DirectiveInfoManager.Parameter.TypeAttribute.Name);
+
 			if (typeToken == null || type == null)
 				return;
 
-			(IT4Token nameToken, string name) = directive.GetAttributeValueIgnoreOnlyWhitespace(_directiveInfoManager.Parameter.NameAttribute.Name);
+			(IT4Token nameToken, string name) =
+				directive.GetAttributeValueIgnoreOnlyWhitespace(DirectiveInfoManager.Parameter.NameAttribute.Name);
+
 			if (nameToken == null || name == null)
 				return;
-			
-			StringBuilder builder = _parametersResult.Builder;
+
+			StringBuilder builder = ParametersResult.Builder;
 			builder.Append("[System.CodeDom.Compiler.GeneratedCodeAttribute] private global::");
-			_parametersResult.AppendMapped(type, typeToken.GetTreeTextRange());
+			ParametersResult.AppendMapped(type, typeToken.GetTreeTextRange());
 			builder.Append(' ');
-			_parametersResult.AppendMapped(name, nameToken.GetTreeTextRange());
+			ParametersResult.AppendMapped(name, nameToken.GetTreeTextRange());
 			builder.Append(" { get { return default(global::");
 			builder.Append(type);
 			builder.AppendLine("); } }");
 		}
-
+		#endregion Directive Handling
+		
 		/// <summary>
 		/// Handles a code block: depending of whether it's a feature or transform text result,
 		/// it is not added to the same part of the C# file.
@@ -139,17 +165,17 @@ namespace GammaJul.ForTea.Core.Psi
 			var expressionBlock = codeBlock as T4ExpressionBlock;
 
 			if (expressionBlock != null) {
-				result = _rootFeatureStarted && _includeDepth == 0 ? _featureResult : _transformTextResult;
+				result = RootFeatureStarted && IncludeDepth == 0 ? FeatureResult : TransformTextResult;
 				result.Builder.Append("this.Write(__\x200CToString(");
 			}
 			else {
 				if (codeBlock is T4FeatureBlock) {
-					if (_includeDepth == 0)
-						_rootFeatureStarted = true;
-					result = _featureResult;
+					if (IncludeDepth == 0)
+						RootFeatureStarted = true;
+					result = FeatureResult;
 				}
 				else
-					result = _transformTextResult;
+					result = TransformTextResult;
 			}
 
 			result.Builder.Append(CodeCommentStart);
@@ -165,9 +191,9 @@ namespace GammaJul.ForTea.Core.Psi
 		/// <returns>A namespace, or <c>null</c>.</returns>
 		[CanBeNull]
 		private string GetNamespace() {
-			IPsiSourceFile sourceFile = _file.GetSourceFile();
+			IPsiSourceFile sourceFile = File.GetSourceFile();
 			IProjectFile projectFile = sourceFile?.ToProjectFile();
-			if (projectFile == null || !projectFile.IsPreprocessedT4Template())
+			if (projectFile?.IsPreprocessedT4Template() != true)
 				return null;
 
 			string ns = projectFile.GetCustomToolNamespace();
@@ -181,8 +207,8 @@ namespace GammaJul.ForTea.Core.Psi
 		/// <returns>An instance of <see cref="T4CSharpCodeGenerationResult"/> containing the C# file.</returns>
 		[NotNull]
 		public T4CSharpCodeGenerationResult Generate() {
-			_file.ProcessDescendants(this);
-			var result = new T4CSharpCodeGenerationResult(_file);
+			File.ProcessDescendants(this);
+			var result = new T4CSharpCodeGenerationResult(File);
 			string ns = GetNamespace();
 			bool hasNamespace = !string.IsNullOrEmpty(ns);
 			if (hasNamespace)
@@ -202,29 +228,33 @@ namespace GammaJul.ForTea.Core.Psi
 		private void AppendNamespaceContents(T4CSharpCodeGenerationResult result)
 		{
 			result.Builder.AppendLine("using System;");
-			result.Append(_usingsResult);
+			result.Append(UsingsResult);
 			AppendClass(result);
 			AppendBaseClass(result.Builder);
 		}
 
+		private void AppendSyntheticAttribute([NotNull] StringBuilder builder)
+		{
+			if (!ShouldInsertSyntheticAttributes) return;
+			builder.AppendLine($"[{SyntheticAttribute.Name}]");
+		}
+
 		private void AppendClass(T4CSharpCodeGenerationResult result)
 		{
-			result.Builder.AppendLine($"[{SyntheticAttribute.Name}]");
+			AppendSyntheticAttribute(result.Builder);
 			result.Builder.Append($"public class {ClassName} : ");
 			AppendBaseClassName(result);
 			result.Builder.AppendLine();
 			result.Builder.AppendLine("{");
-			result.Builder.AppendLine($"[{SyntheticAttribute.Name}]");
-			result.Builder.AppendLine($"private static string __\x200CToString(object value) {{ return null; }}");
-			if (_hasHost)
+			if (HasHost)
 				result.Builder.AppendLine("public virtual Microsoft.VisualStudio.TextTemplating.ITextTemplatingEngineHost Host { get; set; }");
-			result.Append(_parametersResult);
+			result.Append(ParametersResult);
 			result.Builder.AppendLine($"[System.CodeDom.Compiler.GeneratedCodeAttribute(\"Rider\", \"whatever\")] public override string {TransformTextMethodName}() {{");
-			result.Append(_transformTextResult);
+			result.Append(TransformTextResult);
 			result.Builder.AppendLine();
 			result.Builder.AppendLine("return GenerationEnvironment.ToString();");
 			result.Builder.AppendLine("}");
-			result.Append(_featureResult);
+			result.Append(FeatureResult);
 			result.Builder.AppendLine("}");
 		}
 
@@ -232,7 +262,7 @@ namespace GammaJul.ForTea.Core.Psi
 		{
 			if (HasBaseClass)
 			{
-				result.Append(_inheritsResult);
+				result.Append(InheritsResult);
 			}
 			else
 			{
@@ -248,22 +278,27 @@ namespace GammaJul.ForTea.Core.Psi
 
 		/// <summary>Initializes a new instance of the <see cref="T4CSharpCodeGenerator"/> class.</summary>
 		/// <param name="file">The associated T4 file whose C# code behind will be generated.</param>
-		/// <param name="directiveInfoManager">An instance of <see cref="DirectiveInfoManager"/>.</param>
+		/// <param name="directiveInfoManager">An instance of <see cref="Psi.Directives.DirectiveInfoManager"/>.</param>
 		/// <param name="provider">Base provider service</param>
+		/// <param name="shouldInsertSyntheticAttributes">
+		/// Whether there should be [__ReSharperSynthetic] attributes in generated code
+		/// </param>
 		public T4CSharpCodeGenerator(
 			[NotNull] IT4File file,
 			[NotNull] DirectiveInfoManager directiveInfoManager,
-			[NotNull] T4TemplateBaseProvider provider
+			[NotNull] T4TemplateBaseProvider provider,
+			bool shouldInsertSyntheticAttributes
 		)
 		{
-			_file = file;
-			_directiveInfoManager = directiveInfoManager;
-			_usingsResult = new T4CSharpCodeGenerationResult(file);
-			_parametersResult = new T4CSharpCodeGenerationResult(file);
-			_inheritsResult = new T4CSharpCodeGenerationResult(file);
-			_transformTextResult = new T4CSharpCodeGenerationResult(file);
-			_featureResult = new T4CSharpCodeGenerationResult(file);
+			File = file;
+			DirectiveInfoManager = directiveInfoManager;
+			UsingsResult = new T4CSharpCodeGenerationResult(file);
+			ParametersResult = new T4CSharpCodeGenerationResult(file);
+			InheritsResult = new T4CSharpCodeGenerationResult(file);
+			TransformTextResult = new T4CSharpCodeGenerationResult(file);
+			FeatureResult = new T4CSharpCodeGenerationResult(file);
 			Provider = provider;
+			ShouldInsertSyntheticAttributes = shouldInsertSyntheticAttributes;
 		}
 
 	}

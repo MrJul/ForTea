@@ -19,7 +19,7 @@ namespace GammaJul.ForTea.Core.Psi {
 
 	/// <summary>This class will generate a C# code-behind from a T4 file.</summary>
 	[GeneratedDocumentService(typeof(T4ProjectFileType))]
-	public class T4GeneratedDocumentService : GeneratedDocumentServiceBase
+	public class T4CSharpGeneratedDocumentService : GeneratedDocumentServiceBase
 	{
 		private static IEnumerable<PsiLanguageType> PsiLanguageTypes => new PsiLanguageType[] {CSharpLanguage.Instance};
 		
@@ -34,7 +34,7 @@ namespace GammaJul.ForTea.Core.Psi {
 			if (!(modificationInfo.NewPsiFile is IT4File t4File))
 				return null;
 			 
-			var generator = new T4CSharpCodeGenerator(t4File, directiveInfoManager, Provider);
+			var generator = new T4CSharpCodeGenerator(t4File, directiveInfoManager, Provider, true);
 			T4CSharpCodeGenerationResult result = generator.Generate();
 
 			LanguageService csharpLanguageService = CSharpLanguage.Instance.LanguageService();
@@ -124,7 +124,7 @@ namespace GammaJul.ForTea.Core.Psi {
 			};
 		}
 
-		public T4GeneratedDocumentService(
+		public T4CSharpGeneratedDocumentService(
 			[NotNull] DirectiveInfoManager directiveInfoManager,
 			[NotNull] T4TemplateBaseProvider provider
 		)

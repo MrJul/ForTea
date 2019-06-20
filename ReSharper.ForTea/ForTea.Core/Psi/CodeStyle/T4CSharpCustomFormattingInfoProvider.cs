@@ -1,3 +1,4 @@
+using GammaJul.ForTea.Core.TemplateProcessing;
 using GammaJul.ForTea.Core.Tree;
 using JetBrains.ProjectModel;
 using JetBrains.ReSharper.Psi.CSharp.Impl.CodeStyle;

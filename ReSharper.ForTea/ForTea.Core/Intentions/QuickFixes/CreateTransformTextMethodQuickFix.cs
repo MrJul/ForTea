@@ -3,6 +3,7 @@ using System.Globalization;
 using System.Linq;
 using GammaJul.ForTea.Core.Daemon.Highlightings;
 using GammaJul.ForTea.Core.Psi;
+using GammaJul.ForTea.Core.TemplateProcessing;
 using JetBrains.Annotations;
 using JetBrains.Application.Progress;
 using JetBrains.Diagnostics;
