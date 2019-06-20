@@ -69,8 +69,7 @@ namespace GammaJul.ForTea.Core.Psi {
 			ISolution solution,
 			MixedLexer mixedLexer,
 			IPsiSourceFile sourceFile = null
-		)
-			=> CSharpLanguage.Instance != null ? new T4SecondaryLexingProcess(CSharpLanguage.Instance, mixedLexer) : null;
+		) => new T4SecondaryLexingProcess(CSharpLanguage.Instance, mixedLexer);
 
 		/// <summary>Gets a lexer factory capable of handling preprocessor directives.</summary>
 		/// <param name="primaryLanguage">The primary language.</param>
