@@ -20,10 +20,10 @@
     </ItemGroup>
 
     <ItemGroup>
-        <Compile Remove="TextTransformation.cs"/>
+        <Compile Remove="TemplateProcessing\TemplateBase.cs" />
     </ItemGroup>
 
     <ItemGroup>
-        <EmbeddedResource Include="TextTransformation.cs"/>
+        <EmbeddedResource Include="TemplateProcessing\TemplateBase.cs" />
     </ItemGroup>
 </Project>

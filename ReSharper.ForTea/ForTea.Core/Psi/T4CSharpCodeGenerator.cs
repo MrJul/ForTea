@@ -1,8 +1,7 @@
 using System;
-using System.IO;
-using System.Reflection;
 using System.Text;
 using GammaJul.ForTea.Core.Psi.Directives;
+using GammaJul.ForTea.Core.TemplateProcessing;
 using GammaJul.ForTea.Core.Tree;
 using JetBrains.Annotations;
 using JetBrains.Application;
@@ -22,7 +21,7 @@ namespace GammaJul.ForTea.Core.Psi
 		internal const string TransformTextMethodName = "TransformText";
 
 		internal const string DefaultBaseClassFullName =
-			"Microsoft.VisualStudio.TextTemplating." + "TextTransformation";
+			"Microsoft.VisualStudio.TextTemplating." + T4TemplateBaseProvider.DefaultBaseClassName;
 
 		[NotNull] private readonly IT4File _file;
 		[NotNull] private readonly DirectiveInfoManager _directiveInfoManager;
@@ -31,12 +30,14 @@ namespace GammaJul.ForTea.Core.Psi
 		[NotNull] private readonly T4CSharpCodeGenerationResult _inheritsResult;
 		[NotNull] private readonly T4CSharpCodeGenerationResult _transformTextResult;
 		[NotNull] private readonly T4CSharpCodeGenerationResult _featureResult;
-		[NotNull] private readonly Lazy<string> baseClassDescription;
 
 		private int _includeDepth;
 		private bool _rootFeatureStarted;
 		private bool _hasHost;
 
+		[NotNull]
+		private T4TemplateBaseProvider Provider { get; }
+		
 		private bool HasBaseClass => !_inheritsResult.Builder.IsEmpty();
 
 		bool IRecursiveElementProcessor.InteriorShouldBeProcessed(ITreeNode element)
@@ -202,9 +203,8 @@ namespace GammaJul.ForTea.Core.Psi
 		{
 			result.Builder.AppendLine("using System;");
 			result.Append(_usingsResult);
-			
-			AppendBaseClass(result.Builder);
 			AppendClass(result);
+			AppendBaseClass(result.Builder);
 		}
 
 		private void AppendClass(T4CSharpCodeGenerationResult result)
@@ -236,32 +236,26 @@ namespace GammaJul.ForTea.Core.Psi
 			}
 			else
 			{
-				result.Builder.Append("TextTransformation");
+				result.Builder.Append(T4TemplateBaseProvider.DefaultBaseClassName);
 			}
 		}
 
-		private string ReadBaseClass()
-		{
-			Assembly assembly = Assembly.GetExecutingAssembly();
-			const string name = "GammaJul.ForTea.Core.TextTransformation.cs";
-			// ReSharper disable once AssignNullToNotNullAttribute
-			using (Stream stream = assembly.GetManifestResourceStream(name))
-			using (var reader = new StreamReader(stream))
-			{
-				return reader.ReadToEnd();
-			}
-		}
-		
 		private void AppendBaseClass([NotNull] StringBuilder builder)
 		{
 			if (HasBaseClass) return;
-			builder.AppendLine(baseClassDescription.Value);
+			builder.AppendLine(Provider.CreateTemplateBase());
 		}
 
 		/// <summary>Initializes a new instance of the <see cref="T4CSharpCodeGenerator"/> class.</summary>
 		/// <param name="file">The associated T4 file whose C# code behind will be generated.</param>
 		/// <param name="directiveInfoManager">An instance of <see cref="DirectiveInfoManager"/>.</param>
-		public T4CSharpCodeGenerator([NotNull] IT4File file, [NotNull] DirectiveInfoManager directiveInfoManager) {
+		/// <param name="provider">Base provider service</param>
+		public T4CSharpCodeGenerator(
+			[NotNull] IT4File file,
+			[NotNull] DirectiveInfoManager directiveInfoManager,
+			[NotNull] T4TemplateBaseProvider provider
+		)
+		{
 			_file = file;
 			_directiveInfoManager = directiveInfoManager;
 			_usingsResult = new T4CSharpCodeGenerationResult(file);
@@ -269,7 +263,7 @@ namespace GammaJul.ForTea.Core.Psi
 			_inheritsResult = new T4CSharpCodeGenerationResult(file);
 			_transformTextResult = new T4CSharpCodeGenerationResult(file);
 			_featureResult = new T4CSharpCodeGenerationResult(file);
-			baseClassDescription = Lazy.Of(ReadBaseClass, false);
+			Provider = provider;
 		}
 
 	}

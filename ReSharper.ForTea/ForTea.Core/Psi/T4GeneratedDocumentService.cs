@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using GammaJul.ForTea.Core.Psi.Directives;
+using GammaJul.ForTea.Core.TemplateProcessing;
 using GammaJul.ForTea.Core.Tree;
 using JetBrains.Annotations;
 using JetBrains.DocumentModel;
@@ -23,6 +24,9 @@ namespace GammaJul.ForTea.Core.Psi {
 		private static IEnumerable<PsiLanguageType> PsiLanguageTypes => new PsiLanguageType[] {CSharpLanguage.Instance};
 		
 		[NotNull] private readonly DirectiveInfoManager directiveInfoManager;
+
+		[NotNull]
+		private T4TemplateBaseProvider Provider { get; }
 		
 		/// <summary>Generates a C# file from a T4 file.</summary>
 		/// <param name="modificationInfo">The modifications that occurred in the T4 file.</param>
@@ -30,7 +34,7 @@ namespace GammaJul.ForTea.Core.Psi {
 			if (!(modificationInfo.NewPsiFile is IT4File t4File))
 				return null;
 			 
-			var generator = new T4CSharpCodeGenerator(t4File, directiveInfoManager);
+			var generator = new T4CSharpCodeGenerator(t4File, directiveInfoManager, Provider);
 			T4CSharpCodeGenerationResult result = generator.Generate();
 
 			LanguageService csharpLanguageService = CSharpLanguage.Instance.LanguageService();
@@ -119,9 +123,15 @@ namespace GammaJul.ForTea.Core.Psi {
 				new FixRangeTranslatorsOnSharedRangeCommitBuildResult(rangeTranslator, null, new TreeTextRange<Original>(oldTreeRange), new TreeTextRange<Generated>(range), newText)
 			};
 		}
-		
-		public T4GeneratedDocumentService([NotNull] DirectiveInfoManager directiveInfoManager) =>
+
+		public T4GeneratedDocumentService(
+			[NotNull] DirectiveInfoManager directiveInfoManager,
+			[NotNull] T4TemplateBaseProvider provider
+		)
+		{
 			this.directiveInfoManager = directiveInfoManager;
+			Provider = provider;
+		}
 	}
 
 }
