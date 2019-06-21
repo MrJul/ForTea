@@ -11,6 +11,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ForTea.RdSupport", "ForTea.
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ForTea.VsSupport", "ForTea.VsSupport\ForTea.VsSupport.csproj", "{1BEFF5F2-2357-40F9-82F0-B7FC75B92CF2}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ForTea.Tests", "ForTea.Tests\ForTea.Tests.csproj", "{A69D28F9-51DB-4880-86E5-8C04F33D5F86}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -31,6 +33,10 @@ Global
 		{1BEFF5F2-2357-40F9-82F0-B7FC75B92CF2}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{1BEFF5F2-2357-40F9-82F0-B7FC75B92CF2}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{1BEFF5F2-2357-40F9-82F0-B7FC75B92CF2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A69D28F9-51DB-4880-86E5-8C04F33D5F86}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A69D28F9-51DB-4880-86E5-8C04F33D5F86}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A69D28F9-51DB-4880-86E5-8C04F33D5F86}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A69D28F9-51DB-4880-86E5-8C04F33D5F86}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
