@@ -20,7 +20,7 @@ namespace GammaJul.ForTea.Core.Daemon {
 			base.VisitClassDeclaration(classDeclarationParam, context);
 
 			if (!classDeclarationParam.IsSynthetic()) return;
-			if (!T4CSharpCodeGenerator.ClassName.Equals(classDeclarationParam.DeclaredName, StringComparison.Ordinal))
+			if (!"Generated\x200CTransformation".Equals(classDeclarationParam.DeclaredName, StringComparison.Ordinal))
 				return;
 
 			IDeclaredTypeUsage superTypeUsage = classDeclarationParam.SuperTypeUsageNodes.FirstOrDefault();
