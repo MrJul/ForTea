@@ -5,7 +5,6 @@
     /// <summary>
     /// Base class for this transformation
     /// </summary>
-    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.VisualStudio.TextTemplating", "16.0.0.0")]
     public class TemplateBase
     {
     	#region Fields

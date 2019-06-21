@@ -1,6 +1,7 @@
 using System;
 using System.IO;
 using GammaJul.ForTea.Core.Psi.Directives;
+using GammaJul.ForTea.Core.TemplateProcessing.CodeGeneration;
 using GammaJul.ForTea.Core.Tree;
 using JetBrains.Annotations;
 using JetBrains.Application.Progress;
@@ -55,7 +56,7 @@ namespace GammaJul.ForTea.Core.TemplateProcessing
 			var provider = solution.GetComponent<T4TemplateBaseProvider>();
 
 			string newFilePath = GetDestinationFilePath();
-			var generator = new T4CSharpCodeGenerator(File, manager, provider, false);
+			var generator = new T4CSharpCodeGenerator(File, manager, provider);
 			string message = generator.Generate().Builder.ToString();
 
 			WriteData(newFilePath, message);

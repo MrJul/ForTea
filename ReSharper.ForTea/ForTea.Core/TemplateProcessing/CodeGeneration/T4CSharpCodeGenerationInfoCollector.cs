@@ -8,9 +8,8 @@ using JetBrains.Application;
 using JetBrains.ReSharper.Psi;
 using JetBrains.ReSharper.Psi.Tree;
 using JetBrains.Util;
-using static GammaJul.ForTea.Core.TemplateProcessing.T4CSharpCodeGenerator;
 
-namespace GammaJul.ForTea.Core.TemplateProcessing
+namespace GammaJul.ForTea.Core.TemplateProcessing.CodeGeneration
 {
 	class T4CSharpCodeGenerationInfoCollector : IRecursiveElementProcessor
 	{
@@ -135,9 +134,9 @@ namespace GammaJul.ForTea.Core.TemplateProcessing
 					result = TransformTextResult;
 			}
 
-			result.Builder.Append(CodeCommentStart);
+			result.Builder.Append(T4CSharpCodeGeneratorBase.CodeCommentStart);
 			result.AppendMapped(codeToken);
-			result.Builder.Append(CodeCommentEnd);
+			result.Builder.Append(T4CSharpCodeGeneratorBase.CodeCommentEnd);
 
 			if (expressionBlock != null)
 				result.Builder.Append("));");

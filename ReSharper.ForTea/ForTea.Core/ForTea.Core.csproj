@@ -24,6 +24,6 @@
     </ItemGroup>
 
     <ItemGroup>
-        <EmbeddedResource Include="TemplateProcessing\TemplateBase.cs" />
+      <EmbeddedResource Include="TemplateProcessing\CodeGeneration\TemplateBaseFull.cs" />
     </ItemGroup>
 </Project>

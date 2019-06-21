@@ -2,6 +2,7 @@ using System;
 using System.Linq;
 using GammaJul.ForTea.Core.Daemon.Highlightings;
 using GammaJul.ForTea.Core.TemplateProcessing;
+using GammaJul.ForTea.Core.TemplateProcessing.CodeGeneration;
 using JetBrains.Annotations;
 using JetBrains.Application.Settings;
 using JetBrains.ReSharper.Daemon.CSharp.Stages;
@@ -25,7 +26,7 @@ namespace GammaJul.ForTea.Core.Daemon {
 
 			IDeclaredTypeUsage superTypeUsage = classDeclarationParam.SuperTypeUsageNodes.FirstOrDefault();
 			if (superTypeUsage == null) return;
-			if (T4CSharpCodeGenerator.DefaultBaseClassFullName.Equals(superTypeUsage.GetText(), StringComparison.Ordinal))
+			if (T4CSharpCodeGeneratorBase.DefaultBaseClassFullName.Equals(superTypeUsage.GetText(), StringComparison.Ordinal))
 				return;
 
 			ITypeElement typeElement = CSharpTypeFactory.CreateDeclaredType(superTypeUsage).GetTypeElement();
@@ -38,12 +39,12 @@ namespace GammaJul.ForTea.Core.Daemon {
 
 		private static bool HasTransformTextMethod([NotNull] ITypeElement typeElement)
 			=> typeElement
-				.GetAllClassMembers(T4CSharpCodeGenerator.TransformTextMethodName)
+				.GetAllClassMembers(T4CSharpCodeGeneratorBase.TransformTextMethodName)
 				.SelectNotNull(instance => instance.Member as IMethod)
 				.Any(IsTransformTextMethod);
 
 		private static bool IsTransformTextMethod([NotNull] IMethod method)
-			=> method.ShortName == T4CSharpCodeGenerator.TransformTextMethodName
+			=> method.ShortName == T4CSharpCodeGeneratorBase.TransformTextMethodName
 			&& (method.IsVirtual || method.IsOverride || method.IsAbstract)
 			&& !method.IsSealed
 			&& method.GetAccessRights() == AccessRights.PUBLIC

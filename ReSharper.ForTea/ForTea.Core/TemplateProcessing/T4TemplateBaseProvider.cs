@@ -2,11 +2,9 @@ using System;
 using System.IO;
 using System.Reflection;
 using JetBrains.Annotations;
-using JetBrains.Application;
 
 namespace GammaJul.ForTea.Core.TemplateProcessing
 {
-	[ShellComponent]
 	public class T4TemplateBaseProvider
 	{
 		[NotNull, Obsolete] internal const string DefaultBaseClassName = "TextTransformation";
@@ -16,13 +14,12 @@ namespace GammaJul.ForTea.Core.TemplateProcessing
 		private string BaseClassFormat { get; }
 
 		[NotNull]
-		private static string ReadBaseClass()
+		private static string ReadBaseClass([NotNull] string resourceName)
 		{
-			Assembly assembly = Assembly.GetExecutingAssembly();
-			const string name = "GammaJul.ForTea.Core.TemplateProcessing.TemplateBase.cs";
-			using (Stream stream = assembly.GetManifestResourceStream(name))
+			var assembly = Assembly.GetExecutingAssembly();
+			using (var stream = assembly.GetManifestResourceStream(resourceName))
 			{
-				if (stream == null) return "class {0} {{ }}}";
+				if (stream == null) return $"class {InitialClassNamePlaceholder} {{ }}";
 				using (var reader = new StreamReader(stream))
 				{
 					return reader.ReadToEnd();
@@ -34,6 +31,6 @@ namespace GammaJul.ForTea.Core.TemplateProcessing
 		public string CreateTemplateBase([CanBeNull] string baseClassName) =>
 			BaseClassFormat.Replace(InitialClassNamePlaceholder, baseClassName);
 
-		public T4TemplateBaseProvider() => BaseClassFormat = ReadBaseClass();
+		public T4TemplateBaseProvider([NotNull] string resourceName) => BaseClassFormat = ReadBaseClass(resourceName);
 	}
 }

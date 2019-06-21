@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using GammaJul.ForTea.Core.Psi.Directives;
 using GammaJul.ForTea.Core.TemplateProcessing;
+using GammaJul.ForTea.Core.TemplateProcessing.CodeGeneration;
 using GammaJul.ForTea.Core.Tree;
 using JetBrains.Annotations;
 using JetBrains.DocumentModel;
@@ -25,16 +26,13 @@ namespace GammaJul.ForTea.Core.Psi {
 		
 		[NotNull] private readonly T4DirectiveInfoManager directiveInfoManager;
 
-		[NotNull]
-		private T4TemplateBaseProvider Provider { get; }
-		
 		/// <summary>Generates a C# file from a T4 file.</summary>
 		/// <param name="modificationInfo">The modifications that occurred in the T4 file.</param>
 		public override ISecondaryDocumentGenerationResult Generate(PrimaryFileModificationInfo modificationInfo) {
 			if (!(modificationInfo.NewPsiFile is IT4File t4File))
 				return null;
 			 
-			var generator = new T4CSharpCodeGenerator(t4File, directiveInfoManager, Provider, true);
+			var generator = new T4CSharpCodeBehindGenerator(t4File, directiveInfoManager);
 			T4CSharpCodeGenerationResult result = generator.Generate();
 
 			LanguageService csharpLanguageService = CSharpLanguage.Instance.LanguageService();
@@ -127,11 +125,7 @@ namespace GammaJul.ForTea.Core.Psi {
 		public T4CSharpGeneratedDocumentService(
 			[NotNull] T4DirectiveInfoManager directiveInfoManager,
 			[NotNull] T4TemplateBaseProvider provider
-		)
-		{
-			this.directiveInfoManager = directiveInfoManager;
-			Provider = provider;
-		}
+		) => this.directiveInfoManager = directiveInfoManager;
 	}
 
 }
