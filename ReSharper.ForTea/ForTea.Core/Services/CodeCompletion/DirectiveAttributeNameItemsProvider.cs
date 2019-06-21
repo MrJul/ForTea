@@ -19,7 +19,7 @@ namespace GammaJul.ForTea.Core.Services.CodeCompletion {
 	[Language(typeof(T4Language))]
 	public class DirectiveAttributeNameItemsProvider : ItemsProviderOfSpecificContext<T4CodeCompletionContext> {
 
-		[NotNull] private readonly DirectiveInfoManager _directiveInfoManager;
+		[NotNull] private readonly T4DirectiveInfoManager _directiveInfoManager;
 
 		protected override LookupFocusBehaviour GetLookupFocusBehaviour(T4CodeCompletionContext context)
 			=> LookupFocusBehaviour.SoftWhenEmpty;
@@ -64,7 +64,7 @@ namespace GammaJul.ForTea.Core.Services.CodeCompletion {
 			return true;
 		}
 
-		public DirectiveAttributeNameItemsProvider([NotNull] DirectiveInfoManager directiveInfoManager) {
+		public DirectiveAttributeNameItemsProvider([NotNull] T4DirectiveInfoManager directiveInfoManager) {
 			_directiveInfoManager = directiveInfoManager;
 		}
 

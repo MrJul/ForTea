@@ -1,7 +1,6 @@
 using System;
 using System.Linq;
 using GammaJul.ForTea.Core.Daemon.Highlightings;
-using GammaJul.ForTea.Core.Psi;
 using GammaJul.ForTea.Core.TemplateProcessing;
 using JetBrains.Annotations;
 using JetBrains.Application.Settings;
@@ -20,13 +19,13 @@ namespace GammaJul.ForTea.Core.Daemon {
 		public override void VisitClassDeclaration(IClassDeclaration classDeclarationParam, IHighlightingConsumer context) {
 			base.VisitClassDeclaration(classDeclarationParam, context);
 
-			if (!classDeclarationParam.IsSynthetic()
-			|| !T4CSharpCodeGenerator.ClassName.Equals(classDeclarationParam.DeclaredName, StringComparison.Ordinal))
+			if (!classDeclarationParam.IsSynthetic()) return;
+			if (!T4CSharpCodeGenerator.ClassName.Equals(classDeclarationParam.DeclaredName, StringComparison.Ordinal))
 				return;
 
 			IDeclaredTypeUsage superTypeUsage = classDeclarationParam.SuperTypeUsageNodes.FirstOrDefault();
-			if (superTypeUsage == null
-			|| T4CSharpCodeGenerator.DefaultBaseClassFullName.Equals(superTypeUsage.GetText(), StringComparison.Ordinal))
+			if (superTypeUsage == null) return;
+			if (T4CSharpCodeGenerator.DefaultBaseClassFullName.Equals(superTypeUsage.GetText(), StringComparison.Ordinal))
 				return;
 
 			ITypeElement typeElement = CSharpTypeFactory.CreateDeclaredType(superTypeUsage).GetTypeElement();

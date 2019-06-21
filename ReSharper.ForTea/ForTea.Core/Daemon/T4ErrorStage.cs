@@ -10,12 +10,12 @@ namespace GammaJul.ForTea.Core.Daemon {
 	[DaemonStage(StagesBefore = new[] { typeof(T4HighlightingStage), typeof(CollectUsagesStage) })]
 	public class T4ErrorStage : T4DaemonStage {
 
-		[NotNull] private readonly DirectiveInfoManager _directiveInfoManager;
+		[NotNull] private readonly T4DirectiveInfoManager _directiveInfoManager;
 
 		protected override IDaemonStageProcess CreateProcess(IDaemonProcess process, IT4File file)
 			=> new T4ErrorProcess(file, process, _directiveInfoManager);
 
-		public T4ErrorStage([NotNull] DirectiveInfoManager directiveInfoManager) {
+		public T4ErrorStage([NotNull] T4DirectiveInfoManager directiveInfoManager) {
 			_directiveInfoManager = directiveInfoManager;
 		}
 

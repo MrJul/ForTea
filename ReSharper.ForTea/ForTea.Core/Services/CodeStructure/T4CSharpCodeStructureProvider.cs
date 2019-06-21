@@ -20,7 +20,7 @@ namespace GammaJul.ForTea.Core.Services.CodeStructure {
 	[ProjectFileType(typeof(T4ProjectFileType))]
 	public class T4CSharpCodeStructureProvider : IProjectFileCodeStructureProvider {
 
-		[NotNull] private readonly DirectiveInfoManager _directiveInfoManager;
+		[NotNull] private readonly T4DirectiveInfoManager _directiveInfoManager;
 
 		public CodeStructureRootElement Build(IPsiSourceFile sourceFile, CodeStructureOptions options) {
 			if (!(sourceFile.GetTheOnlyPsiFile(T4Language.Instance) is IT4File t4File))
@@ -184,7 +184,7 @@ namespace GammaJul.ForTea.Core.Services.CodeStructure {
 			}
 		}
 
-		public T4CSharpCodeStructureProvider([NotNull] DirectiveInfoManager directiveInfoManager) {
+		public T4CSharpCodeStructureProvider([NotNull] T4DirectiveInfoManager directiveInfoManager) {
 			_directiveInfoManager = directiveInfoManager;
 		}
 

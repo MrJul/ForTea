@@ -12,7 +12,7 @@ namespace GammaJul.ForTea.Core.Psi {
 	/// <remarks>This class is immutable and thus thread safe.</remarks>
 	internal sealed class T4FileData {
 
-		[NotNull] private readonly DirectiveInfoManager _directiveInfoManager;
+		[NotNull] private readonly T4DirectiveInfoManager _directiveInfoManager;
 		[NotNull] [ItemNotNull] private readonly JetHashSet<string> _referencedAssemblies = new JetHashSet<string>(StringComparer.OrdinalIgnoreCase);
 		[NotNull] [ItemNotNull] private readonly JetHashSet<string> _macros = new JetHashSet<string>(StringComparer.OrdinalIgnoreCase);
 
@@ -75,8 +75,8 @@ namespace GammaJul.ForTea.Core.Psi {
 
 		/// <summary>Initializes a new instance of the <see cref="T4FileData"/> class.</summary>
 		/// <param name="t4File">The T4 file that will be scanned for data.</param>
-		/// <param name="directiveInfoManager">An instance of <see cref="DirectiveInfoManager"/>.</param>
-		public T4FileData([NotNull] IT4File t4File, [NotNull] DirectiveInfoManager directiveInfoManager) {
+		/// <param name="directiveInfoManager">An instance of <see cref="T4DirectiveInfoManager"/>.</param>
+		public T4FileData([NotNull] IT4File t4File, [NotNull] T4DirectiveInfoManager directiveInfoManager) {
 			_directiveInfoManager = directiveInfoManager;
 			
 			HandleDirectives(t4File);

@@ -8,7 +8,8 @@ using JetBrains.ReSharper.Psi.CSharp.Tree;
 
 namespace GammaJul.ForTea.Core.Daemon {
 
-	[DaemonStage(StagesBefore = new[] { typeof(CSharpErrorStage) })]
+	// TODO: the only inspection in this stage is broken. Fix it
+	// [DaemonStage(StagesBefore = new[] { typeof(CSharpErrorStage) })]
 	public class T4CSharpErrorStage : CSharpDaemonStageBase {
 
 		protected override bool IsSupported(IPsiSourceFile sourceFile)

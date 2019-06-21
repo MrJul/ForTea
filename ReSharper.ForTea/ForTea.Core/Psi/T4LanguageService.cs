@@ -18,7 +18,7 @@ namespace GammaJul.ForTea.Core.Psi {
 	public sealed class T4LanguageService : LanguageService {
 		
 		[NotNull] private readonly IT4Environment _t4Environment;
-		[NotNull] private readonly DirectiveInfoManager _directiveInfoManager;
+		[NotNull] private readonly T4DirectiveInfoManager _directiveInfoManager;
 
 		/// <summary>Creates a lexer that filters tokens that have no meaning.</summary>
 		/// <param name="lexer">The base lexer.</param>
@@ -61,12 +61,12 @@ namespace GammaJul.ForTea.Core.Psi {
 
 		/// <summary>Initializes a new instance of the <see cref="T4LanguageService"/> class.</summary>
 		/// <param name="t4Language">The T4 language.</param>
-		/// <param name="directiveInfoManager">An instance of <see cref="DirectiveInfoManager"/>.</param>
+		/// <param name="directiveInfoManager">An instance of <see cref="T4DirectiveInfoManager"/>.</param>
 		/// <param name="constantValueService">The constant value service.</param>
 		/// <param name="t4Environment">An object describing the environment for T4 files.</param>
 		public T4LanguageService(
 			[NotNull] T4Language t4Language,
-			[NotNull] DirectiveInfoManager directiveInfoManager,
+			[NotNull] T4DirectiveInfoManager directiveInfoManager,
 			[NotNull] IConstantValueService constantValueService,
 			[NotNull] IT4Environment t4Environment
 		)

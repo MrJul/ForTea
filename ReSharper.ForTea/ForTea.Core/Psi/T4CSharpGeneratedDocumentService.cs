@@ -23,7 +23,7 @@ namespace GammaJul.ForTea.Core.Psi {
 	{
 		private static IEnumerable<PsiLanguageType> PsiLanguageTypes => new PsiLanguageType[] {CSharpLanguage.Instance};
 		
-		[NotNull] private readonly DirectiveInfoManager directiveInfoManager;
+		[NotNull] private readonly T4DirectiveInfoManager directiveInfoManager;
 
 		[NotNull]
 		private T4TemplateBaseProvider Provider { get; }
@@ -125,7 +125,7 @@ namespace GammaJul.ForTea.Core.Psi {
 		}
 
 		public T4CSharpGeneratedDocumentService(
-			[NotNull] DirectiveInfoManager directiveInfoManager,
+			[NotNull] T4DirectiveInfoManager directiveInfoManager,
 			[NotNull] T4TemplateBaseProvider provider
 		)
 		{

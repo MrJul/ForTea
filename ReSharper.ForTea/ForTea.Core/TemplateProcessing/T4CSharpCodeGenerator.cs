@@ -15,19 +15,23 @@ namespace GammaJul.ForTea.Core.TemplateProcessing
 	/// <summary>This class generates a code-behind file from C# embedded statements and directives in the T4 file.</summary>
 	internal sealed class T4CSharpCodeGenerator : IRecursiveElementProcessor
 	{
+		#region Constants
 		internal const string CodeCommentStart = "/*_T4\x200CCodeStart_*/";
 		internal const string CodeCommentEnd = "/*_T4\x200CCodeEnd_*/";
+		[Obsolete("Should be named according to file name")]
 		internal const string ClassName = "Generated\x200CTransformation";
 		internal const string TransformTextMethodName = "TransformText";
 
 		internal const string DefaultBaseClassFullName =
 			"Microsoft.VisualStudio.TextTemplating." + T4TemplateBaseProvider.DefaultBaseClassName;
+		#endregion Constants
 
+		#region Properties
 		[NotNull]
 		private IT4File File { get; }
 
 		[NotNull]
-		private DirectiveInfoManager DirectiveInfoManager { get; }
+		private T4DirectiveInfoManager DirectiveInfoManager { get; }
 
 		[NotNull]
 		private T4CSharpCodeGenerationResult UsingsResult { get; }
@@ -46,14 +50,15 @@ namespace GammaJul.ForTea.Core.TemplateProcessing
 
 		[NotNull]
 		private T4TemplateBaseProvider Provider { get; }
-		
-		private bool ShouldInsertSyntheticAttributes { get; }
 
+		private bool ShouldInsertSyntheticAttributes { get; }
 		private int IncludeDepth { get; set; }
 		private bool RootFeatureStarted { get; set; }
 		private bool HasHost { get; set; }
 		private bool HasBaseClass => !InheritsResult.Builder.IsEmpty();
+		#endregion Properties
 
+		#region IRecursiveElementProcessor methods
 		bool IRecursiveElementProcessor.InteriorShouldBeProcessed(ITreeNode element) =>
 			element is IT4CodeBlock || element is IT4Include;
 
@@ -82,6 +87,7 @@ namespace GammaJul.ForTea.Core.TemplateProcessing
 				return false;
 			}
 		}
+		#endregion IRecursiveElementProcessor methods
 
 		#region Directive Handling
 		/// <summary>Handles a directive in the tree.</summary>
@@ -158,15 +164,14 @@ namespace GammaJul.ForTea.Core.TemplateProcessing
 		/// <param name="codeBlock">The code block.</param>
 		private void HandleCodeBlock([NotNull] IT4CodeBlock codeBlock) {
 			IT4Token codeToken = codeBlock.GetCodeToken();
-			if (codeToken == null)
-				return;
+			if (codeToken == null) return;
 
 			T4CSharpCodeGenerationResult result;
 			var expressionBlock = codeBlock as T4ExpressionBlock;
 
 			if (expressionBlock != null) {
 				result = RootFeatureStarted && IncludeDepth == 0 ? FeatureResult : TransformTextResult;
-				result.Builder.Append("this.Write(__\x200CToString(");
+				result.Builder.Append("            this.Write(this.ToStringHelper.ToStringWithCulture(");
 			}
 			else {
 				if (codeBlock is T4FeatureBlock) {
@@ -241,21 +246,24 @@ namespace GammaJul.ForTea.Core.TemplateProcessing
 
 		private void AppendClass(T4CSharpCodeGenerationResult result)
 		{
-			AppendSyntheticAttribute(result.Builder);
-			result.Builder.Append($"public class {ClassName} : ");
+			StringBuilder builder = result.Builder;
+			AppendSyntheticAttribute(builder);
+			builder.Append($"    public class {ClassName} : ");
 			AppendBaseClassName(result);
-			result.Builder.AppendLine();
-			result.Builder.AppendLine("{");
+			builder.AppendLine();
+			builder.AppendLine($"    {{");
 			if (HasHost)
-				result.Builder.AppendLine("public virtual Microsoft.VisualStudio.TextTemplating.ITextTemplatingEngineHost Host { get; set; }");
+				builder.AppendLine($"        public virtual Microsoft.VisualStudio.TextTemplating.ITextTemplatingEngineHost Host {{ get; set; }}");
 			result.Append(ParametersResult);
-			result.Builder.AppendLine($"[System.CodeDom.Compiler.GeneratedCodeAttribute(\"Rider\", \"whatever\")] public override string {TransformTextMethodName}() {{");
+			builder.AppendLine($"        [System.CodeDom.Compiler.GeneratedCodeAttribute(\"Rider\", \"whatever\")]");
+			builder.AppendLine($"        public virtual string {TransformTextMethodName}()");
+			builder.AppendLine($"        {{");
 			result.Append(TransformTextResult);
-			result.Builder.AppendLine();
-			result.Builder.AppendLine("return GenerationEnvironment.ToString();");
-			result.Builder.AppendLine("}");
+			builder.AppendLine();
+			builder.AppendLine($"            return GenerationEnvironment.ToString();");
+			builder.AppendLine($"        }}");
 			result.Append(FeatureResult);
-			result.Builder.AppendLine("}");
+			builder.AppendLine($"    }}");
 		}
 
 		private void AppendBaseClassName(T4CSharpCodeGenerationResult result)
@@ -278,14 +286,14 @@ namespace GammaJul.ForTea.Core.TemplateProcessing
 
 		/// <summary>Initializes a new instance of the <see cref="T4CSharpCodeGenerator"/> class.</summary>
 		/// <param name="file">The associated T4 file whose C# code behind will be generated.</param>
-		/// <param name="directiveInfoManager">An instance of <see cref="Psi.Directives.DirectiveInfoManager"/>.</param>
+		/// <param name="directiveInfoManager">An instance of <see cref="T4DirectiveInfoManager"/>.</param>
 		/// <param name="provider">Base provider service</param>
 		/// <param name="shouldInsertSyntheticAttributes">
 		/// Whether there should be [__ReSharperSynthetic] attributes in generated code
 		/// </param>
 		public T4CSharpCodeGenerator(
 			[NotNull] IT4File file,
-			[NotNull] DirectiveInfoManager directiveInfoManager,
+			[NotNull] T4DirectiveInfoManager directiveInfoManager,
 			[NotNull] T4TemplateBaseProvider provider,
 			bool shouldInsertSyntheticAttributes
 		)

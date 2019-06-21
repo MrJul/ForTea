@@ -50,7 +50,7 @@ namespace GammaJul.ForTea.Core.Tree {
 		private static string GetSortValue(
 			[NotNull] IT4Directive directive,
 			[CanBeNull] DirectiveInfo directiveInfo,
-			[NotNull] DirectiveInfoManager directiveInfoManager
+			[NotNull] T4DirectiveInfoManager directiveInfoManager
 		) {
 			if (directiveInfo == directiveInfoManager.Assembly)
 				return directive.GetAttributeValue(directiveInfoManager.Assembly.NameAttribute.Name);
@@ -64,12 +64,12 @@ namespace GammaJul.ForTea.Core.Tree {
 		/// <summary>Finds an anchor for a newly created directive inside a list of existing directives.</summary>
 		/// <param name="newDirective">The directive to add.</param>
 		/// <param name="existingDirectives">The existing directives.</param>
-		/// <param name="directiveInfoManager">An instance of <see cref="DirectiveInfoManager"/>.</param>
+		/// <param name="directiveInfoManager">An instance of <see cref="T4DirectiveInfoManager"/>.</param>
 		/// <returns>A pair indicating the anchor (can be null) and its relative position.</returns>
 		public static Pair<IT4Directive, BeforeOrAfter> FindAnchor(
 			[NotNull] this IT4Directive newDirective,
 			[NotNull] IT4Directive[] existingDirectives,
-			[NotNull] DirectiveInfoManager directiveInfoManager
+			[NotNull] T4DirectiveInfoManager directiveInfoManager
 		) {
 
 			// no anchor
@@ -158,13 +158,13 @@ namespace GammaJul.ForTea.Core.Tree {
 		/// <summary>Adds a directive to a <see cref="IT4File"/> at an optimal location in the directive list.</summary>
 		/// <param name="t4File">The <see cref="IT4File"/> to add the directive to.</param>
 		/// <param name="directive">The directive to add.</param>
-		/// <param name="directiveInfoManager">A <see cref="DirectiveInfoManager"/> used to determine the best location of the directive.</param>
+		/// <param name="directiveInfoManager">A <see cref="T4DirectiveInfoManager"/> used to determine the best location of the directive.</param>
 		/// <returns>A new instance of <see cref="IT4Directive"/>, representing <paramref name="directive"/> in the T4 file.</returns>
 		[NotNull]
 		public static IT4Directive AddDirective(
 			[NotNull] this IT4File t4File,
 			[NotNull] IT4Directive directive,
-			[NotNull] DirectiveInfoManager directiveInfoManager
+			[NotNull] T4DirectiveInfoManager directiveInfoManager
 		) {
 			(IT4Directive anchor, BeforeOrAfter beforeOrAfter) = directive.FindAnchor(t4File.GetDirectives().ToArray(), directiveInfoManager);
 

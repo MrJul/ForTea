@@ -23,7 +23,7 @@ namespace GammaJul.ForTea.Core.Parsing {
 
 		[NotNull] private readonly List<IT4Include> _includes = new List<IT4Include>();
 		[NotNull] private readonly IT4Environment _t4Environment;
-		[NotNull] private readonly DirectiveInfoManager _directiveInfoManager;
+		[NotNull] private readonly T4DirectiveInfoManager _directiveInfoManager;
 		[NotNull] private readonly PsiBuilderLexer _builderLexer;
 		[CanBeNull] private readonly IPsiSourceFile _sourceFile;
 		[CanBeNull] private readonly ISolution _solution;
@@ -388,7 +388,7 @@ namespace GammaJul.ForTea.Core.Parsing {
 
 		internal T4TreeBuilder(
 			[NotNull] IT4Environment t4Environment,
-			[NotNull] DirectiveInfoManager directiveInfoManager,
+			[NotNull] T4DirectiveInfoManager directiveInfoManager,
 			[NotNull] ILexer lexer,
 			[CanBeNull] IPsiSourceFile sourceFile = null
 		) : this(
@@ -405,7 +405,7 @@ namespace GammaJul.ForTea.Core.Parsing {
 
 		private T4TreeBuilder(
 			[NotNull] IT4Environment t4Environment,
-			[NotNull] DirectiveInfoManager directiveInfoManager,
+			[NotNull] T4DirectiveInfoManager directiveInfoManager,
 			[NotNull] ILexer lexer,
 			[CanBeNull] IPsiSourceFile sourceFile,
 			[NotNull] HashSet<FileSystemPath> existingIncludePaths,

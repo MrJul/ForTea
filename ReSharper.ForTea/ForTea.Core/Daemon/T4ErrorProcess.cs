@@ -18,7 +18,7 @@ namespace GammaJul.ForTea.Core.Daemon {
 
 	internal sealed class T4ErrorProcess : T4DaemonStageProcess {
 
-		[NotNull] private readonly DirectiveInfoManager _directiveInfoManager;
+		[NotNull] private readonly T4DirectiveInfoManager _directiveInfoManager;
 
 		[CanBeNull] private T4FeatureBlock _lastFeature;
 		private bool _gotFeature;
@@ -134,8 +134,8 @@ namespace GammaJul.ForTea.Core.Daemon {
 		/// <summary>Initializes a new instance of the <see cref="T4DaemonStageProcess"/> class.</summary>
 		/// <param name="file">The associated T4 file.</param>
 		/// <param name="daemonProcess">The associated daemon process.</param>
-		/// <param name="directiveInfoManager">An instance of <see cref="DirectiveInfoManager"/>.</param>
-		public T4ErrorProcess([NotNull] IT4File file, [NotNull] IDaemonProcess daemonProcess, [NotNull] DirectiveInfoManager directiveInfoManager)
+		/// <param name="directiveInfoManager">An instance of <see cref="T4DirectiveInfoManager"/>.</param>
+		public T4ErrorProcess([NotNull] IT4File file, [NotNull] IDaemonProcess daemonProcess, [NotNull] T4DirectiveInfoManager directiveInfoManager)
 			: base(file, daemonProcess) {
 			_directiveInfoManager = directiveInfoManager;
 		}

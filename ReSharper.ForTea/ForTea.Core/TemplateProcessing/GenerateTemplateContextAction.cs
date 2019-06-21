@@ -1,56 +1,67 @@
 using System;
+using System.IO;
 using GammaJul.ForTea.Core.Psi.Directives;
 using GammaJul.ForTea.Core.Tree;
 using JetBrains.Annotations;
 using JetBrains.Application.Progress;
-using JetBrains.DocumentManagers.Transactions;
 using JetBrains.ProjectModel;
 using JetBrains.ReSharper.Feature.Services.ContextActions;
-using JetBrains.ReSharper.Host.Features.ProjectModel;
 using JetBrains.ReSharper.Psi;
 using JetBrains.TextControl;
 using JetBrains.Util;
+using static GammaJul.ForTea.Core.TemplateProcessing.T4CSharpCodeGenerationUtils;
 
 namespace GammaJul.ForTea.Core.TemplateProcessing
 {
 	[ContextAction(
-		Name = "ProcessTemplate",
-		Description = "Generate T4 runtime template",
+		Name = "ExecuteTemplate",
+		Description = Message,
 		Group = "T4",
 		Disabled = false,
 		Priority = 1)]
 	public class GenerateTemplateContextAction : ContextActionBase
 	{
+		[NotNull] private const string Message = "Execute T4 design-time template";
 		private IT4File File { get; }
 
 		public GenerateTemplateContextAction([NotNull] LanguageIndependentContextActionDataProvider dataProvider) =>
 			File = dataProvider.PsiFile as IT4File;
 
+		[NotNull]
+		private string GetDestinationFilePath()
+		{
+			IPsiSourceFile initialPsiSourceFile = File.GetSourceFile();
+			IProjectFile initialProjectFile = initialPsiSourceFile.ToProjectFile();
+			string newFileName = initialPsiSourceFile?.Name.WithExtension(DefaultTargetExtension);
+			return initialProjectFile?.Location.Parent.Combine(newFileName).FullPath
+			       ?? throw new NullReferenceException();
+		}
+
+		private static void WriteData(string newFilePath, string message)
+		{
+			using (var stream = System.IO.File.Create(newFilePath))
+			using (var writer = new StreamWriter(stream))
+			{
+				writer.Write(message);
+			}
+		}
+
 		protected override Action<ITextControl> ExecutePsiTransaction(
 			ISolution solution,
 			IProgressIndicator progress
-		) => textControl => solution.InvokeUnderTransaction(cookie =>
+		) => textControl =>
 		{
 			var manager = solution.GetComponent<T4DirectiveInfoManager>();
 			var provider = solution.GetComponent<T4TemplateBaseProvider>();
-			
-			IPsiSourceFile psiSourceFile = File.GetSourceFile();
-			string fileName = psiSourceFile?.Name;
-			IProjectFile projectFile = psiSourceFile.ToProjectFile();
-			IProjectFolder parentFolder = projectFile?.ParentFolder;
-			FileSystemPath projectFolderPath = parentFolder?.Path?.ReferencedFolderPath;
-			FileSystemPath newFile = projectFolderPath?.Combine("");
 
-			if (newFile == null) return;
-//			if (!cookie.CanAddFile(parentFolder, file, out string reason))
-//			{
-//				throw new ProjectModelEditorException(reason);
-//			}
+			string newFilePath = GetDestinationFilePath();
+			var generator = new T4CSharpCodeGenerator(File, manager, provider, false);
+			string message = generator.Generate().Builder.ToString();
 
-//			var generator = new T4CSharpCodeGenerator(File, Manager, Provider, false);
-		});
+			WriteData(newFilePath, message);
+		};
 
-		public override string Text => "Generate T4 runtime template";
+		public override string Text => Message;
 		public override bool IsAvailable(IUserDataHolder cache) => File != null;
 	}
 }

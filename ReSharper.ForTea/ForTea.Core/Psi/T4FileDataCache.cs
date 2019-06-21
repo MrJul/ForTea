@@ -16,7 +16,7 @@ namespace GammaJul.ForTea.Core.Psi {
 	public sealed class T4FileDataCache {
 
 		[NotNull] private readonly WeakToStrongDictionary<IPsiSourceFile, T4FileData> _fileDataBySourceFile = new WeakToStrongDictionary<IPsiSourceFile, T4FileData>();
-		[NotNull] private readonly DirectiveInfoManager _directiveInfoManager;
+		[NotNull] private readonly T4DirectiveInfoManager _directiveInfoManager;
 
 		[NotNull]
 		public Signal<Pair<IPsiSourceFile, T4FileDataDiff>> FileDataChanged { get; }
@@ -56,8 +56,8 @@ namespace GammaJul.ForTea.Core.Psi {
 		/// <summary>Initializes a new instance of the <see cref="T4FileDataCache"/> class.</summary>
 		/// <param name="lifetime">The lifetime of this class.</param>
 		/// <param name="psiFiles">The PSI manager.</param>
-		/// <param name="directiveInfoManager">An instance of <see cref="DirectiveInfoManager"/>.</param>
-		public T4FileDataCache(Lifetime lifetime, [NotNull] PsiFiles psiFiles, [NotNull] DirectiveInfoManager directiveInfoManager) {
+		/// <param name="directiveInfoManager">An instance of <see cref="T4DirectiveInfoManager"/>.</param>
+		public T4FileDataCache(Lifetime lifetime, [NotNull] PsiFiles psiFiles, [NotNull] T4DirectiveInfoManager directiveInfoManager) {
 			_directiveInfoManager = directiveInfoManager;
 			FileDataChanged = new Signal<Pair<IPsiSourceFile, T4FileDataDiff>>(lifetime, "T4FileDataCache.FileDataChanged");
 

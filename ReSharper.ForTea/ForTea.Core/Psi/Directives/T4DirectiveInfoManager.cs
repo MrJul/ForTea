@@ -8,7 +8,7 @@ using JetBrains.DataStructures;
 namespace GammaJul.ForTea.Core.Psi.Directives {
 
 	[ShellComponent]
-	public class DirectiveInfoManager {
+	public class T4DirectiveInfoManager {
 
 		/// <summary>Gets information about the template directive.</summary>
 		[NotNull]
@@ -46,7 +46,7 @@ namespace GammaJul.ForTea.Core.Psi.Directives {
 				? null
 				: AllDirectives.FirstOrDefault(di => di.Name.Equals(directiveName, StringComparison.OrdinalIgnoreCase));
 
-		public DirectiveInfoManager([NotNull] IT4Environment environment) {
+		public T4DirectiveInfoManager([NotNull] IT4Environment environment) {
 			Template = new TemplateDirectiveInfo(environment);
 			Parameter = new ParameterDirectiveInfo();
 			Output = new OutputDirectiveInfo();

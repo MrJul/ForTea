@@ -36,7 +36,7 @@ namespace GammaJul.ForTea.Core.Psi {
 	[ProjectFileType(typeof(T4ProjectFileType))]
 	public class T4CSharpCustomModificationHandler : CustomModificationHandler<IT4CodeBlock, IT4Directive>, ICSharpCustomModificationHandler {
 
-		[NotNull] private readonly DirectiveInfoManager _directiveInfoManager;
+		[NotNull] private readonly T4DirectiveInfoManager _directiveInfoManager;
 
 		/// <summary>Determines whether namespace aliases can be used.</summary>
 		/// <returns>Always <c>false</c> since T4 files does not support aliases.</returns>
@@ -310,8 +310,8 @@ namespace GammaJul.ForTea.Core.Psi {
 
 		/// <summary>Initializes a new instance of the <see cref="T4CSharpCustomModificationHandler"/> class.</summary>
 		/// <param name="languageManager">The language manager.</param>
-		/// <param name="directiveInfoManager">An instance of <see cref="DirectiveInfoManager"/>.</param>
-		public T4CSharpCustomModificationHandler([NotNull] ILanguageManager languageManager, [NotNull] DirectiveInfoManager directiveInfoManager)
+		/// <param name="directiveInfoManager">An instance of <see cref="T4DirectiveInfoManager"/>.</param>
+		public T4CSharpCustomModificationHandler([NotNull] ILanguageManager languageManager, [NotNull] T4DirectiveInfoManager directiveInfoManager)
 			: base(languageManager) {
 			_directiveInfoManager = directiveInfoManager;
 		}

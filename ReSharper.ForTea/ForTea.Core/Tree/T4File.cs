@@ -113,7 +113,7 @@ namespace GammaJul.ForTea.Core.Tree {
 				ITreeNode endNode = directive;
 
 				// remove the included node with the include directive
-				if (directive.IsSpecificDirective(Shell.Instance.GetComponent<DirectiveInfoManager>().Include)) {
+				if (directive.IsSpecificDirective(Shell.Instance.GetComponent<T4DirectiveInfoManager>().Include)) {
 					if (directive.NextSibling is IT4Include)
 						endNode = directive.NextSibling;
 				}

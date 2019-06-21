@@ -16,7 +16,7 @@ namespace GammaJul.ForTea.Core.Services.CodeStructure {
 
 	internal sealed class T4CodeStructureDirective : T4CodeStructureElement<IT4Directive> {
 
-		[NotNull] private readonly DirectiveInfoManager _directiveInfoManager;
+		[NotNull] private readonly T4DirectiveInfoManager _directiveInfoManager;
 
 		[NotNull]
 		private string GetDirectiveText() {
@@ -80,7 +80,7 @@ namespace GammaJul.ForTea.Core.Services.CodeStructure {
 		public T4CodeStructureDirective(
 			[NotNull] CodeStructureElement parent,
 			[NotNull] IT4Directive directive,
-			[NotNull] DirectiveInfoManager directiveInfoManager
+			[NotNull] T4DirectiveInfoManager directiveInfoManager
 		)
 			: base(parent, directive) {
 			_directiveInfoManager = directiveInfoManager;
