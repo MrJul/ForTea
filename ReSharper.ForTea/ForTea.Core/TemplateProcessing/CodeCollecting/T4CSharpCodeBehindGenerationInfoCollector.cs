@@ -1,3 +1,4 @@
+using System.Text;
 using GammaJul.ForTea.Core.Psi;
 using GammaJul.ForTea.Core.Psi.Directives;
 using GammaJul.ForTea.Core.Tree;
@@ -17,12 +18,7 @@ namespace GammaJul.ForTea.Core.TemplateProcessing.CodeCollecting
 		{
 		}
 
-		protected override void AppendExpression(T4CSharpCodeGenerationResult result, IT4Token token)
-		{
-			result.Builder.Append("            this.Write(this.ToStringHelper.ToStringWithCulture(");
-			AppendCode(result, token);
-			result.Builder.Append("));");
-		}
+		protected override string ToStringConversionStart => "__ToString(";
 
 		protected override void AppendCode(T4CSharpCodeGenerationResult result, IT4Token token)
 		{

@@ -14,8 +14,7 @@ namespace GammaJul.ForTea.Core.TemplateProcessing.CodeCollecting
 		{
 		}
 
-		protected override void AppendExpression(T4CSharpCodeGenerationResult result, IT4Token token) =>
-			AppendCode(result, token);
+		protected override string ToStringConversionStart => "this.ToStringHelper.ToStringWithCulture(";
 
 		protected override void AppendCode(T4CSharpCodeGenerationResult result, IT4Token token) =>
 			result.AppendMapped(token);

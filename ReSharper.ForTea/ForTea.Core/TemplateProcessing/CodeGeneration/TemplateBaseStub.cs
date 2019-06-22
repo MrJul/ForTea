@@ -87,4 +87,7 @@
     	public void ClearIndent()
     	{
     	}
+
+        [__ReSharperSynthetic]
+        protected string __ToString(object value) => value.ToString();
     }

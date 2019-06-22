@@ -1,7 +1,6 @@
 using System;
 using System.Text;
 using GammaJul.ForTea.Core.Psi;
-using GammaJul.ForTea.Core.Psi.Directives;
 using GammaJul.ForTea.Core.TemplateProcessing.CodeCollecting;
 using GammaJul.ForTea.Core.Tree;
 using JetBrains.Annotations;
@@ -71,7 +70,7 @@ namespace GammaJul.ForTea.Core.TemplateProcessing.CodeGeneration
 
 		private void AppendClass(T4CSharpCodeGenerationResult result)
 		{
-			StringBuilder builder = result.Builder;
+			var builder = result.Builder;
 			AppendSyntheticAttribute(builder);
 			builder.Append($"    public class {GeneratedClassName} : ");
 			AppendBaseClassName(result);
@@ -88,7 +87,7 @@ namespace GammaJul.ForTea.Core.TemplateProcessing.CodeGeneration
 
 		private void AppendTransformMethod(T4CSharpCodeGenerationResult result)
 		{
-			StringBuilder builder = result.Builder;
+			var builder = result.Builder;
 			builder.Append("        public ");
 			builder.Append(HasBaseClass ? "override" : "virtual");
 			builder.AppendLine($" string {TransformTextMethodName}()");

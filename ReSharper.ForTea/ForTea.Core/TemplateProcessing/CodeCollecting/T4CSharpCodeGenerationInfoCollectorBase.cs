@@ -6,6 +6,7 @@ using JetBrains.Annotations;
 using JetBrains.Application;
 using JetBrains.ReSharper.Psi;
 using JetBrains.ReSharper.Psi.Tree;
+using JetBrains.ReSharper.Psi.Util;
 using JetBrains.Util;
 
 namespace GammaJul.ForTea.Core.TemplateProcessing.CodeCollecting
@@ -73,13 +74,16 @@ namespace GammaJul.ForTea.Core.TemplateProcessing.CodeCollecting
 			{
 				case IT4Include _:
 					--IncludeDepth;
-					return;
+					break;
 				case IT4Directive directive:
 					HandleDirective(directive);
-					return;
+					break;
 				case IT4CodeBlock codeBlock:
 					HandleCodeBlock(codeBlock);
-					return;
+					break;
+				case IT4Token token:
+					HandleToken(token);
+					break;
 			}
 		}
 
@@ -94,6 +98,15 @@ namespace GammaJul.ForTea.Core.TemplateProcessing.CodeCollecting
 		#endregion Interface Members
 
 		#region Utils
+		private void HandleToken([NotNull] IT4Token token)
+		{
+			var result = RootFeatureStarted ? FeatureResult : TransformTextResult;
+			var builder = result.Builder;
+			builder.Append("            this.Write(\"");
+			builder.Append(StringLiteralConverter.EscapeToRegular(token.GetText()));
+			builder.AppendLine("\");");
+		}
+
 		/// <summary>Handles a directive in the tree.</summary>
 		/// <param name="directive">The directive.</param>
 		private void HandleDirective([NotNull] IT4Directive directive)
@@ -119,7 +132,7 @@ namespace GammaJul.ForTea.Core.TemplateProcessing.CodeCollecting
 			{
 				case T4ExpressionBlock _:
 					var result = RootFeatureStarted && IncludeDepth == 0 ? FeatureResult : TransformTextResult;
-					AppendExpression(result, codeToken);
+					AppendExpressionWriting(result, codeToken);
 					result.Builder.AppendLine();
 					break;
 				case T4FeatureBlock _:
@@ -192,9 +205,24 @@ namespace GammaJul.ForTea.Core.TemplateProcessing.CodeCollecting
 		}
 		#endregion Utils
 
-		protected abstract void AppendExpression(
+		private void AppendExpressionWriting(
 			[NotNull] T4CSharpCodeGenerationResult result,
-			[NotNull] IT4Token token);
+			[NotNull] IT4Token token
+		)
+		{
+			var builder = result.Builder;
+			builder.Append("            this.Write(");
+			builder.Append(ToStringConversionStart);
+			AppendCode(result, token);
+			builder.Append(ToStringConversionEnd);
+			builder.Append(");");
+		}
+
+		[NotNull]
+		protected abstract string ToStringConversionStart { get; }
+
+		[NotNull]
+		protected virtual string ToStringConversionEnd => ")";
 
 		protected abstract void AppendCode(
 			[NotNull] T4CSharpCodeGenerationResult result,
