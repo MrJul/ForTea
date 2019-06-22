@@ -53,10 +53,9 @@ namespace GammaJul.ForTea.Core.TemplateProcessing
 		) => textControl =>
 		{
 			var manager = solution.GetComponent<T4DirectiveInfoManager>();
-			var provider = solution.GetComponent<T4TemplateBaseProvider>();
 
 			string newFilePath = GetDestinationFilePath();
-			var generator = new T4CSharpCodeGenerator(File, manager, provider);
+			var generator = new T4CSharpCodeGenerator(File, manager);
 			string message = generator.Generate().Builder.ToString();
 
 			WriteData(newFilePath, message);

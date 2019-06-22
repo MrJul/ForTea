@@ -1,4 +1,5 @@
 using GammaJul.ForTea.Core.TemplateProcessing;
+using GammaJul.ForTea.Core.TemplateProcessing.CodeCollecting;
 using GammaJul.ForTea.Core.TemplateProcessing.CodeGeneration;
 using GammaJul.ForTea.Core.Tree;
 using JetBrains.ProjectModel;
@@ -24,12 +25,12 @@ namespace GammaJul.ForTea.Core.Psi.CodeStyle {
 		public override SpaceType GetBlockSpaceType(CSharpFmtStageContext ctx, CSharpCodeFormattingContext context) {
 			ITreeNode leftChild = ctx.LeftChild;
 			if (leftChild is ICommentNode
-			&& leftChild.GetText() == T4CSharpCodeGeneratorBase.CodeCommentStart
+			&& leftChild.GetText() == T4CSharpCodeBehindGenerationInfoCollector.CodeCommentStart
 			&& !leftChild.HasLineFeedsTo(ctx.RightChild, context.CodeFormatter))
 				return ctx.Parent is IClassBody ? SpaceType.Vertical : SpaceType.Horizontal;
 
 			if (ctx.RightChild is ICommentNode
-			&& ctx.RightChild.GetText() == T4CSharpCodeGeneratorBase.CodeCommentEnd)
+			&& ctx.RightChild.GetText() == T4CSharpCodeBehindGenerationInfoCollector.CodeCommentEnd)
 				return ctx.Parent is IClassBody || leftChild.HasLineFeedsTo(ctx.RightChild, context.CodeFormatter) ? SpaceType.Vertical : SpaceType.Horizontal;
 
 			return SpaceType.Default;

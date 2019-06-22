@@ -1,7 +1,6 @@
 using System;
 using System.Linq;
 using GammaJul.ForTea.Core.Daemon.Highlightings;
-using GammaJul.ForTea.Core.TemplateProcessing;
 using GammaJul.ForTea.Core.TemplateProcessing.CodeGeneration;
 using JetBrains.Annotations;
 using JetBrains.Application.Settings;
@@ -21,12 +20,12 @@ namespace GammaJul.ForTea.Core.Daemon {
 			base.VisitClassDeclaration(classDeclarationParam, context);
 
 			if (!classDeclarationParam.IsSynthetic()) return;
-			if (!"Generated\x200CTransformation".Equals(classDeclarationParam.DeclaredName, StringComparison.Ordinal))
+			if (!T4CSharpCodeBehindGenerator.GeneratedClassNameString.Equals(classDeclarationParam.DeclaredName, StringComparison.Ordinal))
 				return;
 
 			IDeclaredTypeUsage superTypeUsage = classDeclarationParam.SuperTypeUsageNodes.FirstOrDefault();
 			if (superTypeUsage == null) return;
-			if (T4CSharpCodeGeneratorBase.DefaultBaseClassFullName.Equals(superTypeUsage.GetText(), StringComparison.Ordinal))
+			if (T4CSharpCodeBehindGenerator.GeneratedBaseClassNameString.Equals(superTypeUsage.GetText(), StringComparison.Ordinal))
 				return;
 
 			ITypeElement typeElement = CSharpTypeFactory.CreateDeclaredType(superTypeUsage).GetTypeElement();

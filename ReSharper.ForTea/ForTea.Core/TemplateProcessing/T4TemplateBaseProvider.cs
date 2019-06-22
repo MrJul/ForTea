@@ -1,4 +1,3 @@
-using System;
 using System.IO;
 using System.Reflection;
 using JetBrains.Annotations;
@@ -7,7 +6,6 @@ namespace GammaJul.ForTea.Core.TemplateProcessing
 {
 	public class T4TemplateBaseProvider
 	{
-		[NotNull, Obsolete] internal const string DefaultBaseClassName = "TextTransformation";
 		[NotNull] private const string InitialClassNamePlaceholder = "TemplateBase";
 
 		[NotNull]

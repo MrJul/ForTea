@@ -15,11 +15,15 @@ namespace GammaJul.ForTea.Core.TemplateProcessing
 		{
 			if (name == null) throw new ArgumentNullException(nameof(name));
 			if (newExtension == null) throw new ArgumentNullException(nameof(newExtension));
+			return name.WithoutExtension() + '.' + newExtension;
+		}
+
+		[NotNull]
+		public static string WithoutExtension([NotNull] this string name)
+		{
+			if (name == null) throw new ArgumentNullException(nameof(name));
 			int dotIndex = name.LastIndexOf('.');
-
-			if (dotIndex < 0) return name + newExtension;
-
-			return name.Substring(0, dotIndex + 1) + newExtension;
+			return dotIndex < 0 ? name : name.Substring(0, dotIndex);
 		}
 
 		/// <returns>

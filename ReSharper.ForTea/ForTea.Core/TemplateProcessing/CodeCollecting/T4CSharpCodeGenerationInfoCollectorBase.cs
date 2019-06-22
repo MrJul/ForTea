@@ -9,9 +9,9 @@ using JetBrains.ReSharper.Psi;
 using JetBrains.ReSharper.Psi.Tree;
 using JetBrains.Util;
 
-namespace GammaJul.ForTea.Core.TemplateProcessing.CodeGeneration
+namespace GammaJul.ForTea.Core.TemplateProcessing.CodeCollecting
 {
-	class T4CSharpCodeGenerationInfoCollector : IRecursiveElementProcessor
+	public abstract class T4CSharpCodeGenerationInfoCollectorBase : IRecursiveElementProcessor
 	{
 		#region Properties
 		[NotNull]
@@ -40,7 +40,7 @@ namespace GammaJul.ForTea.Core.TemplateProcessing.CodeGeneration
 		public bool HasHost { get; private set; }
 		#endregion Properties
 
-		public T4CSharpCodeGenerationInfoCollector([NotNull] IT4File file, T4DirectiveInfoManager manager)
+		protected T4CSharpCodeGenerationInfoCollectorBase([NotNull] IT4File file, [NotNull] T4DirectiveInfoManager manager)
 		{
 			File = file;
 			UsingsResult = new T4CSharpCodeGenerationResult(file);
@@ -134,9 +134,9 @@ namespace GammaJul.ForTea.Core.TemplateProcessing.CodeGeneration
 					result = TransformTextResult;
 			}
 
-			result.Builder.Append(T4CSharpCodeGeneratorBase.CodeCommentStart);
+			AddCommentStart(result.Builder);
 			result.AppendMapped(codeToken);
-			result.Builder.Append(T4CSharpCodeGeneratorBase.CodeCommentEnd);
+			AddCommentEnd(result.Builder);
 
 			if (expressionBlock != null)
 				result.Builder.Append("));");
@@ -191,15 +191,16 @@ namespace GammaJul.ForTea.Core.TemplateProcessing.CodeGeneration
 			if (nameToken == null || name == null)
 				return;
 
-			StringBuilder builder = ParametersResult.Builder;
+			var builder = ParametersResult.Builder;
 			builder.Append("[System.CodeDom.Compiler.GeneratedCodeAttribute] private global::");
 			ParametersResult.AppendMapped(type, typeToken.GetTreeTextRange());
 			builder.Append(' ');
 			ParametersResult.AppendMapped(name, nameToken.GetTreeTextRange());
-			builder.Append(" { get { return default(global::");
-			builder.Append(type);
-			builder.AppendLine("); } }");
+			builder.AppendLine(" { get; private set; }");
 		}
 		#endregion Utils
+
+		protected abstract void AddCommentStart([NotNull] StringBuilder builder);
+		protected abstract void AddCommentEnd([NotNull] StringBuilder builder);
 	}
 }

@@ -9,7 +9,7 @@ using JetBrains.ReSharper.Psi.Tree;
 namespace GammaJul.ForTea.Core.Psi {
 
 	/// <summary>Holds a generated result for code-behind generation.</summary>
-	internal sealed class T4CSharpCodeGenerationResult {
+	public sealed class T4CSharpCodeGenerationResult {
 
 		/// <summary>Gets the string builder containing the generated text.</summary>
 		[NotNull]

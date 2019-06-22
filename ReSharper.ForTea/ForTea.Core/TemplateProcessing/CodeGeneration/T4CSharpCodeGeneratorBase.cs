@@ -2,6 +2,7 @@ using System;
 using System.Text;
 using GammaJul.ForTea.Core.Psi;
 using GammaJul.ForTea.Core.Psi.Directives;
+using GammaJul.ForTea.Core.TemplateProcessing.CodeCollecting;
 using GammaJul.ForTea.Core.Tree;
 using JetBrains.Annotations;
 using JetBrains.ProjectModel;
@@ -12,21 +13,13 @@ namespace GammaJul.ForTea.Core.TemplateProcessing.CodeGeneration
 {
 	internal abstract class T4CSharpCodeGeneratorBase
 	{
-		internal const string CodeCommentStart = "/*_T4\x200CCodeStart_*/";
-		internal const string CodeCommentEnd = "/*_T4\x200CCodeEnd_*/";
 		internal const string TransformTextMethodName = "TransformText";
 
-		[Obsolete] internal const string DefaultBaseClassFullName =
-			"Microsoft.VisualStudio.TextTemplating." + T4TemplateBaseProvider.DefaultBaseClassName;
-
 		[NotNull]
-		private IT4File File { get; }
+		protected IT4File File { get; }
 
-		protected bool HasBaseClass => !Collector.InheritsResult.Builder.IsEmpty();
+		private bool HasBaseClass => !Collector.InheritsResult.Builder.IsEmpty();
 		private bool HasHost => Collector.HasHost;
-
-		[NotNull]
-		private T4CSharpCodeGenerationInfoCollector Collector { get; }
 
 		/// <summary>Gets the namespace of the current T4 file. This is always <c>null</c> for a standard (non-preprocessed) file.</summary>
 		/// <returns>A namespace, or <c>null</c>.</returns>
@@ -80,7 +73,7 @@ namespace GammaJul.ForTea.Core.TemplateProcessing.CodeGeneration
 		{
 			StringBuilder builder = result.Builder;
 			AppendSyntheticAttribute(builder);
-			builder.Append($"    public class  : ");
+			builder.Append($"    public class {GeneratedClassName} : ");
 			AppendBaseClassName(result);
 			builder.AppendLine();
 			builder.AppendLine($"    {{");
@@ -88,7 +81,6 @@ namespace GammaJul.ForTea.Core.TemplateProcessing.CodeGeneration
 				builder.AppendLine(
 					"        public virtual Microsoft.VisualStudio.TextTemplating.ITextTemplatingEngineHost Host { get; set; }");
 			result.Append(Collector.ParametersResult);
-			builder.AppendLine($"        [System.CodeDom.Compiler.GeneratedCodeAttribute(\"Rider\", \"whatever\")]");
 			AppendTransformMethod(result);
 			result.Append(Collector.FeatureResult);
 			builder.AppendLine($"    }}");
@@ -109,38 +101,33 @@ namespace GammaJul.ForTea.Core.TemplateProcessing.CodeGeneration
 
 		private void AppendBaseClassName(T4CSharpCodeGenerationResult result)
 		{
-			if (HasBaseClass)
-			{
-				result.Append(Collector.InheritsResult);
-			}
-			else
-			{
-				result.Builder.Append(T4TemplateBaseProvider.DefaultBaseClassName);
-			}
+			if (HasBaseClass) result.Append(Collector.InheritsResult);
+			else result.Builder.Append(GeneratedBaseClassName);
 		}
 
 		private void AppendBaseClass(StringBuilder builder)
 		{
 			if (HasBaseClass) return;
 			var provider = new T4TemplateBaseProvider(ResourceName);
-			builder.AppendLine(provider.CreateTemplateBase(T4TemplateBaseProvider.DefaultBaseClassName));
+			builder.AppendLine(provider.CreateTemplateBase(GeneratedBaseClassName));
 		}
-		
+
 		[NotNull]
 		protected abstract string ResourceName { get; }
 
+		[NotNull]
+		protected abstract string GeneratedClassName { get; }
+
+		[NotNull]
+		protected abstract string GeneratedBaseClassName { get; }
+
 		protected abstract void AppendSyntheticAttribute([NotNull] StringBuilder builder);
-		
+
+		[NotNull]
+		protected abstract T4CSharpCodeGenerationInfoCollectorBase Collector { get; }
+
 		/// <summary>Initializes a new instance of the <see cref="T4CSharpCodeGeneratorBase"/> class.</summary>
 		/// <param name="file">The associated T4 file whose C# code behind will be generated.</param>
-		/// <param name="manager">An instance of <see cref="T4DirectiveInfoManager"/>.</param>
-		protected T4CSharpCodeGeneratorBase(
-			[NotNull] IT4File file,
-			[NotNull] T4DirectiveInfoManager manager
-		)
-		{
-			File = file;
-			Collector = new T4CSharpCodeGenerationInfoCollector(file, manager);
-		}
+		protected T4CSharpCodeGeneratorBase([NotNull] IT4File file) => File = file;
 	}
 }
