@@ -1,5 +1,4 @@
 using System;
-using System.Text;
 using GammaJul.ForTea.Core.Psi;
 using GammaJul.ForTea.Core.Psi.Directives;
 using GammaJul.ForTea.Core.Tree;
@@ -40,7 +39,10 @@ namespace GammaJul.ForTea.Core.TemplateProcessing.CodeCollecting
 		public bool HasHost { get; private set; }
 		#endregion Properties
 
-		protected T4CSharpCodeGenerationInfoCollectorBase([NotNull] IT4File file, [NotNull] T4DirectiveInfoManager manager)
+		protected T4CSharpCodeGenerationInfoCollectorBase(
+			[NotNull] IT4File file,
+			[NotNull] T4DirectiveInfoManager manager
+		)
 		{
 			File = file;
 			UsingsResult = new T4CSharpCodeGenerationResult(file);
@@ -111,36 +113,26 @@ namespace GammaJul.ForTea.Core.TemplateProcessing.CodeCollecting
 		/// <param name="codeBlock">The code block.</param>
 		private void HandleCodeBlock([NotNull] IT4CodeBlock codeBlock)
 		{
-			IT4Token codeToken = codeBlock.GetCodeToken();
+			var codeToken = codeBlock.GetCodeToken();
 			if (codeToken == null) return;
-
-			T4CSharpCodeGenerationResult result;
-			var expressionBlock = codeBlock as T4ExpressionBlock;
-
-			if (expressionBlock != null)
+			switch (codeBlock)
 			{
-				result = RootFeatureStarted && IncludeDepth == 0 ? FeatureResult : TransformTextResult;
-				result.Builder.Append("            this.Write(this.ToStringHelper.ToStringWithCulture(");
-			}
-			else
-			{
-				if (codeBlock is T4FeatureBlock)
-				{
+				case T4ExpressionBlock _:
+					var result = RootFeatureStarted && IncludeDepth == 0 ? FeatureResult : TransformTextResult;
+					AppendExpression(result, codeToken);
+					result.Builder.AppendLine();
+					break;
+				case T4FeatureBlock _:
 					if (IncludeDepth == 0)
 						RootFeatureStarted = true;
-					result = FeatureResult;
-				}
-				else
-					result = TransformTextResult;
+					AppendCode(FeatureResult, codeToken);
+					FeatureResult.Builder.AppendLine();
+					break;
+				default:
+					AppendCode(TransformTextResult, codeToken);
+					TransformTextResult.Builder.AppendLine();
+					break;
 			}
-
-			AddCommentStart(result.Builder);
-			result.AppendMapped(codeToken);
-			AddCommentEnd(result.Builder);
-
-			if (expressionBlock != null)
-				result.Builder.Append("));");
-			result.Builder.AppendLine();
 		}
 
 		/// <summary>Handles an import directive, equivalent of an using directive in C#.</summary>
@@ -200,7 +192,12 @@ namespace GammaJul.ForTea.Core.TemplateProcessing.CodeCollecting
 		}
 		#endregion Utils
 
-		protected abstract void AddCommentStart([NotNull] StringBuilder builder);
-		protected abstract void AddCommentEnd([NotNull] StringBuilder builder);
+		protected abstract void AppendExpression(
+			[NotNull] T4CSharpCodeGenerationResult result,
+			[NotNull] IT4Token token);
+
+		protected abstract void AppendCode(
+			[NotNull] T4CSharpCodeGenerationResult result,
+			[NotNull] IT4Token token);
 	}
 }

@@ -7,6 +7,7 @@ namespace GammaJul.ForTea.Core.TemplateProcessing
 	public class T4TemplateBaseProvider
 	{
 		[NotNull] private const string InitialClassNamePlaceholder = "TemplateBase";
+		[NotNull] private const string FallbackBaseClass = "class " + InitialClassNamePlaceholder + " {{ }}";
 
 		[NotNull]
 		private string BaseClassFormat { get; }
@@ -17,7 +18,7 @@ namespace GammaJul.ForTea.Core.TemplateProcessing
 			var assembly = Assembly.GetExecutingAssembly();
 			using (var stream = assembly.GetManifestResourceStream(resourceName))
 			{
-				if (stream == null) return $"class {InitialClassNamePlaceholder} {{ }}";
+				if (stream == null) return FallbackBaseClass;
 				using (var reader = new StreamReader(stream))
 				{
 					return reader.ReadToEnd();

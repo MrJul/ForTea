@@ -122,10 +122,8 @@ namespace GammaJul.ForTea.Core.Psi {
 			};
 		}
 
-		public T4CSharpGeneratedDocumentService(
-			[NotNull] T4DirectiveInfoManager directiveInfoManager,
-			[NotNull] T4TemplateBaseProvider provider
-		) => this.directiveInfoManager = directiveInfoManager;
+		public T4CSharpGeneratedDocumentService([NotNull] T4DirectiveInfoManager directiveInfoManager) =>
+			this.directiveInfoManager = directiveInfoManager;
 	}
 
 }

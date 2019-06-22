@@ -1,4 +1,4 @@
-using System.Text;
+using GammaJul.ForTea.Core.Psi;
 using GammaJul.ForTea.Core.Psi.Directives;
 using GammaJul.ForTea.Core.Tree;
 using JetBrains.Annotations;
@@ -17,10 +17,18 @@ namespace GammaJul.ForTea.Core.TemplateProcessing.CodeCollecting
 		{
 		}
 
-		protected override void AddCommentStart(StringBuilder builder) =>
-			builder.Append(CodeCommentStart);
+		protected override void AppendExpression(T4CSharpCodeGenerationResult result, IT4Token token)
+		{
+			result.Builder.Append("            this.Write(this.ToStringHelper.ToStringWithCulture(");
+			AppendCode(result, token);
+			result.Builder.Append("));");
+		}
 
-		protected override void AddCommentEnd(StringBuilder builder) =>
-			builder.Append(CodeCommentEnd);
+		protected override void AppendCode(T4CSharpCodeGenerationResult result, IT4Token token)
+		{
+			result.Builder.Append(CodeCommentStart);
+			result.AppendMapped(token);
+			result.Builder.Append(CodeCommentEnd);
+		}
 	}
 }
