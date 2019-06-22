@@ -12,7 +12,7 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="JetBrains.Annotations" Version="2019.1.1"/>
+        <PackageReference Include="JetBrains.Annotations" Version="2019.1.1" />
         <PackageReference Include="JetBrains.Rider.SDK" Version="2019.1.2">
             <PrivateAssets>all</PrivateAssets>
             <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
@@ -20,12 +20,12 @@
     </ItemGroup>
 
     <ItemGroup>
-        <Compile Remove="TemplateProcessing\CodeGeneration\TemplateBaseFull.cs"/>
-        <Compile Remove="TemplateProcessing\CodeGeneration\TemplateBaseStub.cs"/>
+        <Compile Remove="TemplateProcessing\CodeGeneration\TemplateBaseFull.cs" />
+        <Compile Remove="TemplateProcessing\CodeGeneration\TemplateBaseStub.cs" />
     </ItemGroup>
 
     <ItemGroup>
-        <EmbeddedResource Include="TemplateProcessing\CodeGeneration\TemplateBaseFull.cs"/>
-        <EmbeddedResource Include="TemplateProcessing\CodeGeneration\TemplateBaseStub.cs"/>
+        <EmbeddedResource Include="TemplateProcessing\CodeGeneration\TemplateBaseFull.cs" />
+        <EmbeddedResource Include="TemplateProcessing\CodeGeneration\TemplateBaseStub.cs" />
     </ItemGroup>
 </Project>

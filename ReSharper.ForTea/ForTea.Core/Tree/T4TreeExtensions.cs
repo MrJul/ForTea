@@ -31,7 +31,7 @@ namespace GammaJul.ForTea.Core.Tree {
 				return new Pair<IT4Token, string>();
 
 			string value = valueToken.GetText();
-			if (value.Trim().Length == 0)
+			if (value.IsNullOrWhitespace())
 				return new Pair<IT4Token, string>();
 
 			return new Pair<IT4Token, string>(valueToken, value);

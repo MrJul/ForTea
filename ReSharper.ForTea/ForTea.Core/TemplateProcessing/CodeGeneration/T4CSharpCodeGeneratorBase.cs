@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Text;
 using GammaJul.ForTea.Core.Psi;
 using GammaJul.ForTea.Core.TemplateProcessing.CodeCollecting;
@@ -6,6 +7,7 @@ using GammaJul.ForTea.Core.Tree;
 using JetBrains.Annotations;
 using JetBrains.ProjectModel;
 using JetBrains.ReSharper.Psi;
+using JetBrains.ReSharper.Psi.CSharp.Parsing;
 using JetBrains.Util;
 
 namespace GammaJul.ForTea.Core.TemplateProcessing.CodeGeneration
@@ -79,10 +81,45 @@ namespace GammaJul.ForTea.Core.TemplateProcessing.CodeGeneration
 			if (HasHost)
 				builder.AppendLine(
 					"        public virtual Microsoft.VisualStudio.TextTemplating.ITextTemplatingEngineHost Host { get; set; }");
-			result.Append(Collector.ParametersResult);
 			AppendTransformMethod(result);
+			AppendParameterDeclarations(result, Collector.ParameterDescriptions);
+			AppendInitialization(result, Collector.ParameterDescriptions);
 			result.Append(Collector.FeatureResult);
 			builder.AppendLine($"    }}");
+		}
+
+		private void AppendParameterDeclarations(
+			[NotNull] T4CSharpCodeGenerationResult result,
+			[NotNull, ItemNotNull] IEnumerable<T4ParameterDescription> descriptions
+		)
+		{
+			var builder = result.Builder;
+			foreach (var description in descriptions)
+			{
+				builder.AppendLine("        [System.CodeDom.Compiler.GeneratedCodeAttribute]");
+				builder.Append("        private ");
+				var type = description.TypeToken;
+				if (CSharpLexer.IsKeyword(type.GetText())) builder.Append('@');
+				result.AppendMapped(type);
+				builder.Append(' ');
+				var name = description.NameToken;
+				if (CSharpLexer.IsKeyword(name.GetText())) builder.Append('@');
+				result.AppendMapped(name);
+				builder.AppendLine(" { get; }");
+			}
+		}
+
+		protected void AppendInitialization(
+			[NotNull] T4CSharpCodeGenerationResult result,
+			[NotNull, ItemNotNull] IReadOnlyCollection<T4ParameterDescription> descriptions
+		)
+		{
+			if (descriptions.IsEmpty()) return;
+			var builder = result.Builder;
+			builder.AppendLine("        public void Initialize()");
+			builder.AppendLine("        {");
+			AppendParameterInitialization(descriptions, builder);
+			builder.AppendLine("        }");
 		}
 
 		private void AppendTransformMethod(T4CSharpCodeGenerationResult result)
@@ -124,6 +161,10 @@ namespace GammaJul.ForTea.Core.TemplateProcessing.CodeGeneration
 
 		[NotNull]
 		protected abstract T4CSharpCodeGenerationInfoCollectorBase Collector { get; }
+
+		protected abstract void AppendParameterInitialization(
+			[NotNull, ItemNotNull] IReadOnlyCollection<T4ParameterDescription> descriptions,
+			[NotNull] StringBuilder builder);
 
 		/// <summary>Initializes a new instance of the <see cref="T4CSharpCodeGeneratorBase"/> class.</summary>
 		/// <param name="file">The associated T4 file whose C# code behind will be generated.</param>

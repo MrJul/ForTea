@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using GammaJul.ForTea.Core.Psi;
 using GammaJul.ForTea.Core.Psi.Directives;
 using GammaJul.ForTea.Core.Tree;
@@ -24,9 +25,6 @@ namespace GammaJul.ForTea.Core.TemplateProcessing.CodeCollecting
 		public T4CSharpCodeGenerationResult UsingsResult { get; }
 
 		[NotNull]
-		public T4CSharpCodeGenerationResult ParametersResult { get; }
-
-		[NotNull]
 		public T4CSharpCodeGenerationResult InheritsResult { get; }
 
 		[NotNull]
@@ -34,6 +32,14 @@ namespace GammaJul.ForTea.Core.TemplateProcessing.CodeCollecting
 
 		[NotNull]
 		public T4CSharpCodeGenerationResult FeatureResult { get; }
+
+		[NotNull, ItemNotNull]
+		private List<T4ParameterDescription> MyParameterDescriptions { get; }
+
+		private bool HasSeenTemplateDirective { get; set; }
+
+		[NotNull, ItemNotNull]
+		public IReadOnlyCollection<T4ParameterDescription> ParameterDescriptions => MyParameterDescriptions;
 
 		private int IncludeDepth { get; set; }
 		private bool RootFeatureStarted { get; set; }
@@ -47,10 +53,10 @@ namespace GammaJul.ForTea.Core.TemplateProcessing.CodeCollecting
 		{
 			File = file;
 			UsingsResult = new T4CSharpCodeGenerationResult(file);
-			ParametersResult = new T4CSharpCodeGenerationResult(file);
 			InheritsResult = new T4CSharpCodeGenerationResult(file);
 			TransformTextResult = new T4CSharpCodeGenerationResult(file);
 			FeatureResult = new T4CSharpCodeGenerationResult(file);
+			MyParameterDescriptions = new List<T4ParameterDescription>();
 			Manager = manager;
 		}
 
@@ -170,6 +176,8 @@ namespace GammaJul.ForTea.Core.TemplateProcessing.CodeCollecting
 		/// <param name="directive">The template directive.</param>
 		private void HandleTemplateDirective([NotNull] IT4Directive directive)
 		{
+			if (HasSeenTemplateDirective) return;
+			HasSeenTemplateDirective = true;
 			string value = directive.GetAttributeValue(Manager.Template.HostSpecificAttribute.Name);
 			HasHost = bool.TrueString.Equals(value, StringComparison.OrdinalIgnoreCase);
 
@@ -183,24 +191,9 @@ namespace GammaJul.ForTea.Core.TemplateProcessing.CodeCollecting
 		/// <param name="directive">The parameter directive.</param>
 		private void HandleParameterDirective([NotNull] IT4Directive directive)
 		{
-			var (typeToken, type) =
-				directive.GetAttributeValueIgnoreOnlyWhitespace(Manager.Parameter.TypeAttribute.Name);
-
-			if (typeToken == null || type == null)
-				return;
-
-			(IT4Token nameToken, string name) =
-				directive.GetAttributeValueIgnoreOnlyWhitespace(Manager.Parameter.NameAttribute.Name);
-
-			if (nameToken == null || name == null)
-				return;
-
-			var builder = ParametersResult.Builder;
-			builder.Append("[System.CodeDom.Compiler.GeneratedCodeAttribute] private global::");
-			ParametersResult.AppendMapped(type, typeToken.GetTreeTextRange());
-			builder.Append(' ');
-			ParametersResult.AppendMapped(name, nameToken.GetTreeTextRange());
-			builder.AppendLine(" { get; private set; }");
+			var description = T4ParameterDescription.FromDirective(directive, Manager);
+			if (description == null) return;
+			MyParameterDescriptions.Add(description);
 		}
 		#endregion Utils
 

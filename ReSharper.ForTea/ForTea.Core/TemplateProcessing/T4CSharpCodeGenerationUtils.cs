@@ -3,6 +3,7 @@ using System.Linq;
 using GammaJul.ForTea.Core.Psi.Directives;
 using GammaJul.ForTea.Core.Tree;
 using JetBrains.Annotations;
+using JetBrains.ReSharper.Psi.CSharp.Parsing;
 
 namespace GammaJul.ForTea.Core.TemplateProcessing
 {
@@ -24,6 +25,13 @@ namespace GammaJul.ForTea.Core.TemplateProcessing
 			if (name == null) throw new ArgumentNullException(nameof(name));
 			int dotIndex = name.LastIndexOf('.');
 			return dotIndex < 0 ? name : name.Substring(0, dotIndex);
+		}
+		
+		[NotNull]
+		public static string EscapeKeyword([NotNull] this string s)
+		{
+			if (!CSharpLexer.IsKeyword(s)) return s;
+			return '@' + s;
 		}
 
 		/// <returns>
