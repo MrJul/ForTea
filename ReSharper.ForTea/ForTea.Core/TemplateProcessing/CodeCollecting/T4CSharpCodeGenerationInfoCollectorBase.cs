@@ -57,8 +57,7 @@ namespace GammaJul.ForTea.Core.TemplateProcessing.CodeCollecting
 		public void Collect() => File.ProcessDescendants(this);
 
 		#region Interface Members
-		public bool InteriorShouldBeProcessed(ITreeNode element) =>
-			element is IT4CodeBlock || element is IT4Include;
+		public bool InteriorShouldBeProcessed(ITreeNode element) => element is IT4Include;
 
 		public void ProcessBeforeInterior(ITreeNode element)
 		{
