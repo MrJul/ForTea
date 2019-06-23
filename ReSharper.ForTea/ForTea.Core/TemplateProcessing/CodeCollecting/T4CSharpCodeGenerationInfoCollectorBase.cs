@@ -15,25 +15,18 @@ namespace GammaJul.ForTea.Core.TemplateProcessing.CodeCollecting
 	{
 		#region Properties
 		[NotNull]
-		protected IT4File File { get; }
+		private IT4File File { get; }
 
 		[NotNull]
-		protected T4DirectiveInfoManager Manager { get; }
+		private T4DirectiveInfoManager Manager { get; }
 
 		private Stack<T4CSharpCodeGenerationIntermediateResult> Results { get; }
-
-		[NotNull, ItemNotNull]
-		private List<T4ParameterDescription> MyParameterDescriptions { get; }
-
 		private bool HasSeenTemplateDirective { get; set; }
 
 		[NotNull]
 		private T4CSharpCodeGenerationIntermediateResult Result => Results.Peek();
 
-		[NotNull, ItemNotNull]
-		public IReadOnlyCollection<T4ParameterDescription> ParameterDescriptions => MyParameterDescriptions;
-
-		private int IncludeDepth => Results.Count - 1;
+		private bool IsAtRootLevel => Results.Count == 1; // TODO: write a better version
 		#endregion Properties
 
 		protected T4CSharpCodeGenerationInfoCollectorBase(
@@ -43,7 +36,6 @@ namespace GammaJul.ForTea.Core.TemplateProcessing.CodeCollecting
 		{
 			File = file;
 			Results = new Stack<T4CSharpCodeGenerationIntermediateResult>();
-			MyParameterDescriptions = new List<T4ParameterDescription>();
 			Manager = manager;
 		}
 
@@ -57,8 +49,13 @@ namespace GammaJul.ForTea.Core.TemplateProcessing.CodeCollecting
 		#region Interface Members
 		public bool InteriorShouldBeProcessed(ITreeNode element) => element is IT4Include;
 
-		public void ProcessBeforeInterior(ITreeNode element) =>
-			Results.Push(new T4CSharpCodeGenerationIntermediateResult(File));
+		public void ProcessBeforeInterior(ITreeNode element)
+		{
+			if (element is IT4Include)
+			{
+				Results.Push(new T4CSharpCodeGenerationIntermediateResult(File));
+			}
+		}
 
 		public void ProcessAfterInterior(ITreeNode element)
 		{
@@ -115,14 +112,14 @@ namespace GammaJul.ForTea.Core.TemplateProcessing.CodeCollecting
 			switch (codeBlock)
 			{
 				case T4ExpressionBlock _:
-					var result = Result.FeatureStarted && IncludeDepth == 0
+					var result = Result.FeatureStarted
 						? Result.CollectedFeatures
 						: Result.CollectedTransformation;
 					AppendExpressionWriting(result, codeToken);
 					result.Builder.AppendLine();
 					break;
 				case T4FeatureBlock _:
-					if (IncludeDepth == 0)
+					if (IsAtRootLevel)
 						Result.StartFeature();
 					AppendCode(Result.CollectedFeatures, codeToken);
 					Result.CollectedFeatures.Builder.AppendLine();
@@ -174,7 +171,7 @@ namespace GammaJul.ForTea.Core.TemplateProcessing.CodeCollecting
 		{
 			var description = T4ParameterDescription.FromDirective(directive, Manager);
 			if (description == null) return;
-			MyParameterDescriptions.Add(description);
+			Result.Append(description);
 		}
 		#endregion Utils
 

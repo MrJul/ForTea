@@ -4,6 +4,7 @@ using GammaJul.ForTea.Core.Psi.Directives;
 using GammaJul.ForTea.Core.Tree;
 using JetBrains.Annotations;
 using JetBrains.ReSharper.Psi.CSharp.Parsing;
+using JetBrains.Util;
 
 namespace GammaJul.ForTea.Core.TemplateProcessing
 {
@@ -26,7 +27,7 @@ namespace GammaJul.ForTea.Core.TemplateProcessing
 			int dotIndex = name.LastIndexOf('.');
 			return dotIndex < 0 ? name : name.Substring(0, dotIndex);
 		}
-		
+
 		[NotNull]
 		public static string EscapeKeyword([NotNull] this string s)
 		{
@@ -59,6 +60,14 @@ namespace GammaJul.ForTea.Core.TemplateProcessing
 			return targetExtension.StartsWith(".", StringComparison.Ordinal)
 				? targetExtension.Substring(1)
 				: targetExtension;
+		}
+
+		[CanBeNull]
+		public static string ChooseBetterNamespace([CanBeNull] string first, [CanBeNull] string second)
+		{
+			if (first == null) return second;
+			if (second == null) return first;
+			return first.IsEmpty() ? second : first;
 		}
 	}
 }

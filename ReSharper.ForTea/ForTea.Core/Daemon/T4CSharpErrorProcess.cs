@@ -1,7 +1,7 @@
 using System;
 using System.Linq;
 using GammaJul.ForTea.Core.Daemon.Highlightings;
-using GammaJul.ForTea.Core.TemplateProcessing.CodeGeneration;
+using GammaJul.ForTea.Core.TemplateProcessing.CodeGeneration.Helpers;
 using JetBrains.Annotations;
 using JetBrains.Application.Settings;
 using JetBrains.ReSharper.Daemon.CSharp.Stages;
@@ -20,12 +20,12 @@ namespace GammaJul.ForTea.Core.Daemon {
 			base.VisitClassDeclaration(classDeclarationParam, context);
 
 			if (!classDeclarationParam.IsSynthetic()) return;
-			if (!T4CSharpCodeBehindGenerator.GeneratedClassNameString.Equals(classDeclarationParam.DeclaredName, StringComparison.Ordinal))
+			if (!T4CSharpCodeBehindGenerationIntermediateResultsConverter.GeneratedClassNameString.Equals(classDeclarationParam.DeclaredName, StringComparison.Ordinal))
 				return;
 
 			IDeclaredTypeUsage superTypeUsage = classDeclarationParam.SuperTypeUsageNodes.FirstOrDefault();
 			if (superTypeUsage == null) return;
-			if (T4CSharpCodeBehindGenerator.GeneratedBaseClassNameString.Equals(superTypeUsage.GetText(), StringComparison.Ordinal))
+			if (T4CSharpCodeBehindGenerationIntermediateResultsConverter.GeneratedBaseClassNameString.Equals(superTypeUsage.GetText(), StringComparison.Ordinal))
 				return;
 
 			ITypeElement typeElement = CSharpTypeFactory.CreateDeclaredType(superTypeUsage).GetTypeElement();
@@ -38,12 +38,12 @@ namespace GammaJul.ForTea.Core.Daemon {
 
 		private static bool HasTransformTextMethod([NotNull] ITypeElement typeElement)
 			=> typeElement
-				.GetAllClassMembers(T4CSharpCodeGeneratorBase.TransformTextMethodName)
+				.GetAllClassMembers(T4CSharpCodeGenerationIntermediateResultsConverterBase.TransformTextMethodName)
 				.SelectNotNull(instance => instance.Member as IMethod)
 				.Any(IsTransformTextMethod);
 
 		private static bool IsTransformTextMethod([NotNull] IMethod method)
-			=> method.ShortName == T4CSharpCodeGeneratorBase.TransformTextMethodName
+			=> method.ShortName == T4CSharpCodeGenerationIntermediateResultsConverterBase.TransformTextMethodName
 			&& (method.IsVirtual || method.IsOverride || method.IsAbstract)
 			&& !method.IsSealed
 			&& method.GetAccessRights() == AccessRights.PUBLIC
