@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using GammaJul.ForTea.Core.Psi;
 using GammaJul.ForTea.Core.Psi.Directives;
 using GammaJul.ForTea.Core.Tree;
@@ -27,7 +28,7 @@ namespace GammaJul.ForTea.Core.TemplateProcessing.CodeCollecting
 		[NotNull]
 		private T4CSharpCodeGenerationIntermediateResult Result => Results.Peek();
 
-		private bool IsAtRootLevel => Results.Count == 1; // TODO: write a better version
+		private bool IsAtRootLevel => Results.Take(2).Count() == 1;
 		#endregion Properties
 
 		protected T4CSharpCodeGenerationInfoCollectorBase(
