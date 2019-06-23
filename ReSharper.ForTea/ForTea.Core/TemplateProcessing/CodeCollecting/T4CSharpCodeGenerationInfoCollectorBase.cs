@@ -7,7 +7,6 @@ using JetBrains.Annotations;
 using JetBrains.Application;
 using JetBrains.ReSharper.Psi;
 using JetBrains.ReSharper.Psi.Tree;
-using JetBrains.ReSharper.Psi.Util;
 using JetBrains.Util;
 
 namespace GammaJul.ForTea.Core.TemplateProcessing.CodeCollecting
@@ -16,34 +15,25 @@ namespace GammaJul.ForTea.Core.TemplateProcessing.CodeCollecting
 	{
 		#region Properties
 		[NotNull]
-		private IT4File File { get; }
+		protected IT4File File { get; }
 
 		[NotNull]
-		private T4DirectiveInfoManager Manager { get; }
+		protected T4DirectiveInfoManager Manager { get; }
 
-		[NotNull]
-		public T4CSharpCodeGenerationResult UsingsResult { get; }
-
-		[NotNull]
-		public T4CSharpCodeGenerationResult InheritsResult { get; }
-
-		[NotNull]
-		public T4CSharpCodeGenerationResult TransformTextResult { get; }
-
-		[NotNull]
-		public T4CSharpCodeGenerationResult FeatureResult { get; }
+		private Stack<T4CSharpCodeGenerationIntermediateResult> Results { get; }
 
 		[NotNull, ItemNotNull]
 		private List<T4ParameterDescription> MyParameterDescriptions { get; }
 
 		private bool HasSeenTemplateDirective { get; set; }
 
+		[NotNull]
+		private T4CSharpCodeGenerationIntermediateResult Result => Results.Peek();
+
 		[NotNull, ItemNotNull]
 		public IReadOnlyCollection<T4ParameterDescription> ParameterDescriptions => MyParameterDescriptions;
 
-		private int IncludeDepth { get; set; }
-		private bool RootFeatureStarted { get; set; }
-		public bool HasHost { get; private set; }
+		private int IncludeDepth => Results.Count - 1;
 		#endregion Properties
 
 		protected T4CSharpCodeGenerationInfoCollectorBase(
@@ -52,33 +42,31 @@ namespace GammaJul.ForTea.Core.TemplateProcessing.CodeCollecting
 		)
 		{
 			File = file;
-			UsingsResult = new T4CSharpCodeGenerationResult(file);
-			InheritsResult = new T4CSharpCodeGenerationResult(file);
-			TransformTextResult = new T4CSharpCodeGenerationResult(file);
-			FeatureResult = new T4CSharpCodeGenerationResult(file);
+			Results = new Stack<T4CSharpCodeGenerationIntermediateResult>();
 			MyParameterDescriptions = new List<T4ParameterDescription>();
 			Manager = manager;
 		}
 
-		public void Collect() => File.ProcessDescendants(this);
+		public T4CSharpCodeGenerationIntermediateResult Collect()
+		{
+			Results.Push(new T4CSharpCodeGenerationIntermediateResult(File));
+			File.ProcessDescendants(this);
+			return Results.Pop();
+		}
 
 		#region Interface Members
 		public bool InteriorShouldBeProcessed(ITreeNode element) => element is IT4Include;
 
-		public void ProcessBeforeInterior(ITreeNode element)
-		{
-			if (element is IT4Include)
-			{
-				IncludeDepth += 1;
-			}
-		}
+		public void ProcessBeforeInterior(ITreeNode element) =>
+			Results.Push(new T4CSharpCodeGenerationIntermediateResult(File));
 
 		public void ProcessAfterInterior(ITreeNode element)
 		{
 			switch (element)
 			{
 				case IT4Include _:
-					--IncludeDepth;
+					var intermediateResults = Results.Pop();
+					Result.Append(intermediateResults);
 					break;
 				case IT4Directive directive:
 					HandleDirective(directive);
@@ -87,7 +75,7 @@ namespace GammaJul.ForTea.Core.TemplateProcessing.CodeCollecting
 					HandleCodeBlock(codeBlock);
 					break;
 				case IT4Token token:
-					HandleToken(token);
+					AppendToken(Result, token);
 					break;
 			}
 		}
@@ -103,15 +91,6 @@ namespace GammaJul.ForTea.Core.TemplateProcessing.CodeCollecting
 		#endregion Interface Members
 
 		#region Utils
-		private void HandleToken([NotNull] IT4Token token)
-		{
-			var result = RootFeatureStarted ? FeatureResult : TransformTextResult;
-			var builder = result.Builder;
-			builder.Append("            this.Write(\"");
-			builder.Append(StringLiteralConverter.EscapeToRegular(token.GetText()));
-			builder.AppendLine("\");");
-		}
-
 		/// <summary>Handles a directive in the tree.</summary>
 		/// <param name="directive">The directive.</param>
 		private void HandleDirective([NotNull] IT4Directive directive)
@@ -136,19 +115,21 @@ namespace GammaJul.ForTea.Core.TemplateProcessing.CodeCollecting
 			switch (codeBlock)
 			{
 				case T4ExpressionBlock _:
-					var result = RootFeatureStarted && IncludeDepth == 0 ? FeatureResult : TransformTextResult;
+					var result = Result.FeatureStarted && IncludeDepth == 0
+						? Result.CollectedFeatures
+						: Result.CollectedTransformation;
 					AppendExpressionWriting(result, codeToken);
 					result.Builder.AppendLine();
 					break;
 				case T4FeatureBlock _:
 					if (IncludeDepth == 0)
-						RootFeatureStarted = true;
-					AppendCode(FeatureResult, codeToken);
-					FeatureResult.Builder.AppendLine();
+						Result.StartFeature();
+					AppendCode(Result.CollectedFeatures, codeToken);
+					Result.CollectedFeatures.Builder.AppendLine();
 					break;
 				default:
-					AppendCode(TransformTextResult, codeToken);
-					TransformTextResult.Builder.AppendLine();
+					AppendCode(Result.CollectedTransformation, codeToken);
+					Result.CollectedTransformation.Builder.AppendLine();
 					break;
 			}
 		}
@@ -163,9 +144,9 @@ namespace GammaJul.ForTea.Core.TemplateProcessing.CodeCollecting
 			if (ns.First == null || ns.Second == null)
 				return;
 
-			UsingsResult.Builder.Append("using ");
-			UsingsResult.AppendMapped(ns.Second, ns.First.GetTreeTextRange());
-			UsingsResult.Builder.AppendLine(";");
+			Result.CollectedImports.Builder.Append("using ");
+			Result.CollectedImports.AppendMapped(ns.Second, ns.First.GetTreeTextRange());
+			Result.CollectedImports.Builder.AppendLine(";");
 		}
 
 		/// <summary>
@@ -178,13 +159,13 @@ namespace GammaJul.ForTea.Core.TemplateProcessing.CodeCollecting
 		{
 			if (HasSeenTemplateDirective) return;
 			HasSeenTemplateDirective = true;
-			string value = directive.GetAttributeValue(Manager.Template.HostSpecificAttribute.Name);
-			HasHost = bool.TrueString.Equals(value, StringComparison.OrdinalIgnoreCase);
+			string hostSpecific = directive.GetAttributeValue(Manager.Template.HostSpecificAttribute.Name);
+			if (bool.TrueString.Equals(hostSpecific, StringComparison.OrdinalIgnoreCase)) Result.RequireHost();
 
 			(IT4Token classNameToken, string className) =
 				directive.GetAttributeValueIgnoreOnlyWhitespace(Manager.Template.InheritsAttribute.Name);
 			if (classNameToken != null && className != null)
-				InheritsResult.AppendMapped(className, classNameToken.GetTreeTextRange());
+				Result.CollectedBaseClass.AppendMapped(className, classNameToken.GetTreeTextRange());
 		}
 
 		/// <summary>Handles a parameter directive, outputting an extra property.</summary>
@@ -209,6 +190,10 @@ namespace GammaJul.ForTea.Core.TemplateProcessing.CodeCollecting
 			builder.Append(ToStringConversionEnd);
 			builder.Append(");");
 		}
+
+		protected abstract void AppendToken(
+			[NotNull] T4CSharpCodeGenerationIntermediateResult intermediateResult,
+			[NotNull] IT4Token token);
 
 		[NotNull]
 		protected abstract string ToStringConversionStart { get; }

@@ -1,4 +1,3 @@
-using System.Text;
 using GammaJul.ForTea.Core.Psi;
 using GammaJul.ForTea.Core.Psi.Directives;
 using GammaJul.ForTea.Core.Tree;
@@ -18,13 +17,18 @@ namespace GammaJul.ForTea.Core.TemplateProcessing.CodeCollecting
 		{
 		}
 
-		protected override string ToStringConversionStart => "__ToString(";
+		protected override string ToStringConversionStart => "__To\x200CString(";
 
 		protected override void AppendCode(T4CSharpCodeGenerationResult result, IT4Token token)
 		{
 			result.Builder.Append(CodeCommentStart);
 			result.AppendMapped(token);
 			result.Builder.Append(CodeCommentEnd);
+		}
+
+		// There's no way tokens can code blocks, so there's no need to insert them into code behind
+		protected override void AppendToken(T4CSharpCodeGenerationIntermediateResult intermediateResult, IT4Token token)
+		{
 		}
 	}
 }

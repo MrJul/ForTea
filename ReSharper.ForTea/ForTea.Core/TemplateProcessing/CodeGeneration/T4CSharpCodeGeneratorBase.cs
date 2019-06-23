@@ -19,8 +19,8 @@ namespace GammaJul.ForTea.Core.TemplateProcessing.CodeGeneration
 		[NotNull]
 		protected IT4File File { get; }
 
-		private bool HasBaseClass => !Collector.InheritsResult.Builder.IsEmpty();
-		private bool HasHost => Collector.HasHost;
+		[Obsolete("We should move most logic from code generator to intermediate result")]
+		private T4CSharpCodeGenerationIntermediateResult Result { get; set; }
 
 		/// <summary>Gets the namespace of the current T4 file. This is always <c>null</c> for a standard (non-preprocessed) file.</summary>
 		/// <returns>A namespace, or <c>null</c>.</returns>
@@ -44,7 +44,7 @@ namespace GammaJul.ForTea.Core.TemplateProcessing.CodeGeneration
 		[NotNull]
 		public T4CSharpCodeGenerationResult Generate()
 		{
-			Collector.Collect();
+			Result = Collector.Collect();
 			var result = new T4CSharpCodeGenerationResult(File);
 			string ns = GetNamespace();
 			bool hasNamespace = !string.IsNullOrEmpty(ns);
@@ -65,7 +65,7 @@ namespace GammaJul.ForTea.Core.TemplateProcessing.CodeGeneration
 		private void AppendNamespaceContents(T4CSharpCodeGenerationResult result)
 		{
 			result.Builder.AppendLine("using System;");
-			result.Append(Collector.UsingsResult);
+			result.Append(Result.CollectedImports);
 			AppendClass(result);
 			AppendBaseClass(result.Builder);
 		}
@@ -77,15 +77,15 @@ namespace GammaJul.ForTea.Core.TemplateProcessing.CodeGeneration
 			builder.Append($"    public class {GeneratedClassName} : ");
 			AppendBaseClassName(result);
 			builder.AppendLine();
-			builder.AppendLine($"    {{");
-			if (HasHost)
+			builder.AppendLine("    {");
+			if (Result.HasHost)
 				builder.AppendLine(
 					"        public virtual Microsoft.VisualStudio.TextTemplating.ITextTemplatingEngineHost Host { get; set; }");
 			AppendTransformMethod(result);
 			AppendParameterDeclarations(result, Collector.ParameterDescriptions);
 			AppendInitialization(result, Collector.ParameterDescriptions);
-			result.Append(Collector.FeatureResult);
-			builder.AppendLine($"    }}");
+			result.Append(Result.CollectedFeatures);
+			builder.AppendLine("    }");
 		}
 
 		private void AppendParameterDeclarations(
@@ -126,24 +126,24 @@ namespace GammaJul.ForTea.Core.TemplateProcessing.CodeGeneration
 		{
 			var builder = result.Builder;
 			builder.Append("        public ");
-			builder.Append(HasBaseClass ? "override" : "virtual");
+			builder.Append(Result.HasBaseClass ? "override" : "virtual");
 			builder.AppendLine($" string {TransformTextMethodName}()");
-			builder.AppendLine($"        {{");
-			result.Append(Collector.TransformTextResult);
+			builder.AppendLine("        {");
+			result.Append(Result.CollectedTransformation);
 			builder.AppendLine();
-			builder.AppendLine($"            return GenerationEnvironment.ToString();");
-			builder.AppendLine($"        }}");
+			builder.AppendLine("            return GenerationEnvironment.ToString();");
+			builder.AppendLine("        }");
 		}
 
 		private void AppendBaseClassName(T4CSharpCodeGenerationResult result)
 		{
-			if (HasBaseClass) result.Append(Collector.InheritsResult);
+			if (Result.HasBaseClass) result.Append(Result.CollectedBaseClass);
 			else result.Builder.Append(GeneratedBaseClassName);
 		}
 
 		private void AppendBaseClass(StringBuilder builder)
 		{
-			if (HasBaseClass) return;
+			if (Result.HasBaseClass) return;
 			var provider = new T4TemplateBaseProvider(ResourceName);
 			builder.AppendLine(provider.CreateTemplateBase(GeneratedBaseClassName));
 		}
