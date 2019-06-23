@@ -27,7 +27,7 @@ namespace GammaJul.ForTea.Core.TemplateProcessing.CodeGeneration.Helpers
 		protected override string GeneratedBaseClassName => GeneratedBaseClassNameString;
 
 		protected override void AppendSyntheticAttribute(StringBuilder builder) =>
-			builder.AppendLine($"[{SyntheticAttribute.Name}]");
+			builder.AppendLine($"        [{SyntheticAttribute.Name}]");
 
 		protected override void AppendParameterInitialization(
 			IReadOnlyCollection<T4ParameterDescription> descriptions,

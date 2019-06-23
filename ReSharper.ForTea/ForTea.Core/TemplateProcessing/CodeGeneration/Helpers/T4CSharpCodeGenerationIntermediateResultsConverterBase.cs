@@ -80,9 +80,9 @@ namespace GammaJul.ForTea.Core.TemplateProcessing.CodeGeneration.Helpers
 				builder.AppendLine(
 					"        public virtual Microsoft.VisualStudio.TextTemplating.ITextTemplatingEngineHost Host { get; set; }");
 			AppendTransformMethod(result);
+			result.Append(Result.CollectedFeatures);
 			AppendParameterDeclarations(result, Result.ParameterDescriptions);
 			AppendTemplateInitialization(result, Result.ParameterDescriptions);
-			result.Append(Result.CollectedFeatures);
 			builder.AppendLine("    }");
 		}
 
@@ -114,6 +114,7 @@ namespace GammaJul.ForTea.Core.TemplateProcessing.CodeGeneration.Helpers
 		{
 			if (descriptions.IsEmpty()) return;
 			var builder = result.Builder;
+			AppendSyntheticAttribute(builder);
 			builder.AppendLine("        public void Initialize()");
 			builder.AppendLine("        {");
 			AppendParameterInitialization(descriptions, builder);
@@ -123,6 +124,7 @@ namespace GammaJul.ForTea.Core.TemplateProcessing.CodeGeneration.Helpers
 		private void AppendTransformMethod(T4CSharpCodeGenerationResult result)
 		{
 			var builder = result.Builder;
+			AppendSyntheticAttribute(builder);
 			builder.Append("        public ");
 			builder.Append(Result.HasBaseClass ? "override" : "virtual");
 			builder.AppendLine($" string {TransformTextMethodName}()");
