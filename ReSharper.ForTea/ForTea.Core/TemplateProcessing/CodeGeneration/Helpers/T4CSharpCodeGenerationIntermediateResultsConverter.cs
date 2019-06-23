@@ -40,27 +40,27 @@ namespace GammaJul.ForTea.Core.TemplateProcessing.CodeGeneration.Helpers
 			foreach (var description in descriptions)
 			{
 				builder.Append("            if (Session.ContainsKey(nameof(");
-				builder.Append(description.NameString);
+				builder.Append(description.FieldNameString);
 				builder.AppendLine(")))");
 				builder.AppendLine("            {");
 				builder.Append("                ");
-				builder.Append(description.NameString);
+				builder.Append(description.FieldNameString);
 				builder.Append(" = (");
 				builder.Append(description.TypeString);
 				builder.Append(") Session[nameof(");
-				builder.Append(description.NameString);
+				builder.Append(description.FieldNameString);
 				builder.AppendLine(")];");
 				builder.AppendLine("            }");
 				builder.AppendLine("            else");
 				builder.AppendLine("            {");
 				builder.Append(
 					"                object data = global::System.Runtime.Remoting.Messaging.CallContext.LogicalGetData(nameof(");
-				builder.Append(description.NameString);
+				builder.Append(description.FieldNameString);
 				builder.AppendLine("));");
 				builder.AppendLine("                if (data != null)");
 				builder.AppendLine("                {");
 				builder.Append("                    ");
-				builder.Append(description.NameString);
+				builder.Append(description.FieldNameString);
 				builder.Append(" = (");
 				builder.Append(description.TypeString);
 				builder.AppendLine(") data;");

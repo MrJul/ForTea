@@ -19,6 +19,9 @@ namespace GammaJul.ForTea.Core.TemplateProcessing.CodeCollecting
 		[NotNull]
 		public string NameString { get; }
 
+		[NotNull]
+		public string FieldNameString { get; }
+
 		private T4ParameterDescription(
 			[NotNull] IT4Token typeToken,
 			[NotNull] IT4Token nameToken,
@@ -27,8 +30,9 @@ namespace GammaJul.ForTea.Core.TemplateProcessing.CodeCollecting
 		{
 			TypeToken = typeToken;
 			NameToken = nameToken;
-			TypeString = typeString;
-			NameString = nameString;
+			TypeString = typeString.EscapeKeyword();
+			NameString = nameString.EscapeKeyword();
+			FieldNameString = $"_{nameString}Field";
 		}
 
 		[CanBeNull]
@@ -43,7 +47,7 @@ namespace GammaJul.ForTea.Core.TemplateProcessing.CodeCollecting
 			string nameText = nameToken?.GetText();
 			if (typeText?.IsNullOrEmpty() != false) return null;
 			if (nameText?.IsNullOrEmpty() != false) return null;
-			return new T4ParameterDescription(typeToken, nameToken, typeText.EscapeKeyword(), nameText.EscapeKeyword());
+			return new T4ParameterDescription(typeToken, nameToken, typeText, nameText);
 		}
 	}
 }

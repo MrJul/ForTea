@@ -20,6 +20,7 @@ namespace GammaJul.ForTea.Core.TemplateProcessing.CodeCollecting
 		[NotNull]
 		private T4DirectiveInfoManager Manager { get; }
 
+		[NotNull, ItemNotNull]
 		private Stack<T4CSharpCodeGenerationIntermediateResult> Results { get; }
 		private bool HasSeenTemplateDirective { get; set; }
 
@@ -39,6 +40,7 @@ namespace GammaJul.ForTea.Core.TemplateProcessing.CodeCollecting
 			Manager = manager;
 		}
 
+		[NotNull]
 		public T4CSharpCodeGenerationIntermediateResult Collect()
 		{
 			Results.Push(new T4CSharpCodeGenerationIntermediateResult(File));

@@ -29,6 +29,7 @@ namespace GammaJul.ForTea.Core.TemplateProcessing.CodeGeneration.Helpers
 			File = file;
 		}
 
+		[NotNull]
 		public T4CSharpCodeGenerationResult Convert()
 		{
 			var result = new T4CSharpCodeGenerationResult(File);
@@ -60,7 +61,7 @@ namespace GammaJul.ForTea.Core.TemplateProcessing.CodeGeneration.Helpers
 			return T4CSharpCodeGenerationUtils.ChooseBetterNamespace(ns, ns2);
 		}
 
-		private void AppendNamespaceContents(T4CSharpCodeGenerationResult result)
+		private void AppendNamespaceContents([NotNull] T4CSharpCodeGenerationResult result)
 		{
 			result.Builder.AppendLine("using System;");
 			result.Append(Result.CollectedImports);
@@ -68,7 +69,7 @@ namespace GammaJul.ForTea.Core.TemplateProcessing.CodeGeneration.Helpers
 			AppendBaseClass(result.Builder);
 		}
 
-		private void AppendClass(T4CSharpCodeGenerationResult result)
+		private void AppendClass([NotNull] T4CSharpCodeGenerationResult result)
 		{
 			var builder = result.Builder;
 			AppendSyntheticAttribute(builder);
@@ -91,20 +92,43 @@ namespace GammaJul.ForTea.Core.TemplateProcessing.CodeGeneration.Helpers
 			[NotNull, ItemNotNull] IEnumerable<T4ParameterDescription> descriptions
 		)
 		{
-			var builder = result.Builder;
 			foreach (var description in descriptions)
 			{
-				builder.AppendLine("        [System.CodeDom.Compiler.GeneratedCodeAttribute]");
-				builder.Append("        private ");
-				var type = description.TypeToken;
-				if (CSharpLexer.IsKeyword(type.GetText())) builder.Append('@');
-				result.AppendMapped(type);
-				builder.Append(' ');
-				var name = description.NameToken;
-				if (CSharpLexer.IsKeyword(name.GetText())) builder.Append('@');
-				result.AppendMapped(name);
-				builder.AppendLine(" { get; }");
+				AppendFieldDeclaration(result.Builder, description);
+				AppendParameterDeclaration(result, description);
 			}
+		}
+
+		private void AppendFieldDeclaration(
+			[NotNull] StringBuilder builder,
+			[NotNull] T4ParameterDescription description
+		)
+		{
+			AppendSyntheticAttribute(builder);
+			builder.Append("        private global::");
+			builder.Append(description.TypeString);
+			builder.Append(' ');
+			builder.Append(description.FieldNameString);
+			builder.AppendLine(";");
+		}
+
+		private void AppendParameterDeclaration(
+			[NotNull] T4CSharpCodeGenerationResult result,
+			[NotNull] T4ParameterDescription description
+		)
+		{
+			var builder = result.Builder;
+			builder.Append("        private ");
+			var type = description.TypeToken;
+			if (CSharpLexer.IsKeyword(type.GetText())) builder.Append('@');
+			result.AppendMapped(type);
+			builder.Append(' ');
+			var name = description.NameToken;
+			if (CSharpLexer.IsKeyword(name.GetText())) builder.Append('@');
+			result.AppendMapped(name);
+			builder.Append(" => ");
+			builder.Append(description.FieldNameString);
+			builder.AppendLine(";");
 		}
 
 		private void AppendTemplateInitialization(
@@ -121,7 +145,7 @@ namespace GammaJul.ForTea.Core.TemplateProcessing.CodeGeneration.Helpers
 			builder.AppendLine("        }");
 		}
 
-		private void AppendTransformMethod(T4CSharpCodeGenerationResult result)
+		private void AppendTransformMethod([NotNull] T4CSharpCodeGenerationResult result)
 		{
 			var builder = result.Builder;
 			AppendSyntheticAttribute(builder);
@@ -135,13 +159,13 @@ namespace GammaJul.ForTea.Core.TemplateProcessing.CodeGeneration.Helpers
 			builder.AppendLine("        }");
 		}
 
-		private void AppendBaseClassName(T4CSharpCodeGenerationResult result)
+		private void AppendBaseClassName([NotNull] T4CSharpCodeGenerationResult result)
 		{
 			if (Result.HasBaseClass) result.Append(Result.CollectedBaseClass);
 			else result.Builder.Append(GeneratedBaseClassName);
 		}
 
-		private void AppendBaseClass(StringBuilder builder)
+		private void AppendBaseClass([NotNull] StringBuilder builder)
 		{
 			if (Result.HasBaseClass) return;
 			var provider = new T4TemplateBaseProvider(ResourceName);
