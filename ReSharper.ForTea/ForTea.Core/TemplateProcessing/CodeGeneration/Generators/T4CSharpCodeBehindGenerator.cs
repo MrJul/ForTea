@@ -1,10 +1,10 @@
 using GammaJul.ForTea.Core.Psi.Directives;
 using GammaJul.ForTea.Core.TemplateProcessing.CodeCollecting;
-using GammaJul.ForTea.Core.TemplateProcessing.CodeGeneration.Helpers;
+using GammaJul.ForTea.Core.TemplateProcessing.CodeGeneration.Converters;
 using GammaJul.ForTea.Core.Tree;
 using JetBrains.Annotations;
 
-namespace GammaJul.ForTea.Core.TemplateProcessing.CodeGeneration
+namespace GammaJul.ForTea.Core.TemplateProcessing.CodeGeneration.Generators
 {
 	/// <summary>
 	/// This class generates a code-behind file
@@ -22,8 +22,8 @@ namespace GammaJul.ForTea.Core.TemplateProcessing.CodeGeneration
 
 		protected override T4CSharpCodeGenerationInfoCollectorBase Collector { get; }
 
-		protected override T4CSharpCodeGenerationIntermediateResultsConverterBase CreateConverter(
+		protected override T4CSharpIntermediateConverterBase CreateConverter(
 			T4CSharpCodeGenerationIntermediateResult intermediateResult
-		) => new T4CSharpCodeBehindGenerationIntermediateResultsConverter(intermediateResult, File);
+		) => new T4CSharpCodeBehindIntermediateConverter(intermediateResult, File);
 	}
 }

@@ -1,12 +1,12 @@
 using GammaJul.ForTea.Core.Psi;
 using GammaJul.ForTea.Core.TemplateProcessing.CodeCollecting;
-using GammaJul.ForTea.Core.TemplateProcessing.CodeGeneration.Helpers;
+using GammaJul.ForTea.Core.TemplateProcessing.CodeGeneration.Converters;
 using GammaJul.ForTea.Core.Tree;
 using JetBrains.Annotations;
 
-namespace GammaJul.ForTea.Core.TemplateProcessing.CodeGeneration
+namespace GammaJul.ForTea.Core.TemplateProcessing.CodeGeneration.Generators
 {
-	internal abstract class T4CSharpCodeGeneratorBase
+	public abstract class T4CSharpCodeGeneratorBase
 	{
 		private const string DefaultErrorMessage = "ErrorGeneratingOutput";
 
@@ -36,7 +36,7 @@ namespace GammaJul.ForTea.Core.TemplateProcessing.CodeGeneration
 		protected abstract T4CSharpCodeGenerationInfoCollectorBase Collector { get; }
 
 		[NotNull]
-		protected abstract T4CSharpCodeGenerationIntermediateResultsConverterBase CreateConverter(
+		protected abstract T4CSharpIntermediateConverterBase CreateConverter(
 			[NotNull] T4CSharpCodeGenerationIntermediateResult intermediateResult);
 	}
 }

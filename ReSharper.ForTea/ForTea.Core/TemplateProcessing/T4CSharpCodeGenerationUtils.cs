@@ -10,15 +10,26 @@ namespace GammaJul.ForTea.Core.TemplateProcessing
 {
 	public static class T4CSharpCodeGenerationUtils
 	{
+		[NotNull] public const string CSharpExtension = "cs";
 		[NotNull] public const string PreprocessResultExtension = "cs";
 		[NotNull] public const string DefaultTargetExtension = PreprocessResultExtension;
 
 		[NotNull]
-		public static string WithExtension([NotNull] this string name, [NotNull] string newExtension)
+		// name is NOT supposed to contain extension
+		public static string WithExtension([NotNull] this string name, [NotNull] string extension)
+		{
+			if (name == null) throw new ArgumentNullException(nameof(name));
+			if (extension == null) throw new ArgumentNullException(nameof(extension));
+			return name + '.' + extension;
+		}
+		
+		[NotNull]
+		// name is supposed to contain extension
+		public static string WithOtherExtension([NotNull] this string name, [NotNull] string newExtension)
 		{
 			if (name == null) throw new ArgumentNullException(nameof(name));
 			if (newExtension == null) throw new ArgumentNullException(nameof(newExtension));
-			return name.WithoutExtension() + '.' + newExtension;
+			return name.WithoutExtension().WithExtension(newExtension);
 		}
 
 		[NotNull]

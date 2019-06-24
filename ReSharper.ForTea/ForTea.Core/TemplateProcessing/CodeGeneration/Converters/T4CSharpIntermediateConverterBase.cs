@@ -8,9 +8,9 @@ using JetBrains.ReSharper.Psi;
 using JetBrains.ReSharper.Psi.CSharp.Parsing;
 using JetBrains.Util;
 
-namespace GammaJul.ForTea.Core.TemplateProcessing.CodeGeneration.Helpers
+namespace GammaJul.ForTea.Core.TemplateProcessing.CodeGeneration.Converters
 {
-	public abstract class T4CSharpCodeGenerationIntermediateResultsConverterBase
+	public abstract class T4CSharpIntermediateConverterBase
 	{
 		[NotNull] internal const string TransformTextMethodName = "TransformText";
 
@@ -20,7 +20,7 @@ namespace GammaJul.ForTea.Core.TemplateProcessing.CodeGeneration.Helpers
 		[NotNull]
 		protected IT4File File { get; }
 
-		protected T4CSharpCodeGenerationIntermediateResultsConverterBase(
+		protected T4CSharpIntermediateConverterBase(
 			[NotNull] T4CSharpCodeGenerationIntermediateResult result,
 			[NotNull] IT4File file
 		)
@@ -33,6 +33,8 @@ namespace GammaJul.ForTea.Core.TemplateProcessing.CodeGeneration.Helpers
 		public T4CSharpCodeGenerationResult Convert()
 		{
 			var result = new T4CSharpCodeGenerationResult(File);
+			AppendFilePrefix(result);
+			
 			string ns = GetNamespace();
 			bool hasNamespace = !string.IsNullOrEmpty(ns);
 			if (hasNamespace)
@@ -47,11 +49,21 @@ namespace GammaJul.ForTea.Core.TemplateProcessing.CodeGeneration.Helpers
 				AppendNamespaceContents(result);
 			}
 
+			AppendFileSuffix(result);
+
 			return result;
 		}
 
+		protected virtual void AppendFileSuffix([NotNull] T4CSharpCodeGenerationResult result)
+		{
+		}
+
+		protected virtual void AppendFilePrefix([NotNull] T4CSharpCodeGenerationResult result)
+		{
+		}
+
 		[CanBeNull]
-		private string GetNamespace()
+		protected virtual string GetNamespace()
 		{
 			var sourceFile = File.GetSourceFile();
 			var projectFile = sourceFile?.ToProjectFile();

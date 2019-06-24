@@ -5,15 +5,15 @@ using GammaJul.ForTea.Core.Tree;
 using JetBrains.Annotations;
 using JetBrains.ReSharper.Psi;
 
-namespace GammaJul.ForTea.Core.TemplateProcessing.CodeGeneration.Helpers
+namespace GammaJul.ForTea.Core.TemplateProcessing.CodeGeneration.Converters
 {
-	public sealed class T4CSharpCodeBehindGenerationIntermediateResultsConverter :
-		T4CSharpCodeGenerationIntermediateResultsConverterBase
+	public sealed class T4CSharpCodeBehindIntermediateConverter :
+		T4CSharpIntermediateConverterBase
 	{
 		[NotNull] public const string GeneratedClassNameString = "Generated\x200CTransformation";
 		[NotNull] public const string GeneratedBaseClassNameString = GeneratedClassNameString + "Base";
 
-		public T4CSharpCodeBehindGenerationIntermediateResultsConverter(
+		public T4CSharpCodeBehindIntermediateConverter(
 			[NotNull] T4CSharpCodeGenerationIntermediateResult result,
 			[NotNull] IT4File file
 		) : base(result, file)

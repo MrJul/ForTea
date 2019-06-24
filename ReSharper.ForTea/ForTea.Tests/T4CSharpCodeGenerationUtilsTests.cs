@@ -11,6 +11,6 @@ namespace ForTea.Tests
 			[Values("Name.tt", "Foo.tt")] string name,
 			[Values("cs", ".tx.t")] string extension,
 			[Values("Name.cs", "Foo..tx.t")] string expected
-		) => Assert.AreEqual(expected, name.WithExtension(extension));
+		) => Assert.AreEqual(expected, name.WithOtherExtension(extension));
 	}
 }

@@ -1,15 +1,16 @@
 using System.Collections.Generic;
 using System.Text;
+using GammaJul.ForTea.Core.Psi;
 using GammaJul.ForTea.Core.TemplateProcessing.CodeCollecting;
 using GammaJul.ForTea.Core.Tree;
 using JetBrains.Annotations;
+using JetBrains.ReSharper.Psi;
 
-namespace GammaJul.ForTea.Core.TemplateProcessing.CodeGeneration.Helpers
+namespace GammaJul.ForTea.Core.TemplateProcessing.CodeGeneration.Converters
 {
-	public sealed class T4CSharpCodeGenerationIntermediateResultsConverter :
-		T4CSharpCodeGenerationIntermediateResultsConverterBase
+	public class T4CSharpIntermediateConverter : T4CSharpIntermediateConverterBase
 	{
-		public T4CSharpCodeGenerationIntermediateResultsConverter(
+		public T4CSharpIntermediateConverter(
 			[NotNull] T4CSharpCodeGenerationIntermediateResult result,
 			[NotNull] IT4File file
 		) : base(result, file)
@@ -18,20 +19,20 @@ namespace GammaJul.ForTea.Core.TemplateProcessing.CodeGeneration.Helpers
 			GeneratedBaseClassName = GeneratedClassName + "Base";
 		}
 
-		protected override string ResourceName =>
+		protected sealed override string ResourceName =>
 			"GammaJul.ForTea.Core.TemplateProcessing.CodeGeneration.TemplateBaseFull.cs";
 
-		protected override string GeneratedClassName { get; }
-		protected override string GeneratedBaseClassName { get; }
+		protected sealed override string GeneratedClassName { get; }
+		protected sealed override string GeneratedBaseClassName { get; }
 
-		protected override void AppendSyntheticAttribute(StringBuilder builder)
+		protected sealed override void AppendSyntheticAttribute(StringBuilder builder)
 		{
 			// Synthetic attribute is only used for avoiding completion.
 			// It is not valid during compilation,
 			// so it should not be inserted in code
 		}
 
-		protected override void AppendParameterInitialization(
+		protected sealed override void AppendParameterInitialization(
 			IReadOnlyCollection<T4ParameterDescription> descriptions,
 			StringBuilder builder
 		)

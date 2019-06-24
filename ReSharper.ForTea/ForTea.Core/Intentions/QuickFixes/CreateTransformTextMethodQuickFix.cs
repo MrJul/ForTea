@@ -2,7 +2,7 @@ using System;
 using System.Globalization;
 using System.Linq;
 using GammaJul.ForTea.Core.Daemon.Highlightings;
-using GammaJul.ForTea.Core.TemplateProcessing.CodeGeneration.Helpers;
+using GammaJul.ForTea.Core.TemplateProcessing.CodeGeneration.Converters;
 using JetBrains.Annotations;
 using JetBrains.Application.Progress;
 using JetBrains.Diagnostics;
@@ -31,7 +31,7 @@ namespace GammaJul.ForTea.Core.Intentions.QuickFixes {
 			=> GetTargetTypeDeclaration(_highlighting.DeclaredTypeUsage) != null;
 
 		public override string Text
-			=> string.Format(CultureInfo.InvariantCulture, "Create method '{0}'", T4CSharpCodeGenerationIntermediateResultsConverterBase.TransformTextMethodName);
+			=> string.Format(CultureInfo.InvariantCulture, "Create method '{0}'", T4CSharpIntermediateConverterBase.TransformTextMethodName);
 
 		[CanBeNull]
 		private static ITypeDeclaration GetTargetTypeDeclaration([NotNull] IDeclaredTypeUsage declaredTypeUsage) {
@@ -63,7 +63,7 @@ namespace GammaJul.ForTea.Core.Intentions.QuickFixes {
 				IsAbstract = true,
 				IsStatic = false,
 				MethodSignatures = new[] { signature },
-				MethodName = T4CSharpCodeGenerationIntermediateResultsConverterBase.TransformTextMethodName,
+				MethodName = T4CSharpIntermediateConverterBase.TransformTextMethodName,
 				SourceReferenceExpressionReference = null,
 				Target = target,
 			};
