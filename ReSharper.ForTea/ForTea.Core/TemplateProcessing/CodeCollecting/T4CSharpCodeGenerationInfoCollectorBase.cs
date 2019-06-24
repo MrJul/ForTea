@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using GammaJul.ForTea.Core.Psi;
 using GammaJul.ForTea.Core.Psi.Directives;
 using GammaJul.ForTea.Core.Tree;
@@ -23,12 +22,11 @@ namespace GammaJul.ForTea.Core.TemplateProcessing.CodeCollecting
 
 		[NotNull, ItemNotNull]
 		private Stack<T4CSharpCodeGenerationIntermediateResult> Results { get; }
+
 		private bool HasSeenTemplateDirective { get; set; }
 
 		[NotNull]
-		private T4CSharpCodeGenerationIntermediateResult Result => Results.Peek();
-
-		private bool IsAtRootLevel => Results.Take(2).Count() == 1;
+		protected T4CSharpCodeGenerationIntermediateResult Result => Results.Peek();
 		#endregion Properties
 
 		protected T4CSharpCodeGenerationInfoCollectorBase(
@@ -67,7 +65,7 @@ namespace GammaJul.ForTea.Core.TemplateProcessing.CodeCollecting
 				case IT4Include _:
 					var intermediateResults = Results.Pop();
 					Result.Append(intermediateResults);
-					break;
+					return; // Do not advance state here
 				case IT4Directive directive:
 					HandleDirective(directive);
 					break;
@@ -78,6 +76,8 @@ namespace GammaJul.ForTea.Core.TemplateProcessing.CodeCollecting
 					AppendToken(Result, token);
 					break;
 			}
+
+			Result.AdvanceState(element);
 		}
 
 		public bool ProcessingIsFinished
@@ -122,8 +122,6 @@ namespace GammaJul.ForTea.Core.TemplateProcessing.CodeCollecting
 					result.Builder.AppendLine();
 					break;
 				case T4FeatureBlock _:
-					if (IsAtRootLevel)
-						Result.StartFeature();
 					AppendCode(Result.CollectedFeatures, codeToken);
 					Result.CollectedFeatures.Builder.AppendLine();
 					break;

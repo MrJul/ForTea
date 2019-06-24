@@ -1,7 +1,9 @@
 using System.Collections.Generic;
 using GammaJul.ForTea.Core.Psi;
+using GammaJul.ForTea.Core.TemplateProcessing.CodeCollecting.State;
 using GammaJul.ForTea.Core.Tree;
 using JetBrains.Annotations;
+using JetBrains.ReSharper.Psi.Tree;
 using JetBrains.ReSharper.PsiGen.Util;
 using JetBrains.Util;
 
@@ -27,9 +29,10 @@ namespace GammaJul.ForTea.Core.TemplateProcessing.CodeCollecting
 		[NotNull, ItemNotNull]
 		public IReadOnlyList<T4ParameterDescription> ParameterDescriptions => MyParameterDescriptions;
 
-		public bool FeatureStarted { get; private set; }
+		public T4InfoCollectorStateBase State { get; private set; }
+		public bool FeatureStarted => State.FeatureStarted;
 		public bool HasHost { get; private set; }
-		public void StartFeature() => FeatureStarted = true;
+		public void AdvanceState([NotNull] ITreeNode element) => State = State.GetNextState(element);
 		public void RequireHost() => HasHost = true;
 		public bool HasBaseClass => !CollectedBaseClass.Builder.IsEmpty();
 
@@ -40,7 +43,7 @@ namespace GammaJul.ForTea.Core.TemplateProcessing.CodeCollecting
 			CollectedTransformation = new T4CSharpCodeGenerationResult(file);
 			CollectedFeatures = new T4CSharpCodeGenerationResult(file);
 			MyParameterDescriptions = new List<T4ParameterDescription>();
-			FeatureStarted = false;
+			State = new T4InfoCollectorStateInitial();
 			HasHost = false;
 		}
 

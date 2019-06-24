@@ -8,6 +8,8 @@ namespace GammaJul.ForTea.Core.TemplateProcessing.CodeGeneration
 {
 	internal abstract class T4CSharpCodeGeneratorBase
 	{
+		private const string DefaultErrorMessage = "ErrorGeneratingOutput";
+
 		[NotNull]
 		protected IT4File File { get; }
 
@@ -16,7 +18,19 @@ namespace GammaJul.ForTea.Core.TemplateProcessing.CodeGeneration
 		protected T4CSharpCodeGeneratorBase([NotNull] IT4File file) => File = file;
 
 		[NotNull]
-		public T4CSharpCodeGenerationResult Generate() => CreateConverter(Collector.Collect()).Convert();
+		public T4CSharpCodeGenerationResult Generate()
+		{
+			try
+			{
+				return CreateConverter(Collector.Collect()).Convert();
+			}
+			catch (T4OutputGenerationException)
+			{
+				var result = new T4CSharpCodeGenerationResult(File);
+				result.Builder.Append(DefaultErrorMessage);
+				return result;
+			}
+		}
 
 		[NotNull]
 		protected abstract T4CSharpCodeGenerationInfoCollectorBase Collector { get; }
