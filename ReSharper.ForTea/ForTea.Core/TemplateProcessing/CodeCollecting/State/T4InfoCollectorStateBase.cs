@@ -1,4 +1,5 @@
 using System;
+using GammaJul.ForTea.Core.Parsing;
 using GammaJul.ForTea.Core.Tree;
 using JetBrains.Annotations;
 using JetBrains.ReSharper.Psi.Tree;
@@ -13,10 +14,13 @@ namespace GammaJul.ForTea.Core.TemplateProcessing.CodeCollecting.State
 
 		[CanBeNull]
 		public abstract string ConvertForAppending([NotNull] IT4Token token);
-		
+
 		public abstract bool FeatureStarted { get; }
 
 		[NotNull]
-		protected string Convert([NotNull] IT4Token token) => StringLiteralConverter.EscapeToRegular(token.GetText());
+		protected static string Convert([NotNull] IT4Token token) => StringLiteralConverter.EscapeToRegular(
+			token.NodeType == T4TokenNodeTypes.NewLine
+				? Environment.NewLine
+				: token.GetText());
 	}
 }

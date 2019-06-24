@@ -1,33 +1,43 @@
 using System.Text;
 using GammaJul.ForTea.Core.Parsing;
 using GammaJul.ForTea.Core.Tree;
-using JetBrains.Annotations;
+using JetBrains.Diagnostics;
 using JetBrains.ReSharper.Psi.Tree;
+using JetBrains.ReSharper.Psi.Util;
 
 namespace GammaJul.ForTea.Core.TemplateProcessing.CodeCollecting.State
 {
 	public sealed class T4InfoCollectorStateSeenFeature : T4InfoCollectorStateBase
 	{
-		[NotNull]
-		private StringBuilder Builder { get; } // TODO: replace builder with newline counter
+		private bool IsAlive { get; set; }
+		private int NewLines { get; set; }
 
-		public T4InfoCollectorStateSeenFeature() => Builder = new StringBuilder();
+		public T4InfoCollectorStateSeenFeature()
+		{
+			IsAlive = true;
+			NewLines = 0;
+		}
 
 		public override T4InfoCollectorStateBase GetNextState(ITreeNode element)
 		{
+			Assertion.Assert(IsAlive, "Attempted to use dead state");
 			switch (element)
 			{
 				case IT4Directive _: throw new T4OutputGenerationException();
 				case T4FeatureBlock _:
-					Builder.Clear();
+					NewLines = 0;
 					return this;
 				default:
 					if (element.NodeType == T4TokenNodeTypes.NewLine)
 						// newline has already been appended in ConvertForAppending
 						return this;
 					else if (element.NodeType == T4TokenNodeTypes.Text)
-						// Builder contents have already been printed in ConvertForAppending
+					{
+						// State is not supposed to be used after it first sees text
+						IsAlive = false;
+						// Builder contents have already been returned in ConvertForAppending
 						return new T4InfoCollectorStateSeenFeatureAndText();
+					}
 
 					throw new T4OutputGenerationException();
 			}
@@ -35,17 +45,31 @@ namespace GammaJul.ForTea.Core.TemplateProcessing.CodeCollecting.State
 
 		public override string ConvertForAppending(IT4Token token)
 		{
-			Builder.Append(Convert(token)); // TODO: use representation instead
+			Assertion.Assert(IsAlive, "Attempted to use dead state");
 			if (token.NodeType == T4TokenNodeTypes.NewLine)
 			{
+				NewLines += 1;
 				return null;
 			}
 
-			string result = Builder.ToString();
-			Builder.Clear();
-			return result;
+			var result = new StringBuilder();
+			for (int i = 0; i < NewLines; i += 1)
+			{
+				result.AppendLine();
+			}
+
+			// Convert is intentionally not used here
+			result.Append(token.GetText());
+			return StringLiteralConverter.EscapeToRegular(result.ToString());
 		}
 
-		public override bool FeatureStarted => true;
+		public override bool FeatureStarted
+		{
+			get
+			{
+				Assertion.Assert(IsAlive, "Attempted to use dead state");
+				return true;
+			}
+		}
 	}
 }
