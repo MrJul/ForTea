@@ -10,7 +10,8 @@ namespace GammaJul.ForTea.Core.TemplateProcessing
 {
 	public static class T4CSharpCodeGenerationUtils
 	{
-		public const string DefaultTargetExtension = "cs";
+		[NotNull] public const string PreprocessResultExtension = "cs";
+		[NotNull] public const string DefaultTargetExtension = PreprocessResultExtension;
 
 		[NotNull]
 		public static string WithExtension([NotNull] this string name, [NotNull] string newExtension)
