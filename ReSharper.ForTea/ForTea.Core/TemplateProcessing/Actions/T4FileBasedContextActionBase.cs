@@ -56,7 +56,6 @@ namespace GammaJul.ForTea.Core.TemplateProcessing.Actions
 		[CanBeNull]
 		protected abstract string DestinationFileName { get; }
 
-		// TODO: check whether file contains errors
 		public sealed override bool IsAvailable(IUserDataHolder cache) =>
 			File?.ContainsErrorElement() == false;
 	}

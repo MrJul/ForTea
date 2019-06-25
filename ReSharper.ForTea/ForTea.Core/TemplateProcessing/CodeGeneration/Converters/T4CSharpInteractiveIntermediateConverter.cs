@@ -18,6 +18,6 @@ namespace GammaJul.ForTea.Core.TemplateProcessing.CodeGeneration.Converters
 		protected override string GetNamespace() => null;
 
 		protected override void AppendFileSuffix(T4CSharpCodeGenerationResult result) =>
-			result.Builder.Append($"Console.WriteLine(new {GeneratedClassName}().TransformText();");
+			result.Builder.Append($"Console.WriteLine(new {GeneratedClassName}().TransformText());");
 	}
 }
