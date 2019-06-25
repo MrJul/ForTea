@@ -21,7 +21,7 @@ namespace GammaJul.ForTea.Core.TemplateProcessing.CodeCollecting
 
 		protected override void AppendToken(T4CSharpCodeGenerationIntermediateResult intermediateResult, IT4Token token)
 		{
-			string forAppending = Result.State.ConvertForAppending(token);
+			string forAppending = Result.State.ConvertTokenForAppending(token);
 			if (forAppending == null) return;
 			
 			var result = intermediateResult.FeatureStarted

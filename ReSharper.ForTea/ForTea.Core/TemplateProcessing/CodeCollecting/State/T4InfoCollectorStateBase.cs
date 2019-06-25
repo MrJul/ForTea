@@ -13,7 +13,7 @@ namespace GammaJul.ForTea.Core.TemplateProcessing.CodeCollecting.State
 		public abstract T4InfoCollectorStateBase GetNextState([NotNull] ITreeNode element);
 
 		[CanBeNull]
-		public abstract string ConvertForAppending([NotNull] IT4Token token);
+		public abstract string ConvertTokenForAppending([NotNull] IT4Token token);
 
 		public abstract bool FeatureStarted { get; }
 

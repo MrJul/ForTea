@@ -17,7 +17,7 @@ namespace GammaJul.ForTea.Core.TemplateProcessing.CodeCollecting.State
 		}
 
 		[NotNull]
-		public override string ConvertForAppending(IT4Token token) => Convert(token);
+		public override string ConvertTokenForAppending(IT4Token token) => Convert(token);
 		public override bool FeatureStarted => true;
 	}
 }
