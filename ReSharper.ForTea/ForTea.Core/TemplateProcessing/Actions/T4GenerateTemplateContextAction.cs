@@ -3,16 +3,18 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Text;
+using System.Threading.Tasks;
 using GammaJul.ForTea.Core.Psi.Directives;
 using GammaJul.ForTea.Core.TemplateProcessing.CodeGeneration.Generators;
 using GammaJul.ForTea.Core.Tree;
 using JetBrains.Annotations;
+using JetBrains.Application.Processes;
 using JetBrains.Application.Progress;
 using JetBrains.Diagnostics;
-using JetBrains.Extension;
 using JetBrains.ProjectModel;
 using JetBrains.ReSharper.Feature.Services.ContextActions;
 using JetBrains.ReSharper.Host.Features.Interactive.Csi;
+using JetBrains.ReSharper.Host.Features.Processes;
 using JetBrains.ReSharper.Host.Features.ProjectModel;
 using JetBrains.TextControl;
 using JetBrains.Util;
@@ -46,14 +48,89 @@ namespace GammaJul.ForTea.Core.TemplateProcessing.Actions
 			Logger = JetBrains.Util.Logging.Logger.GetLogger<T4GenerateTemplateContextAction>();
 		}
 
+		protected override Action<ITextControl> ExecutePsiTransaction(
+			ISolution solution,
+			IProgressIndicator progress
+		) => textControl => solution.InvokeUnderTransaction(cookie =>
+		{
+			string tmpFilePath = FindFreshTmpFilePath(FileName?.WithoutExtension())?.FullPath;
+			if (tmpFilePath == null) throw new InvalidOperationException();
+
+			GenerateCode(tmpFilePath);
+			var destinationFile = GetOrCreateDestinationFile(cookie);
+			Assertion.Assert(destinationFile != null, "destinationFile != null");
+			PerformBackgroundWorkAsync(solution, tmpFilePath, destinationFile);
+		});
+
+		private async void PerformBackgroundWorkAsync(
+			[NotNull] ISolution solution,
+			[NotNull] string tmpFilePath,
+			[NotNull] IProjectFile destinationFile
+		)
+		{
+			string result = await ExecuteScriptAsync(solution, tmpFilePath);
+			await SaveResultAsync(destinationFile, result);
+			await Cleanup(tmpFilePath);
+		}
+
+		// TODO: remove logging
+		// TODO: do NOT store all the data in a single string. It might be huge.
+		// TODO: use progress indicator
+		private async Task<string> ExecuteScriptAsync([NotNull] ISolution solution, [NotNull] string tmpFilePath)
+		{
+			var detector = solution.GetComponent<CSharpInteractiveDetector>();
+			Logger.Log(LoggingLevel.WARN, $"Got csi detector: {detector}");
+			var patcher = solution.GetComponent<RiderProcessStartInfoPatcher>();
+			Logger.Log(LoggingLevel.WARN, $"Got process start info patcher: {patcher}");
+			var toolPath = detector.DetectInteractiveToolPath(solution.GetSettingsStore());
+			string toolFullPath = toolPath.FullPath;
+			Logger.Log(LoggingLevel.WARN, $"Detected csi path: {toolFullPath}");
+			var defaultArguments = CSharpInteractiveDetector.GetDefaultArgumentsForTool(toolPath);
+			string arguments = JoinArguments(defaultArguments, tmpFilePath);
+			Logger.Log(LoggingLevel.WARN, $"Arguments: {arguments}");
+			var startInfo = new JetProcessStartInfo(new ProcessStartInfo
+			{
+				UseShellExecute = false,
+				RedirectStandardOutput = true,
+				RedirectStandardError = true,
+				FileName = toolFullPath,
+				Arguments = arguments,
+				CreateNoWindow = true
+			});
+			Logger.Log(LoggingLevel.WARN, $"Created jet start info: {startInfo}");
+			// TODO: should this one be used?
+			var request = JetProcessRuntimeRequest.CreateFramework();
+			Logger.Log(LoggingLevel.WARN, $"Created request: {request}");
+			var patchResult = patcher.Patch(startInfo, request);
+			Logger.Log(LoggingLevel.WARN, $"Patched start info. Result: {patchResult}");
+			var process = new Process {StartInfo = patchResult.GetPatchedInfoOrThrow().ToProcessStartInfo()};
+			Logger.Log(LoggingLevel.WARN, $"Created process: {process}");
+			process.Start();
+
+			Logger.Log(LoggingLevel.WARN, "Started process");
+			string output = await process.StandardOutput.ReadToEndAsync();
+			Logger.Log(LoggingLevel.WARN, $"stdout: {output}");
+			if (output.IsNullOrEmpty())
+			{
+				Logger.Log(LoggingLevel.WARN, $"stdout is bad");
+				output = await process.StandardError.ReadToEndAsync();
+				Logger.Log(LoggingLevel.WARN, $"stderr: {output}");
+			}
+
+			Logger.Log(LoggingLevel.WARN, "Waiting for process to exit...");
+			await process.WaitForExitAsync();
+			Logger.Log(LoggingLevel.WARN, "Process exited");
+			return output;
+		}
+
 		[CanBeNull]
-		private FileSystemPath FindFreshScriptPath([CanBeNull] string fileName) =>
+		private FileSystemPath FindFreshTmpFilePath([CanBeNull] string fileName) =>
 			// We expect to receive answer "<FileName>.tmp.csx"
-			ProjectFolderPath?.Combine(FindFreshScriptName(fileName + ".tmp"));
+			ProjectFolderPath?.Combine(FindFreshTmpFileName(fileName + ".tmp"));
 
 		[CanBeNull]
 		// File name is NOT supposed to have extension
-		private string FindFreshScriptName([CanBeNull] string fileName)
+		private string FindFreshTmpFileName([CanBeNull] string fileName)
 		{
 			if (ProjectFolderPath == null) return null;
 			if (fileName == null) return null;
@@ -78,101 +155,26 @@ namespace GammaJul.ForTea.Core.TemplateProcessing.Actions
 		/// Creates tmp file and writes data into it.
 		/// The file is not supposed to be visible and thus not added to project model.
 		/// </summary>
-		private void GenerateCode([NotNull] string newFilePath)
+		private void GenerateCode([NotNull] string tmpFilePath)
 		{
-			if (File == null) throw new InvalidOperationException();
+			Assertion.Assert(File != null, "File != null");
 			var generator = new T4CSharpInteractiveCodeGenerator(File, Manager);
 			string message = generator.Generate().Builder.ToString();
 
-			using (var stream = System.IO.File.Create(newFilePath))
+			using (var stream = System.IO.File.Create(tmpFilePath))
 			using (var writer = new StreamWriter(stream))
 			{
 				writer.Write(message);
 			}
 		}
 
-		private void SaveResult([NotNull] ISolution solution, [NotNull] string result) =>
-			solution.InvokeUnderTransaction(cookie =>
-			{
-				var destinationFile = GetOrCreateDestinationFile(cookie);
-				if (destinationFile == null) return;
-				// TODO: use better writing methods
-				using (var writeStream = destinationFile.CreateWriteStream())
-				{
-					writeStream.WriteUtf8(result);
-				}
-			});
-
-		protected override Action<ITextControl> ExecutePsiTransaction(
-			ISolution solution,
-			IProgressIndicator progress
-		) => textControl => solution.InvokeUnderTransaction(cookie =>
+		private async Task SaveResultAsync([NotNull] IProjectFile projectFile, [NotNull] string result)
 		{
-			string tmpFilePath = FindFreshScriptPath(FileName?.WithoutExtension())?.FullPath;
-			if (tmpFilePath == null) throw new InvalidOperationException();
-
-			try
+			using (var stream = projectFile.CreateWriteStream())
+			using (var writer = new StreamWriter(stream))
 			{
-				GenerateCode(tmpFilePath);
-				string result = Execute(tmpFilePath, solution);
-				SaveResult(solution, result);
+				await writer.WriteAsync(result);
 			}
-			catch (Exception e)
-			{
-				Logger.Log(
-					LoggingLevel.ERROR,
-					"Could not write data to temporary file",
-					e.WithSensitiveData("tmpFilePath", tmpFilePath));
-			}
-			finally
-			{
-				// This will not delete user files, since the name is fresh
-				Cleanup(tmpFilePath);
-			}
-		});
-
-		// TODO: do this in background
-		// TODO: remove logging
-		private string Execute([NotNull] string tmpFilePath, [NotNull] ISolution solution)
-		{
-			Logger.Log(LoggingLevel.VERBOSE, $"Starting executing {tmpFilePath}");
-			var detector = solution.GetComponent<CSharpInteractiveDetector>();
-			Logger.Log(LoggingLevel.VERBOSE, $"Got csi detector: {detector}");
-			var toolPath = detector.DetectInteractiveToolPath(solution.GetSettingsStore());
-			string toolFullPath = toolPath.FullPath;
-			Logger.Log(LoggingLevel.VERBOSE, $"Detected csi path: {toolFullPath}");
-			var defaultArguments = CSharpInteractiveDetector.GetDefaultArgumentsForTool(toolPath);
-			string arguments = JoinArguments(defaultArguments, tmpFilePath);
-			Logger.Log(LoggingLevel.VERBOSE, $"Arguments: {arguments}");
-
-			var process = new Process
-			{
-				StartInfo = new ProcessStartInfo
-				{
-					UseShellExecute = false,
-					RedirectStandardOutput = true,
-					RedirectStandardError = true,
-					FileName = toolFullPath,
-					Arguments = arguments,
-					CreateNoWindow = true
-				}
-			};
-			Logger.Log(LoggingLevel.VERBOSE, "Starting csi process...");
-			process.Start();
-			Logger.Log(LoggingLevel.VERBOSE, "Started process");
-			string output = process.StandardOutput.ReadToEnd();
-			Logger.Log(LoggingLevel.VERBOSE, $"stdout: {output}");
-			if (output.IsNullOrEmpty())
-			{
-				Logger.Log(LoggingLevel.VERBOSE, $"stdout is bad");
-				output = process.StandardError.ReadToEnd();
-				Logger.Log(LoggingLevel.VERBOSE, $"stderr: {output}");
-			}
-
-			Logger.Log(LoggingLevel.VERBOSE, "Waiting for process to exit...");
-			process.WaitForExit();
-			Logger.Log(LoggingLevel.VERBOSE, "Process exited");
-			return output;
 		}
 
 		[NotNull]
@@ -192,11 +194,12 @@ namespace GammaJul.ForTea.Core.TemplateProcessing.Actions
 			return result.ToString();
 		}
 
-		private void Cleanup([NotNull] string newFilePath)
+		private async Task Cleanup([NotNull] string tmpFilePath)
 		{
 			try
 			{
-				System.IO.File.Delete(newFilePath);
+				// TODO: find asynchronous API
+				System.IO.File.Delete(tmpFilePath);
 			}
 			catch (Exception)
 			{
