@@ -12,7 +12,7 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="JetBrains.Annotations" Version="2019.1.1"/>
+        <PackageReference Include="JetBrains.Annotations" Version="2019.1.1" />
         <PackageReference Include="JetBrains.Rider.SDK" Version="2019.1.2">
             <PrivateAssets>all</PrivateAssets>
             <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
@@ -21,6 +21,14 @@
 
     <ItemGroup>
       <ProjectReference Include="..\ForTea.Core\ForTea.Core.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <Compile Remove="TemplateProcessing\CodeGeneration\TemplateBaseFull.cs" />
+    </ItemGroup>
+    
+    <ItemGroup>
+      <EmbeddedResource Include="TemplateProcessing\CodeGeneration\TemplateBaseFull.cs" />
     </ItemGroup>
 
 </Project>

@@ -5,12 +5,13 @@ using System.IO;
 using System.Text;
 using System.Threading.Tasks;
 using GammaJul.ForTea.Core.Psi.Directives;
-using GammaJul.ForTea.Core.TemplateProcessing.CodeGeneration.Generators;
+using GammaJul.ForTea.Core.TemplateProcessing;
 using GammaJul.ForTea.Core.Tree;
 using JetBrains.Annotations;
 using JetBrains.Application.Processes;
 using JetBrains.Application.Progress;
 using JetBrains.Diagnostics;
+using JetBrains.ForTea.RdSupport.TemplateProcessing.CodeGeneration.Generators;
 using JetBrains.Lifetimes;
 using JetBrains.ProjectModel;
 using JetBrains.ReSharper.Feature.Services.ContextActions;
@@ -21,7 +22,7 @@ using JetBrains.ReSharper.Host.Features.ProjectModel;
 using JetBrains.TextControl;
 using JetBrains.Util;
 
-namespace GammaJul.ForTea.Core.TemplateProcessing.Actions
+namespace JetBrains.ForTea.RdSupport.TemplateProcessing.Actions
 {
 	[ContextAction(
 		Name = "ExecuteTemplate",
@@ -47,7 +48,7 @@ namespace GammaJul.ForTea.Core.TemplateProcessing.Actions
 			Manager = dataProvider.Solution.GetComponent<T4DirectiveInfoManager>();
 			TargetExtension = File?.GetTargetExtension(Manager) ?? T4CSharpCodeGenerationUtils.DefaultTargetExtension;
 			DestinationFileName = FileName?.WithOtherExtension(TargetExtension);
-			Logger = JetBrains.Util.Logging.Logger.GetLogger<T4ExecuteTemplateContextAction>();
+			Logger = Util.Logging.Logger.GetLogger<T4ExecuteTemplateContextAction>();
 		}
 
 		protected override Action<ITextControl> ExecutePsiTransaction(

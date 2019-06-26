@@ -1,9 +1,10 @@
 using GammaJul.ForTea.Core.Psi;
 using GammaJul.ForTea.Core.Psi.Directives;
+using GammaJul.ForTea.Core.TemplateProcessing.CodeCollecting;
 using GammaJul.ForTea.Core.Tree;
 using JetBrains.Annotations;
 
-namespace GammaJul.ForTea.Core.TemplateProcessing.CodeCollecting
+namespace JetBrains.ForTea.RdSupport.TemplateProcessing.CodeCollecting
 {
 	public sealed class T4CSharpCodeGenerationInfoCollector : T4CSharpCodeGenerationInfoCollectorBase
 	{

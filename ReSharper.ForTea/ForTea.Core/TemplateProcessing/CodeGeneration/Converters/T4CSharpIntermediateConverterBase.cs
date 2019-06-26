@@ -180,7 +180,7 @@ namespace GammaJul.ForTea.Core.TemplateProcessing.CodeGeneration.Converters
 		private void AppendBaseClass([NotNull] StringBuilder builder)
 		{
 			if (Result.HasBaseClass) return;
-			var provider = new T4TemplateBaseProvider(ResourceName);
+			var provider = new T4TemplateBaseProvider(ResourceName, this);
 			builder.AppendLine(provider.CreateTemplateBase(GeneratedBaseClassName));
 		}
 

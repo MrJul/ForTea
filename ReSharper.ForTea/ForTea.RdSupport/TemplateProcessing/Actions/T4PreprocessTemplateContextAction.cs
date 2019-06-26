@@ -1,21 +1,17 @@
 using System;
 using GammaJul.ForTea.Core.Psi.Directives;
-using GammaJul.ForTea.Core.TemplateProcessing.CodeGeneration;
-using GammaJul.ForTea.Core.TemplateProcessing.CodeGeneration.Generators;
+using GammaJul.ForTea.Core.TemplateProcessing;
 using GammaJul.ForTea.Core.Tree;
 using JetBrains.Annotations;
 using JetBrains.Application.Progress;
-using JetBrains.Diagnostics;
-using JetBrains.DocumentManagers.Transactions;
 using JetBrains.Extension;
+using JetBrains.ForTea.RdSupport.TemplateProcessing.CodeGeneration.Generators;
 using JetBrains.ProjectModel;
 using JetBrains.ReSharper.Feature.Services.ContextActions;
 using JetBrains.ReSharper.Host.Features.ProjectModel;
-using JetBrains.ReSharper.Psi;
 using JetBrains.TextControl;
-using JetBrains.Util;
 
-namespace GammaJul.ForTea.Core.TemplateProcessing.Actions
+namespace JetBrains.ForTea.RdSupport.TemplateProcessing.Actions
 {
 	[ContextAction(
 		Name = "PreprocessTemplate",

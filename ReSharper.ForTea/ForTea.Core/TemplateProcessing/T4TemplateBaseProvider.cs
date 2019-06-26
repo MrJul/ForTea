@@ -1,3 +1,4 @@
+using System;
 using System.IO;
 using System.Reflection;
 using JetBrains.Annotations;
@@ -13,9 +14,9 @@ namespace GammaJul.ForTea.Core.TemplateProcessing
 		private string BaseClassFormat { get; }
 
 		[NotNull]
-		private static string ReadBaseClass([NotNull] string resourceName)
+		private static string ReadBaseClass([NotNull] string resourceName, [NotNull] Type caller)
 		{
-			var assembly = Assembly.GetExecutingAssembly();
+			var assembly = Assembly.GetAssembly(caller);
 			using (var stream = assembly.GetManifestResourceStream(resourceName))
 			{
 				if (stream == null) return FallbackBaseClass;
@@ -30,6 +31,7 @@ namespace GammaJul.ForTea.Core.TemplateProcessing
 		public string CreateTemplateBase([CanBeNull] string baseClassName) =>
 			BaseClassFormat.Replace(InitialClassNamePlaceholder, baseClassName);
 
-		public T4TemplateBaseProvider([NotNull] string resourceName) => BaseClassFormat = ReadBaseClass(resourceName);
+		public T4TemplateBaseProvider([NotNull] string resourceName, [NotNull] object caller) =>
+			BaseClassFormat = ReadBaseClass(resourceName, caller.GetType());
 	}
 }

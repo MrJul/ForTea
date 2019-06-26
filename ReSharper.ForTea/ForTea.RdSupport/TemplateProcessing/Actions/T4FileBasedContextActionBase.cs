@@ -8,7 +8,7 @@ using JetBrains.ReSharper.Psi;
 using JetBrains.ReSharper.Psi.Tree;
 using JetBrains.Util;
 
-namespace GammaJul.ForTea.Core.TemplateProcessing.Actions
+namespace JetBrains.ForTea.RdSupport.TemplateProcessing.Actions
 {
 	public abstract class T4FileBasedContextActionBase : ContextActionBase
 	{

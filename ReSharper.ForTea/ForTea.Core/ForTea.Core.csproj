@@ -20,12 +20,10 @@
     </ItemGroup>
 
     <ItemGroup>
-        <Compile Remove="TemplateProcessing\CodeGeneration\TemplateBaseFull.cs" />
         <Compile Remove="TemplateProcessing\CodeGeneration\TemplateBaseStub.cs" />
     </ItemGroup>
 
     <ItemGroup>
-        <EmbeddedResource Include="TemplateProcessing\CodeGeneration\TemplateBaseFull.cs" />
         <EmbeddedResource Include="TemplateProcessing\CodeGeneration\TemplateBaseStub.cs" />
     </ItemGroup>
 </Project>

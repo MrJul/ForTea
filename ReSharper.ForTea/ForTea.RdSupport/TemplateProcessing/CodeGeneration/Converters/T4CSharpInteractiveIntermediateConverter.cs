@@ -3,7 +3,7 @@ using GammaJul.ForTea.Core.TemplateProcessing.CodeCollecting;
 using GammaJul.ForTea.Core.Tree;
 using JetBrains.Annotations;
 
-namespace GammaJul.ForTea.Core.TemplateProcessing.CodeGeneration.Converters
+namespace JetBrains.ForTea.RdSupport.TemplateProcessing.CodeGeneration.Converters
 {
 	public sealed class T4CSharpInteractiveIntermediateConverter : T4CSharpIntermediateConverter
 	{
@@ -18,6 +18,6 @@ namespace GammaJul.ForTea.Core.TemplateProcessing.CodeGeneration.Converters
 		protected override string GetNamespace() => null;
 
 		protected override void AppendFileSuffix(T4CSharpCodeGenerationResult result) =>
-			result.Builder.Append($"Console.WriteLine(new {GeneratedClassName}().TransformText());");
+			result.Builder.Append($"Console.Write(new {GeneratedClassName}().TransformText());");
 	}
 }

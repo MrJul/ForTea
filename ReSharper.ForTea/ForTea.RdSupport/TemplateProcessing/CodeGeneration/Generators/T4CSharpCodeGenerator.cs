@@ -1,16 +1,19 @@
 using GammaJul.ForTea.Core.Psi.Directives;
 using GammaJul.ForTea.Core.TemplateProcessing.CodeCollecting;
 using GammaJul.ForTea.Core.TemplateProcessing.CodeGeneration.Converters;
+using GammaJul.ForTea.Core.TemplateProcessing.CodeGeneration.Generators;
 using GammaJul.ForTea.Core.Tree;
 using JetBrains.Annotations;
+using JetBrains.ForTea.RdSupport.TemplateProcessing.CodeCollecting;
+using JetBrains.ForTea.RdSupport.TemplateProcessing.CodeGeneration.Converters;
 
-namespace GammaJul.ForTea.Core.TemplateProcessing.CodeGeneration.Generators
+namespace JetBrains.ForTea.RdSupport.TemplateProcessing.CodeGeneration.Generators
 {
 	/// <summary>
 	/// This class preprocesses T4 file
 	/// to produce C# file that can be compiled and run correctly.
 	/// </summary>
-	internal class T4CSharpCodeGenerator : T4CSharpCodeGeneratorBase
+	public class T4CSharpCodeGenerator : T4CSharpCodeGeneratorBase
 	{
 		public T4CSharpCodeGenerator(
 			[NotNull] IT4File file,
