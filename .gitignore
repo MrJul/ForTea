@@ -8,3 +8,5 @@
 **/_ReSharper.Caches
 **/.idea
 NuGet.config
+
+*/out/
