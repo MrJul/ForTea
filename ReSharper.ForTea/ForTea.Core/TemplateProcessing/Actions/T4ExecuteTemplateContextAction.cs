@@ -11,8 +11,10 @@ using JetBrains.Annotations;
 using JetBrains.Application.Processes;
 using JetBrains.Application.Progress;
 using JetBrains.Diagnostics;
+using JetBrains.Lifetimes;
 using JetBrains.ProjectModel;
 using JetBrains.ReSharper.Feature.Services.ContextActions;
+using JetBrains.ReSharper.Host.Features.BackgroundTasks;
 using JetBrains.ReSharper.Host.Features.Interactive.Csi;
 using JetBrains.ReSharper.Host.Features.Processes;
 using JetBrains.ReSharper.Host.Features.ProjectModel;
@@ -27,7 +29,7 @@ namespace GammaJul.ForTea.Core.TemplateProcessing.Actions
 		Group = "T4",
 		Disabled = false,
 		Priority = 1)]
-	public sealed class T4GenerateTemplateContextAction : T4FileBasedContextActionBase
+	public sealed class T4ExecuteTemplateContextAction : T4FileBasedContextActionBase
 	{
 		[NotNull] private const string Message = "Execute T4 design-time template";
 		protected override string DestinationFileName { get; }
@@ -39,13 +41,13 @@ namespace GammaJul.ForTea.Core.TemplateProcessing.Actions
 		[NotNull]
 		private ILogger Logger { get; }
 
-		public T4GenerateTemplateContextAction([NotNull] LanguageIndependentContextActionDataProvider dataProvider) :
+		public T4ExecuteTemplateContextAction([NotNull] LanguageIndependentContextActionDataProvider dataProvider) :
 			base(dataProvider.PsiFile as IT4File)
 		{
 			Manager = dataProvider.Solution.GetComponent<T4DirectiveInfoManager>();
 			TargetExtension = File?.GetTargetExtension(Manager) ?? T4CSharpCodeGenerationUtils.DefaultTargetExtension;
 			DestinationFileName = FileName?.WithOtherExtension(TargetExtension);
-			Logger = JetBrains.Util.Logging.Logger.GetLogger<T4GenerateTemplateContextAction>();
+			Logger = JetBrains.Util.Logging.Logger.GetLogger<T4ExecuteTemplateContextAction>();
 		}
 
 		protected override Action<ITextControl> ExecutePsiTransaction(
@@ -53,24 +55,46 @@ namespace GammaJul.ForTea.Core.TemplateProcessing.Actions
 			IProgressIndicator progress
 		) => textControl => solution.InvokeUnderTransaction(cookie =>
 		{
+			var lifetimeDefinition = LaunchProgress(progress, solution);
 			string tmpFilePath = FindFreshTmpFilePath(FileName?.WithoutExtension())?.FullPath;
 			if (tmpFilePath == null) throw new InvalidOperationException();
-
 			GenerateCode(tmpFilePath);
 			var destinationFile = GetOrCreateDestinationFile(cookie);
 			Assertion.Assert(destinationFile != null, "destinationFile != null");
-			PerformBackgroundWorkAsync(solution, tmpFilePath, destinationFile);
+			PerformBackgroundWorkAsync(solution, tmpFilePath, destinationFile, lifetimeDefinition);
 		});
+
+		// TODO: add more informative messages to progress indicator
+		[CanBeNull]
+		private LifetimeDefinition LaunchProgress([NotNull] IProgressIndicator progress, [NotNull] ISolution solution)
+		{
+			if (!(progress is IProgressIndicatorModel model)) return null;
+			progress.Start(1);
+			progress.Advance();
+			var task = RiderBackgroundTaskBuilder
+				.FromProgressIndicator(model)
+				.AsIndeterminate()
+				.WithHeader("Executing template")
+				.Build();
+			var taskHost = solution.GetComponent<RiderBackgroundTaskHost>();
+
+			var solutionLifetime = solution.GetLifetime();
+			var lifetimeDefinition = solutionLifetime.CreateNested();
+			taskHost.AddNewTask(lifetimeDefinition.Lifetime, task);
+			return lifetimeDefinition;
+		}
 
 		private async void PerformBackgroundWorkAsync(
 			[NotNull] ISolution solution,
 			[NotNull] string tmpFilePath,
-			[NotNull] IProjectFile destinationFile
+			[NotNull] IProjectFile destinationFile,
+			[CanBeNull] LifetimeDefinition definition
 		)
 		{
 			string result = await ExecuteScriptAsync(solution, tmpFilePath);
 			await SaveResultAsync(destinationFile, result);
 			await Cleanup(tmpFilePath);
+			definition?.Terminate();
 		}
 
 		// TODO: remove logging
