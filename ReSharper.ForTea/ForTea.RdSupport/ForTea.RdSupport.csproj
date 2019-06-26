@@ -17,6 +17,7 @@
             <PrivateAssets>all</PrivateAssets>
             <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
         </PackageReference>
+        <PackageReference Include="JetBrains.Roslyn.References.Repack" Version="42.42.20190303.172953" />
     </ItemGroup>
 
     <ItemGroup>
