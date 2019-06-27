@@ -17,7 +17,8 @@ namespace GammaJul.ForTea.Core.Psi.Modules {
 
 	/// <summary>
 	/// Manages <see cref="IT4FilePsiModule"/> for T4 files.
-	/// Contains common implementation for <see cref="T4ProjectPsiModuleHandler"/> and <see cref="T4MiscFilesProjectPsiModuleProvider"/>.
+	/// Contains common implementation for <see cref="T4ProjectPsiModuleHandler"/>
+	/// and <see cref="T4MiscFilesProjectPsiModuleProvider"/>.
 	/// </summary>
 	internal sealed class T4PsiModuleProvider : IDisposable {
 

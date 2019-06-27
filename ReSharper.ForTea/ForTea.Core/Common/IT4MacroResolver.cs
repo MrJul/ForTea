@@ -15,6 +15,7 @@ namespace GammaJul.ForTea.Core.Common
 			T4TemplateInfo info
 		);
 
+		// TODO: move somewhere else. Wtf Macro resolver handles assemblies?
 		void InvalidateAssemblies(
 			[NotNull] T4FileDataDiff dataDiff,
 			ref bool hasChanges,
