@@ -7,9 +7,9 @@ using JetBrains.ForTea.RdSupport.TemplateProcessing.CodeGeneration.Converters;
 
 namespace JetBrains.ForTea.RdSupport.TemplateProcessing.CodeGeneration.Generators
 {
-	public sealed class T4CSharpInteractiveCodeGenerator : T4CSharpCodeGenerator
+	public sealed class T4CSharpExecutableCodeGenerator : T4CSharpCodeGenerator
 	{
-		public T4CSharpInteractiveCodeGenerator(
+		public T4CSharpExecutableCodeGenerator(
 			[NotNull] IT4File file,
 			[NotNull] T4DirectiveInfoManager manager
 		) : base(file, manager)
@@ -18,6 +18,6 @@ namespace JetBrains.ForTea.RdSupport.TemplateProcessing.CodeGeneration.Generator
 
 		protected override T4CSharpIntermediateConverterBase CreateConverter(
 			T4CSharpCodeGenerationIntermediateResult intermediateResult
-		) => new T4CSharpInteractiveIntermediateConverter(intermediateResult, File);
+		) => new T4CSharpExecutableIntermediateConverter(intermediateResult, File);
 	}
 }

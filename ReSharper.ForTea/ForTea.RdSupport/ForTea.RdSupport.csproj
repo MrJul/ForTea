@@ -21,15 +21,17 @@
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\ForTea.Core\ForTea.Core.csproj" />
+        <ProjectReference Include="..\ForTea.Core\ForTea.Core.csproj" />
     </ItemGroup>
 
     <ItemGroup>
         <Compile Remove="TemplateProcessing\CodeGeneration\TemplateBaseFull.cs" />
+        <Compile Remove="TemplateProcessing\CodeGeneration\TemplateBaseFullExecutableSuffix.cs" />
     </ItemGroup>
-    
+
     <ItemGroup>
-      <EmbeddedResource Include="TemplateProcessing\CodeGeneration\TemplateBaseFull.cs" />
+        <EmbeddedResource Include="TemplateProcessing\CodeGeneration\TemplateBaseFull.cs" />
+        <EmbeddedResource Include="TemplateProcessing\CodeGeneration\TemplateBaseFullExecutableSuffix.cs" />
     </ItemGroup>
 
 </Project>

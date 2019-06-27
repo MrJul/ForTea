@@ -33,8 +33,7 @@ namespace GammaJul.ForTea.Core.TemplateProcessing.CodeGeneration.Converters
 		public T4CSharpCodeGenerationResult Convert()
 		{
 			var result = new T4CSharpCodeGenerationResult(File);
-			AppendFilePrefix(result);
-			
+
 			string ns = GetNamespace();
 			bool hasNamespace = !string.IsNullOrEmpty(ns);
 			if (hasNamespace)
@@ -49,21 +48,28 @@ namespace GammaJul.ForTea.Core.TemplateProcessing.CodeGeneration.Converters
 				AppendNamespaceContents(result);
 			}
 
-			AppendFileSuffix(result);
-
 			return result;
 		}
 
-		protected virtual void AppendFileSuffix([NotNull] T4CSharpCodeGenerationResult result)
+		private void AppendNamespaceContents([NotNull] T4CSharpCodeGenerationResult result)
+		{
+			AppendNamespaceContentPrefix(result);
+			AppendImports(result);
+			AppendClass(result);
+			AppendBaseClass(result.Builder);
+			AppendNamespaceContentSuffix(result);
+		}
+
+		protected virtual void AppendNamespaceContentSuffix([NotNull] T4CSharpCodeGenerationResult result)
 		{
 		}
 
-		protected virtual void AppendFilePrefix([NotNull] T4CSharpCodeGenerationResult result)
+		protected virtual void AppendNamespaceContentPrefix([NotNull] T4CSharpCodeGenerationResult result)
 		{
 		}
 
 		[CanBeNull]
-		protected virtual string GetNamespace()
+		private string GetNamespace()
 		{
 			var sourceFile = File.GetSourceFile();
 			var projectFile = sourceFile?.ToProjectFile();
@@ -73,12 +79,10 @@ namespace GammaJul.ForTea.Core.TemplateProcessing.CodeGeneration.Converters
 			return T4CSharpCodeGenerationUtils.ChooseBetterNamespace(ns, ns2);
 		}
 
-		private void AppendNamespaceContents([NotNull] T4CSharpCodeGenerationResult result)
+		private void AppendImports(T4CSharpCodeGenerationResult result)
 		{
 			result.Builder.AppendLine("using System;");
 			result.Append(Result.CollectedImports);
-			AppendClass(result);
-			AppendBaseClass(result.Builder);
 		}
 
 		private void AppendClass([NotNull] T4CSharpCodeGenerationResult result)
@@ -180,8 +184,8 @@ namespace GammaJul.ForTea.Core.TemplateProcessing.CodeGeneration.Converters
 		private void AppendBaseClass([NotNull] StringBuilder builder)
 		{
 			if (Result.HasBaseClass) return;
-			var provider = new T4TemplateBaseProvider(ResourceName, this);
-			builder.AppendLine(provider.CreateTemplateBase(GeneratedBaseClassName));
+			var provider = new T4TemplateResourceProvider(ResourceName, this);
+			builder.AppendLine(provider.ProcessResource(GeneratedBaseClassName));
 		}
 
 		[NotNull]

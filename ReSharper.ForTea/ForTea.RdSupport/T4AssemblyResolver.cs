@@ -5,6 +5,8 @@ using GammaJul.ForTea.Core.Psi;
 using JetBrains.Application;
 using JetBrains.DataFlow;
 using JetBrains.Diagnostics;
+using JetBrains.Metadata.Reader.API;
+using JetBrains.Util.Reflection;
 
 namespace JetBrains.ForTea.RdSupport
 {
@@ -18,14 +20,19 @@ namespace JetBrains.ForTea.RdSupport
 				return assemblyReference;
 
 			// Maybe the assembly is in the same folder as the text template that called the directive?
-			string path = (info.File.ParentFolder?.Path?.ToString()).NotNull();
-			string candidate = Path.Combine(path, assemblyReference);
+			string folderPath = (info.File.ParentFolder?.Location?.FullPath).NotNull();
+			string candidate = Path.Combine(folderPath, assemblyReference);
 
 			if (File.Exists(candidate))
 				return candidate;
 
-			// This can be customized to search specific paths for the file or to search the GAC.
-			// This can be customized to accept paths to search as command line arguments.
+			var assemblyNameInfo = AssemblyNameInfoFactory.Create(assemblyReference);
+			var resolvedPath = CurrentRuntimeAssemblyResolvers
+				.CreateInstance()
+				.TryResolveAssemblyPath(assemblyNameInfo);
+
+			if (resolvedPath?.ExistsFile == true)
+				return resolvedPath.FullPath;
 
 			// If we cannot do better, return the original file name.
 			return assemblyReference;

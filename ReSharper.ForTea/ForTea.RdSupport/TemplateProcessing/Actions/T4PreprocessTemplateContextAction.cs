@@ -21,12 +21,11 @@ namespace JetBrains.ForTea.RdSupport.TemplateProcessing.Actions
 		Priority = 1)]
 	public sealed class T4PreprocessTemplateContextAction : T4FileBasedContextActionBase
 	{
-		[NotNull] public const string DefaultDestinationFileName = "TextTransformation.cs";
+		[NotNull] public const string PreprocessResultExtension = "cs";
 		[NotNull] private const string Message = "Preprocess T4 template";
 
 		protected override string DestinationFileName =>
-			FileName?.WithOtherExtension(T4CSharpCodeGenerationUtils.PreprocessResultExtension)
-			?? DefaultDestinationFileName;
+			FileName.WithOtherExtension(PreprocessResultExtension);
 
 		public T4PreprocessTemplateContextAction([NotNull] LanguageIndependentContextActionDataProvider dataProvider) :
 			base(dataProvider.PsiFile as IT4File)
@@ -39,12 +38,11 @@ namespace JetBrains.ForTea.RdSupport.TemplateProcessing.Actions
 			IProgressIndicator progress
 		) => _ => solution.InvokeUnderTransaction(cookie =>
 		{
-			if (File == null) return;
+			// TODO: do this work in background
 			var manager = solution.GetComponent<T4DirectiveInfoManager>();
 			var generator = new T4CSharpCodeGenerator(File, manager);
 			string message = generator.Generate().Builder.ToString();
 			var destinationFile = GetOrCreateDestinationFile(cookie);
-			if (destinationFile == null) return;
 			// TODO: use better writing methods
 			using (var writeStream = destinationFile.CreateWriteStream())
 			{

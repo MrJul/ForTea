@@ -14,15 +14,13 @@ using Microsoft.VisualStudio.Shell.Interop;
 namespace JetBrains.ForTea.VsSupport
 {
 	[ShellComponent]
-	public sealed class T4MacroResolver : IT4MacroResolver
+	public sealed class T4MacroResolver : T4MacroResolverBase
 	{
-		[NotNull]
-		private IT4AssemblyResolver AssemblyResolver { get; }
+		public T4MacroResolver(IT4AssemblyResolver resolver) : base(resolver)
+		{
+		}
 
-		public T4MacroResolver(IT4AssemblyResolver assemblyResolver) =>
-			AssemblyResolver = assemblyResolver;
-
-		public IReadOnlyDictionary<string, string> Resolve(
+		public override IReadOnlyDictionary<string, string> Resolve(
 			IEnumerable<string> macros,
 			T4TemplateInfo info
 		)
@@ -60,44 +58,10 @@ namespace JetBrains.ForTea.VsSupport
 			return result;
 		}
 
-		public void InvalidateAssemblies(
-			T4FileDataDiff dataDiff,
-			ref bool hasChanges,
-			T4TemplateInfo info,
-			T4AssemblyReferenceManager referenceManager
-		)
-		{
-			using (AssemblyResolver.Prepare(info))
-			{
-				// removes the assembly references from the old assembly directives
-				foreach (string assembly in
-					from it in dataDiff.RemovedAssemblies select AssemblyResolver.Resolve(info, it)
-				)
-				{
-					if (!referenceManager.References.TryGetValue(assembly, out IAssemblyCookie cookie))
-						continue;
-
-					referenceManager.References.Remove(assembly);
-					hasChanges = true;
-					cookie.Dispose();
-				}
-
-				// adds assembly references from the new assembly directives
-				foreach (string addedAssembly in
-					from it in dataDiff.AddedAssemblies select AssemblyResolver.Resolve(info, it)
-				)
-				{
-					if (referenceManager.References.ContainsKey(addedAssembly))
-						continue;
-
-					IAssemblyCookie cookie = referenceManager.TryAddReference(addedAssembly);
-					if (cookie != null)
-						hasChanges = true;
-				}
-			}
-		}
-
-		/// <summary>The <see cref="IVsHierarchy"/> representing the project file normally implements <see cref="IVsBuildMacroInfo"/>.</summary>
+		/// <summary>
+		/// The <see cref="IVsHierarchy"/> representing the project file
+		/// normally implements <see cref="IVsBuildMacroInfo"/>.
+		/// </summary>
 		/// <returns>An instance of <see cref="IVsBuildMacroInfo"/> if found.</returns>
 		[CanBeNull]
 		[SuppressMessage("ReSharper", "SuspiciousTypeConversion.Global")]

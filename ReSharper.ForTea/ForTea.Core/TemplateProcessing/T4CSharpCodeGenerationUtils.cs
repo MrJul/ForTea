@@ -10,9 +10,7 @@ namespace GammaJul.ForTea.Core.TemplateProcessing
 {
 	public static class T4CSharpCodeGenerationUtils
 	{
-		[NotNull] public const string CSharpInteractiveExtension = "csx";
-		[NotNull] public const string PreprocessResultExtension = "cs";
-		[NotNull] public const string DefaultTargetExtension = PreprocessResultExtension;
+		[NotNull] public const string DefaultTargetExtension = "txt";
 
 		[NotNull]
 		// name is NOT supposed to contain extension
@@ -22,7 +20,7 @@ namespace GammaJul.ForTea.Core.TemplateProcessing
 			if (extension == null) throw new ArgumentNullException(nameof(extension));
 			return name + '.' + extension;
 		}
-		
+
 		[NotNull]
 		// name is supposed to contain extension
 		public static string WithOtherExtension([NotNull] this string name, [NotNull] string newExtension)
@@ -50,6 +48,7 @@ namespace GammaJul.ForTea.Core.TemplateProcessing
 		/// <returns>
 		/// Target extension. Leading dot, if any, is removed.
 		/// </returns>
+		[NotNull]
 		public static string GetTargetExtension(
 			[NotNull] this IT4File file,
 			[NotNull] T4DirectiveInfoManager manager
@@ -80,6 +79,25 @@ namespace GammaJul.ForTea.Core.TemplateProcessing
 			if (first == null) return second;
 			if (second == null) return first;
 			return first.IsEmpty() ? second : first;
+		}
+
+		[NotNull]
+		public static FileSystemPath SelectFreshName(
+			[NotNull] this FileSystemPath path,
+			[NotNull] string fileName,
+			[NotNull] string fileExtension
+		)
+		{
+			// First, try simplest option
+			var fullPath = path.Combine(fileName.WithExtension(fileExtension));
+			if (!fullPath.ExistsFile) return fullPath;
+
+			for (int index = 2;; index += 1)
+			{
+				string newName = (fileName + index).WithExtension(fileExtension);
+				fullPath = path.Combine(newName);
+				if (!fullPath.ExistsFile) return fullPath;
+			}
 		}
 	}
 }
