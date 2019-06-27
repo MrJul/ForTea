@@ -28,10 +28,9 @@ namespace JetBrains.ForTea.RdSupport.TemplateProcessing.CodeCollecting
 			var result = intermediateResult.FeatureStarted
 				? intermediateResult.CollectedFeatures
 				: intermediateResult.CollectedTransformation;
-			var builder = result.Builder;
-			builder.Append("            this.Write(\"");
-			builder.Append(forAppending);
-			builder.AppendLine("\");");
+			result.Append("            this.Write(\"");
+			result.Append(forAppending);
+			result.AppendLine("\");");
 		}
 	}
 }

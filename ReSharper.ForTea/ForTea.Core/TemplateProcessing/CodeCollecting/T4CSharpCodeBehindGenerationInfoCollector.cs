@@ -21,9 +21,9 @@ namespace GammaJul.ForTea.Core.TemplateProcessing.CodeCollecting
 
 		protected override void AppendCode(T4CSharpCodeGenerationResult result, IT4Token token)
 		{
-			result.Builder.Append(CodeCommentStart);
+			result.Append(CodeCommentStart);
 			result.AppendMapped(token);
-			result.Builder.Append(CodeCommentEnd);
+			result.Append(CodeCommentEnd);
 		}
 
 		// There's no way tokens can code blocks, so there's no need to insert them into code behind

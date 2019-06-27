@@ -34,7 +34,7 @@ namespace GammaJul.ForTea.Core.TemplateProcessing.CodeCollecting
 		public bool HasHost { get; private set; }
 		public void AdvanceState([NotNull] ITreeNode element) => State = State.GetNextState(element);
 		public void RequireHost() => HasHost = true;
-		public bool HasBaseClass => !CollectedBaseClass.Builder.IsEmpty();
+		public bool HasBaseClass => !CollectedBaseClass.IsEmpty;
 
 		public T4CSharpCodeGenerationIntermediateResult([NotNull] IT4File file)
 		{

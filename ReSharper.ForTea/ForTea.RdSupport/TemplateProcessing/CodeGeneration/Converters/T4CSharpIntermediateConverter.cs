@@ -1,5 +1,5 @@
 using System.Collections.Generic;
-using System.Text;
+using GammaJul.ForTea.Core.Psi;
 using GammaJul.ForTea.Core.TemplateProcessing;
 using GammaJul.ForTea.Core.TemplateProcessing.CodeCollecting;
 using GammaJul.ForTea.Core.TemplateProcessing.CodeGeneration.Converters;
@@ -25,7 +25,7 @@ namespace JetBrains.ForTea.RdSupport.TemplateProcessing.CodeGeneration.Converter
 		protected sealed override string GeneratedClassName { get; }
 		protected sealed override string GeneratedBaseClassName { get; }
 
-		protected sealed override void AppendSyntheticAttribute(StringBuilder builder)
+		protected sealed override void AppendSyntheticAttribute(T4CSharpCodeGenerationResult result)
 		{
 			// Synthetic attribute is only used for avoiding completion.
 			// It is not valid during compilation,
@@ -34,39 +34,38 @@ namespace JetBrains.ForTea.RdSupport.TemplateProcessing.CodeGeneration.Converter
 
 		protected sealed override void AppendParameterInitialization(
 			IReadOnlyCollection<T4ParameterDescription> descriptions,
-			StringBuilder builder
-		)
+			T4CSharpCodeGenerationResult result)
 		{
-			builder.AppendLine("            if (Errors.HasErrors) return;");
+			result.AppendLine("            if (Errors.HasErrors) return;");
 			foreach (var description in descriptions)
 			{
-				builder.Append("            if (Session.ContainsKey(nameof(");
-				builder.Append(description.FieldNameString);
-				builder.AppendLine(")))");
-				builder.AppendLine("            {");
-				builder.Append("                ");
-				builder.Append(description.FieldNameString);
-				builder.Append(" = (");
-				builder.Append(description.TypeString);
-				builder.Append(") Session[nameof(");
-				builder.Append(description.FieldNameString);
-				builder.AppendLine(")];");
-				builder.AppendLine("            }");
-				builder.AppendLine("            else");
-				builder.AppendLine("            {");
-				builder.Append(
+				result.Append("            if (Session.ContainsKey(nameof(");
+				result.Append(description.FieldNameString);
+				result.AppendLine(")))");
+				result.AppendLine("            {");
+				result.Append("                ");
+				result.Append(description.FieldNameString);
+				result.Append(" = (");
+				result.Append(description.TypeString);
+				result.Append(") Session[nameof(");
+				result.Append(description.FieldNameString);
+				result.AppendLine(")];");
+				result.AppendLine("            }");
+				result.AppendLine("            else");
+				result.AppendLine("            {");
+				result.Append(
 					"                object data = global::System.Runtime.Remoting.Messaging.CallContext.LogicalGetData(nameof(");
-				builder.Append(description.FieldNameString);
-				builder.AppendLine("));");
-				builder.AppendLine("                if (data != null)");
-				builder.AppendLine("                {");
-				builder.Append("                    ");
-				builder.Append(description.FieldNameString);
-				builder.Append(" = (");
-				builder.Append(description.TypeString);
-				builder.AppendLine(") data;");
-				builder.AppendLine("                }");
-				builder.AppendLine("            }");
+				result.Append(description.FieldNameString);
+				result.AppendLine("));");
+				result.AppendLine("                if (data != null)");
+				result.AppendLine("                {");
+				result.Append("                    ");
+				result.Append(description.FieldNameString);
+				result.Append(" = (");
+				result.Append(description.TypeString);
+				result.AppendLine(") data;");
+				result.AppendLine("                }");
+				result.AppendLine("            }");
 			}
 		}
 	}

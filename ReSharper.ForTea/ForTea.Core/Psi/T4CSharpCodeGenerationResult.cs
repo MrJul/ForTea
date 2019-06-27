@@ -5,6 +5,7 @@ using JetBrains.Annotations;
 using JetBrains.ReSharper.Psi;
 using JetBrains.ReSharper.Psi.Impl.Shared;
 using JetBrains.ReSharper.Psi.Tree;
+using JetBrains.Util;
 
 namespace GammaJul.ForTea.Core.Psi {
 
@@ -13,7 +14,12 @@ namespace GammaJul.ForTea.Core.Psi {
 
 		/// <summary>Gets the string builder containing the generated text.</summary>
 		[NotNull]
-		public StringBuilder Builder { get; }
+		private StringBuilder Builder { get; }
+
+		[NotNull]
+		public string RawText => Builder.ToString();
+
+		public bool IsEmpty => Builder.IsEmpty();
 
 		/// <summary>Gets the generated range map.</summary>
 		[NotNull]
@@ -60,7 +66,13 @@ namespace GammaJul.ForTea.Core.Psi {
 			Builder.Append(otherResult.Builder);
 			GeneratedRangeMap.AppendWithShiftToGenerated(otherResult.GeneratedRangeMap, offset);
 		}
-		
+
+		public void Append([NotNull] string text) => Builder.Append(text);
+
+		public void AppendLine() => Builder.AppendLine();
+
+		public void AppendLine([NotNull] string text) => Builder.AppendLine(text);
+
 		/// <summary>Creates a new instance of <see cref="T4CSharpCodeGenerationResult"/> for a given file.</summary>
 		/// <param name="file">The T4 file that will be used for code-behind generation.</param>
 		public T4CSharpCodeGenerationResult([NotNull] IT4File file) {

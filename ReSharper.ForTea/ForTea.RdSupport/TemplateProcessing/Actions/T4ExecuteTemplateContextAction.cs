@@ -98,7 +98,7 @@ namespace JetBrains.ForTea.RdSupport.TemplateProcessing.Actions
 			[NotNull] LifetimeDefinition definition
 		)
 		{
-			string code = new T4CSharpExecutableCodeGenerator(File, Manager).Generate().Builder.ToString();
+			string code = new T4CSharpExecutableCodeGenerator(File, Manager).Generate().RawText;
 			var executablePath = CreateExecutable(solution, code, definition.Lifetime);
 			if (executablePath == null)
 			{

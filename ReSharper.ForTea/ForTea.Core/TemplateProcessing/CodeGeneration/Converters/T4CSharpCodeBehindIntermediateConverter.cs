@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Text;
+using GammaJul.ForTea.Core.Psi;
 using GammaJul.ForTea.Core.TemplateProcessing.CodeCollecting;
 using GammaJul.ForTea.Core.Tree;
 using JetBrains.Annotations;
@@ -26,13 +27,12 @@ namespace GammaJul.ForTea.Core.TemplateProcessing.CodeGeneration.Converters
 		protected override string GeneratedClassName => GeneratedClassNameString;
 		protected override string GeneratedBaseClassName => GeneratedBaseClassNameString;
 
-		protected override void AppendSyntheticAttribute(StringBuilder builder) =>
-			builder.AppendLine($"        [{SyntheticAttribute.Name}]");
+		protected override void AppendSyntheticAttribute(T4CSharpCodeGenerationResult result) =>
+			result.AppendLine($"        [{SyntheticAttribute.Name}]");
 
 		protected override void AppendParameterInitialization(
 			IReadOnlyCollection<T4ParameterDescription> descriptions,
-			StringBuilder builder
-		)
+			T4CSharpCodeGenerationResult result)
 		{
 			// There's no need to initialize parameters in code-behind since this code is never displayed anyway 
 		}

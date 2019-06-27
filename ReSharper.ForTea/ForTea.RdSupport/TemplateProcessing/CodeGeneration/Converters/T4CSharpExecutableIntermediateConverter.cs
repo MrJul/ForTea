@@ -22,7 +22,7 @@ namespace JetBrains.ForTea.RdSupport.TemplateProcessing.CodeGeneration.Converter
 		{
 			var provider = new T4TemplateResourceProvider(SuffixResource, this);
 			string suffix = provider.ProcessResource(GeneratedBaseClassName, GeneratedClassName);
-			result.Builder.Append(suffix);
+			result.Append(suffix);
 		}
 	}
 }

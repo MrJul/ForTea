@@ -46,7 +46,7 @@ namespace GammaJul.ForTea.Core.Psi {
 
 			return new T4SecondaryDocumentGenerationResult(
 				modificationInfo.SourceFile,
-				result.Builder.ToString(),
+				result.RawText,
 				csharpLanguageService.LanguageType,
 				new RangeTranslatorWithGeneratedRangeMap(result.GeneratedRangeMap),
 				csharpLanguageService.GetPrimaryLexerFactory(),

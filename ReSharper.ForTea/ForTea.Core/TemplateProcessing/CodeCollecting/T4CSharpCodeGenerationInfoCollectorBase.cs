@@ -119,15 +119,15 @@ namespace GammaJul.ForTea.Core.TemplateProcessing.CodeCollecting
 						? Result.CollectedFeatures
 						: Result.CollectedTransformation;
 					AppendExpressionWriting(result, codeToken);
-					result.Builder.AppendLine();
+					result.AppendLine();
 					break;
 				case T4FeatureBlock _:
 					AppendCode(Result.CollectedFeatures, codeToken);
-					Result.CollectedFeatures.Builder.AppendLine();
+					Result.CollectedFeatures.AppendLine();
 					break;
 				default:
 					AppendCode(Result.CollectedTransformation, codeToken);
-					Result.CollectedTransformation.Builder.AppendLine();
+					Result.CollectedTransformation.AppendLine();
 					break;
 			}
 		}
@@ -142,9 +142,9 @@ namespace GammaJul.ForTea.Core.TemplateProcessing.CodeCollecting
 			if (ns.First == null || ns.Second == null)
 				return;
 
-			Result.CollectedImports.Builder.Append("using ");
+			Result.CollectedImports.Append("using ");
 			Result.CollectedImports.AppendMapped(ns.Second, ns.First.GetTreeTextRange());
-			Result.CollectedImports.Builder.AppendLine(";");
+			Result.CollectedImports.AppendLine(";");
 		}
 
 		/// <summary>
@@ -181,12 +181,11 @@ namespace GammaJul.ForTea.Core.TemplateProcessing.CodeCollecting
 			[NotNull] IT4Token token
 		)
 		{
-			var builder = result.Builder;
-			builder.Append("            this.Write(");
-			builder.Append(ToStringConversionStart);
+			result.Append("            this.Write(");
+			result.Append(ToStringConversionStart);
 			AppendCode(result, token);
-			builder.Append(ToStringConversionEnd);
-			builder.Append(");");
+			result.Append(ToStringConversionEnd);
+			result.Append(");");
 		}
 
 		protected abstract void AppendToken(

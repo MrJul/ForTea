@@ -40,8 +40,7 @@ namespace JetBrains.ForTea.RdSupport.TemplateProcessing.Actions
 		{
 			// TODO: do this work in background
 			var manager = solution.GetComponent<T4DirectiveInfoManager>();
-			var generator = new T4CSharpCodeGenerator(File, manager);
-			string message = generator.Generate().Builder.ToString();
+			string message = new T4CSharpCodeGenerator(File, manager).Generate().RawText;
 			var destinationFile = GetOrCreateDestinationFile(cookie);
 			// TODO: use better writing methods
 			using (var writeStream = destinationFile.CreateWriteStream())

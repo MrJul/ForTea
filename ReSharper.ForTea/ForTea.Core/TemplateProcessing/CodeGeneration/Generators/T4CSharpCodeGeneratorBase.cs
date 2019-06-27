@@ -29,7 +29,7 @@ namespace GammaJul.ForTea.Core.TemplateProcessing.CodeGeneration.Generators
 			catch (T4OutputGenerationException)
 			{
 				var result = new T4CSharpCodeGenerationResult(File);
-				result.Builder.Append(DefaultErrorMessage);
+				result.Append(DefaultErrorMessage);
 				return result;
 			}
 		}
