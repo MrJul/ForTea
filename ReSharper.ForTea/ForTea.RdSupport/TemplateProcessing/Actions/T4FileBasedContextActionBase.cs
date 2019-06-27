@@ -30,6 +30,9 @@ namespace JetBrains.ForTea.RdSupport.TemplateProcessing.Actions
 		protected IProject Project { get; }
 
 		[NotNull]
+		protected ISolution Solution => Project.GetSolution();
+
+		[NotNull]
 		protected FileSystemPath FilePath => PsiSourceFile.GetLocation();
 
 		[NotNull]
@@ -61,7 +64,7 @@ namespace JetBrains.ForTea.RdSupport.TemplateProcessing.Actions
 		}
 
 		[SuppressMessage("ReSharper", "AssignNullToNotNullAttribute", Justification =
-			"If any propery is null, IsValid (and IsAvailable) will be false, and no methods will be called")]
+			"If any propery is null, IsAvailable will be false, and no methods will be called")]
 		protected T4FileBasedContextActionBase([CanBeNull] IT4File file)
 		{
 			IsValid = true;

@@ -1,8 +1,7 @@
 using System;
-using System.CodeDom.Compiler;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
-using GammaJul.ForTea.Core.Common;
 using GammaJul.ForTea.Core.Psi.Directives;
 using GammaJul.ForTea.Core.TemplateProcessing;
 using GammaJul.ForTea.Core.Tree;
@@ -14,6 +13,7 @@ using JetBrains.ProjectModel;
 using JetBrains.ReSharper.Feature.Services.ContextActions;
 using JetBrains.ReSharper.Host.Features.BackgroundTasks;
 using JetBrains.ReSharper.Host.Features.ProjectModel;
+using JetBrains.ReSharper.Psi.Modules;
 using JetBrains.TextControl;
 using JetBrains.Util;
 using Microsoft.CodeAnalysis;
@@ -29,32 +29,32 @@ namespace JetBrains.ForTea.RdSupport.TemplateProcessing.Actions
 		Priority = 1)]
 	public sealed class T4ExecuteTemplateContextAction : T4FileBasedContextActionBase
 	{
-		[NotNull] private const string DefaultConsoleApplicationExtension = "exe";
+		[NotNull] private const string DefaultExecutableExtension = "exe";
 		[NotNull] private const string Message = "Execute T4 design-time template";
-
-		[NotNull]
-		private string TemporaryExecutableNameBase => FileName.WithoutExtension();
-
+		[NotNull] private const string DefaultExecutableExtensionWithDot = "." + DefaultExecutableExtension;
 		protected override string DestinationFileName { get; }
 
 		[NotNull]
-		// TODO: store it in output folder
-		// TODO: use file name
-		private FileSystemPath TemporaryExecutableFilePath =>
-			DestinationFilePath.Parent.Combine("T4CompilationAssemblyName.exe");
-
-		private FileSystemPath GetTemporaryExecutablePath([NotNull] IT4Environment environment) => Project
-			.GetOutputDirectory(environment.TargetFrameworkId)
-			.SelectFreshName(TemporaryExecutableNameBase, DefaultConsoleApplicationExtension);
+		private FileSystemPath CreateTemporaryExecutable(Lifetime lifetime) =>
+			FileSystemDefinition.CreateTemporaryFile(lifetime, extensionWithDot: DefaultExecutableExtensionWithDot);
 
 		private T4DirectiveInfoManager Manager { get; }
 
 		[NotNull]
 		private string TargetExtension { get; }
 
+		/// See
+		/// <see cref="JetBrains.ForTea.RdSupport.TemplateProcessing.Actions.T4FileBasedContextActionBase">
+		/// base class
+		/// </see>
+		/// constructor for details
+		[SuppressMessage("ReSharper", "NotNullMemberIsNotInitialized"),
+		 SuppressMessage("ReSharper", "ConditionIsAlwaysTrueOrFalse"),
+		 SuppressMessage("ReSharper", "HeuristicUnreachableCode")]
 		public T4ExecuteTemplateContextAction([NotNull] LanguageIndependentContextActionDataProvider dataProvider) :
 			base(dataProvider.PsiFile as IT4File)
 		{
+			if (File == null) return;
 			Manager = dataProvider.Solution.GetComponent<T4DirectiveInfoManager>();
 			TargetExtension = File.GetTargetExtension(Manager);
 			DestinationFileName = FileName.WithOtherExtension(TargetExtension);
@@ -72,10 +72,15 @@ namespace JetBrains.ForTea.RdSupport.TemplateProcessing.Actions
 		});
 
 		// TODO: add more informative messages to progress indicator
-		[CanBeNull]
-		private LifetimeDefinition LaunchProgress([NotNull] IProgressIndicator progress, [NotNull] ISolution solution)
+		[NotNull]
+		private LifetimeDefinition LaunchProgress(
+			[NotNull] IProgressIndicator progress,
+			[NotNull] ISolution solution
+		)
 		{
-			if (!(progress is IProgressIndicatorModel model)) return null;
+			var solutionLifetime = solution.GetLifetime();
+			var definition = solutionLifetime.CreateNested();
+			if (!(progress is IProgressIndicatorModel model)) return definition;
 			progress.Start(1);
 			progress.Advance();
 			var task = RiderBackgroundTaskBuilder
@@ -83,30 +88,37 @@ namespace JetBrains.ForTea.RdSupport.TemplateProcessing.Actions
 				.AsIndeterminate()
 				.WithHeader("Executing template")
 				.Build();
-			var taskHost = solution.GetComponent<RiderBackgroundTaskHost>();
-
-			var solutionLifetime = solution.GetLifetime();
-			var lifetimeDefinition = solutionLifetime.CreateNested();
-			taskHost.AddNewTask(lifetimeDefinition.Lifetime, task);
-			return lifetimeDefinition;
+			solution.GetComponent<RiderBackgroundTaskHost>().AddNewTask(definition.Lifetime, task);
+			return definition;
 		}
 
 		private void PerformBackgroundWork(
 			[NotNull] ISolution solution,
 			[NotNull] IProjectFile destinationFile,
-			[CanBeNull] LifetimeDefinition definition
+			[NotNull] LifetimeDefinition definition
 		)
 		{
 			string code = new T4CSharpExecutableCodeGenerator(File, Manager).Generate().Builder.ToString();
-			Compile(solution, code);
-			Execute();
+			var executablePath = CreateExecutable(solution, code, definition.Lifetime);
+			if (executablePath == null)
+			{
+				definition.Terminate();
+				return;
+			}
+
+			Execute(executablePath);
 			Cleanup(code);
-			definition?.Terminate();
+			definition.Terminate();
 		}
 
 		// TODO: do NOT store all the data in a single string. It might be huge.
 		// TODO: use progress indicator
-		private void Compile([NotNull] ISolution solution, [NotNull] string code)
+		[CanBeNull]
+		private FileSystemPath CreateExecutable(
+			[NotNull] ISolution solution,
+			[NotNull] string code,
+			Lifetime lifetime
+		)
 		{
 			var options = new CSharpCompilationOptions(OutputKind.ConsoleApplication)
 				.WithOptimizationLevel(OptimizationLevel.Debug)
@@ -117,33 +129,39 @@ namespace JetBrains.ForTea.RdSupport.TemplateProcessing.Actions
 				CSharpParseOptions.Default.WithLanguageVersion(LanguageVersion.Latest));
 
 
-			// I need mscorlib and System.CodeDom
-			// TODO: avoid memory leaks
-			var reference1 = MetadataReference.CreateFromFile(typeof(object).Assembly.Location);
-			var reference2 = MetadataReference.CreateFromFile(typeof(CompilerError).Assembly.Location);
-
 			var compilation =
 				CSharpCompilation.Create("T4CompilationAssemblyName.exe",
 					new[] {syntaxTree},
 					options: options,
-					references: new[] {reference1, reference2});
+					references: ExtractReferences());
 
-			var errors = (compilation.GetDiagnostics()
+			var errors = compilation.GetDiagnostics()
 				.Where(diagnostic => diagnostic.Severity == DiagnosticSeverity.Error)
-				.Select(diagnostic => diagnostic.ToString())).ToList();
+				.Select(diagnostic => diagnostic.ToString()).ToList();
 			if (!errors.IsEmpty())
 			{
 				EmitErrors(errors);
-				return;
+				return null;
 			}
 
-			FileSystemDefinition.CreateTemporaryFile(Lifetime.Eternal);
 
 			// TODO: also generate pdb
-			compilation.Emit(TemporaryExecutableFilePath.FullPath);
+			var executablePath = CreateTemporaryExecutable(lifetime);
+			compilation.Emit(executablePath.FullPath);
+			return executablePath;
 		}
 
-		private void Execute()
+		private IEnumerable<MetadataReference> ExtractReferences() =>
+			Solution
+				.GetComponent<IPsiModules>()
+				.GetModuleReferences(PsiSourceFile.PsiModule)
+				.Select(it => it.Module)
+				.OfType<IAssemblyPsiModule>()
+				.Select(it => it.Assembly)
+				.SelectNotNull(it => it.Location)
+				.Select(it => MetadataReference.CreateFromFile(it.FullPath));
+
+		private void Execute([NotNull] FileSystemPath executablePath)
 		{
 #if false
 			var detector = solution.GetComponent<CSharpInteractiveDetector>();
