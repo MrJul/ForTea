@@ -13,20 +13,20 @@ using Microsoft.VisualStudio.TextTemplating.VSHost;
 namespace JetBrains.ForTea.VsSupport
 {
 	[ShellComponent]
-	public sealed class T4AssemblyResolver : IT4AssemblyResolver
+	public sealed class AssemblyNamePreprocessor : IT4AssemblyNamePreprocessor
 	{
 		[NotNull] private readonly Lazy<Optional<ITextTemplatingComponents>> _components;
 
 		[NotNull]
 		private Optional<ITextTemplatingComponents> Components => _components.Value;
 
-		public T4AssemblyResolver([NotNull] RawVsServiceProvider provider) =>
+		public AssemblyNamePreprocessor([NotNull] RawVsServiceProvider provider) =>
 			_components = Lazy.Of(() =>
 					new Optional<ITextTemplatingComponents>(provider.Value.GetService<STextTemplating, ITextTemplatingComponents>()),
 				true);
 
-		public string Resolve(T4TemplateInfo info, string assembly) =>
-			Components.CanBeNull?.Host?.ResolveAssemblyReference(assembly) ?? assembly;
+		public string Preprocess(T4TemplateInfo info, string assemblyName) =>
+			Components.CanBeNull?.Host?.ResolveAssemblyReference(assemblyName) ?? assemblyName;
 
 		public IDisposable Prepare(T4TemplateInfo info)
 		{

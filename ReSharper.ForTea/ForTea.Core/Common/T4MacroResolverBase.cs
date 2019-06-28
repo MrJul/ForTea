@@ -8,10 +8,10 @@ namespace GammaJul.ForTea.Core.Common
 	public abstract class T4MacroResolverBase : IT4MacroResolver
 	{
 		[NotNull]
-		private IT4AssemblyResolver AssemblyResolver { get; }
+		private IT4AssemblyNamePreprocessor AssemblyNamePreprocessor { get; }
 
-		protected T4MacroResolverBase([NotNull] IT4AssemblyResolver resolver) =>
-			AssemblyResolver = resolver;
+		protected T4MacroResolverBase([NotNull] IT4AssemblyNamePreprocessor preprocessor) =>
+			AssemblyNamePreprocessor = preprocessor;
 
 		public abstract IReadOnlyDictionary<string, string> Resolve(IEnumerable<string> macros, T4TemplateInfo info);
 
@@ -22,12 +22,12 @@ namespace GammaJul.ForTea.Core.Common
 			T4AssemblyReferenceManager referenceManager
 		)
 		{
-			using (AssemblyResolver.Prepare(info))
+			using (AssemblyNamePreprocessor.Prepare(info))
 			{
 				// removes the assembly references from the old assembly directives
 				foreach (string assembly in dataDiff
 					.RemovedAssemblies
-					.Select(it => AssemblyResolver.Resolve(info, it)))
+					.Select(it => AssemblyNamePreprocessor.Preprocess(info, it)))
 				{
 					bool assemblyExisted = referenceManager.References.TryGetValue(assembly, out var cookie);
 					if (!assemblyExisted) continue;
@@ -39,7 +39,7 @@ namespace GammaJul.ForTea.Core.Common
 				// adds assembly references from the new assembly directives
 				foreach (var _ in dataDiff
 					.AddedAssemblies
-					.Select(it => AssemblyResolver.Resolve(info, it))
+					.Select(it => AssemblyNamePreprocessor.Preprocess(info, it))
 					.Where(addedAssembly => !referenceManager.References.ContainsKey(addedAssembly))
 					.Select(referenceManager.TryAddReference)
 					.Where(cookie => cookie != null))

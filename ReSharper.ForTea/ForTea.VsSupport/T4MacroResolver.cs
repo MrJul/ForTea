@@ -1,12 +1,10 @@
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
-using System.Linq;
 using GammaJul.ForTea.Core.Common;
 using GammaJul.ForTea.Core.Psi;
 using JetBrains.Annotations;
 using JetBrains.Application;
 using JetBrains.Interop.WinApi;
-using JetBrains.ProjectModel.Model2.Assemblies.Interfaces;
 using JetBrains.Util.Logging;
 using JetBrains.VsIntegration.ProjectModel;
 using Microsoft.VisualStudio.Shell.Interop;
@@ -16,7 +14,7 @@ namespace JetBrains.ForTea.VsSupport
 	[ShellComponent]
 	public sealed class T4MacroResolver : T4MacroResolverBase
 	{
-		public T4MacroResolver(IT4AssemblyResolver resolver) : base(resolver)
+		public T4MacroResolver(IT4AssemblyNamePreprocessor preprocessor) : base(preprocessor)
 		{
 		}
 

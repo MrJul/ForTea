@@ -14,33 +14,33 @@ namespace GammaJul.ForTea.Core.Psi
 	public sealed class T4AssemblyReferenceManager
 	{
 		[CanBeNull] private IModuleReferenceResolveManager _resolveManager;
-		[NotNull] private readonly IAssemblyFactory _assemblyFactory;
-		[NotNull] private readonly T4TemplateInfo _t4TemplateInfo;
-		[NotNull] private readonly IProject _resolveProject;
 
 		[NotNull]
-		public IModuleReferenceResolveContext ModuleReferenceResolveContext { get; }
+		private IModuleReferenceResolveManager ResolveManager
+			=> _resolveManager ??
+			   (_resolveManager = T4TemplateInfo.Solution.GetComponent<IModuleReferenceResolveManager>());
 
 		[NotNull]
 		public Dictionary<string, IAssemblyCookie> References { get; } =
 			new Dictionary<string, IAssemblyCookie>(StringComparer.OrdinalIgnoreCase);
 
-		/// <summary>Gets an instance of <see cref="IModuleReferenceResolveManager"/> sed to resolve assemblies.</summary>
 		[NotNull]
-		private IModuleReferenceResolveManager ResolveManager
-			=> _resolveManager ?? (_resolveManager = _t4TemplateInfo.Solution.GetComponent<IModuleReferenceResolveManager>());
+		private T4TemplateInfo T4TemplateInfo { get; }
+
+		[NotNull]
+		private IAssemblyFactory AssemblyFactory { get; }
+
+		public IModuleReferenceResolveContext ResolveContext { get; }
 
 		internal T4AssemblyReferenceManager(
 			[NotNull] IAssemblyFactory assemblyFactory,
 			[NotNull] T4TemplateInfo t4TemplateInfo,
-			[NotNull] IProject resolveProject,
-			[NotNull] IModuleReferenceResolveContext moduleReferenceResolveContext
+			[NotNull] IModuleReferenceResolveContext resolveContext
 		)
 		{
-			_assemblyFactory = assemblyFactory;
-			_t4TemplateInfo = t4TemplateInfo;
-			_resolveProject = resolveProject;
-			ModuleReferenceResolveContext = moduleReferenceResolveContext;
+			AssemblyFactory = assemblyFactory;
+			T4TemplateInfo = t4TemplateInfo;
+			ResolveContext = resolveContext;
 		}
 
 		/// <summary>Try to add an assembly reference to the list of assemblies.</summary>
@@ -94,11 +94,10 @@ namespace GammaJul.ForTea.Core.Psi
 		[CanBeNull]
 		private IAssemblyCookie CreateCookieCore([NotNull] AssemblyReferenceTarget target)
 		{
-			FileSystemPath result = ResolveManager.Resolve(target, _resolveProject, ModuleReferenceResolveContext);
-
-			return result != null
-				? _assemblyFactory.AddRef(result, "T4", ModuleReferenceResolveContext)
-				: null;
+			// ResolveManager uses providers, not contexts, to resolve references,
+			// so it's safe to provide project's contests
+			var path = ResolveManager.Resolve(target, T4TemplateInfo.Project, ResolveContext);
+			return path == null ? null : AssemblyFactory.AddRef(path, "T4", ResolveContext);
 		}
 	}
 }

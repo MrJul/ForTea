@@ -4,9 +4,10 @@ using JetBrains.Annotations;
 
 namespace GammaJul.ForTea.Core.Common
 {
-	public interface IT4AssemblyResolver
+	public interface IT4AssemblyNamePreprocessor
 	{
-		[NotNull] string Resolve([NotNull] T4TemplateInfo info, [NotNull] string assembly);
+		[NotNull]
+		string Preprocess([NotNull] T4TemplateInfo info, [NotNull] string assemblyName);
 
 		[NotNull]
 		IDisposable Prepare([NotNull] T4TemplateInfo info);

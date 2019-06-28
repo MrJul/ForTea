@@ -181,7 +181,7 @@ namespace GammaJul.ForTea.Core.Psi.Modules {
 				(pf, sf) => new T4PsiProjectFileProperties(pf, sf, true),
 				JetFunc<IProjectFile, IPsiSourceFile>.True,
 				documentManager,
-				_assemblyReferenceManager.ModuleReferenceResolveContext
+				_assemblyReferenceManager.ResolveContext
 			);
 
 		/// <summary>Disposes this instance.</summary>
@@ -235,12 +235,12 @@ namespace GammaJul.ForTea.Core.Psi.Modules {
 			_t4Environment = t4Environment;
 			_resolver = resolver;
 
-			IModuleReferenceResolveContext resolveContext = this.GetResolveContextEx(info.File);
+			var resolveContext = this.GetResolveContextEx(info.File);
 
 			_assemblyReferenceManager = new T4AssemblyReferenceManager(
 				info.Solution.GetComponent<IAssemblyFactory>(),
 				_info,
-				_info.Project, resolveContext
+				resolveContext
 			);
 
 			changeManager.RegisterChangeProvider(lifetime, ChangeProvider);

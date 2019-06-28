@@ -20,7 +20,7 @@ namespace JetBrains.ForTea.RdSupport
 			T4TemplateInfo info
 		) => KnownMacros;
 
-		public T4MacroResolver([NotNull] ISolution solution, [NotNull] IT4AssemblyResolver resolver) : base(resolver)
+		public T4MacroResolver([NotNull] ISolution solution, [NotNull] IT4AssemblyNamePreprocessor preprocessor) : base(preprocessor)
 		{
 			Solution = solution;
 			KnownMacros = new Dictionary<string, string>
