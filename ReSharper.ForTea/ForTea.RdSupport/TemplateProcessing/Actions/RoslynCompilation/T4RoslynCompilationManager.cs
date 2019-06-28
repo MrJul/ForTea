@@ -1,5 +1,8 @@
 using System.Collections.Generic;
+using System.Collections.Immutable;
 using System.Linq;
+using GammaJul.ForTea.Core.Common;
+using GammaJul.ForTea.Core.Psi;
 using JetBrains.Annotations;
 using JetBrains.Lifetimes;
 using JetBrains.ProjectModel;
@@ -17,25 +20,20 @@ namespace JetBrains.ForTea.RdSupport.TemplateProcessing.Actions.RoslynCompilatio
 		[NotNull] private const string DefaultExecutableExtensionWithDot = "." + DefaultExecutableExtension;
 
 		[NotNull]
-		private ISolution Solution { get; }
-
-		[NotNull]
 		private string Code { get; }
 
 		[NotNull]
-		private IPsiSourceFile PsiSourceFile { get; }
+		public T4PsiFileInfo Info { get; }
 
 		private Lifetime Lifetime { get; }
 
 		public T4RoslynCompilationManager(Lifetime lifetime,
-			[NotNull] ISolution solution,
 			[NotNull] string code,
-			[NotNull] IPsiSourceFile psiSourceFile
+			[NotNull] T4PsiFileInfo info
 		)
 		{
-			Solution = solution;
 			Code = code;
-			PsiSourceFile = psiSourceFile;
+			Info = info;
 			Lifetime = lifetime;
 		}
 
@@ -60,26 +58,36 @@ namespace JetBrains.ForTea.RdSupport.TemplateProcessing.Actions.RoslynCompilatio
 
 			// TODO: also generate pdb
 			var executablePath = CreateTemporaryExecutable(Lifetime);
-			var emitResult = compilation.Emit(executablePath.FullPath);
-			if (emitResult.Success) return new T4RoslynCompilationSuccess(executablePath, Solution);
-			return new T4RoslynCompilationFailure(emitResult
-				.Diagnostics
+
+			var errors = compilation
+				.GetDiagnostics()
 				.Where(diagnostic => diagnostic.Severity == DiagnosticSeverity.Error)
-				.Select(diagnostic => diagnostic.ToString()).ToList());
+				.Select(diagnostic => diagnostic.ToString()).ToList();
+			if (!errors.IsEmpty()) return new T4RoslynCompilationFailure(errors);
+
+			compilation.Emit(executablePath.FullPath);
+			return new T4RoslynCompilationSuccess(executablePath, Info.Solution);
 		}
 
 		[NotNull]
 		private FileSystemPath CreateTemporaryExecutable(Lifetime lifetime) =>
 			FileSystemDefinition.CreateTemporaryFile(lifetime, extensionWithDot: DefaultExecutableExtensionWithDot);
 
-		private IEnumerable<MetadataReference> ExtractReferences() =>
-			Solution
-				.GetComponent<IPsiModules>()
-				.GetModuleReferences(PsiSourceFile.PsiModule)
-				.Select(it => it.Module)
-				.OfType<IAssemblyPsiModule>()
-				.Select(it => it.Assembly)
-				.SelectNotNull(it => it.Location)
-				.Select(it => MetadataReference.CreateFromFile(it.FullPath));
+		private IEnumerable<MetadataReference> ExtractReferences()
+		{
+			var psiModule = Info.PsiSourceFile.PsiModule;
+			using (CompilationContextCookie.GetOrCreate(psiModule.GetResolveContextEx(Info.ProjectFile)))
+			{
+				return Info
+					.Solution
+					.GetComponent<IPsiModules>()
+					.GetModuleReferences(psiModule)
+					.Select(it => it.Module)
+					.OfType<IAssemblyPsiModule>()
+					.Select(it => it.Assembly)
+					.SelectNotNull(it => it.Location)
+					.Select(it => MetadataReference.CreateFromFile(it.FullPath));
+			}
+		}
 	}
 }

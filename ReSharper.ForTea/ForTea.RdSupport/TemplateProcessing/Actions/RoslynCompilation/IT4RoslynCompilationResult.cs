@@ -1,3 +1,4 @@
+using System.Threading.Tasks;
 using JetBrains.Annotations;
 using JetBrains.ProjectModel;
 
@@ -5,6 +6,6 @@ namespace JetBrains.ForTea.RdSupport.TemplateProcessing.Actions.RoslynCompilatio
 {
 	public interface IT4RoslynCompilationResult
 	{
-		void SaveResults([NotNull] IProjectFile destination);
+		Task SaveResultsAsync([NotNull] IProjectFile destination);
 	}
 }

@@ -17,7 +17,7 @@ namespace JetBrains.ForTea.RdSupport
 
 		public override IReadOnlyDictionary<string, string> Resolve(
 			IEnumerable<string> macros,
-			T4TemplateInfo info
+			T4ProjectFileInfo info
 		) => KnownMacros;
 
 		public T4MacroResolver([NotNull] ISolution solution, [NotNull] IT4AssemblyNamePreprocessor preprocessor) : base(preprocessor)

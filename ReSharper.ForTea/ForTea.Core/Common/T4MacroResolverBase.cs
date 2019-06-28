@@ -13,12 +13,12 @@ namespace GammaJul.ForTea.Core.Common
 		protected T4MacroResolverBase([NotNull] IT4AssemblyNamePreprocessor preprocessor) =>
 			AssemblyNamePreprocessor = preprocessor;
 
-		public abstract IReadOnlyDictionary<string, string> Resolve(IEnumerable<string> macros, T4TemplateInfo info);
+		public abstract IReadOnlyDictionary<string, string> Resolve(IEnumerable<string> macros, T4ProjectFileInfo info);
 
 		public void InvalidateAssemblies(
 			T4FileDataDiff dataDiff,
 			ref bool hasChanges,
-			T4TemplateInfo info,
+			T4ProjectFileInfo info,
 			T4AssemblyReferenceManager referenceManager
 		)
 		{

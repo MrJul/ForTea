@@ -9,7 +9,7 @@ namespace JetBrains.ForTea.VsSupport
 	internal static class Utils
 	{
 		[CanBeNull]
-		public static IVsHierarchy TryGetVsHierarchy([NotNull] T4TemplateInfo info) => info
+		public static IVsHierarchy TryGetVsHierarchy([NotNull] T4ProjectFileInfo info) => info
 			.Solution
 			.TryGetComponent<ProjectModelSynchronizer>()
 			?.TryGetHierarchyItemByProjectItem(info.Project, false)

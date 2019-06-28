@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.IO;
+using System.Threading.Tasks;
 using JetBrains.Annotations;
 using JetBrains.ProjectModel;
 
@@ -12,14 +13,14 @@ namespace JetBrains.ForTea.RdSupport.TemplateProcessing.Actions.RoslynCompilatio
 
 		public T4RoslynCompilationFailure([NotNull, ItemNotNull] IList<string> errors) => Errors = errors;
 
-		public void SaveResults(IProjectFile destination)
+		public async Task SaveResultsAsync(IProjectFile destination)
 		{
 			using (var stream = destination.CreateWriteStream())
 			using (var writer = new StreamWriter(stream))
 			{
 				foreach (string error in Errors)
 				{
-					writer.WriteLine(error);
+					await writer.WriteLineAsync(error);
 				}
 			}
 		}

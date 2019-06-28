@@ -18,14 +18,14 @@ namespace GammaJul.ForTea.Core.Psi
 		[NotNull]
 		private IModuleReferenceResolveManager ResolveManager
 			=> _resolveManager ??
-			   (_resolveManager = T4TemplateInfo.Solution.GetComponent<IModuleReferenceResolveManager>());
+			   (_resolveManager = ProjectFileInfo.Solution.GetComponent<IModuleReferenceResolveManager>());
 
 		[NotNull]
 		public Dictionary<string, IAssemblyCookie> References { get; } =
 			new Dictionary<string, IAssemblyCookie>(StringComparer.OrdinalIgnoreCase);
 
 		[NotNull]
-		private T4TemplateInfo T4TemplateInfo { get; }
+		private T4ProjectFileInfo ProjectFileInfo { get; }
 
 		[NotNull]
 		private IAssemblyFactory AssemblyFactory { get; }
@@ -34,12 +34,12 @@ namespace GammaJul.ForTea.Core.Psi
 
 		internal T4AssemblyReferenceManager(
 			[NotNull] IAssemblyFactory assemblyFactory,
-			[NotNull] T4TemplateInfo t4TemplateInfo,
+			[NotNull] T4ProjectFileInfo projectFileInfo,
 			[NotNull] IModuleReferenceResolveContext resolveContext
 		)
 		{
 			AssemblyFactory = assemblyFactory;
-			T4TemplateInfo = t4TemplateInfo;
+			ProjectFileInfo = projectFileInfo;
 			ResolveContext = resolveContext;
 		}
 
@@ -96,7 +96,7 @@ namespace GammaJul.ForTea.Core.Psi
 		{
 			// ResolveManager uses providers, not contexts, to resolve references,
 			// so it's safe to provide project's contests
-			var path = ResolveManager.Resolve(target, T4TemplateInfo.Project, ResolveContext);
+			var path = ResolveManager.Resolve(target, ProjectFileInfo.Project, ResolveContext);
 			return path == null ? null : AssemblyFactory.AddRef(path, "T4", ResolveContext);
 		}
 	}

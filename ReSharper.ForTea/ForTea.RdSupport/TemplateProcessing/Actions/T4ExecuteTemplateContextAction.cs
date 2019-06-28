@@ -1,5 +1,7 @@
 using System;
 using System.Diagnostics.CodeAnalysis;
+using System.Threading.Tasks;
+using GammaJul.ForTea.Core.Common;
 using GammaJul.ForTea.Core.Psi.Directives;
 using GammaJul.ForTea.Core.TemplateProcessing;
 using GammaJul.ForTea.Core.Tree;
@@ -12,6 +14,7 @@ using JetBrains.ProjectModel;
 using JetBrains.ReSharper.Feature.Services.ContextActions;
 using JetBrains.ReSharper.Host.Features.BackgroundTasks;
 using JetBrains.ReSharper.Host.Features.ProjectModel;
+using JetBrains.ReSharper.Resources.Shell;
 using JetBrains.TextControl;
 
 namespace JetBrains.ForTea.RdSupport.TemplateProcessing.Actions
@@ -26,7 +29,6 @@ namespace JetBrains.ForTea.RdSupport.TemplateProcessing.Actions
 	{
 		[NotNull] private const string Message = "Execute T4 design-time template";
 		protected override string DestinationFileName { get; }
-
 		private T4DirectiveInfoManager Manager { get; }
 
 		[NotNull]
@@ -57,7 +59,7 @@ namespace JetBrains.ForTea.RdSupport.TemplateProcessing.Actions
 			Check();
 			var lifetimeDefinition = LaunchProgress(progress, solution);
 			var destinationFile = GetOrCreateDestinationFile(cookie);
-			PerformBackgroundWork(solution, destinationFile, lifetimeDefinition);
+			PerformBackgroundWorkAsync(destinationFile, lifetimeDefinition);
 		});
 
 		// TODO: add more informative messages to progress indicator
@@ -81,17 +83,23 @@ namespace JetBrains.ForTea.RdSupport.TemplateProcessing.Actions
 			return definition;
 		}
 
-		private void PerformBackgroundWork(
-			[NotNull] ISolution solution,
+		private async void PerformBackgroundWorkAsync(
 			[NotNull] IProjectFile destination,
 			[NotNull] LifetimeDefinition definition
 		)
 		{
-			var generator = new T4CSharpExecutableCodeGenerator(File, Manager);
-			string code = generator.Generate().RawText;
-			var manager = new T4RoslynCompilationManager(definition.Lifetime, solution, code, PsiSourceFile);
-			var compilationResult = manager.Compile();
-			compilationResult.SaveResults(destination);
+			var result = await Task.Run(() =>
+			{
+				using (ReadLockCookie.Create())
+				{
+					var generator = new T4CSharpExecutableCodeGenerator(File, Manager);
+					string code = generator.Generate().RawText;
+					var info = T4PsiFileInfo.FromFile(PsiSourceFile);
+					var manager = new T4RoslynCompilationManager(definition.Lifetime, code, info);
+					return manager.Compile();
+				}
+			});
+			await result.SaveResultsAsync(destination);
 			definition.Terminate();
 		}
 

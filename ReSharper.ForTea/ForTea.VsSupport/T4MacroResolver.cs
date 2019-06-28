@@ -20,7 +20,7 @@ namespace JetBrains.ForTea.VsSupport
 
 		public override IReadOnlyDictionary<string, string> Resolve(
 			IEnumerable<string> macros,
-			T4TemplateInfo info
+			T4ProjectFileInfo info
 		)
 		{
 			var result = new Dictionary<string, string>();
@@ -63,7 +63,7 @@ namespace JetBrains.ForTea.VsSupport
 		/// <returns>An instance of <see cref="IVsBuildMacroInfo"/> if found.</returns>
 		[CanBeNull]
 		[SuppressMessage("ReSharper", "SuspiciousTypeConversion.Global")]
-		private static IVsBuildMacroInfo TryGetVsBuildMacroInfo([NotNull] T4TemplateInfo info) =>
+		private static IVsBuildMacroInfo TryGetVsBuildMacroInfo([NotNull] T4ProjectFileInfo info) =>
 			Utils.TryGetVsHierarchy(info) as IVsBuildMacroInfo;
 	}
 }

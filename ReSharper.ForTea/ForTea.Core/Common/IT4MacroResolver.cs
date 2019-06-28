@@ -12,14 +12,14 @@ namespace GammaJul.ForTea.Core.Common
 		/// <returns>Resolved macros</returns>
 		IReadOnlyDictionary<string, string> Resolve(
 			[NotNull] [ItemNotNull] IEnumerable<string> macros,
-			T4TemplateInfo info
+			T4ProjectFileInfo info
 		);
 
 		// TODO: move somewhere else. Wtf Macro resolver handles assemblies?
 		void InvalidateAssemblies(
 			[NotNull] T4FileDataDiff dataDiff,
 			ref bool hasChanges,
-			[NotNull] T4TemplateInfo info,
+			[NotNull] T4ProjectFileInfo info,
 			[NotNull] T4AssemblyReferenceManager referenceManager
 		);
 	}

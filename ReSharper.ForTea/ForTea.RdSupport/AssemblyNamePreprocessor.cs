@@ -12,7 +12,7 @@ namespace JetBrains.ForTea.RdSupport
 	public sealed class AssemblyNamePreprocessor : IT4AssemblyNamePreprocessor
 	{
 		// TODO: resolve macros if needed
-		public string Preprocess(T4TemplateInfo info, string assemblyName)
+		public string Preprocess(T4ProjectFileInfo info, string assemblyName)
 		{
 			// If the argument is the fully qualified path of an existing file, then we are done.
 			if (File.Exists(assemblyName)) return assemblyName;
@@ -34,6 +34,6 @@ namespace JetBrains.ForTea.RdSupport
 			return assemblyName;
 		}
 
-		public IDisposable Prepare(T4TemplateInfo info) => Disposable.Empty;
+		public IDisposable Prepare(T4ProjectFileInfo info) => Disposable.Empty;
 	}
 }

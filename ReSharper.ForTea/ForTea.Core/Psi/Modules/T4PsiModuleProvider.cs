@@ -134,7 +134,7 @@ namespace GammaJul.ForTea.Core.Psi.Modules {
 			LifetimeDefinition lifetimeDefinition = Lifetime.Define(_lifetime, "[T4]" + projectFile.Name);
 			var psiModule = new T4FilePsiModule(
 				lifetimeDefinition.Lifetime,
-				T4TemplateInfo.FromFile(projectFile),
+				T4ProjectFileInfo.FromFile(projectFile),
 				_changeManager,
 				_shellLocks,
 				_t4Environment,

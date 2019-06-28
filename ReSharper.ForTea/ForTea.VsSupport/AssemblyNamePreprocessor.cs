@@ -25,10 +25,10 @@ namespace JetBrains.ForTea.VsSupport
 					new Optional<ITextTemplatingComponents>(provider.Value.GetService<STextTemplating, ITextTemplatingComponents>()),
 				true);
 
-		public string Preprocess(T4TemplateInfo info, string assemblyName) =>
+		public string Preprocess(T4ProjectFileInfo info, string assemblyName) =>
 			Components.CanBeNull?.Host?.ResolveAssemblyReference(assemblyName) ?? assemblyName;
 
-		public IDisposable Prepare(T4TemplateInfo info)
+		public IDisposable Prepare(T4ProjectFileInfo info)
 		{
 			IVsHierarchy hierarchy = Utils.TryGetVsHierarchy(info);
 			ITextTemplatingComponents components = Components.CanBeNull;

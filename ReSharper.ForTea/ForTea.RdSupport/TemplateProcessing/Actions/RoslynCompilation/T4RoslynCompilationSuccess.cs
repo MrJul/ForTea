@@ -1,5 +1,6 @@
 using System.Diagnostics;
 using System.IO;
+using System.Threading.Tasks;
 using JetBrains.Annotations;
 using JetBrains.Application.Processes;
 using JetBrains.ProjectModel;
@@ -26,7 +27,7 @@ namespace JetBrains.ForTea.RdSupport.TemplateProcessing.Actions.RoslynCompilatio
 		}
 
 		// TODO: redirect output instead of storing all the data in a single string. It might be huge.
-		public void SaveResults(IProjectFile destination)
+		public async Task SaveResultsAsync(IProjectFile destination)
 		{
 			var patcher = Solution.GetComponent<RiderProcessStartInfoPatcher>();
 			var startInfo = new JetProcessStartInfo(new ProcessStartInfo
@@ -47,17 +48,17 @@ namespace JetBrains.ForTea.RdSupport.TemplateProcessing.Actions.RoslynCompilatio
 			};
 			process.Start();
 
-			string output = process.StandardOutput.ReadToEnd();
+			string output = await process.StandardOutput.ReadToEndAsync();
 			if (output.IsNullOrEmpty())
 			{
-				output = process.StandardError.ReadToEnd();
+				output = await process.StandardError.ReadToEndAsync();
 			}
 
 			process.WaitForExit();
 			using (var stream = destination.CreateWriteStream())
 			using (var writer = new StreamWriter(stream))
 			{
-				writer.Write(output);
+				await writer.WriteAsync(output);
 			}
 		}
 	}

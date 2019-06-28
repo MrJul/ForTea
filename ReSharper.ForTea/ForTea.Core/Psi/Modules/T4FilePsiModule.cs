@@ -30,7 +30,7 @@ namespace GammaJul.ForTea.Core.Psi.Modules {
 		[NotNull] private readonly ChangeManager _changeManager;
 		[NotNull] private readonly IShellLocks _shellLocks;
 		[NotNull] private readonly IT4Environment _t4Environment;
-		[NotNull] private readonly T4TemplateInfo _info;
+		[NotNull] private readonly T4ProjectFileInfo _info;
 		[NotNull] private readonly OutputAssemblies _outputAssemblies;
 		[NotNull] private readonly IT4MacroResolver _resolver;
 
@@ -212,7 +212,7 @@ namespace GammaJul.ForTea.Core.Psi.Modules {
 
 		public T4FilePsiModule(
 			Lifetime lifetime,
-			[NotNull] T4TemplateInfo info,
+			[NotNull] T4ProjectFileInfo info,
 			[NotNull] ChangeManager changeManager,
 			[NotNull] IShellLocks shellLocks,
 			[NotNull] IT4Environment t4Environment,
