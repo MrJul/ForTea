@@ -1,7 +1,8 @@
 using System;
+using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
+using System.Linq;
 using System.Threading.Tasks;
-using GammaJul.ForTea.Core.Common;
 using GammaJul.ForTea.Core.Psi.Directives;
 using GammaJul.ForTea.Core.TemplateProcessing;
 using GammaJul.ForTea.Core.Tree;
@@ -14,8 +15,12 @@ using JetBrains.ProjectModel;
 using JetBrains.ReSharper.Feature.Services.ContextActions;
 using JetBrains.ReSharper.Host.Features.BackgroundTasks;
 using JetBrains.ReSharper.Host.Features.ProjectModel;
+using JetBrains.ReSharper.Psi;
+using JetBrains.ReSharper.Psi.Modules;
 using JetBrains.ReSharper.Resources.Shell;
 using JetBrains.TextControl;
+using JetBrains.Util;
+using Microsoft.CodeAnalysis;
 
 namespace JetBrains.ForTea.RdSupport.TemplateProcessing.Actions
 {
@@ -57,50 +62,68 @@ namespace JetBrains.ForTea.RdSupport.TemplateProcessing.Actions
 		) => textControl => solution.InvokeUnderTransaction(cookie =>
 		{
 			Check();
-			var lifetimeDefinition = LaunchProgress(progress, solution);
 			var destinationFile = GetOrCreateDestinationFile(cookie);
-			PerformBackgroundWorkAsync(destinationFile, lifetimeDefinition);
+			var definition = solution.GetLifetime().CreateNested();
+			LaunchProgress(definition, progress, solution);
+			PerformBackgroundWorkAsync(definition, destinationFile, progress);
 		});
 
-		// TODO: add more informative messages to progress indicator
-		[NotNull]
-		private LifetimeDefinition LaunchProgress(
+		private void LaunchProgress(
+			LifetimeDefinition definition,
 			[NotNull] IProgressIndicator progress,
 			[NotNull] ISolution solution
 		)
 		{
-			var solutionLifetime = solution.GetLifetime();
-			var definition = solutionLifetime.CreateNested();
-			if (!(progress is IProgressIndicatorModel model)) return definition;
+			if (!(progress is IProgressIndicatorModel model)) return;
+			const string title = "Executing T4 Template";
 			progress.Start(1);
 			progress.Advance();
+			progress.TaskName = title;
+			progress.CurrentItemText = "Preparing";
 			var task = RiderBackgroundTaskBuilder
 				.FromProgressIndicator(model)
-				.AsIndeterminate()
-				.WithHeader("Executing template")
+				.WithTitle(title)
+				.AsCancelable(definition.Terminate)
 				.Build();
 			solution.GetComponent<RiderBackgroundTaskHost>().AddNewTask(definition.Lifetime, task);
-			return definition;
 		}
 
 		private async void PerformBackgroundWorkAsync(
+			[NotNull] LifetimeDefinition definition,
 			[NotNull] IProjectFile destination,
-			[NotNull] LifetimeDefinition definition
-		)
+			[NotNull] IProgressIndicator progress)
 		{
-			var result = await Task.Run(() =>
+			progress.CurrentItemText = "Generating code";
+			string code = await Task.Run(() =>
 			{
 				using (ReadLockCookie.Create())
 				{
 					var generator = new T4CSharpExecutableCodeGenerator(File, Manager);
-					string code = generator.Generate().RawText;
-					var info = T4PsiFileInfo.FromFile(PsiSourceFile);
-					var manager = new T4RoslynCompilationManager(definition.Lifetime, code, info);
-					return manager.Compile();
+					return generator.Generate().RawText;
 				}
 			});
-			await result.SaveResultsAsync(destination);
+			var manager = new T4RoslynCompilationManager(definition.Lifetime, code, Solution);
+			progress.CurrentItemText = "Compiling code";
+			var result = manager.Compile(ExtractReferences());
+			progress.CurrentItemText = "Executing code";
+			await result.SaveResultsAsync(definition.Lifetime, destination);
 			definition.Terminate();
+		}
+
+		private IEnumerable<MetadataReference> ExtractReferences()
+		{
+			var psiModule = PsiSourceFile.PsiModule;
+			using (CompilationContextCookie.GetOrCreate(psiModule.GetResolveContextEx(ProjectFile)))
+			{
+				return Solution
+					.GetComponent<IPsiModules>()
+					.GetModuleReferences(psiModule)
+					.Select(it => it.Module)
+					.OfType<IAssemblyPsiModule>()
+					.Select(it => it.Assembly)
+					.SelectNotNull(it => it.Location)
+					.Select(it => MetadataReference.CreateFromFile(it.FullPath));
+			}
 		}
 
 		public override string Text => Message;
