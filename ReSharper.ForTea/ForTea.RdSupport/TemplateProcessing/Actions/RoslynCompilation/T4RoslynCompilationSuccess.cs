@@ -6,6 +6,7 @@ using JetBrains.Lifetimes;
 using JetBrains.ProjectModel;
 using JetBrains.ReSharper.Host.Features.Processes;
 using JetBrains.Util;
+using JetBrains.Util.Logging;
 
 namespace JetBrains.ForTea.RdSupport.TemplateProcessing.Actions.RoslynCompilation
 {
@@ -53,22 +54,17 @@ namespace JetBrains.ForTea.RdSupport.TemplateProcessing.Actions.RoslynCompilatio
 				CreateNoWindow = true
 			});
 
-			// TODO: should this one be used?
 			var request = JetProcessRuntimeRequest.CreateFramework();
 			var patchResult = patcher.Patch(startInfo, request);
 			var process = new Process
 			{
 				StartInfo = patchResult.GetPatchedInfoOrThrow().ToProcessStartInfo()
 			};
-			lifetime.ThrowIfNotAlive();
-			lifetime.Bracket(() => process.Start(), () =>
-			{
-				if (!process.HasExited)
-					// TODO: race here
-					process.Kill();
-				process.WaitForExit();
-				process.Dispose();
-			});
+			lifetime.OnTermination(process);
+			lifetime.Bracket(
+				() => process.Start(),
+				() => Logger.CatchSilent(() => { if (!process.HasExited) process.KillTree(); })
+			);
 			return process;
 		}
 	}
