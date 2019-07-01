@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-using System.Text;
 using GammaJul.ForTea.Core.Psi;
 using GammaJul.ForTea.Core.TemplateProcessing.CodeCollecting;
 using GammaJul.ForTea.Core.Tree;
@@ -53,19 +52,14 @@ namespace GammaJul.ForTea.Core.TemplateProcessing.CodeGeneration.Converters
 
 		private void AppendNamespaceContents([NotNull] T4CSharpCodeGenerationResult result)
 		{
-			AppendNamespaceContentPrefix(result);
 			AppendImports(result);
+			AppendClasses(result);
+		}
+
+		protected virtual void AppendClasses(T4CSharpCodeGenerationResult result)
+		{
 			AppendClass(result);
 			AppendBaseClass(result);
-			AppendNamespaceContentSuffix(result);
-		}
-
-		protected virtual void AppendNamespaceContentSuffix([NotNull] T4CSharpCodeGenerationResult result)
-		{
-		}
-
-		protected virtual void AppendNamespaceContentPrefix([NotNull] T4CSharpCodeGenerationResult result)
-		{
 		}
 
 		[CanBeNull]
@@ -85,7 +79,7 @@ namespace GammaJul.ForTea.Core.TemplateProcessing.CodeGeneration.Converters
 			result.Append(Result.CollectedImports);
 		}
 
-		private void AppendClass([NotNull] T4CSharpCodeGenerationResult result)
+		protected void AppendClass([NotNull] T4CSharpCodeGenerationResult result)
 		{
 			AppendSyntheticAttribute(result);
 			result.Append($"    public class {GeneratedClassName} : ");
@@ -180,7 +174,7 @@ namespace GammaJul.ForTea.Core.TemplateProcessing.CodeGeneration.Converters
 			else result.Append(GeneratedBaseClassName);
 		}
 
-		private void AppendBaseClass([NotNull] T4CSharpCodeGenerationResult result)
+		protected void AppendBaseClass([NotNull] T4CSharpCodeGenerationResult result)
 		{
 			if (Result.HasBaseClass) return;
 			var provider = new T4TemplateResourceProvider(ResourceName, this);

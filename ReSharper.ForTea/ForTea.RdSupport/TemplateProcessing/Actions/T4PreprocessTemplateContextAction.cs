@@ -28,7 +28,7 @@ namespace JetBrains.ForTea.RdSupport.TemplateProcessing.Actions
 			FileName.WithOtherExtension(PreprocessResultExtension);
 
 		public T4PreprocessTemplateContextAction([NotNull] LanguageIndependentContextActionDataProvider dataProvider) :
-			base(dataProvider.PsiFile as IT4File)
+			base(dataProvider)
 		{
 		}
 

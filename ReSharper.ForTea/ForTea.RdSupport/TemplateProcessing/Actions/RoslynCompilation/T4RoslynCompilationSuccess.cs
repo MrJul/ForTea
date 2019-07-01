@@ -1,5 +1,4 @@
 using System.Diagnostics;
-using System.IO;
 using System.Threading.Tasks;
 using JetBrains.Annotations;
 using JetBrains.Application.Processes;
@@ -30,14 +29,6 @@ namespace JetBrains.ForTea.RdSupport.TemplateProcessing.Actions.RoslynCompilatio
 		public async Task SaveResultsAsync(Lifetime lifetime, IProjectFile destination)
 		{
 			var process = LaunchProcess(lifetime);
-			lifetime.OnTermination(() =>
-			{
-				if (!process.HasExited)
-					// TODO: race here
-					process.Kill();
-				process.WaitForExit();
-				process.Dispose();
-			});
 
 			using (var stream = destination.CreateWriteStream())
 			{
@@ -70,7 +61,14 @@ namespace JetBrains.ForTea.RdSupport.TemplateProcessing.Actions.RoslynCompilatio
 				StartInfo = patchResult.GetPatchedInfoOrThrow().ToProcessStartInfo()
 			};
 			lifetime.ThrowIfNotAlive();
-			process.Start();
+			lifetime.Bracket(() => process.Start(), () =>
+			{
+				if (!process.HasExited)
+					// TODO: race here
+					process.Kill();
+				process.WaitForExit();
+				process.Dispose();
+			});
 			return process;
 		}
 	}

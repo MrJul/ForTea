@@ -1,11 +1,11 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Threading.Tasks;
 using GammaJul.ForTea.Core.Psi.Directives;
 using GammaJul.ForTea.Core.TemplateProcessing;
-using GammaJul.ForTea.Core.Tree;
 using JetBrains.Annotations;
 using JetBrains.Application.Progress;
 using JetBrains.ForTea.RdSupport.TemplateProcessing.Actions.RoslynCompilation;
@@ -39,6 +39,8 @@ namespace JetBrains.ForTea.RdSupport.TemplateProcessing.Actions
 		[NotNull]
 		private string TargetExtension { get; }
 
+		private ILogger Logger { get; } = Util.Logging.Logger.GetLogger<T4ExecuteTemplateContextAction>();
+
 		/// See
 		/// <see cref="JetBrains.ForTea.RdSupport.TemplateProcessing.Actions.T4FileBasedContextActionBase">
 		/// base class
@@ -48,7 +50,7 @@ namespace JetBrains.ForTea.RdSupport.TemplateProcessing.Actions
 		 SuppressMessage("ReSharper", "ConditionIsAlwaysTrueOrFalse"),
 		 SuppressMessage("ReSharper", "HeuristicUnreachableCode")]
 		public T4ExecuteTemplateContextAction([NotNull] LanguageIndependentContextActionDataProvider dataProvider) :
-			base(dataProvider.PsiFile as IT4File)
+			base(dataProvider)
 		{
 			if (File == null) return;
 			Manager = dataProvider.Solution.GetComponent<T4DirectiveInfoManager>();
@@ -61,11 +63,15 @@ namespace JetBrains.ForTea.RdSupport.TemplateProcessing.Actions
 			IProgressIndicator progress
 		) => textControl => solution.InvokeUnderTransaction(cookie =>
 		{
+			var stopwatch = Stopwatch.StartNew();
 			Check();
 			var destinationFile = GetOrCreateDestinationFile(cookie);
 			var definition = solution.GetLifetime().CreateNested();
 			LaunchProgress(definition, progress, solution);
 			PerformBackgroundWorkAsync(definition, destinationFile, progress);
+			stopwatch.Stop();
+			if (stopwatch.ElapsedMilliseconds >= 50)
+				Logger.Warn($"Performance warning. Starting background task took too long: {stopwatch.Elapsed}");
 		});
 
 		private void LaunchProgress(
@@ -94,17 +100,22 @@ namespace JetBrains.ForTea.RdSupport.TemplateProcessing.Actions
 			[NotNull] IProgressIndicator progress)
 		{
 			progress.CurrentItemText = "Generating code";
-			string code = await Task.Run(() =>
+			var result = await Task.Run(() =>
 			{
+				string code;
+				IEnumerable<MetadataReference> metadataReferences;
 				using (ReadLockCookie.Create())
 				{
 					var generator = new T4CSharpExecutableCodeGenerator(File, Manager);
-					return generator.Generate().RawText;
+					code = generator.Generate().RawText;
+					metadataReferences = ExtractReferences();
 				}
-			});
-			var manager = new T4RoslynCompilationManager(definition.Lifetime, code, Solution);
-			progress.CurrentItemText = "Compiling code";
-			var result = manager.Compile(ExtractReferences());
+
+				var manager = new T4RoslynCompilationManager(definition.Lifetime, code, Solution);
+				progress.CurrentItemText = "Compiling code";
+				return manager.Compile(metadataReferences);
+			}, definition.Lifetime.ToCancellationToken());
+
 			progress.CurrentItemText = "Executing code";
 			await result.SaveResultsAsync(definition.Lifetime, destination);
 			definition.Terminate();

@@ -1,6 +1,7 @@
 using System;
 using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
+using GammaJul.ForTea.Core.Psi;
 using GammaJul.ForTea.Core.Tree;
 using JetBrains.Annotations;
 using JetBrains.Diagnostics;
@@ -8,6 +9,7 @@ using JetBrains.DocumentManagers.Transactions;
 using JetBrains.ProjectModel;
 using JetBrains.ReSharper.Feature.Services.ContextActions;
 using JetBrains.ReSharper.Psi;
+using JetBrains.ReSharper.Psi.Files;
 using JetBrains.ReSharper.Psi.Tree;
 using JetBrains.Util;
 
@@ -65,9 +67,10 @@ namespace JetBrains.ForTea.RdSupport.TemplateProcessing.Actions
 
 		[SuppressMessage("ReSharper", "AssignNullToNotNullAttribute", Justification =
 			"If any propery is null, IsAvailable will be false, and no methods will be called")]
-		protected T4FileBasedContextActionBase([CanBeNull] IT4File file)
+		protected T4FileBasedContextActionBase([NotNull] LanguageIndependentContextActionDataProvider provider)
 		{
 			IsValid = true;
+			var file = FindT4File(provider);
 			var psiSourceFile = file?.GetSourceFile();
 			var projectFile = psiSourceFile?.ToProjectFile();
 			var project = projectFile?.GetProject();
@@ -78,6 +81,10 @@ namespace JetBrains.ForTea.RdSupport.TemplateProcessing.Actions
 			Project = project;
 			if (File.ContainsErrorElement()) IsValid = false;
 		}
+
+		[CanBeNull]
+		private static IT4File FindT4File([NotNull] LanguageIndependentContextActionDataProvider provider) =>
+			provider.SourceFile.GetPsiFile<T4Language>(provider.DocumentCaret) as IT4File;
 
 		[NotNull]
 		protected abstract string DestinationFileName { get; }
