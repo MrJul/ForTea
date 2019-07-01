@@ -8,6 +8,7 @@ using JetBrains.Application;
 using JetBrains.ReSharper.Psi;
 using JetBrains.ReSharper.Psi.Tree;
 using JetBrains.Util;
+using JetBrains.Util.Extension;
 
 namespace GammaJul.ForTea.Core.TemplateProcessing.CodeCollecting
 {
@@ -44,6 +45,9 @@ namespace GammaJul.ForTea.Core.TemplateProcessing.CodeCollecting
 		{
 			Results.Push(new T4CSharpCodeGenerationIntermediateResult(File));
 			File.ProcessDescendants(this);
+			string suffix = Result.State.Produce();
+			// ReSharper disable once AssignNullToNotNullAttribute
+			if (!suffix.IsNullOrEmpty()) AppendTransformation(suffix);
 			return Results.Pop();
 		}
 
@@ -60,6 +64,7 @@ namespace GammaJul.ForTea.Core.TemplateProcessing.CodeCollecting
 
 		public void ProcessAfterInterior(ITreeNode element)
 		{
+			AppendRemainingMessage(element);
 			switch (element)
 			{
 				case IT4Include _:
@@ -73,10 +78,9 @@ namespace GammaJul.ForTea.Core.TemplateProcessing.CodeCollecting
 					HandleCodeBlock(codeBlock);
 					break;
 				case IT4Token token:
-					AppendToken(Result, token);
+					Result.State.ConsumeToken(token);
 					break;
 			}
-
 			Result.AdvanceState(element);
 		}
 
@@ -174,7 +178,6 @@ namespace GammaJul.ForTea.Core.TemplateProcessing.CodeCollecting
 			if (description == null) return;
 			Result.Append(description);
 		}
-		#endregion Utils
 
 		private void AppendExpressionWriting(
 			[NotNull] T4CSharpCodeGenerationResult result,
@@ -188,9 +191,17 @@ namespace GammaJul.ForTea.Core.TemplateProcessing.CodeCollecting
 			result.Append(");");
 		}
 
-		protected abstract void AppendToken(
-			[NotNull] T4CSharpCodeGenerationIntermediateResult intermediateResult,
-			[NotNull] IT4Token token);
+		private void AppendRemainingMessage([NotNull] ITreeNode lookahead)
+		{
+			if (lookahead is IT4Token) return;
+			string produced = Result.State.Produce();
+			if (produced.IsNullOrEmpty()) return;
+			// ReSharper disable once AssignNullToNotNullAttribute
+			AppendTransformation(produced);
+		}
+		#endregion Utils
+
+		protected abstract void AppendTransformation([NotNull] string message);
 
 		[NotNull]
 		protected abstract string ToStringConversionStart { get; }

@@ -20,16 +20,13 @@ namespace JetBrains.ForTea.RdSupport.TemplateProcessing.CodeCollecting
 		protected override void AppendCode(T4CSharpCodeGenerationResult result, IT4Token token) =>
 			result.AppendMapped(token);
 
-		protected override void AppendToken(T4CSharpCodeGenerationIntermediateResult intermediateResult, IT4Token token)
+		protected override void AppendTransformation(string message)
 		{
-			string forAppending = Result.State.ConvertTokenForAppending(token);
-			if (forAppending == null) return;
-			
-			var result = intermediateResult.FeatureStarted
-				? intermediateResult.CollectedFeatures
-				: intermediateResult.CollectedTransformation;
+			var result = Result.FeatureStarted
+				? Result.CollectedFeatures
+				: Result.CollectedTransformation;
 			result.Append("            this.Write(\"");
-			result.Append(forAppending);
+			result.Append(message);
 			result.AppendLine("\");");
 		}
 	}

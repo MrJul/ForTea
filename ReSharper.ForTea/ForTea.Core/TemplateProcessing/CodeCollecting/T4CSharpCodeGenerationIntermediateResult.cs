@@ -29,7 +29,7 @@ namespace GammaJul.ForTea.Core.TemplateProcessing.CodeCollecting
 		[NotNull, ItemNotNull]
 		public IReadOnlyList<T4ParameterDescription> ParameterDescriptions => MyParameterDescriptions;
 
-		public T4InfoCollectorStateBase State { get; private set; }
+		public IT4InfoCollectorState State { get; private set; }
 		public bool FeatureStarted => State.FeatureStarted;
 		public bool HasHost { get; private set; }
 		public void AdvanceState([NotNull] ITreeNode element) => State = State.GetNextState(element);

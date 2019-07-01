@@ -1,34 +1,38 @@
+using System.Text;
 using GammaJul.ForTea.Core.Parsing;
 using GammaJul.ForTea.Core.Tree;
 using JetBrains.ReSharper.Psi.Tree;
-using JetBrains.ReSharper.Psi.Util;
 
 namespace GammaJul.ForTea.Core.TemplateProcessing.CodeCollecting.State
 {
 	public sealed class T4InfoCollectorStateSeenFeature : T4InfoCollectorStateBase
 	{
-		public override T4InfoCollectorStateBase GetNextState(ITreeNode element)
+		private IT4Token LastToken { get; set; }
+
+		protected override IT4InfoCollectorState GetNextStateSafe(ITreeNode element)
 		{
 			switch (element)
 			{
-				case IT4Directive _: throw new T4OutputGenerationException(); // TODO: remove
 				case T4FeatureBlock _: return this;
 				default:
+					Die();
 					if (element.NodeType == T4TokenNodeTypes.NewLine)
 						return new T4InfoCollectorStateSeenFeatureAndNewLine();
 					else if (element.NodeType == T4TokenNodeTypes.Text)
-						return new T4InfoCollectorStateSeenFeatureAndText();
+						return new T4InfoCollectorStateSeenFeatureAndText(new StringBuilder(Convert(LastToken)));
 
 					throw new T4OutputGenerationException();
 			}
 		}
 
-		public override string ConvertTokenForAppending(IT4Token token)
+		protected override bool FeatureStartedSafe => false;
+
+		protected override void ConsumeTokenSafe(IT4Token token)
 		{
-			if (token.NodeType == T4TokenNodeTypes.NewLine) return null;
-			return StringLiteralConverter.EscapeToRegular(token.GetText());
+			if (token.NodeType != T4TokenNodeTypes.NewLine) LastToken = token;
 		}
 
-		public override bool FeatureStarted => false;
+		// This state never produces anything. Instead, it passes information to other states
+		protected override string ProduceSafe() => null;
 	}
 }

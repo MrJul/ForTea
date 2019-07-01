@@ -1,3 +1,4 @@
+using System.Text;
 using GammaJul.ForTea.Core.Tree;
 using JetBrains.Annotations;
 using JetBrains.ReSharper.Psi.Tree;
@@ -6,18 +7,25 @@ namespace GammaJul.ForTea.Core.TemplateProcessing.CodeCollecting.State
 {
 	public class T4InfoCollectorStateSeenFeatureAndText : T4InfoCollectorStateBase
 	{
-		public override T4InfoCollectorStateBase GetNextState(ITreeNode element)
+		[NotNull]
+		private StringBuilder Builder { get; }
+
+		public T4InfoCollectorStateSeenFeatureAndText([NotNull] StringBuilder builder) => Builder = builder;
+
+		protected override IT4InfoCollectorState GetNextStateSafe(ITreeNode element)
 		{
 			switch (element)
 			{
-				case IT4Directive _: throw new T4OutputGenerationException();
-				case T4FeatureBlock _: return new T4InfoCollectorStateSeenFeature();
-				default: return this;
+				case T4FeatureBlock _:
+					Die();
+					return new T4InfoCollectorStateSeenFeature();
+				case IT4Token _: return this;
+				default: throw new T4OutputGenerationException();
 			}
 		}
 
-		[NotNull]
-		public override string ConvertTokenForAppending(IT4Token token) => Convert(token);
-		public override bool FeatureStarted => true;
+		protected override bool FeatureStartedSafe => true;
+		protected override void ConsumeTokenSafe(IT4Token token) => Builder.Append(Convert(token));
+		protected override string ProduceSafe() => Builder.ToString();
 	}
 }
