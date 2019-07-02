@@ -58,11 +58,19 @@ namespace JetBrains.ForTea.RdSupport.TemplateProcessing.Actions
 		{
 			var result = DestinationProjectFile;
 			if (result != null) return result;
+			TouchDestinationFile();
 			Assertion.Assert(ProjectFolder != null, "ProjectFolder != null");
 			Assertion.Assert(DestinationFilePath != null, "DestinationFilePath != null");
 			if (!cookie.CanAddFile(ProjectFolder, DestinationFilePath, out string reason))
 				throw new InvalidOperationException(reason);
 			return cookie.AddFile(ProjectFolder, DestinationFilePath);
+		}
+
+		private void TouchDestinationFile()
+		{
+			using (System.IO.File.Create(DestinationFilePath.FullPath))
+			{
+			}
 		}
 
 		[SuppressMessage("ReSharper", "AssignNullToNotNullAttribute", Justification =
