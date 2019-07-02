@@ -6,7 +6,7 @@ using JetBrains.Application;
 using JetBrains.DataFlow;
 using JetBrains.Diagnostics;
 
-namespace JetBrains.ForTea.RdSupport
+namespace JetBrains.ForTea.RiderSupport
 {
 	[ShellComponent]
 	public sealed class AssemblyNamePreprocessor : IT4AssemblyNamePreprocessor

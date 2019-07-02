@@ -7,7 +7,7 @@ using JetBrains.Util;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 
-namespace JetBrains.ForTea.RdSupport.TemplateProcessing.Actions.RoslynCompilation
+namespace JetBrains.ForTea.RiderSupport.TemplateProcessing.Actions.RoslynCompilation
 {
 	public class T4RoslynCompilationManager
 	{

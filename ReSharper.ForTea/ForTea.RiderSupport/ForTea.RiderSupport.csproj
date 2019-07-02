@@ -6,9 +6,10 @@
         <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
         <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
         <DefineConstants>$(DefineConstants);JET_MODE_ASSERT;RIDER</DefineConstants>
-        <OutputPath>..\output\ForTea.RdSupport\$(Configuration)</OutputPath>
+        <OutputPath>..\output\ForTea.RiderSupport\$(Configuration)</OutputPath>
         <LangVersion>7.3</LangVersion>
-        <RootNamespace>JetBrains.ForTea.RdSupport</RootNamespace>
+        <RootNamespace>JetBrains.ForTea.RiderSupport</RootNamespace>
+        <AssemblyName>ForTea.RiderSupport</AssemblyName>
     </PropertyGroup>
 
     <ItemGroup>

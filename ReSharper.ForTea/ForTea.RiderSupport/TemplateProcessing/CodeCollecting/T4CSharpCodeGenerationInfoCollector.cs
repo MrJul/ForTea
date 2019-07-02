@@ -4,7 +4,7 @@ using GammaJul.ForTea.Core.TemplateProcessing.CodeCollecting;
 using GammaJul.ForTea.Core.Tree;
 using JetBrains.Annotations;
 
-namespace JetBrains.ForTea.RdSupport.TemplateProcessing.CodeCollecting
+namespace JetBrains.ForTea.RiderSupport.TemplateProcessing.CodeCollecting
 {
 	public sealed class T4CSharpCodeGenerationInfoCollector : T4CSharpCodeGenerationInfoCollectorBase
 	{

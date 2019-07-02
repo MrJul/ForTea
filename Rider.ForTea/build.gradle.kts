@@ -46,7 +46,7 @@ intellij {
 }
 
 val backendPluginName = "ReSharper.ForTea"
-val riderBackedPluginName = "ForTea.RdSupport"
+val riderBackedPluginName = "ForTea.RiderSupport"
 val backendPluginSolutionName = "ReSharper.ForTea.sln"
 
 val repoRoot = projectDir.parentFile!!
@@ -57,7 +57,7 @@ val buildConfiguration = ext.properties["BuildConfiguration"] ?: "Debug"
 
 val pluginFiles = listOf(
   "output/ForTea.Core/$buildConfiguration/ForTea.Core",
-  "output/ForTea.RdSupport/$buildConfiguration/ForTea.RdSupport"
+  "output/ForTea.RiderSupport/$buildConfiguration/ForTea.RiderSupport"
 )
 
 val nugetPackagesPath by lazy {

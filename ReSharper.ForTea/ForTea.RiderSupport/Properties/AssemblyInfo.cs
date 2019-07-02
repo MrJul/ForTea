@@ -4,11 +4,11 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("ForTea.RdSupport")]
+[assembly: AssemblyTitle("ForTea.RiderSupport")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("Kirill Glazyrin, JetBrains")]
-[assembly: AssemblyProduct("ForTea.RdSupport")]
+[assembly: AssemblyProduct("ForTea.RiderSupport")]
 [assembly: AssemblyCopyright("Copyright © Kirill Glazyrin, JetBrains, 2019")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]

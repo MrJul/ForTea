@@ -8,7 +8,7 @@ using JetBrains.ReSharper.Host.Features.Processes;
 using JetBrains.Util;
 using JetBrains.Util.Logging;
 
-namespace JetBrains.ForTea.RdSupport.TemplateProcessing.Actions.RoslynCompilation
+namespace JetBrains.ForTea.RiderSupport.TemplateProcessing.Actions.RoslynCompilation
 {
 	public sealed class T4RoslynCompilationSuccess : IT4RoslynCompilationResult
 	{

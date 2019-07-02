@@ -4,10 +4,10 @@ using GammaJul.ForTea.Core.TemplateProcessing.CodeGeneration.Converters;
 using GammaJul.ForTea.Core.TemplateProcessing.CodeGeneration.Generators;
 using GammaJul.ForTea.Core.Tree;
 using JetBrains.Annotations;
-using JetBrains.ForTea.RdSupport.TemplateProcessing.CodeCollecting;
-using JetBrains.ForTea.RdSupport.TemplateProcessing.CodeGeneration.Converters;
+using JetBrains.ForTea.RiderSupport.TemplateProcessing.CodeCollecting;
+using JetBrains.ForTea.RiderSupport.TemplateProcessing.CodeGeneration.Converters;
 
-namespace JetBrains.ForTea.RdSupport.TemplateProcessing.CodeGeneration.Generators
+namespace JetBrains.ForTea.RiderSupport.TemplateProcessing.CodeGeneration.Generators
 {
 	/// <summary>
 	/// This class preprocesses T4 file

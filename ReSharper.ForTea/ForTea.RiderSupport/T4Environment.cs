@@ -8,7 +8,7 @@ using JetBrains.ReSharper.Psi.CSharp;
 using JetBrains.Util;
 using JetBrains.Util.Dotnet.TargetFrameworkIds;
 
-namespace JetBrains.ForTea.RdSupport
+namespace JetBrains.ForTea.RiderSupport
 {
 	// TODO: use more accurate values
 	[ShellComponent]

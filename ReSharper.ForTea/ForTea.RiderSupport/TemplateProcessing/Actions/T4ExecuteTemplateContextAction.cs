@@ -8,8 +8,8 @@ using GammaJul.ForTea.Core.Psi.Directives;
 using GammaJul.ForTea.Core.TemplateProcessing;
 using JetBrains.Annotations;
 using JetBrains.Application.Progress;
-using JetBrains.ForTea.RdSupport.TemplateProcessing.Actions.RoslynCompilation;
-using JetBrains.ForTea.RdSupport.TemplateProcessing.CodeGeneration.Generators;
+using JetBrains.ForTea.RiderSupport.TemplateProcessing.Actions.RoslynCompilation;
+using JetBrains.ForTea.RiderSupport.TemplateProcessing.CodeGeneration.Generators;
 using JetBrains.Lifetimes;
 using JetBrains.ProjectModel;
 using JetBrains.ReSharper.Feature.Services.ContextActions;
@@ -22,7 +22,7 @@ using JetBrains.TextControl;
 using JetBrains.Util;
 using Microsoft.CodeAnalysis;
 
-namespace JetBrains.ForTea.RdSupport.TemplateProcessing.Actions
+namespace JetBrains.ForTea.RiderSupport.TemplateProcessing.Actions
 {
 	[ContextAction(
 		Name = "ExecuteTemplate",
@@ -42,7 +42,7 @@ namespace JetBrains.ForTea.RdSupport.TemplateProcessing.Actions
 		private ILogger Logger { get; } = Util.Logging.Logger.GetLogger<T4ExecuteTemplateContextAction>();
 
 		/// See
-		/// <see cref="JetBrains.ForTea.RdSupport.TemplateProcessing.Actions.T4FileBasedContextActionBase">
+		/// <see cref="T4FileBasedContextActionBase">
 		/// base class
 		/// </see>
 		/// constructor for details

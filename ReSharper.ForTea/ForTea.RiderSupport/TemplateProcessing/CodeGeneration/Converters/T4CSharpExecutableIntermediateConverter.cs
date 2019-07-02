@@ -4,12 +4,12 @@ using GammaJul.ForTea.Core.TemplateProcessing.CodeCollecting;
 using GammaJul.ForTea.Core.Tree;
 using JetBrains.Annotations;
 
-namespace JetBrains.ForTea.RdSupport.TemplateProcessing.CodeGeneration.Converters
+namespace JetBrains.ForTea.RiderSupport.TemplateProcessing.CodeGeneration.Converters
 {
 	public sealed class T4CSharpExecutableIntermediateConverter : T4CSharpIntermediateConverter
 	{
 		[NotNull] private const string SuffixResource =
-			"JetBrains.ForTea.RdSupport.TemplateProcessing.CodeGeneration.TemplateBaseFullExecutableSuffix.cs";
+			"JetBrains.ForTea.RiderSupport.TemplateProcessing.CodeGeneration.TemplateBaseFullExecutableSuffix.cs";
 
 		public T4CSharpExecutableIntermediateConverter(
 			[NotNull] T4CSharpCodeGenerationIntermediateResult result,

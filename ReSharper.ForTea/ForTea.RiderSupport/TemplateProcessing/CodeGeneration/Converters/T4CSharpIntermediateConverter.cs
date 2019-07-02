@@ -6,7 +6,7 @@ using GammaJul.ForTea.Core.TemplateProcessing.CodeGeneration.Converters;
 using GammaJul.ForTea.Core.Tree;
 using JetBrains.Annotations;
 
-namespace JetBrains.ForTea.RdSupport.TemplateProcessing.CodeGeneration.Converters
+namespace JetBrains.ForTea.RiderSupport.TemplateProcessing.CodeGeneration.Converters
 {
 	public class T4CSharpIntermediateConverter : T4CSharpIntermediateConverterBase
 	{
@@ -20,7 +20,7 @@ namespace JetBrains.ForTea.RdSupport.TemplateProcessing.CodeGeneration.Converter
 		}
 
 		protected sealed override string ResourceName =>
-			"JetBrains.ForTea.RdSupport.TemplateProcessing.CodeGeneration.TemplateBaseFull.cs";
+			"JetBrains.ForTea.RiderSupport.TemplateProcessing.CodeGeneration.TemplateBaseFull.cs";
 
 		protected sealed override string GeneratedClassName { get; }
 		protected sealed override string GeneratedBaseClassName { get; }

@@ -13,7 +13,7 @@ using JetBrains.ReSharper.Psi.Files;
 using JetBrains.ReSharper.Psi.Tree;
 using JetBrains.Util;
 
-namespace JetBrains.ForTea.RdSupport.TemplateProcessing.Actions
+namespace JetBrains.ForTea.RiderSupport.TemplateProcessing.Actions
 {
 	public abstract class T4FileBasedContextActionBase : ContextActionBase
 	{

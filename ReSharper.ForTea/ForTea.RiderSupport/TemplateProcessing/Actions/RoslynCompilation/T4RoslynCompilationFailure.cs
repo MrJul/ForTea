@@ -5,7 +5,7 @@ using JetBrains.Annotations;
 using JetBrains.Lifetimes;
 using JetBrains.ProjectModel;
 
-namespace JetBrains.ForTea.RdSupport.TemplateProcessing.Actions.RoslynCompilation
+namespace JetBrains.ForTea.RiderSupport.TemplateProcessing.Actions.RoslynCompilation
 {
 	public sealed class T4RoslynCompilationFailure : IT4RoslynCompilationResult
 	{

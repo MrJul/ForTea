@@ -4,7 +4,7 @@ using GammaJul.ForTea.Core.Psi;
 using JetBrains.Annotations;
 using JetBrains.ProjectModel;
 
-namespace JetBrains.ForTea.RdSupport
+namespace JetBrains.ForTea.RiderSupport
 {
 	// TODO: resolve more macros
 	[SolutionComponent]

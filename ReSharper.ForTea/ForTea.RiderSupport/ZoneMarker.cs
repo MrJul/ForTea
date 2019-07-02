@@ -5,7 +5,7 @@ using JetBrains.ReSharper.Feature.Services.Navigation;
 using JetBrains.ReSharper.Psi;
 using JetBrains.ReSharper.Psi.CSharp;
 
-namespace JetBrains.ForTea.RdSupport
+namespace JetBrains.ForTea.RiderSupport
 {
 	[ZoneMarker]
 	public class ZoneMarker : IPsiLanguageZone,
