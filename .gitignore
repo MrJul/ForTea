@@ -10,3 +10,4 @@
 NuGet.config
 
 */out/
+*/packages/
