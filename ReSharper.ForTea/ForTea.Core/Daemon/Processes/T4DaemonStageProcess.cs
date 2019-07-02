@@ -7,10 +7,10 @@ using JetBrains.ReSharper.Feature.Services.Daemon;
 using JetBrains.ReSharper.Psi;
 using JetBrains.ReSharper.Psi.Tree;
 
-namespace GammaJul.ForTea.Core.Daemon {
+namespace GammaJul.ForTea.Core.Daemon.Processes {
 
 	/// <summary>Base daemon stage process class for T4 stages.</summary>
-	internal abstract class T4DaemonStageProcess : IDaemonStageProcess, IRecursiveElementProcessor {
+	public abstract class T4DaemonStageProcess : IDaemonStageProcess, IRecursiveElementProcessor {
 
 		[NotNull] [ItemNotNull] private readonly List<HighlightingInfo> _highlightings = new List<HighlightingInfo>();
 

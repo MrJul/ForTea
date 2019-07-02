@@ -7,7 +7,7 @@ using JetBrains.ReSharper.Feature.Services.Daemon;
 using JetBrains.ReSharper.Psi;
 using JetBrains.Util;
 
-namespace GammaJul.ForTea.Core.Daemon {
+namespace GammaJul.ForTea.Core.Daemon.Stages {
 
 	/// <summary>Base class for every T4 daemon stage.</summary>
 	public abstract class T4DaemonStage : IDaemonStage {

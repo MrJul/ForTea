@@ -11,7 +11,7 @@ using JetBrains.ReSharper.Resources.Shell;
 using JetBrains.TextControl;
 using JetBrains.Util;
 
-namespace GammaJul.ForTea.Core.Intentions.QuickFixes {
+namespace GammaJul.ForTea.Core.Daemon.QuickFixes {
 
 	[QuickFix]
 	public class ChangeAttributeValueQuickFix : QuickFixBase {

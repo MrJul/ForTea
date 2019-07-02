@@ -12,7 +12,7 @@ using JetBrains.ReSharper.Psi.CSharp.Tree;
 using JetBrains.ReSharper.Psi.Util;
 using JetBrains.Util;
 
-namespace GammaJul.ForTea.Core.Daemon {
+namespace GammaJul.ForTea.Core.Daemon.Processes {
 
 	public class T4CSharpErrorProcess : CSharpIncrementalDaemonStageProcessBase {
 

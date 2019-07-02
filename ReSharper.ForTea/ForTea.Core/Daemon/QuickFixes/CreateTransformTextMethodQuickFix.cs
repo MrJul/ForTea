@@ -20,7 +20,7 @@ using JetBrains.ReSharper.Psi.Tree;
 using JetBrains.TextControl;
 using JetBrains.Util;
 
-namespace GammaJul.ForTea.Core.Intentions.QuickFixes {
+namespace GammaJul.ForTea.Core.Daemon.QuickFixes {
 
 	[QuickFix]
 	public class CreateTransformTextMethodQuickFix : QuickFixBase {

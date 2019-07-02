@@ -5,7 +5,7 @@ using JetBrains.ReSharper.Feature.Services.LiveTemplates.Macros;
 using JetBrains.ReSharper.Feature.Services.LiveTemplates.Macros.Implementations;
 using JetBrains.ReSharper.Feature.Services.LiveTemplates.Templates;
 
-namespace GammaJul.ForTea.Core.Intentions.QuickFixes {
+namespace GammaJul.ForTea.Core.Daemon.QuickFixes {
 
 	internal static class HotspotHelper {
 

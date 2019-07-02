@@ -15,7 +15,7 @@ using JetBrains.ReSharper.Resources.Shell;
 using JetBrains.TextControl;
 using JetBrains.Util;
 
-namespace GammaJul.ForTea.Core.Intentions.QuickFixes {
+namespace GammaJul.ForTea.Core.Daemon.QuickFixes {
 
 	/// <summary>Quick fix that add a missing token (usually block tags).</summary>
 	[QuickFix]

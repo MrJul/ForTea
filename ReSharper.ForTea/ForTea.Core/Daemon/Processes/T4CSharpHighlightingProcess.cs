@@ -11,7 +11,7 @@ using JetBrains.ReSharper.Psi.ExtensionsAPI.Tree;
 using JetBrains.ReSharper.Psi.Parsing;
 using JetBrains.ReSharper.Psi.Tree;
 
-namespace GammaJul.ForTea.Core.Daemon {
+namespace GammaJul.ForTea.Core.Daemon.Processes {
 	
 	/// <summary>
 	/// Highlights C# keywords, identifiers, etc.

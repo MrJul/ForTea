@@ -14,7 +14,7 @@ using JetBrains.ReSharper.Psi.Parsing;
 using JetBrains.ReSharper.Psi.Tree;
 using JetBrains.Util;
 
-namespace GammaJul.ForTea.Core.Daemon {
+namespace GammaJul.ForTea.Core.Daemon.Processes {
 
 	internal sealed class T4ErrorProcess : T4DaemonStageProcess {
 

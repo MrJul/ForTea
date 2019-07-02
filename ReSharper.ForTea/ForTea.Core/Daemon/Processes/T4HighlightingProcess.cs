@@ -6,7 +6,7 @@ using JetBrains.DocumentModel;
 using JetBrains.ReSharper.Feature.Services.Daemon;
 using JetBrains.ReSharper.Psi.Tree;
 
-namespace GammaJul.ForTea.Core.Daemon {
+namespace GammaJul.ForTea.Core.Daemon.Processes {
 
 	/// <summary>Process that highlights block tags and missing token errors.</summary>
 	internal sealed class T4HighlightingProcess : T4DaemonStageProcess {

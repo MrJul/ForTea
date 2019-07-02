@@ -1,10 +1,11 @@
+using GammaJul.ForTea.Core.Daemon.Processes;
 using GammaJul.ForTea.Core.Psi.Directives;
 using GammaJul.ForTea.Core.Tree;
 using JetBrains.Annotations;
 using JetBrains.ReSharper.Daemon.UsageChecking;
 using JetBrains.ReSharper.Feature.Services.Daemon;
 
-namespace GammaJul.ForTea.Core.Daemon {
+namespace GammaJul.ForTea.Core.Daemon.Stages {
 
 	/// <summary>Daemon stage that creates processes for adding error and warning highlights.</summary>
 	[DaemonStage(StagesBefore = new[] { typeof(T4HighlightingStage), typeof(CollectUsagesStage) })]

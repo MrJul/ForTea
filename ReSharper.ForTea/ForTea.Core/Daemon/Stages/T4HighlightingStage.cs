@@ -1,10 +1,11 @@
+using GammaJul.ForTea.Core.Daemon.Processes;
 using GammaJul.ForTea.Core.Tree;
 using JetBrains.ReSharper.Daemon.CSharp.Stages;
 using JetBrains.ReSharper.Daemon.Stages;
 using JetBrains.ReSharper.Daemon.UsageChecking;
 using JetBrains.ReSharper.Feature.Services.Daemon;
 
-namespace GammaJul.ForTea.Core.Daemon {
+namespace GammaJul.ForTea.Core.Daemon.Stages {
 
 	/// <summary>Daemon stage that creates processes for highlighting tokens.</summary>
 	[DaemonStage(

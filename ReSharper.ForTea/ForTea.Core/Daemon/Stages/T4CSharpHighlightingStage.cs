@@ -1,3 +1,4 @@
+using GammaJul.ForTea.Core.Daemon.Processes;
 using GammaJul.ForTea.Core.Psi;
 using JetBrains.Application.Settings;
 using JetBrains.ReSharper.Daemon.CSharp.Stages;
@@ -8,7 +9,7 @@ using JetBrains.ReSharper.Feature.Services.Daemon;
 using JetBrains.ReSharper.Psi;
 using JetBrains.ReSharper.Psi.CSharp.Tree;
 
-namespace GammaJul.ForTea.Core.Daemon {
+namespace GammaJul.ForTea.Core.Daemon.Stages {
 
 	// GlobalFileStructureCollectorStage is required before this stage (otherwise there will be an exception in CSharpIncrementalDaemonStageProcessBase).
 	// CollectUsagesStage must come after this stage if we want the highlightings to appear as fast as possible.
