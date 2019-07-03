@@ -1,9 +1,13 @@
 using System;
 using System.Linq;
 using GammaJul.ForTea.Core.Common;
+using GammaJul.ForTea.Core.Tree;
 using JetBrains.Annotations;
 using JetBrains.Application;
 using JetBrains.DataStructures;
+using JetBrains.ReSharper.Psi;
+using JetBrains.ReSharper.Psi.CSharp;
+using JetBrains.ReSharper.Psi.VB;
 
 namespace GammaJul.ForTea.Core.Psi.Directives {
 
@@ -45,6 +49,25 @@ namespace GammaJul.ForTea.Core.Psi.Directives {
 			=> String.IsNullOrEmpty(directiveName)
 				? null
 				: AllDirectives.FirstOrDefault(di => di.Name.Equals(directiveName, StringComparison.OrdinalIgnoreCase));
+
+		public PsiLanguageType GetLanguageType(IT4File file)
+		{
+			string name = file
+				.GetDirectives()
+				.FirstOrDefault(directive => directive.IsSpecificDirective(Template))
+				?.GetAttribute(Template.LanguageAttribute.Name)
+				?.GetValue();
+			switch (name)
+			{
+				case null:
+				case TemplateDirectiveInfo.CSharpLanguageAttributeValue:
+					return CSharpLanguage.Instance;
+				case TemplateDirectiveInfo.VBLanguageAttributeValue:
+					return VBLanguage.Instance;
+				default:
+					return UnknownLanguage.Instance;
+			}
+		}
 
 		public T4DirectiveInfoManager([NotNull] IT4Environment environment) {
 			Template = new TemplateDirectiveInfo(environment);

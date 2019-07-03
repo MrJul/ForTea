@@ -28,9 +28,9 @@ namespace GammaJul.ForTea.Core.Psi {
 		/// <summary>Generates a C# file from a T4 file.</summary>
 		/// <param name="modificationInfo">The modifications that occurred in the T4 file.</param>
 		public override ISecondaryDocumentGenerationResult Generate(PrimaryFileModificationInfo modificationInfo) {
-			if (!(modificationInfo.NewPsiFile is IT4File t4File))
-				return null;
-			 
+			if (!(modificationInfo.NewPsiFile is IT4File t4File)) return null;
+			if (!directiveInfoManager.GetLanguageType(t4File).Is<CSharpLanguage>()) return null;
+
 			var generator = new T4CSharpCodeBehindGenerator(t4File, directiveInfoManager);
 			T4CSharpCodeGenerationResult result = generator.Generate();
 
