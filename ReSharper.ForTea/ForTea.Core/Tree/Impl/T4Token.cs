@@ -6,7 +6,7 @@ using JetBrains.ReSharper.Psi.ExtensionsAPI.Tree;
 using JetBrains.ReSharper.Psi.Parsing;
 using JetBrains.Text;
 
-namespace GammaJul.ForTea.Core.Tree {
+namespace GammaJul.ForTea.Core.Tree.Impl {
 
 	/// <summary>Implementation of <see cref="IT4Token"/>.</summary>
 	public class T4Token : BindedToBufferLeafElement, IT4Token {

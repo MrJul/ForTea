@@ -6,6 +6,7 @@ using GammaJul.ForTea.Core.Psi;
 using GammaJul.ForTea.Core.Psi.Directives;
 using GammaJul.ForTea.Core.Psi.Modules;
 using GammaJul.ForTea.Core.Tree;
+using GammaJul.ForTea.Core.Tree.Impl;
 using JetBrains.Annotations;
 using JetBrains.Diagnostics;
 using JetBrains.ProjectModel;
@@ -267,6 +268,8 @@ namespace GammaJul.ForTea.Core.Parsing {
 				fileAttr.ValueError = String.Format(CultureInfo.InvariantCulture, "Unresolved file \"{0}\"", includePath);
 				return;
 			}
+
+			fileAttr.Reference = includePath;
 
 			if (!_existingIncludePaths.Add(includePath)) {
 				if (!once)

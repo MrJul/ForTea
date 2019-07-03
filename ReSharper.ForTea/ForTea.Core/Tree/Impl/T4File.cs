@@ -12,7 +12,7 @@ using JetBrains.ReSharper.Resources.Shell;
 using JetBrains.Text;
 using JetBrains.Util;
 
-namespace GammaJul.ForTea.Core.Tree {
+namespace GammaJul.ForTea.Core.Tree.Impl {
 
 	/// <summary>Implementation of <see cref="IT4File"/>.</summary>
 	internal sealed class T4File : FileElementBase, IT4File {

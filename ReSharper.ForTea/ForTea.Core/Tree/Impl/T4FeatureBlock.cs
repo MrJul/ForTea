@@ -2,7 +2,7 @@ using GammaJul.ForTea.Core.Parsing;
 using JetBrains.ReSharper.Psi.ExtensionsAPI.Tree;
 using JetBrains.ReSharper.Psi.Parsing;
 
-namespace GammaJul.ForTea.Core.Tree {
+namespace GammaJul.ForTea.Core.Tree.Impl {
 
 	/// <summary>Represents a feature block (&lt;#+ ... #&gt;).</summary>
 	public class T4FeatureBlock : T4CodeBlock {

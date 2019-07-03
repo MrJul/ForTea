@@ -4,7 +4,7 @@ using JetBrains.ReSharper.Psi.Files;
 using JetBrains.ReSharper.Psi.Tree;
 using JetBrains.Util;
 
-namespace GammaJul.ForTea.Core.Tree {
+namespace GammaJul.ForTea.Core.Tree.Impl {
 
 	/// <summary>A T4 include. This is not a directive, it contains the included file tree.</summary>
 	public sealed class T4Include : T4CompositeElement, IT4Include {

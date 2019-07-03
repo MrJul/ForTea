@@ -1,6 +1,6 @@
 using JetBrains.ReSharper.Psi.ExtensionsAPI.Tree;
 
-namespace GammaJul.ForTea.Core.Tree {
+namespace GammaJul.ForTea.Core.Tree.Impl {
 
 	/// <summary>Implementation of <see cref="ErrorElement"/> for a missing block end tag.</summary>
 	public class MissingTokenErrorElement : ErrorElement {

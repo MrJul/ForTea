@@ -8,7 +8,7 @@ using JetBrains.ReSharper.Psi.ExtensionsAPI.Tree;
 using JetBrains.ReSharper.Psi.Tree;
 using JetBrains.ReSharper.Resources.Shell;
 
-namespace GammaJul.ForTea.Core.Tree {
+namespace GammaJul.ForTea.Core.Tree.Impl {
 
 	/// <summary>Represents a directive, like <c>&lt;#@ import namespace="System"#&gt;</c></summary>
 	public class T4Directive : T4CompositeElement, IT4Directive {

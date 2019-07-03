@@ -1,5 +1,5 @@
 using GammaJul.ForTea.Core.Psi;
-using GammaJul.ForTea.Core.Tree;
+using GammaJul.ForTea.Core.Tree.Impl;
 using JetBrains.Annotations;
 using JetBrains.ReSharper.Feature.Services.Daemon;
 

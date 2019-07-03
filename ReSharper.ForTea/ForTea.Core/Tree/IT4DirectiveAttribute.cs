@@ -1,10 +1,11 @@
 using JetBrains.Annotations;
+using JetBrains.Util;
 
-namespace GammaJul.ForTea.Core.Tree {
-
+namespace GammaJul.ForTea.Core.Tree
+{
 	/// <summary>epresents a T4 directive attribute, like namespace in import directive.</summary>
-	public interface IT4DirectiveAttribute : IT4NamedNode {
-
+	public interface IT4DirectiveAttribute : IT4NamedNode
+	{
 		/// <summary>Gets the token representing the equal sign between the name and the value of this attribute.</summary>
 		/// <returns>An equal token, or <c>null</c> if none is available.</returns>
 		[CanBeNull]
@@ -24,6 +25,7 @@ namespace GammaJul.ForTea.Core.Tree {
 		[CanBeNull]
 		string ValueError { get; }
 
+		[CanBeNull]
+		FileSystemPath Reference { get; }
 	}
-
 }

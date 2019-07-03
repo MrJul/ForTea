@@ -1,4 +1,4 @@
-namespace GammaJul.ForTea.Core.Tree {
+namespace GammaJul.ForTea.Core.Tree.Impl {
 
 	public enum MissingTokenType {
 		BlockEnd,

@@ -1,4 +1,4 @@
-namespace GammaJul.ForTea.Core.Tree {
+namespace GammaJul.ForTea.Core.Tree.Impl {
 
 	/// <summary>Represents a token role inside a composite element.</summary>
 	public enum T4TokenRole : short {
