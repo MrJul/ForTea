@@ -11,8 +11,10 @@ using JetBrains.Annotations;
 using JetBrains.DocumentModel;
 using JetBrains.ReSharper.Feature.Services.Daemon;
 using JetBrains.ReSharper.Psi;
+using JetBrains.ReSharper.Psi.CSharp;
 using JetBrains.ReSharper.Psi.Parsing;
 using JetBrains.ReSharper.Psi.Tree;
+using JetBrains.ReSharper.Psi.VB;
 using JetBrains.Util;
 
 namespace GammaJul.ForTea.Core.Daemon.Processes {
@@ -36,6 +38,8 @@ namespace GammaJul.ForTea.Core.Daemon.Processes {
 		}
 
 		public override void ProcessBeforeInterior(ITreeNode element) {
+			AnalyzeUnsupportedLanguage(element);
+			
 			switch (element) {
 
 				case MissingTokenErrorElement errorElement:
@@ -79,6 +83,17 @@ namespace GammaJul.ForTea.Core.Daemon.Processes {
 			DocumentRange range = element.GetHighlightingRange().SetEndTo(File.GetDocumentRange().EndOffset);
 			AddHighlighting(range, new AfterLastFeatureHighlighting(element));
 			_afterLastFeatureErrorAdded = true;
+		}
+
+		private void AnalyzeUnsupportedLanguage([NotNull] ITreeNode element)
+		{
+			if (element.NodeType != T4TokenNodeTypes.Value) return;
+			if (!(element.Parent is IT4DirectiveAttribute attribute)) return;
+			if (!(attribute.Parent is T4Directive directive)) return;
+			if (!directive.IsSpecificDirective(_directiveInfoManager.Template)) return;
+			if (attribute.GetName() != _directiveInfoManager.Template.LanguageAttribute.Name) return;
+			if (_directiveInfoManager.GetLanguageType(File).Is<CSharpLanguage>()) return;
+			AddHighlighting(element.GetDocumentRange(), new UnsupportedLanguageHighlighting((IT4Token) element));
 		}
 
 		private void ProcessAttributeValue([NotNull] T4Token valueNode) {
