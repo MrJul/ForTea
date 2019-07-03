@@ -1,0 +1,15 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>net461</TargetFramework>
+    <AssemblyName>JetBrains.ForTea.Tests</AssemblyName>
+    <RootNamespace>JetBrains.ForTea.Tests</RootNamespace>
+    <LangVersion>7.2</LangVersion>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="JetBrains.Rider.SDK.Tests" Version="2019.1.2" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\ForTea.Core\ForTea.Core.csproj" />
+    <ProjectReference Include="..\..\ForTea.RiderSupport\ForTea.RiderSupport.csproj" />
+  </ItemGroup>
+</Project>

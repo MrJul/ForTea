@@ -1,4 +1,5 @@
 using System.Threading;
+using GammaJul.ForTea.Core.Common;
 using JetBrains.Application.BuildScript.Application.Zones;
 using JetBrains.ForTea.RiderSupport;
 using JetBrains.ReSharper.TestFramework;
@@ -8,9 +9,7 @@ using NUnit.Framework;
 
 [assembly: RequiresThread(ApartmentState.STA)]
 
-#pragma warning disable 169
-
-namespace ForTea.Tests
+namespace JetBrains.ForTea.Tests
 {
 	[ZoneDefinition]
 	public interface T4TestZone : ITestsEnvZone, IRequire<PsiFeatureTestZone>
@@ -20,11 +19,10 @@ namespace ForTea.Tests
 	[SetUpFixture]
 	public class TestEnvironment : ExtensionTestEnvironmentAssembly<T4TestZone>
 	{
-		// I'll reference here types from all the assemblies I use. Just in case.
-		// ReSharper disable once RedundantNameQualifier
-		private GammaJul.ForTea.Core.Common.IT4Environment fieldOfTypeFromForTea_Core;
-		// ReSharper disable once RedundantNameQualifier
-		private T4Environment fieldOfTypeFromForTea_RiderSupport;
+#pragma warning disable 169
+		// These fields are here to force load assemblies
+		private IT4Environment magic1; // ForTea.Core
+		private T4Environment magic2; // ForTea.RiderSupport
+#pragma warning restore 169
 	}
 }
-#pragma warning restore 169
