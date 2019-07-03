@@ -17,13 +17,12 @@ namespace JetBrains.ForTea.Tests
 	}
 
 	[SetUpFixture]
-	public class TestEnvironment : ExtensionTestEnvironmentAssembly<T4TestZone>
+	public class TestEnvironment : T4ExtensionTestEnvironmentAssembly<T4TestZone> // HACK
 	{
 #pragma warning disable 169
 		// These fields are here to force load assemblies
 		private IT4Environment magic1; // ForTea.Core
 		private T4Environment magic2; // ForTea.RiderSupport
-		// private Microsoft.CodeAnalysis.MetadataReference magic3; // Roslyn
 #pragma warning restore 169
 	}
 }

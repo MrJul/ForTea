@@ -1,5 +1,6 @@
 using GammaJul.ForTea.Core.Common;
 using JetBrains.Application.Components;
+using JetBrains.Application.StdApplicationUI.TaskBar;
 using JetBrains.TestFramework;
 using NUnit.Framework;
 
@@ -8,7 +9,7 @@ namespace JetBrains.ForTea.Tests
 	[TestFixture]
 	public class T4EnvironmentTest : BaseTest
 	{
-		[TestAttribute]
+		[Test]
 		public void TestThatT4EnvironmentSupportsEverything()
 		{
 			var environment = ShellInstance.GetComponent<IT4Environment>();
@@ -17,5 +18,9 @@ namespace JetBrains.ForTea.Tests
 			Assert.That(environment.ShouldSupportAdvancedAttributes);
 			Assert.That(environment.ShouldSupportOnceAttribute);
 		}
+
+		[Test]
+		public void TestThatSomePlatformShellComponentIsAccessible() =>
+			Assert.NotNull(ShellInstance.GetComponent<ITaskBarManager>());
 	}
 }
