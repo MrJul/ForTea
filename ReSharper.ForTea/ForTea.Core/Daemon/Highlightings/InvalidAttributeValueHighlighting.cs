@@ -13,7 +13,7 @@ namespace GammaJul.ForTea.Core.Daemon.Highlightings {
 		ShowToolTipInStatusBar = true,
 		AttributeId = HighlightingAttributeIds.ERROR_ATTRIBUTE
 	)]
-	public class InvalidAttributeValueHighlighting : T4Highlighting<IT4Token> {
+	public class InvalidAttributeValueHighlighting : T4HighlightingBase<IT4Token> {
 
 		[CanBeNull]
 		public DirectiveAttributeInfo DirectiveAttributeInfo { get; }

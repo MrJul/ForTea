@@ -13,7 +13,7 @@ namespace GammaJul.ForTea.Core.Daemon.Highlightings {
 		ShowToolTipInStatusBar = true,
 		AttributeId = HighlightingAttributeIds.ERROR_ATTRIBUTE
 	)]
-	public class AfterLastFeatureHighlighting : T4Highlighting<ITreeNode> {
+	public class AfterLastFeatureHighlighting : T4HighlightingBase<ITreeNode> {
 
 		/// <summary>Initializes a new instance of the <see cref="AfterLastFeatureHighlighting" /> class.</summary>
 		/// <param name="associatedNode">The tree node associated with this highlighting.</param>

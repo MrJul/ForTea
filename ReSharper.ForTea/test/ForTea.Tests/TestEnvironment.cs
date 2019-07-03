@@ -23,6 +23,7 @@ namespace JetBrains.ForTea.Tests
 		// These fields are here to force load assemblies
 		private IT4Environment magic1; // ForTea.Core
 		private T4Environment magic2; // ForTea.RiderSupport
+		// private Microsoft.CodeAnalysis.MetadataReference magic3; // Roslyn
 #pragma warning restore 169
 	}
 }

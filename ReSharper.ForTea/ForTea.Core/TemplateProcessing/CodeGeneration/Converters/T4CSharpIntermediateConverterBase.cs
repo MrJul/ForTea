@@ -124,24 +124,6 @@ namespace GammaJul.ForTea.Core.TemplateProcessing.CodeGeneration.Converters
 			result.AppendLine(";");
 		}
 
-		private void AppendParameterDeclaration(
-			[NotNull] T4CSharpCodeGenerationResult result,
-			[NotNull] T4ParameterDescription description
-		)
-		{
-			result.Append("        private ");
-			var type = description.TypeToken;
-			if (CSharpLexer.IsKeyword(type.GetText())) result.Append("@");
-			result.AppendMapped(type);
-			result.Append(" ");
-			var name = description.NameToken;
-			if (CSharpLexer.IsKeyword(name.GetText())) result.Append("@");
-			result.AppendMapped(name);
-			result.Append(" => ");
-			result.Append(description.FieldNameString);
-			result.AppendLine(";");
-		}
-
 		private void AppendTemplateInitialization(
 			[NotNull] T4CSharpCodeGenerationResult result,
 			[NotNull, ItemNotNull] IReadOnlyCollection<T4ParameterDescription> descriptions
@@ -180,6 +162,11 @@ namespace GammaJul.ForTea.Core.TemplateProcessing.CodeGeneration.Converters
 			var provider = new T4TemplateResourceProvider(ResourceName, this);
 			result.AppendLine(provider.ProcessResource(GeneratedBaseClassName));
 		}
+
+		protected abstract void AppendParameterDeclaration(
+			[NotNull] T4CSharpCodeGenerationResult result,
+			[NotNull] T4ParameterDescription description
+		);
 
 		[NotNull]
 		protected abstract string ResourceName { get; }

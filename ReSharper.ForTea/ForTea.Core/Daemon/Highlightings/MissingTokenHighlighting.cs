@@ -13,7 +13,7 @@ namespace GammaJul.ForTea.Core.Daemon.Highlightings {
 		ShowToolTipInStatusBar = true,
 		AttributeId = HighlightingAttributeIds.ERROR_ATTRIBUTE
 	)]
-	public class MissingTokenHighlighting : T4Highlighting<MissingTokenErrorElement> {
+	public class MissingTokenHighlighting : T4HighlightingBase<MissingTokenErrorElement> {
 
 		public override string ToolTip
 			=> AssociatedNode.ErrorDescription;

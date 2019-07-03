@@ -17,7 +17,7 @@ using JetBrains.Util;
 
 namespace GammaJul.ForTea.Core.Daemon.Processes {
 
-	internal sealed class T4ErrorProcess : T4DaemonStageProcess {
+	internal sealed class T4ErrorProcess : T4DaemonStageProcessBase {
 
 		[NotNull] private readonly T4DirectiveInfoManager _directiveInfoManager;
 
@@ -132,7 +132,7 @@ namespace GammaJul.ForTea.Core.Daemon.Processes {
 			base.Execute(commiter);
 		}
 
-		/// <summary>Initializes a new instance of the <see cref="T4DaemonStageProcess"/> class.</summary>
+		/// <summary>Initializes a new instance of the <see cref="T4DaemonStageProcessBase"/> class.</summary>
 		/// <param name="file">The associated T4 file.</param>
 		/// <param name="daemonProcess">The associated daemon process.</param>
 		/// <param name="directiveInfoManager">An instance of <see cref="T4DirectiveInfoManager"/>.</param>

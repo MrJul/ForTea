@@ -5,6 +5,7 @@ using GammaJul.ForTea.Core.TemplateProcessing.CodeCollecting;
 using GammaJul.ForTea.Core.TemplateProcessing.CodeGeneration.Converters;
 using GammaJul.ForTea.Core.Tree;
 using JetBrains.Annotations;
+using JetBrains.ReSharper.Psi.CSharp.Parsing;
 
 namespace JetBrains.ForTea.RiderSupport.TemplateProcessing.CodeGeneration.Converters
 {
@@ -67,6 +68,24 @@ namespace JetBrains.ForTea.RiderSupport.TemplateProcessing.CodeGeneration.Conver
 				result.AppendLine("                }");
 				result.AppendLine("            }");
 			}
+		}
+
+		protected override void AppendParameterDeclaration(
+			T4CSharpCodeGenerationResult result,
+			T4ParameterDescription description
+		)
+		{
+			result.Append("        private ");
+			var type = description.TypeToken;
+			if (CSharpLexer.IsKeyword(type.GetText())) result.Append("@");
+			result.AppendMapped(type);
+			result.Append(" ");
+			var name = description.NameToken;
+			if (CSharpLexer.IsKeyword(name.GetText())) result.Append("@");
+			result.AppendMapped(name);
+			result.Append(" => ");
+			result.Append(description.FieldNameString);
+			result.AppendLine(";");
 		}
 	}
 }

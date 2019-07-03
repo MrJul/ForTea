@@ -12,7 +12,7 @@ namespace GammaJul.ForTea.Core.Daemon.Stages {
 		StagesBefore = new[] { typeof(GlobalFileStructureCollectorStage) },
 		StagesAfter = new[] { typeof(CollectUsagesStage), typeof(IdentifierHighlightingStage) }
 	)]
-	public class T4HighlightingStage : T4DaemonStage {
+	public class T4HighlightingStage : T4DaemonStageBase {
 
 		protected override IDaemonStageProcess CreateProcess(IDaemonProcess process, IT4File file)
 			=> new T4HighlightingProcess(file, process);

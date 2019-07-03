@@ -7,7 +7,7 @@ namespace GammaJul.ForTea.Core.Daemon.Highlightings {
 
 	/// <summary>Base class for all T4 related highlightings.</summary>
 	/// <typeparam name="TNode">The type of the node.</typeparam>
-	public abstract class T4Highlighting<TNode> : IHighlighting
+	public abstract class T4HighlightingBase<TNode> : IHighlighting
 	where TNode : ITreeNode {
 
 		/// <summary>Gets the tree node associated with this highlighting.</summary>
@@ -25,9 +25,9 @@ namespace GammaJul.ForTea.Core.Daemon.Highlightings {
 		public DocumentRange CalculateRange()
 			=> AssociatedNode.GetNavigationRange();
 
-		/// <summary>Initializes a new instance of the <see cref="T4Highlighting{TNode}"/> class.</summary>
+		/// <summary>Initializes a new instance of the <see cref="T4HighlightingBaseBase{TNode}"/> class.</summary>
 		/// <param name="associatedNode">The tree node associated with this highlighting.</param>
-		protected T4Highlighting([NotNull] TNode associatedNode) {
+		protected T4HighlightingBase([NotNull] TNode associatedNode) {
 			AssociatedNode = associatedNode;
 		}
 

@@ -12,7 +12,7 @@ namespace GammaJul.ForTea.Core.Daemon.Highlightings {
 		ShowToolTipInStatusBar = true,
 		AttributeId = HighlightingAttributeIds.ERROR_ATTRIBUTE
 	)]
-	public class MissingRequiredAttributeHighlighting : T4Highlighting<IT4Token> {
+	public class MissingRequiredAttributeHighlighting : T4HighlightingBase<IT4Token> {
 
 		[NotNull]
 		public string MissingAttributeName { get; }

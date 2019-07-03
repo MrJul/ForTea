@@ -9,7 +9,7 @@ namespace GammaJul.ForTea.Core.Daemon.Stages {
 
 	/// <summary>Daemon stage that creates processes for adding error and warning highlights.</summary>
 	[DaemonStage(StagesBefore = new[] { typeof(T4HighlightingStage), typeof(CollectUsagesStage) })]
-	public class T4ErrorStage : T4DaemonStage {
+	public class T4ErrorStage : T4DaemonStageBase {
 
 		[NotNull] private readonly T4DirectiveInfoManager _directiveInfoManager;
 

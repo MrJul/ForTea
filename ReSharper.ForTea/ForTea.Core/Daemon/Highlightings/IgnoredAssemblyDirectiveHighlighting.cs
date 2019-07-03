@@ -13,7 +13,7 @@ namespace GammaJul.ForTea.Core.Daemon.Highlightings {
 		ShowToolTipInStatusBar = true,
 		AttributeId = HighlightingAttributeIds.DEADCODE_ATTRIBUTE
 	)]
-	public class IgnoredAssemblyDirectiveHighlighting : T4Highlighting<ITreeNode> {
+	public class IgnoredAssemblyDirectiveHighlighting : T4HighlightingBase<ITreeNode> {
 
 		/// <summary>Initializes a new instance of the <see cref="IgnoredAssemblyDirectiveHighlighting" /> class.</summary>
 		/// <param name="associatedNode">The tree node associated with this highlighting.</param>

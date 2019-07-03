@@ -9,7 +9,7 @@ using JetBrains.ReSharper.Psi.Tree;
 namespace GammaJul.ForTea.Core.Daemon.Processes {
 
 	/// <summary>Process that highlights block tags and missing token errors.</summary>
-	internal sealed class T4HighlightingProcess : T4DaemonStageProcess {
+	internal sealed class T4HighlightingProcess : T4DaemonStageProcessBase {
 		
 		public override void ProcessBeforeInterior(ITreeNode element) {
 			string attributeId = GetHighlightingAttributeId(element);

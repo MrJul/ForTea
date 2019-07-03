@@ -10,14 +10,15 @@ namespace GammaJul.ForTea.Core.Daemon.Highlightings
 		T4Language.Name,
 		OverlapResolve = OverlapResolveKind.DEADCODE,
 		ShowToolTipInStatusBar = true,
-		AttributeId = HighlightingAttributeIds.DEADCODE_ATTRIBUTE
+		AttributeId = HighlightingAttributeIds.WARNING_ATTRIBUTE
 	)]
-	public class EmptyBlockHighlighting : T4HighlightingBase<IT4CodeBlock>
+	public class EscapedKeywordHighlighting : T4HighlightingBase<IT4Token>
 	{
-		public EmptyBlockHighlighting([NotNull] IT4CodeBlock associatedNode) : base(associatedNode)
+		public EscapedKeywordHighlighting([NotNull] IT4Token associatedNode) : base(associatedNode)
 		{
 		}
-
-		public override string ToolTip => "Empty block";
+		
+		public override string ToolTip =>
+			"In T4, keywords are automatically escaped, which causes errors in generated code";
 	}
 }

@@ -12,7 +12,7 @@ namespace GammaJul.ForTea.Core.Daemon.Highlightings {
 		ShowToolTipInStatusBar = true,
 		AttributeId = HighlightingAttributeIds.ERROR_ATTRIBUTE
 	)]
-	public class StatementAfterFeatureHighlighting : T4Highlighting<T4StatementBlock> {
+	public class StatementAfterFeatureHighlighting : T4HighlightingBase<T4StatementBlock> {
 
 		public override string ToolTip
 			=> "A statement block cannot appear after a class feature block";
