@@ -2,6 +2,7 @@
 **.user
 **/.vs
 **/.tmp
+**.tmp
 **/bin
 **/obj
 **/output

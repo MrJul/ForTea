@@ -1,0 +1,6 @@
+<#
+for (int myCustomIndexVariable = 0; myCustomIndexVariable < 10; myCustomIndexVariable += 1)
+{
+#><#= myCustomIndexVaria{caret} #><#
+}
+#>

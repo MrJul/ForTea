@@ -12,9 +12,18 @@ namespace JetBrains.ForTea.Tests
 		protected override string RelativeTestDataPath => @"CodeCompletion";
 
 		[Test]
-		public void TestFoo()
-		{
-			DoNamedTest2();
-		}
+		public void TestSimpleDirectiveCompletion() => DoNamedTest2();
+
+		[Test]
+		public void TestAttributeCompletion() => DoNamedTest2();
+
+		[Test]
+		public void TestAttributeValueCompletion() => DoNamedTest2();
+
+		[Test]
+		public void TestCSharpCompletion() => DoNamedTest2();
+		
+		[Test]
+		public void TestVBNoCompletion() => DoNamedTest2();
 	}
 }
