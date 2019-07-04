@@ -72,6 +72,8 @@ namespace JetBrains.ForTea.RiderPlugin.TemplateProcessing.Actions
 			stopwatch.Stop();
 			if (stopwatch.ElapsedMilliseconds >= 50)
 				Logger.Warn($"Performance warning. Starting background task took too long: {stopwatch.Elapsed}");
+
+			cookie.Commit(progress);
 		});
 
 		private void LaunchProgress(

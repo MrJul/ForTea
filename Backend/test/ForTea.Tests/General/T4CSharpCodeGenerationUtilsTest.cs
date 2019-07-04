@@ -1,7 +1,7 @@
 using GammaJul.ForTea.Core.TemplateProcessing;
 using NUnit.Framework;
 
-namespace JetBrains.ForTea.Tests
+namespace JetBrains.ForTea.Tests.General
 {
 	[TestFixture]
 	public class T4CSharpCodeGenerationUtilsTests

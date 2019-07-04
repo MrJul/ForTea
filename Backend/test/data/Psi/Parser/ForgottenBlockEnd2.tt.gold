@@ -1,0 +1,21 @@
+﻿Language: PsiLanguageType:T4
+T4File
+  <#@ template language="C#"
+    DirectiveStart: <#@
+    Space:  
+    Name: template
+    Space:  
+    T4DirectiveAttribute
+      Name: language
+      Equal: =
+      Quote: "
+      Value: C#
+      Quote: "
+    MissingTokenErrorElement:Missing block end
+  NewLine: \n
+  T4ExpressionBlock
+    ExpressionStart: <#=
+    Code:  2 + 2 
+    BlockEnd: #>
+  NewLine: \n
+

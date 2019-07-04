@@ -1,0 +1,44 @@
+﻿|<#@|(0) |template|(1) |language|(2)|=|(3)|"|(4)|C#|(5)|"|(6) |#>|(7)
+|<#|(8)
+|for|(9) (||int|(10)|(11) |||x|(12)|(13)|(14) |=|(15) |0|(16); |||x|(17)|(18)|(19) |<|(20) |10|(21); |||x|(22)|(23)|(24) |+=|(25) |1|(26))
+{
+|#>|(27)|<#=|(28) |||x|(29)|(30)|(31) |#>|(32)|<#|(33)
+}
+|#>|(34)
+
+---------------------------------------------------------
+(0): ReSharper HTML Fallback Tag Delimiter: 
+(1): ReSharper HTML Fallback Element Name: 
+(2): ReSharper HTML Fallback Attribute Name: 
+(3): ReSharper Operator Identifier: 
+(4): ReSharper HTML Fallback Attribute Value: 
+(5): ReSharper HTML Fallback Attribute Value: 
+(6): ReSharper HTML Fallback Attribute Value: 
+(7): ReSharper HTML Fallback Tag Delimiter: 
+(8): ReSharper HTML Fallback Tag Delimiter: 
+(9): keyword: 
+(10): keyword: 
+(11): ReSharper Hint: Use 'var' (built-in types)
+(12): Identifier: 
+(13): ReSharper Local Variable Identifier: 
+(14): ReSharper Mutable Local Variable Identifier: 
+(15): ReSharper Operator Identifier: 
+(16): number: 
+(17): Identifier: 
+(18): ReSharper Local Variable Identifier: 
+(19): ReSharper Mutable Local Variable Identifier: 
+(20): ReSharper Operator Identifier: 
+(21): number: 
+(22): Identifier: 
+(23): ReSharper Local Variable Identifier: 
+(24): ReSharper Mutable Local Variable Identifier: 
+(25): ReSharper Operator Identifier: 
+(26): number: 
+(27): ReSharper HTML Fallback Tag Delimiter: 
+(28): ReSharper HTML Fallback Tag Delimiter: 
+(29): Identifier: 
+(30): ReSharper Local Variable Identifier: 
+(31): ReSharper Mutable Local Variable Identifier: 
+(32): ReSharper HTML Fallback Tag Delimiter: 
+(33): ReSharper HTML Fallback Tag Delimiter: 
+(34): ReSharper HTML Fallback Tag Delimiter: 

@@ -1,0 +1,17 @@
+﻿Language: PsiLanguageType:T4
+T4File
+  <#@ assembly name="Foo.dll" #>
+    DirectiveStart: <#@
+    Space:  
+    Name: assembly
+    Space:  
+    T4DirectiveAttribute
+      Name: name
+      Equal: =
+      Quote: "
+      Value: Foo.dll
+      Quote: "
+    Space:  
+    BlockEnd: #>
+  NewLine: \n
+

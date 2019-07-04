@@ -40,8 +40,9 @@ namespace GammaJul.ForTea.Core.Psi {
 			=> TryGetProperties(projectFile)?.CustomToolNamespace;
 
 		public static void MarkAsDirty([NotNull] this IPsiServices psiServices, [NotNull] IPsiSourceFile psiSourcefile) {
-			psiServices.Files.MarkAsDirty(psiSourcefile);
-			psiServices.Caches.MarkAsDirty(psiSourcefile);
+//			psiServices.Files.MarkAsDirty(psiSourcefile);
+//			psiServices.Caches.MarkAsDirty(psiSourcefile);
+			// TODO: wtf
 		}
 
 		[CanBeNull]

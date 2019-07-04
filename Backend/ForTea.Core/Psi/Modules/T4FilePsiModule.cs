@@ -68,7 +68,7 @@ namespace GammaJul.ForTea.Core.Psi.Modules {
 			if (_shellLocks.IsWriteAccessAllowed())
 				OnDataFileChanged(second);
 			else {
-				_shellLocks.ExecuteOrQueue(_lifetime, "T4PsiModuleOnFileDataChanged",
+				_shellLocks.ExecuteOrQueueEx(_lifetime, "T4PsiModuleOnFileDataChanged",
 					() => _shellLocks.ExecuteWithWriteLock(() => OnDataFileChanged(second)));
 			}
 		}
@@ -98,7 +98,7 @@ namespace GammaJul.ForTea.Core.Psi.Modules {
 			if (hasMacroChanges)
 				GetPsiServices().MarkAsDirty(SourceFile);
 
-			_shellLocks.ExecuteOrQueue("T4PsiModuleChange",
+			_shellLocks.ExecuteOrQueueEx("T4PsiModuleChange",
 				() => _changeManager.ExecuteAfterChange(
 					() => _shellLocks.ExecuteWithWriteLock(
 						() => _changeManager.OnProviderChanged(ChangeProvider, changeBuilder.Result, SimpleTaskExecutor.Instance)

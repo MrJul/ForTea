@@ -1,0 +1,43 @@
+﻿Language: PsiLanguageType:T4
+T4File
+  <#@ template language="C#" #>
+    DirectiveStart: <#@
+    Space:  
+    Name: template
+    Space:  
+    T4DirectiveAttribute
+      Name: language
+      Equal: =
+      Quote: "
+      Value: C#
+      Quote: "
+    Space:  
+    BlockEnd: #>
+  NewLine: \n
+  Text: Hello, world!
+  NewLine: \n
+  T4StatementBlock
+    StatementStart: <#
+    Code:  for (int i = 0; i < 10; i += 1)\n   { 
+    BlockEnd: #>
+  NewLine: \n
+  NewLine: \n
+  T4ExpressionBlock
+    ExpressionStart: <#=
+    Code:  Foo(i); 
+    BlockEnd: #>
+  NewLine: \n
+  T4StatementBlock
+    StatementStart: <#
+    Code:  } 
+    BlockEnd: #>
+  NewLine: \n
+  NewLine: \n
+  Text: ---- end ----
+  NewLine: \n
+  T4FeatureBlock
+    FeatureStart: <#+
+    Code: \nint Foo(int argument) => argument * 2;\n
+    BlockEnd: #>
+  NewLine: \n
+

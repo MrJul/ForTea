@@ -1,0 +1,24 @@
+﻿Language: PsiLanguageType:T4
+T4File
+  <#@ template language="C#"\nHello, world!
+    DirectiveStart: <#@
+    Space:  
+    Name: template
+    Space:  
+    T4DirectiveAttribute
+      Name: language
+      Equal: =
+      Quote: "
+      Value: C#
+      Quote: "
+    NewLine: \n
+    T4DirectiveAttribute
+      Name: Hello,
+      MissingTokenErrorElement:Missing equal sign and attribute value
+    Space:  
+    T4DirectiveAttribute
+      Name: world!
+      MissingTokenErrorElement:Missing equal sign and attribute value
+    MissingTokenErrorElement:Missing block end
+  NewLine: \n
+

@@ -1,0 +1,12 @@
+<#@ template language="VB" #>
+Hello, world!
+<# for (int i = 0; i < 10; i += 1)
+   { #>
+
+<#= Foo(i); #>
+<# } #>
+
+---- end ----
+<#+
+int Foo(int argument) => argument * 2;
+#>

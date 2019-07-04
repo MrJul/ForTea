@@ -6,10 +6,10 @@
     <LangVersion>7.2</LangVersion>
   </PropertyGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\ForTea.Core\ForTea.Core.csproj"/>
-    <ProjectReference Include="..\..\ForTea.RiderPlugin\ForTea.RiderPlugin.csproj"/>
+    <ProjectReference Include="..\..\ForTea.Core\ForTea.Core.csproj" />
+    <ProjectReference Include="..\..\ForTea.RiderPlugin\ForTea.RiderPlugin.csproj" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="JetBrains.Rider.SDK.Tests" Version="2019.1.2"/>
+    <PackageReference Include="JetBrains.Rider.SDK.Tests" Version="2019.1.2" />
   </ItemGroup>
 </Project>

@@ -4,7 +4,7 @@ using JetBrains.Application.StdApplicationUI.TaskBar;
 using JetBrains.TestFramework;
 using NUnit.Framework;
 
-namespace JetBrains.ForTea.Tests
+namespace JetBrains.ForTea.Tests.General
 {
 	[TestFixture]
 	public class T4EnvironmentTest : BaseTest
