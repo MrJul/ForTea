@@ -7,7 +7,6 @@
 **/output
 **/_ReSharper.Caches
 **/.idea
-NuGet.config
 
 */out/
 */packages/
