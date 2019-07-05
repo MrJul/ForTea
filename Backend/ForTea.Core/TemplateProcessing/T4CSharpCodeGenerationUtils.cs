@@ -58,12 +58,12 @@ namespace GammaJul.ForTea.Core.TemplateProcessing
 			if (manager == null) throw new ArgumentNullException(nameof(manager));
 
 			OutputDirectiveInfo output = manager.Output;
-			var query =
-				from outputDirective in file.GetDirectives(output)
-				from attribute in outputDirective.GetAttributes()
-				let name = attribute.GetName()
-				where string.Equals(name, output.ExtensionAttribute.Name, StringComparison.OrdinalIgnoreCase)
-				select attribute.GetValue();
+			var query = file
+				.GetDirectives(output)
+				.SelectMany(outputDirective => outputDirective.GetAttributes())
+				.Where(attribute => string.Equals(attribute.GetName(), output.EncodingAttribute.Name))
+				.Select(attribute => attribute.GetValue());
+
 			string targetExtension = query.FirstOrDefault();
 
 			if (targetExtension == null) return DefaultTargetExtension;
