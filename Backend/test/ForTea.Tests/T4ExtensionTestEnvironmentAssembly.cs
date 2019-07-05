@@ -128,7 +128,7 @@ namespace JetBrains.ForTea.Tests
         return;
       }
 
-      if (!assembly.AssemblyName.Name.Contains("ForTea")) return;
+      if (assembly.AssemblyName.Name.Contains("Microsoft.CodeAnalysis")) return;
       if (!packageFiles.Add(new ApplicationPackageFile(assembly.Location.MakeRelativeTo(productBinariesDir), assemblyNameInfo)))
         return;
 

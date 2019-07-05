@@ -6,10 +6,10 @@ using JetBrains.ReSharper.Psi;
 using JetBrains.ReSharper.TestFramework;
 using NUnit.Framework;
 
-namespace JetBrains.ForTea.Tests
+namespace JetBrains.ForTea.Tests.Highlighting
 {
 	[TestFileExtension(T4ProjectFileType.MainExtension)]
-	public class T4HighlightingTest : HighlightingTestBase
+	public sealed class T4HighlightingTest : HighlightingTestBase
 	{
 		protected override PsiLanguageType CompilerIdsLanguage => T4Language.Instance;
 		protected override string RelativeTestDataPath => @"Highlighting";

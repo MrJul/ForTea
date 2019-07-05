@@ -1,0 +1,16 @@
+<#@ output extension=".txt" #>
+<#= Foo(10) #>
+<#= Bar(20) #>
+<#+
+public int Foo(int arg) => arg + 2;
+#>
+
+
+
+<#+
+public int Bar(int arg) => arg + 2;
+#>
+{caret}
+
+
+

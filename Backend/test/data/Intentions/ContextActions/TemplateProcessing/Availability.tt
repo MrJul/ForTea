@@ -1,0 +1,16 @@
+<#@ {on}output extension=".t{on}xt" #{on}>
+<# for (int i {on}= 0; i < 10; i += 1){on}
+   { #>
+<hello>
+<#     PushInden{on}t("  ");
+   } #>
+<hello{on} />
+<# for (int i = 0; i < 10; i += 1)
+   {
+       PopIndent();
+#>
+</hello>
+<# } #>
+{on}
+
+<#+ {on} #>

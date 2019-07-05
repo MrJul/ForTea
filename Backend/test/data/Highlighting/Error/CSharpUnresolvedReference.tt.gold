@@ -1,0 +1,5 @@
+﻿<#@ template language="C#" #>
+<# int x = |helloWorldWeirdName|(0); #>
+
+---------------------------------------------------------
+(0): ReSharper Error Highlighting: Cannot resolve symbol 'helloWorldWeirdName'

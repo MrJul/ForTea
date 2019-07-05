@@ -1,0 +1,5 @@
+﻿<#@ template language="C#"||(0)
+<# int x = 0; #>
+
+---------------------------------------------------------
+(0): ReSharper Underlined Error Highlighting: Missing block end

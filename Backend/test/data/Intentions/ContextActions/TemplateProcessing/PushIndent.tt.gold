@@ -1,0 +1,14 @@
+<#@ output extension=".txt" #>
+<# for (int i = 0; i < 10; i += 1)
+   { #>
+<hello>
+<#     PushIndent("  ");
+   } #>
+<hello />
+<# for (int i = 0; i < 10; i += 1)
+   {
+       PopIndent();
+#>
+</hello>
+<# } #>
+{caret}
