@@ -20,10 +20,16 @@ namespace GammaJul.ForTea.Core.TemplateProcessing.CodeCollecting.State
 		[Conditional("JET_MODE_ASSERT")]
 		private void Check() => Assertion.Assert(IsAlive, "Attempted to use dead state");
 
-		public string Produce()
+		public string Produce(ITreeNode lookahead)
 		{
 			Check();
-			return ProduceSafe();
+			return ProduceSafe(lookahead);
+		}
+
+		public string ProduceBeforeEof()
+		{
+			Check();
+			return ProduceBeforeEofSafe();
 		}
 
 		public IT4InfoCollectorState GetNextState(ITreeNode element)
@@ -50,7 +56,10 @@ namespace GammaJul.ForTea.Core.TemplateProcessing.CodeCollecting.State
 		protected abstract void ConsumeTokenSafe([NotNull] IT4Token token);
 
 		[CanBeNull]
-		protected abstract string ProduceSafe();
+		protected abstract string ProduceSafe(ITreeNode lookahead);
+
+		[CanBeNull]
+		protected abstract string ProduceBeforeEofSafe();
 
 		protected abstract bool FeatureStartedSafe { get; }
 

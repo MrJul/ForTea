@@ -26,15 +26,18 @@ namespace GammaJul.ForTea.Core.TemplateProcessing.CodeCollecting.State
 					return new T4InfoCollectorStateSeenFeature();
 				case IT4Directive _:
 				case T4StatementBlock _:
+					Die();
+					return new T4InfoCollectorSateSeenDirectiveOrStatementBlock();
 				case T4ExpressionBlock _:
 					Die();
-					return new T4InfoCollectorSateSeenDirectiveOrNonFeatureBlock();
+					return new T4InfoCollectorStateInitial();
 				default: return this;
 			}
 		}
 
 		protected override bool FeatureStartedSafe => false;
 		protected override void ConsumeTokenSafe(IT4Token token) => Builder.Append(Convert(token));
-		protected override string ProduceSafe() => Builder.ToString();
+		protected override string ProduceSafe(ITreeNode lookahead) => Builder.ToString();
+		protected override string ProduceBeforeEofSafe() => Builder.ToString();
 	}
 }

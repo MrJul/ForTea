@@ -35,6 +35,12 @@ namespace GammaJul.ForTea.Core.TemplateProcessing.CodeCollecting.State
 
 		protected override bool FeatureStartedSafe => true;
 		protected override void ConsumeTokenSafe(IT4Token token) => Builder.Append(Convert(token));
-		protected override string ProduceSafe() => Builder.ToString();
+		protected override string ProduceBeforeEofSafe() => null;
+
+		protected override string ProduceSafe(ITreeNode lookahead)
+		{
+			if (lookahead is T4FeatureBlock) return null;
+			return Builder.ToString();
+		}
 	}
 }

@@ -27,6 +27,7 @@ namespace GammaJul.ForTea.Core.TemplateProcessing.CodeCollecting.State
 
 		protected override bool FeatureStartedSafe => true;
 		protected override void ConsumeTokenSafe(IT4Token token) => Builder.Append(Convert(token));
-		protected override string ProduceSafe() => Builder.ToString();
+		protected override string ProduceSafe(ITreeNode lookahead) => Builder.ToString();
+		protected override string ProduceBeforeEofSafe() => throw new T4OutputGenerationException();
 	}
 }

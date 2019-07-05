@@ -46,7 +46,7 @@ namespace GammaJul.ForTea.Core.TemplateProcessing.CodeCollecting
 		{
 			Results.Push(new T4CSharpCodeGenerationIntermediateResult(File));
 			File.ProcessDescendants(this);
-			string suffix = Result.State.Produce();
+			string suffix = Result.State.ProduceBeforeEof();
 			// ReSharper disable once AssignNullToNotNullAttribute
 			if (!suffix.IsNullOrEmpty()) AppendTransformation(suffix);
 			return Results.Pop();
@@ -195,7 +195,7 @@ namespace GammaJul.ForTea.Core.TemplateProcessing.CodeCollecting
 		private void AppendRemainingMessage([NotNull] ITreeNode lookahead)
 		{
 			if (lookahead is IT4Token) return;
-			string produced = Result.State.Produce();
+			string produced = Result.State.Produce(lookahead);
 			if (produced.IsNullOrEmpty()) return;
 			// ReSharper disable once AssignNullToNotNullAttribute
 			AppendTransformation(produced);

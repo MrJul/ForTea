@@ -7,7 +7,10 @@ namespace GammaJul.ForTea.Core.TemplateProcessing.CodeCollecting.State
 	public interface IT4InfoCollectorState
 	{
 		[CanBeNull]
-		string Produce();
+		string Produce(ITreeNode lookahead);
+
+		[CanBeNull]
+		string ProduceBeforeEof();
 
 		[NotNull]
 		IT4InfoCollectorState GetNextState([NotNull] ITreeNode element);

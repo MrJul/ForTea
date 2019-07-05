@@ -33,7 +33,7 @@ namespace GammaJul.ForTea.Core.TemplateProcessing.CodeCollecting.State
 			if (token.NodeType != T4TokenNodeTypes.NewLine) LastToken = token;
 		}
 
-		// This state never produces anything. Instead, it passes information to other states
-		protected override string ProduceSafe() => null;
+		protected override string ProduceSafe(ITreeNode lookahead) => null;
+		protected override string ProduceBeforeEofSafe() => null;
 	}
 }

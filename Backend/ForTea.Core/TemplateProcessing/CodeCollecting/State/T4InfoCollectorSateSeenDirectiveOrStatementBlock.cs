@@ -6,19 +6,17 @@ using JetBrains.ReSharper.Psi.Tree;
 
 namespace GammaJul.ForTea.Core.TemplateProcessing.CodeCollecting.State
 {
-	public sealed class T4InfoCollectorSateSeenDirectiveOrNonFeatureBlock : T4InfoCollectorStateBase
+	public sealed class T4InfoCollectorSateSeenDirectiveOrStatementBlock : T4InfoCollectorStateBase
 	{
 		private StringBuilder Builder { get; }
-
-		public T4InfoCollectorSateSeenDirectiveOrNonFeatureBlock() => Builder = new StringBuilder();
+		public T4InfoCollectorSateSeenDirectiveOrStatementBlock() => Builder = new StringBuilder();
 
 		protected override IT4InfoCollectorState GetNextStateSafe(ITreeNode element)
 		{
 			switch (element)
 			{
 				case IT4Directive _:
-				case T4StatementBlock _:
-				case T4ExpressionBlock _: return this;
+				case T4StatementBlock _: return this;
 				case T4FeatureBlock _:
 					Die();
 					return new T4InfoCollectorStateSeenFeature();
@@ -35,7 +33,7 @@ namespace GammaJul.ForTea.Core.TemplateProcessing.CodeCollecting.State
 			if (token.NodeType != T4TokenNodeTypes.NewLine) Builder.Append(Convert(token));
 		}
 
-		// This state never produces anything
-		protected override string ProduceSafe() => null;
+		protected override string ProduceSafe(ITreeNode lookahead) => null;
+		protected override string ProduceBeforeEofSafe() => null;
 	}
 }
