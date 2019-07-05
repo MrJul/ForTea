@@ -10,7 +10,7 @@ namespace GammaJul.ForTea.Core.TemplateProcessing
 {
 	public static class T4CSharpCodeGenerationUtils
 	{
-		[NotNull] public const string DefaultTargetExtension = "cs";
+		[NotNull] public const string DefaultTargetExtension = "txt";
 
 		[NotNull]
 		// name is NOT supposed to contain extension
