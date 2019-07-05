@@ -1,4 +1,3 @@
-using System.Threading.Tasks;
 using JetBrains.Annotations;
 using JetBrains.Lifetimes;
 using JetBrains.ProjectModel;
@@ -7,6 +6,6 @@ namespace JetBrains.ForTea.RiderPlugin.TemplateProcessing.Actions.RoslynCompilat
 {
 	public interface IT4RoslynCompilationResult
 	{
-		Task SaveResultsAsync(Lifetime lifetime, [NotNull] IProjectFile destination);
+		void SaveResults(Lifetime lifetime, [NotNull] IProjectFile destination);
 	}
 }

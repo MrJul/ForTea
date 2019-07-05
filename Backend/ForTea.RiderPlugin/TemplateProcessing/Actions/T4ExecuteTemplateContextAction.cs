@@ -1,13 +1,12 @@
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
-using System.Threading.Tasks;
 using GammaJul.ForTea.Core.Psi.Directives;
 using GammaJul.ForTea.Core.TemplateProcessing;
 using JetBrains.Annotations;
 using JetBrains.Application.Progress;
+using JetBrains.Application.Threading;
 using JetBrains.ForTea.RiderPlugin.TemplateProcessing.Actions.RoslynCompilation;
 using JetBrains.ForTea.RiderPlugin.TemplateProcessing.CodeGeneration.Generators;
 using JetBrains.Lifetimes;
@@ -34,12 +33,15 @@ namespace JetBrains.ForTea.RiderPlugin.TemplateProcessing.Actions
 	{
 		[NotNull] private const string Message = "Execute T4 design-time template";
 		protected override string DestinationFileName { get; }
+
+		[NotNull]
 		private T4DirectiveInfoManager Manager { get; }
 
 		[NotNull]
-		private string TargetExtension { get; }
+		private IShellLocks Locks { get; }
 
-		private ILogger Logger { get; } = Util.Logging.Logger.GetLogger<T4ExecuteTemplateContextAction>();
+		[NotNull]
+		private string TargetExtension { get; }
 
 		/// See
 		/// <see cref="T4FileBasedContextActionBase">
@@ -53,7 +55,9 @@ namespace JetBrains.ForTea.RiderPlugin.TemplateProcessing.Actions
 			base(dataProvider)
 		{
 			if (File == null) return;
-			Manager = dataProvider.Solution.GetComponent<T4DirectiveInfoManager>();
+			var solution = dataProvider.Solution;
+			Manager = solution.GetComponent<T4DirectiveInfoManager>();
+			Locks = solution.Locks;
 			TargetExtension = File.GetTargetExtension(Manager);
 			DestinationFileName = FileName.WithOtherExtension(TargetExtension);
 		}
@@ -63,16 +67,11 @@ namespace JetBrains.ForTea.RiderPlugin.TemplateProcessing.Actions
 			IProgressIndicator progress
 		) => textControl => solution.InvokeUnderTransaction(cookie =>
 		{
-			var stopwatch = Stopwatch.StartNew();
 			Check();
 			var destinationFile = GetOrCreateDestinationFile(cookie);
 			var definition = solution.GetLifetime().CreateNested();
 			LaunchProgress(definition, progress, solution);
-			PerformBackgroundWorkAsync(definition, destinationFile, progress);
-			stopwatch.Stop();
-			if (stopwatch.ElapsedMilliseconds >= 50)
-				Logger.Warn($"Performance warning. Starting background task took too long: {stopwatch.Elapsed}");
-
+			Locks.ExecuteOrQueueEx("T4 template execution", () => PerformBackgroundWork(definition, destinationFile, progress));
 			cookie.Commit(progress);
 		});
 
@@ -83,6 +82,10 @@ namespace JetBrains.ForTea.RiderPlugin.TemplateProcessing.Actions
 		)
 		{
 			if (!(progress is IProgressIndicatorModel model)) return;
+			// todo remove when protocol-independent IRiderBackgroundTaskHost is introduced
+#pragma warning disable 618
+			if (Shell.Instance.IsTestShell) return;
+#pragma warning restore 618
 			const string title = "Executing T4 Template";
 			progress.Start(1);
 			progress.Advance();
@@ -96,30 +99,28 @@ namespace JetBrains.ForTea.RiderPlugin.TemplateProcessing.Actions
 			solution.GetComponent<RiderBackgroundTaskHost>().AddNewTask(definition.Lifetime, task);
 		}
 
-		private async void PerformBackgroundWorkAsync(
+		private void PerformBackgroundWork(
 			[NotNull] LifetimeDefinition definition,
 			[NotNull] IProjectFile destination,
-			[NotNull] IProgressIndicator progress)
+			[NotNull] IProgressIndicator progress
+		)
 		{
 			progress.CurrentItemText = "Generating code";
-			var result = await Task.Run(() =>
+			string code;
+			IEnumerable<MetadataReference> metadataReferences;
+			using (ReadLockCookie.Create())
 			{
-				string code;
-				IEnumerable<MetadataReference> metadataReferences;
-				using (ReadLockCookie.Create())
-				{
-					var generator = new T4CSharpExecutableCodeGenerator(File, Manager);
-					code = generator.Generate().RawText;
-					metadataReferences = ExtractReferences();
-				}
+				var generator = new T4CSharpExecutableCodeGenerator(File, Manager);
+				code = generator.Generate().RawText;
+				metadataReferences = ExtractReferences();
+			}
 
-				var manager = new T4RoslynCompilationManager(definition.Lifetime, code, Solution);
-				progress.CurrentItemText = "Compiling code";
-				return manager.Compile(metadataReferences);
-			}, definition.Lifetime.ToCancellationToken());
+			var manager = new T4RoslynCompilationManager(definition.Lifetime, code, Solution);
+			progress.CurrentItemText = "Compiling code";
+			var result = manager.Compile(metadataReferences);
 
 			progress.CurrentItemText = "Executing code";
-			await result.SaveResultsAsync(definition.Lifetime, destination);
+			result.SaveResults(definition.Lifetime, destination);
 			definition.Terminate();
 		}
 

@@ -1,9 +1,10 @@
 using System.Collections.Generic;
 using System.IO;
-using System.Threading.Tasks;
 using JetBrains.Annotations;
 using JetBrains.Lifetimes;
 using JetBrains.ProjectModel;
+using JetBrains.ProjectModel.Update;
+using JetBrains.Util;
 
 namespace JetBrains.ForTea.RiderPlugin.TemplateProcessing.Actions.RoslynCompilation
 {
@@ -14,16 +15,17 @@ namespace JetBrains.ForTea.RiderPlugin.TemplateProcessing.Actions.RoslynCompilat
 
 		public T4RoslynCompilationFailure([NotNull, ItemNotNull] IList<string> errors) => Errors = errors;
 
-		public async Task SaveResultsAsync(Lifetime lifetime, IProjectFile destination)
+		public void SaveResults(Lifetime lifetime, IProjectFile destination)
 		{
-			using (var stream = destination.CreateWriteStream())
-			using (var writer = new StreamWriter(stream))
+			using (destination.UsingWriteLockForUpdate())
 			{
-				foreach (string error in Errors)
+				using (var stream = destination.CreateWriteStream())
+				using (var writer = new StreamWriter(stream))
 				{
-					lifetime.ThrowIfNotAlive();
-					await writer.WriteLineAsync(error);
+					writer.WriteLine("ErrorGeneratingOutput");
 				}
+				// TODO: use more elegant way to show error messages
+				MessageBox.ShowError(Errors.Join("\n"), "Could not compile template");
 			}
 		}
 	}

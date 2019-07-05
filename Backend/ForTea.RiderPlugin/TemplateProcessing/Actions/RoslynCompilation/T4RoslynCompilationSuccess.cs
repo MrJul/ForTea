@@ -27,24 +27,24 @@ namespace JetBrains.ForTea.RiderPlugin.TemplateProcessing.Actions.RoslynCompilat
 			Solution = solution;
 		}
 
-		public async Task SaveResultsAsync(Lifetime lifetime, IProjectFile destination)
+		public void SaveResults(Lifetime lifetime, IProjectFile destination)
 		{
 			var process = LaunchProcess(lifetime);
-
+			lifetime.ThrowIfNotAlive();
+			process.WaitForExit();
+			lifetime.ThrowIfNotAlive();
 			using (var stream = destination.CreateWriteStream())
 			{
 				lifetime.ThrowIfNotAlive();
-				await process.StandardOutput.BaseStream.CopyToAsync(stream);
+				process.StandardOutput.BaseStream.CopyTo(stream);
 				lifetime.ThrowIfNotAlive();
-				await process.StandardError.BaseStream.CopyToAsync(stream);
-				lifetime.ThrowIfNotAlive();
-				await process.WaitForExitAsync();
+				process.StandardError.BaseStream.CopyTo(stream);
 			}
 		}
 
 		private Process LaunchProcess(Lifetime lifetime)
 		{
-			var patcher = Solution.GetComponent<RiderProcessStartInfoPatcher>();
+			var patcher = Solution.GetComponent<ISolutionProcessStartInfoPatcher>();
 			var startInfo = new JetProcessStartInfo(new ProcessStartInfo
 			{
 				UseShellExecute = false,
@@ -63,7 +63,10 @@ namespace JetBrains.ForTea.RiderPlugin.TemplateProcessing.Actions.RoslynCompilat
 			lifetime.OnTermination(process);
 			lifetime.Bracket(
 				() => process.Start(),
-				() => Logger.CatchSilent(() => { if (!process.HasExited) process.KillTree(); })
+				() => Logger.CatchSilent(() =>
+				{
+					if (!process.HasExited) process.KillTree();
+				})
 			);
 			return process;
 		}
