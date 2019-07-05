@@ -117,6 +117,54 @@ namespace GammaJul.ForTea.Core.Services.TypingAssist {
 			return true;
 		}
 
+		/// <summary>When a # is typed, insert ></summary>
+		private bool OnOctothorpeTyped(ITypingContext context)
+		{
+			var textControl = context.TextControl;
+
+			int offset = textControl.Selection.OneDocRangeWithCaret().GetMinOffset();
+
+			// If we are not in code block, just let it be typed
+			var previousToken = FindPreviousToken(GetCachingLexer(textControl), offset);
+			if (previousToken is T4TokenNodeType) return false;
+
+			// insert #
+			textControl.Selection.Delete();
+			textControl.FillVirtualSpaceUntilCaret();
+			textControl.Document.InsertText(offset, "#");
+			textControl.Caret.MoveTo(offset + 1, CaretVisualPlacement.DontScrollIfVisible);
+
+			// insert >
+			context.QueueCommand(() =>
+			{
+				using (CommandProcessor.UsingCommand("Inserting >"))
+				{
+					textControl.Document.InsertText(offset + 1, ">");
+					textControl.Caret.MoveTo(offset + 2, CaretVisualPlacement.DontScrollIfVisible);
+				}
+
+				// ignore if a subsequent " is typed by the user
+				SkippingTypingAssist.SetCharsToSkip(textControl.Document, ">");
+			});
+
+			return true;
+		}
+
+		[CanBeNull]
+		private TokenNodeType FindPreviousToken([CanBeNull] CachingLexer lexer, int initialOffset)
+		{
+			if (lexer == null) return null;
+			for (int offset = initialOffset; offset > 0; offset -= 1)
+			{
+				if (!lexer.FindTokenAt(offset)) continue;
+				var tokenType = lexer.TokenType;
+				if (tokenType?.IsWhitespace != false) continue;
+				return tokenType;
+			}
+
+			return null;
+		}
+
 		public T4TypingAssist(
 			Lifetime lifetime,
 			[NotNull] ISolution solution,
@@ -135,6 +183,7 @@ namespace GammaJul.ForTea.Core.Services.TypingAssist {
 
 			typingAssistManager.AddTypingHandler(lifetime, '=', this, OnEqualTyped, IsTypingSmartParenthesisHandlerAvailable);
 			typingAssistManager.AddTypingHandler(lifetime, '"', this, OnQuoteTyped, IsTypingSmartParenthesisHandlerAvailable);
+			typingAssistManager.AddTypingHandler(lifetime, '#', this, OnOctothorpeTyped, IsTypingSmartParenthesisHandlerAvailable);
 		}
 
 	}
