@@ -1,0 +1,7 @@
+﻿<#@ template language="C#" #>
+<#@ import namespace="|FooNamespace|(0)" #>
+<# |Foo|(1) foo; #>
+
+---------------------------------------------------------
+(0): ReSharper Error Highlighting: Cannot resolve symbol 'FooNamespace'
+(1): ReSharper Error Highlighting: Cannot resolve symbol 'Foo'

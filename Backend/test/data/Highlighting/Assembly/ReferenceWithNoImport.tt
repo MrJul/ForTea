@@ -1,0 +1,3 @@
+<#@ assembly name="Foo.dll" #>
+<#@ template language="C#" #>
+<# Foo foo; #>

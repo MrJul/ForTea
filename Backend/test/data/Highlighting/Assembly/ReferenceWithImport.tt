@@ -1,0 +1,4 @@
+<#@ assembly name="Foo.dll" #>
+<#@ template language="C#" #>
+<#@ import namespace="FooNamespace" #>
+<# Foo foo; #>

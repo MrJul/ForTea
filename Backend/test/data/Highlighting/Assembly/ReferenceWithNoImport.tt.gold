@@ -1,0 +1,6 @@
+﻿<#@ assembly name="Foo.dll" #>
+<#@ template language="C#" #>
+<# |Foo|(0) foo; #>
+
+---------------------------------------------------------
+(0): ReSharper Error Highlighting: Cannot resolve symbol 'Foo'
