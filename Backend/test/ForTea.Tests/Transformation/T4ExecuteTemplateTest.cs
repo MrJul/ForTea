@@ -18,6 +18,7 @@ namespace JetBrains.ForTea.Tests.Transformation
 		[TestCase("NewlinesInFeature")]
 		[TestCase("TextInFeature")]
 		[TestCase("ExtensionWithoutDot")]
+		[TestCase("LineBreakMess")]
 		public void TestExecuteTemplate(string name) => DoOneTest(name);
 	}
 }

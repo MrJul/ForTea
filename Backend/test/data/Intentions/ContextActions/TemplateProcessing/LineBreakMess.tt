@@ -1,0 +1,21 @@
+﻿Before directive<#@ output extension=".txt" #>
+
+After directive
+Before code block<# int x = 0; #>
+
+After code block
+Before expression block<#= x #>
+
+After expression block
+Before Foo<# Foo(); #>After foo<#+ public int Foo ()
+    { #>
+
+{caret}In feature block
+<#+     return 0;
+    } #>
+
+
+
+
+
+
