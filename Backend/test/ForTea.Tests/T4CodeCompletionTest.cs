@@ -7,7 +7,7 @@ namespace JetBrains.ForTea.Tests
 {
 	[TestFileExtension(T4ProjectFileType.MainExtension)]
 	[Category("Code Completion")]
-	public class T4CodeCompletionTest : CodeCompletionTestBase
+	public sealed class T4CodeCompletionTest : CodeCompletionTestBase
 	{
 		protected override CodeCompletionTestType TestType => CodeCompletionTestType.List;
 		protected override string RelativeTestDataPath => @"CodeCompletion";

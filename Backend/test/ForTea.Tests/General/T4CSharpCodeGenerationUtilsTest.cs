@@ -4,7 +4,7 @@ using NUnit.Framework;
 namespace JetBrains.ForTea.Tests.General
 {
 	[TestFixture]
-	public class T4CSharpCodeGenerationUtilsTests
+	public sealed class T4CSharpCodeGenerationUtilsTest
 	{
 		[Test, Sequential]
 		public void TestChangeExtensionOnNameWithTwoDots(

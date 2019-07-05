@@ -6,7 +6,7 @@ using NUnit.Framework;
 namespace JetBrains.ForTea.Tests.General
 {
 	[TestFixture]
-	public class T4LanguageTests : BaseTest
+	public sealed class T4LanguageTests : BaseTest
 	{
 		[Test]
 		public void LanguageIsRegistered()

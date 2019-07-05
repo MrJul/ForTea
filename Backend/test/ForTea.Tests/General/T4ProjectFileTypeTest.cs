@@ -7,7 +7,7 @@ using NUnit.Framework;
 namespace JetBrains.ForTea.Tests.General
 {
 	[TestFixture]
-	public class T4ProjectFileTypeTests : BaseTest
+	public sealed class T4ProjectFileTypeTest : BaseTest
 	{
 		[Test]
 		public void ProjectFileTypeIsRegistered()

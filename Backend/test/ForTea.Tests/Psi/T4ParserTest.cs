@@ -5,7 +5,7 @@ using NUnit.Framework;
 namespace JetBrains.ForTea.Tests.Psi
 {
 	[TestFileExtension(T4ProjectFileType.MainExtension)]
-	public class T4ParserTests : ParserTestBase<T4Language>
+	public sealed class T4ParserTest : ParserTestBase<T4Language>
 	{
 		protected override string RelativeTestDataPath => @"Psi\Parser";
 

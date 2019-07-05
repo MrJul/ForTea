@@ -7,7 +7,7 @@ using NUnit.Framework;
 namespace JetBrains.ForTea.Tests.General
 {
 	[TestFixture]
-	public class T4EnvironmentTest : BaseTest
+	public sealed class T4EnvironmentTest : BaseTest
 	{
 		[Test]
 		public void TestThatT4EnvironmentSupportsEverything()

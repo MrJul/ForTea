@@ -7,7 +7,7 @@ using NUnit.Framework;
 namespace JetBrains.ForTea.Tests.Transformation
 {
 	[TestFileExtension(T4ProjectFileType.MainExtension)]
-	public class T4ExecuteTemplateAvailabilityTest : ContextActionAvailabilityTestBase<T4ExecuteTemplateContextAction>
+	public sealed class T4ExecuteTemplateAvailabilityTest : ContextActionAvailabilityTestBase<T4ExecuteTemplateContextAction>
 	{
 		protected override string ExtraPath => @"TemplateProcessing";
 

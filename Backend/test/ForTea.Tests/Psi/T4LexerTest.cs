@@ -5,7 +5,7 @@ using NUnit.Framework;
 namespace JetBrains.ForTea.Tests.Psi
 {
 	[TestFileExtension(T4ProjectFileType.MainExtension)]
-	public class T4LexerTests : LexerTestBase
+	public sealed class T4LexerTest : LexerTestBase
 	{
 		protected override string RelativeTestDataPath => @"Psi\Lexer";
 
