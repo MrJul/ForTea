@@ -27,8 +27,7 @@ namespace GammaJul.ForTea.Core.TemplateProcessing.CodeGeneration.Converters
 		{
 		}
 
-		protected override string ResourceName =>
-			"GammaJul.ForTea.Core.TemplateProcessing.CodeGeneration.TemplateBaseStub.cs";
+		protected override string ResourceName => "GammaJul.ForTea.Core.Resources.TemplateBaseStub.cs";
 
 		protected override string GeneratedClassName => GeneratedClassNameString;
 		protected override string GeneratedBaseClassName => GeneratedBaseClassNameString;

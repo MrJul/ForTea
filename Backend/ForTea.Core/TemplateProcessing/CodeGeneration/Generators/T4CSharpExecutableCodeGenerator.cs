@@ -3,9 +3,8 @@ using GammaJul.ForTea.Core.TemplateProcessing.CodeCollecting;
 using GammaJul.ForTea.Core.TemplateProcessing.CodeGeneration.Converters;
 using GammaJul.ForTea.Core.Tree;
 using JetBrains.Annotations;
-using JetBrains.ForTea.RiderPlugin.TemplateProcessing.CodeGeneration.Converters;
 
-namespace JetBrains.ForTea.RiderPlugin.TemplateProcessing.CodeGeneration.Generators
+namespace GammaJul.ForTea.Core.TemplateProcessing.CodeGeneration.Generators
 {
 	public sealed class T4CSharpExecutableCodeGenerator : T4CSharpCodeGenerator
 	{

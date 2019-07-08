@@ -1,13 +1,11 @@
 using System.Collections.Generic;
 using GammaJul.ForTea.Core.Psi;
-using GammaJul.ForTea.Core.TemplateProcessing;
 using GammaJul.ForTea.Core.TemplateProcessing.CodeCollecting;
-using GammaJul.ForTea.Core.TemplateProcessing.CodeGeneration.Converters;
 using GammaJul.ForTea.Core.Tree;
 using JetBrains.Annotations;
 using JetBrains.ReSharper.Psi.CSharp.Parsing;
 
-namespace JetBrains.ForTea.RiderPlugin.TemplateProcessing.CodeGeneration.Converters
+namespace GammaJul.ForTea.Core.TemplateProcessing.CodeGeneration.Converters
 {
 	public class T4CSharpIntermediateConverter : T4CSharpIntermediateConverterBase
 	{
@@ -20,8 +18,7 @@ namespace JetBrains.ForTea.RiderPlugin.TemplateProcessing.CodeGeneration.Convert
 			GeneratedBaseClassName = GeneratedClassName + "Base";
 		}
 
-		protected sealed override string ResourceName =>
-			"JetBrains.ForTea.RiderPlugin.TemplateProcessing.CodeGeneration.TemplateBaseFull.cs";
+		protected sealed override string ResourceName => "GammaJul.ForTea.Core.Resources.TemplateBaseFull.cs";
 
 		protected sealed override string GeneratedClassName { get; }
 		protected sealed override string GeneratedBaseClassName { get; }
