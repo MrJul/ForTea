@@ -10,7 +10,7 @@ namespace GammaJul.ForTea.Core.TemplateProcessing
 {
 	public static class T4CSharpCodeGenerationUtils
 	{
-		[NotNull] public const string DefaultTargetExtension = "txt";
+		[NotNull] public const string DefaultTargetExtension = "cs";
 
 		[NotNull]
 		// name is NOT supposed to contain extension
@@ -61,7 +61,7 @@ namespace GammaJul.ForTea.Core.TemplateProcessing
 			var query = file
 				.GetDirectives(output)
 				.SelectMany(outputDirective => outputDirective.GetAttributes())
-				.Where(attribute => string.Equals(attribute.GetName(), output.EncodingAttribute.Name))
+				.Where(attribute => string.Equals(attribute.GetName(), output.ExtensionAttribute.Name))
 				.Select(attribute => attribute.GetValue());
 
 			string targetExtension = query.FirstOrDefault();
