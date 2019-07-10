@@ -3,20 +3,25 @@
 
 What's ForTea?
 --------------
-ForTea is a a plugin for [JetBrains ReSharper](http://www.jetbrains.com/resharper/) that adds support for editing T4 (.tt) files.  
-This project corresponds to the issue [RSRP-191807](http://youtrack.jetbrains.com/issue/RSRP-191807) in JetBrains bug tracker.  
-For the latest version, please see the [Releases](https://github.com/MrJul/ForTea/releases).  
-Don't hesitate to [open an issue](https://github.com/MrJul/ForTea/issues) if you encounter any problem.
+ForTea is a a plugin for [JetBrains ReSharper](https://www.jetbrains.com/resharper/) and [JetBrains Rider](https://www.jetbrains.com/rider/) that adds support for T4 Language (.tt files).  
+The plugin ships with bundled generator and automatically executes  
+Don't hesitate to [open an issue](https://github.com/MrJul/ForTea/issues) if you encounter any problem.  
 
 Installation
 ------------
+ReSharper:  
 Visual Studio 2010, 2012, 2013, 2015, 2017 and 2019 are supported.  
 ReSharper 2019.1 must be installed (older releases are still available for ReSharper 8.2, 9.x, 10.0, 2016.x, 2017.x, 2018.x).  
-To install ForTea, use Extension Manager from the ReSharper menu.
+To install ForTea, use Extension Manager from the ReSharper menu.  
+
+Rider:  
+To install ForTea, use _Settings > Plugins > Marketplace_.
 
 
 What's supported
 ----------------
+ - Execution of classical T4 templates
+ - Generation of C# code (aka template preprocessing)
  - Editing for .tt and .ttinclude and .t4 files
  - Syntax highlighting for T4 directives and blocks
  - Support for include files, both local and global to Visual Studio
@@ -32,7 +37,7 @@ What's supported
  - Auto update support
  - Both classic templates and runtime (aka preprocessed) templates.
 
-Things to know
+Things to know about ReSharper plugin
 --------------
 ForTea is only a ReSharper plugin at the moment, and doesn't provide any Visual Studio service,
 meaning there are some limitations.
