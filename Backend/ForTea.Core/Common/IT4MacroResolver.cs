@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using GammaJul.ForTea.Core.Psi;
 using JetBrains.Annotations;
+using JetBrains.ProjectModel;
 
 namespace GammaJul.ForTea.Core.Common
 {
@@ -8,18 +9,18 @@ namespace GammaJul.ForTea.Core.Common
 	{
 		/// <summary>Resolves new VS macros, like $(SolutionDir), found in include or assembly directives.</summary>
 		/// <param name="macros">The list of macro names (eg SolutionDir) to resolve.</param>
-		/// <param name="info">Context in which to resolve macros</param>
+		/// <param name="file">Context in which to resolve macros</param>
 		/// <returns>Resolved macros</returns>
 		IReadOnlyDictionary<string, string> Resolve(
 			[NotNull] [ItemNotNull] IEnumerable<string> macros,
-			T4ProjectFileInfo info
+			[NotNull] IProjectFile file
 		);
 
 		// TODO: move somewhere else. Wtf Macro resolver handles assemblies?
 		void InvalidateAssemblies(
 			[NotNull] T4FileDataDiff dataDiff,
 			ref bool hasChanges,
-			[NotNull] T4ProjectFileInfo info,
+			[NotNull] IProjectFile file,
 			[NotNull] T4AssemblyReferenceManager referenceManager
 		);
 	}

@@ -1,10 +1,10 @@
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using GammaJul.ForTea.Core.Common;
-using GammaJul.ForTea.Core.Psi;
 using JetBrains.Annotations;
 using JetBrains.Application;
 using JetBrains.Interop.WinApi;
+using JetBrains.ProjectModel;
 using JetBrains.Util.Logging;
 using JetBrains.VsIntegration.ProjectModel;
 using Microsoft.VisualStudio.Shell.Interop;
@@ -20,7 +20,7 @@ namespace JetBrains.ForTea.ReSharperPlugin
 
 		public override IReadOnlyDictionary<string, string> Resolve(
 			IEnumerable<string> macros,
-			T4ProjectFileInfo info
+			IProjectFile file
 		)
 		{
 			var result = new Dictionary<string, string>();
@@ -29,7 +29,7 @@ namespace JetBrains.ForTea.ReSharperPlugin
 			{
 				if (vsBuildMacroInfo == null)
 				{
-					vsBuildMacroInfo = TryGetVsBuildMacroInfo(info);
+					vsBuildMacroInfo = TryGetVsBuildMacroInfo(file);
 					if (vsBuildMacroInfo == null)
 					{
 						Logger.LogError("Couldn't get IVsBuildMacroInfo");
@@ -43,7 +43,7 @@ namespace JetBrains.ForTea.ReSharperPlugin
 					&& !string.IsNullOrEmpty(value);
 				if (!succeeded)
 				{
-					value = MSBuildExtensions.GetStringValue(Utils.TryGetVsHierarchy(info), macro, null);
+					value = MSBuildExtensions.GetStringValue(Utils.TryGetVsHierarchy(file), macro, null);
 					succeeded = !string.IsNullOrEmpty(value);
 				}
 
@@ -63,7 +63,7 @@ namespace JetBrains.ForTea.ReSharperPlugin
 		/// <returns>An instance of <see cref="IVsBuildMacroInfo"/> if found.</returns>
 		[CanBeNull]
 		[SuppressMessage("ReSharper", "SuspiciousTypeConversion.Global")]
-		private static IVsBuildMacroInfo TryGetVsBuildMacroInfo([NotNull] T4ProjectFileInfo info) =>
-			Utils.TryGetVsHierarchy(info) as IVsBuildMacroInfo;
+		private static IVsBuildMacroInfo TryGetVsBuildMacroInfo([NotNull] IProjectFile file) =>
+			Utils.TryGetVsHierarchy(file) as IVsBuildMacroInfo;
 	}
 }

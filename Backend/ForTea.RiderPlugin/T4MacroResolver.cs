@@ -17,10 +17,11 @@ namespace JetBrains.ForTea.RiderPlugin
 
 		public override IReadOnlyDictionary<string, string> Resolve(
 			IEnumerable<string> macros,
-			T4ProjectFileInfo info
+			IProjectFile file
 		) => KnownMacros;
 
-		public T4MacroResolver([NotNull] ISolution solution, [NotNull] IT4AssemblyNamePreprocessor preprocessor) : base(preprocessor)
+		public T4MacroResolver([NotNull] ISolution solution, [NotNull] IT4AssemblyNamePreprocessor preprocessor) :
+			base(preprocessor)
 		{
 			Solution = solution;
 			KnownMacros = new Dictionary<string, string>

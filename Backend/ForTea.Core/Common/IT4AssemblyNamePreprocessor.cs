@@ -1,15 +1,15 @@
 using System;
-using GammaJul.ForTea.Core.Psi;
 using JetBrains.Annotations;
+using JetBrains.ProjectModel;
 
 namespace GammaJul.ForTea.Core.Common
 {
 	public interface IT4AssemblyNamePreprocessor
 	{
 		[NotNull]
-		string Preprocess([NotNull] T4ProjectFileInfo info, [NotNull] string assemblyName);
+		string Preprocess([NotNull] IProjectFile file, [NotNull] string assemblyName);
 
 		[NotNull]
-		IDisposable Prepare([NotNull] T4ProjectFileInfo info);
+		IDisposable Prepare([NotNull] IProjectFile file);
 	}
 }

@@ -1,10 +1,10 @@
 using System;
 using System.IO;
 using GammaJul.ForTea.Core.Common;
-using GammaJul.ForTea.Core.Psi;
 using JetBrains.Application;
 using JetBrains.DataFlow;
 using JetBrains.Diagnostics;
+using JetBrains.ProjectModel;
 
 namespace JetBrains.ForTea.RiderPlugin
 {
@@ -12,12 +12,12 @@ namespace JetBrains.ForTea.RiderPlugin
 	public sealed class AssemblyNamePreprocessor : IT4AssemblyNamePreprocessor
 	{
 		// TODO: resolve macros if needed
-		public string Preprocess(T4ProjectFileInfo info, string assemblyName)
+		public string Preprocess(IProjectFile file, string assemblyName)
 		{
 			// If the argument is the fully qualified path of an existing file, then we are done.
 			if (File.Exists(assemblyName)) return assemblyName;
 
-			string folderPath = (info.File.ParentFolder?.Location?.FullPath).NotNull();
+			string folderPath = (file.ParentFolder?.Location?.FullPath).NotNull();
 
 			// Maybe the assembly is in the same folder as the text template that called the directive?
 			string candidate = Path.Combine(folderPath, assemblyName);
@@ -34,6 +34,6 @@ namespace JetBrains.ForTea.RiderPlugin
 			return assemblyName;
 		}
 
-		public IDisposable Prepare(T4ProjectFileInfo info) => Disposable.Empty;
+		public IDisposable Prepare(IProjectFile file) => Disposable.Empty;
 	}
 }
