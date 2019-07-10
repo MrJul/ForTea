@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using GammaJul.ForTea.Core.Psi.Directives;
 using GammaJul.ForTea.Core.TemplateProcessing;
@@ -78,8 +79,6 @@ namespace JetBrains.ForTea.RiderPlugin.TemplateProcessing.Managing
 
 		public void Execute(IT4File file, IProgressIndicator progress = null, Lifetime? outerLifetime = null)
 		{
-			var caches = Solution.GetPsiServices().Caches;
-			caches.WaitForCaches("qefjgvnwefkqvre");
 			var baseLifetime = outerLifetime ?? SolutionLifetime;
 			var definition = baseLifetime.CreateNested();
 			LaunchProgress(progress);
@@ -96,7 +95,10 @@ namespace JetBrains.ForTea.RiderPlugin.TemplateProcessing.Managing
 			indicator.CurrentItemText = "Preparing";
 		}
 
-		private T4TemplateExecutionManagerInfo GenerateCode([NotNull] IT4File file, [CanBeNull] IProgressIndicator progress)
+		private T4TemplateExecutionManagerInfo GenerateCode(
+			[NotNull] IT4File file,
+			[CanBeNull] IProgressIndicator progress
+		)
 		{
 			if (progress != null) progress.CurrentItemText = "Generating code";
 			using (ReadLockCookie.Create())
@@ -144,6 +146,7 @@ namespace JetBrains.ForTea.RiderPlugin.TemplateProcessing.Managing
 			}
 
 			compilation.Emit(executablePath.FullPath, cancellationToken: definition.Lifetime);
+			CopyAssemblies(info, executablePath);
 			Run(info, definition, executablePath);
 		}
 
@@ -165,13 +168,37 @@ namespace JetBrains.ForTea.RiderPlugin.TemplateProcessing.Managing
 				references: info.References);
 		}
 
-		private void ReportError(LifetimeDefinition definition, T4TemplateExecutionManagerInfo info, IList<Diagnostic> errors)
+		private void ReportError(
+			LifetimeDefinition definition,
+			T4TemplateExecutionManagerInfo info,
+			IList<Diagnostic> errors
+		)
 		{
 			MessageBox.ShowError(errors.Select(error => error.ToString()).Join("\n"), "Could not compile template");
 			SaveExecutionResult(definition, info, ErrorMessage);
 		}
 
-		private void Run(T4TemplateExecutionManagerInfo info, LifetimeDefinition definition, FileSystemPath executablePath)
+		private void CopyAssemblies(
+			T4TemplateExecutionManagerInfo info,
+			[NotNull] FileSystemPath executablePath
+		)
+		{
+			var folder = executablePath.Parent;
+			IEnumerable<FileSystemPath> query = info
+				.References
+				.SelectNotNull(it => it.Display)
+				.SelectNotNull(it => FileSystemPath.TryParse(it));
+			foreach (var path in query)
+			{
+				File.Copy(path.FullPath, folder.Combine(path.Name).FullPath);
+			}
+		}
+
+		private void Run(
+			T4TemplateExecutionManagerInfo info,
+			LifetimeDefinition definition,
+			FileSystemPath executablePath
+		)
 		{
 			var lifetime = definition.Lifetime;
 			var process = LaunchProcess(lifetime, executablePath);
@@ -213,9 +240,10 @@ namespace JetBrains.ForTea.RiderPlugin.TemplateProcessing.Managing
 			return process;
 		}
 
-		private void SaveExecutionResult(LifetimeDefinition definition, T4TemplateExecutionManagerInfo info, [NotNull] string result)
+		private void SaveExecutionResult(LifetimeDefinition definition, T4TemplateExecutionManagerInfo info,
+			[NotNull] string result)
 		{
-			Locks.ExecuteOrQueueReadLockEx(definition.Lifetime, "efbuqer", () =>
+			Locks.ExecuteOrQueueReadLockEx(definition.Lifetime, "Saving T4 Template Execution Results", () =>
 			{
 				try
 				{
@@ -239,7 +267,10 @@ namespace JetBrains.ForTea.RiderPlugin.TemplateProcessing.Managing
 		}
 
 		[NotNull]
-		private static FileSystemPath CreateTemporaryExecutable(Lifetime lifetime) =>
-			FileSystemDefinition.CreateTemporaryFile(lifetime, extensionWithDot: DefaultExecutableExtensionWithDot);
+		private static FileSystemPath CreateTemporaryExecutable(Lifetime lifetime)
+		{
+			var directory = FileSystemDefinition.CreateTemporaryDirectory();
+			return FileSystemDefinition.CreateTemporaryFile(lifetime, directory, DefaultExecutableExtensionWithDot);
+		}
 	}
 }
