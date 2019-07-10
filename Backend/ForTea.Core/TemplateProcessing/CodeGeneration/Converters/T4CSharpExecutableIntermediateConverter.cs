@@ -17,6 +17,10 @@ namespace GammaJul.ForTea.Core.TemplateProcessing.CodeGeneration.Converters
 		{
 		}
 
+		// Avoid name clash
+		protected override string GeneratedClassName =>
+			"__" + base.GeneratedClassName + "__" + DefaultGeneratedClassName + "__";
+
 		// When creating executable, it is better to put base class first,
 		// to make error messages more informative
 		protected override void AppendClasses(T4CSharpCodeGenerationResult result)

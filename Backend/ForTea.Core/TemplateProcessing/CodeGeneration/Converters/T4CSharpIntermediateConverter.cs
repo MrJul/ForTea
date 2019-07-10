@@ -9,19 +9,21 @@ namespace GammaJul.ForTea.Core.TemplateProcessing.CodeGeneration.Converters
 {
 	public class T4CSharpIntermediateConverter : T4CSharpIntermediateConverterBase
 	{
+		protected const string DefaultGeneratedClassName = "GeneratedTransformation";
+
 		public T4CSharpIntermediateConverter(
 			[NotNull] T4CSharpCodeGenerationIntermediateResult result,
 			[NotNull] IT4File file
 		) : base(result, file)
 		{
-			GeneratedClassName = File.GetSourceFile()?.Name.WithoutExtension() ?? "GeneratedTransformation";
-			GeneratedBaseClassName = GeneratedClassName + "Base";
 		}
 
 		protected sealed override string ResourceName => "GammaJul.ForTea.Core.Resources.TemplateBaseFull.cs";
 
-		protected sealed override string GeneratedClassName { get; }
-		protected sealed override string GeneratedBaseClassName { get; }
+		protected override string GeneratedClassName =>
+			File.GetSourceFile()?.Name.WithoutExtension() ?? DefaultGeneratedClassName;
+
+		protected sealed override string GeneratedBaseClassName => GeneratedClassName + "Base";
 
 		protected sealed override void AppendSyntheticAttribute(T4CSharpCodeGenerationResult result)
 		{
