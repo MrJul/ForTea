@@ -5,6 +5,7 @@ using JetBrains.Annotations;
 using JetBrains.Application;
 using JetBrains.Application.Components;
 using JetBrains.DataFlow;
+using JetBrains.ProjectModel;
 using JetBrains.Util;
 using JetBrains.VsIntegration.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
@@ -25,12 +26,12 @@ namespace JetBrains.ForTea.ReSharperPlugin
 					new Optional<ITextTemplatingComponents>(provider.Value.GetService<STextTemplating, ITextTemplatingComponents>()),
 				true);
 
-		public string Preprocess(T4ProjectFileInfo info, string assemblyName) =>
+		public string Preprocess(IProjectFile file, string assemblyName) =>
 			Components.CanBeNull?.Host?.ResolveAssemblyReference(assemblyName) ?? assemblyName;
 
-		public IDisposable Prepare(T4ProjectFileInfo info)
+		public IDisposable Prepare(IProjectFile file)
 		{
-			IVsHierarchy hierarchy = Utils.TryGetVsHierarchy(info);
+			IVsHierarchy hierarchy = Utils.TryGetVsHierarchy(file);
 			ITextTemplatingComponents components = Components.CanBeNull;
 
 			if (components == null)
@@ -43,7 +44,7 @@ namespace JetBrains.ForTea.ReSharperPlugin
 				() =>
 				{
 					components.Hierarchy = hierarchy;
-					components.InputFile = info.File.Location.IsNullOrEmpty() ? null : info.File.Location.FullPath;
+					components.InputFile = file.Location.IsNullOrEmpty() ? null : file.Location.FullPath;
 				},
 				() =>
 				{

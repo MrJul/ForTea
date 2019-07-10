@@ -6,9 +6,9 @@ using JetBrains.Application.changes;
 using JetBrains.Application.Progress;
 using JetBrains.Application.Threading;
 using JetBrains.Collections;
+using JetBrains.Diagnostics;
 using JetBrains.DocumentManagers;
 using JetBrains.Lifetimes;
-using JetBrains.Metadata.Reader.API;
 using JetBrains.ProjectModel;
 using JetBrains.ProjectModel.Build;
 using JetBrains.ProjectModel.model2.Assemblies.Interfaces;
@@ -30,13 +30,15 @@ namespace GammaJul.ForTea.Core.Psi.Modules {
 		[NotNull] private readonly ChangeManager _changeManager;
 		[NotNull] private readonly IShellLocks _shellLocks;
 		[NotNull] private readonly IT4Environment _t4Environment;
-		[NotNull] private readonly T4ProjectFileInfo _info;
 		[NotNull] private readonly OutputAssemblies _outputAssemblies;
 		[NotNull] private readonly IT4MacroResolver _resolver;
-
+		
 		[NotNull] private readonly Dictionary<string, string> _resolvedMacros
 			= new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
 
+		[NotNull]
+		private IProjectFile File { get; }
+		
 		private IChangeProvider ChangeProvider { get; } = new FakeChangeProvider();
 
 		/// <summary>
@@ -84,7 +86,7 @@ namespace GammaJul.ForTea.Core.Psi.Modules {
 			_resolver.InvalidateAssemblies(
 				dataDiff,
 				ref hasChanges,
-				_info,
+				File,
 				_assemblyReferenceManager
 			);
 			
@@ -112,7 +114,7 @@ namespace GammaJul.ForTea.Core.Psi.Modules {
 		/// <returns>Whether at least one macro has been processed.</returns>
 		private bool ResolveMacros([NotNull] IEnumerable<string> macros)
 		{
-			var result = _resolver.Resolve(macros, _info);
+			var result = _resolver.Resolve(macros, File);
 
 			if (result.IsEmpty())
 			{
@@ -212,46 +214,47 @@ namespace GammaJul.ForTea.Core.Psi.Modules {
 
 		public T4FilePsiModule(
 			Lifetime lifetime,
-			[NotNull] T4ProjectFileInfo info,
+			[NotNull] IProjectFile file,
 			[NotNull] ChangeManager changeManager,
 			[NotNull] IShellLocks shellLocks,
 			[NotNull] IT4Environment t4Environment,
 			[NotNull] IT4MacroResolver resolver,
 			[NotNull] PsiProjectFileTypeCoordinator coordinator
 		) : base(
-			info.Project,
-			info.File.Location.TryMakeRelativeTo(info.Project.Location).FullPath,
+			file.GetProject().NotNull(),
+			file.Location.TryMakeRelativeTo(file.GetProject().NotNull().Location).FullPath,
 			coordinator,
 			t4Environment.TargetFrameworkId
 		)
 		{
+			File = file;
 			_lifetime = lifetime;
 			lifetime.OnTermination(Dispose);
 
-			_psiModules = info.Solution.GetComponent<IPsiModules>();
+			var solution = file.GetSolution();
+			_psiModules = solution.GetComponent<IPsiModules>();
 			_changeManager = changeManager;
 			_shellLocks = shellLocks;
-			_info = info;
 			_t4Environment = t4Environment;
 			_resolver = resolver;
 
-			var resolveContext = this.GetResolveContextEx(info.File);
+			var resolveContext = this.GetResolveContextEx(file);
 
 			_assemblyReferenceManager = new T4AssemblyReferenceManager(
-				info.Solution.GetComponent<IAssemblyFactory>(),
-				_info,
+				solution.GetComponent<IAssemblyFactory>(),
+				file,
 				resolveContext
 			);
 
 			changeManager.RegisterChangeProvider(lifetime, ChangeProvider);
 			changeManager.AddDependency(lifetime, _psiModules, ChangeProvider);
 
-			_outputAssemblies = info.Solution.GetComponent<OutputAssemblies>();
+			_outputAssemblies = solution.GetComponent<OutputAssemblies>();
 
-			var documentManager = info.Solution.GetComponent<DocumentManager>();
-			SourceFile = CreateSourceFile(_info.File, documentManager);
+			var documentManager = solution.GetComponent<DocumentManager>();
+			SourceFile = CreateSourceFile(file, documentManager);
 
-			info.Solution.GetComponent<T4FileDataCache>().FileDataChanged.Advise(lifetime, OnDataFileChanged);
+			solution.GetComponent<T4FileDataCache>().FileDataChanged.Advise(lifetime, OnDataFileChanged);
 			AddBaseReferences();
 		}
 	}
