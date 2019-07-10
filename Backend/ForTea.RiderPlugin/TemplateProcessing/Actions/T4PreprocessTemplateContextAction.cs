@@ -1,15 +1,12 @@
-using System;
 using GammaJul.ForTea.Core.Psi.Directives;
 using GammaJul.ForTea.Core.TemplateProcessing.CodeGeneration.Generators;
 using JetBrains.Annotations;
 using JetBrains.Application.Progress;
-using JetBrains.DocumentManagers;
-using JetBrains.DocumentModel.Impl;
 using JetBrains.ForTea.RiderPlugin.TemplateProcessing.Managing;
 using JetBrains.ProjectModel;
 using JetBrains.ReSharper.Feature.Services.ContextActions;
 using JetBrains.ReSharper.Host.Features.ProjectModel;
-using JetBrains.TextControl;
+using JetBrains.Util;
 
 namespace JetBrains.ForTea.RiderPlugin.TemplateProcessing.Actions
 {
@@ -29,11 +26,7 @@ namespace JetBrains.ForTea.RiderPlugin.TemplateProcessing.Actions
 		{
 		}
 
-		protected override Action<ITextControl> ExecutePsiTransaction(
-			ISolution solution,
-			IProgressIndicator progress
-		)
-		{
+		protected override void DoExecute(ISolution solution, IProgressIndicator progress) =>
 			solution.InvokeUnderTransaction(cookie =>
 			{
 				var directiveInfoManager = solution.GetComponent<T4DirectiveInfoManager>();
@@ -41,11 +34,9 @@ namespace JetBrains.ForTea.RiderPlugin.TemplateProcessing.Actions
 				var destinationFile = solution
 					.GetComponent<IT4TargetFileManager>()
 					.GetOrCreateDestinationFile(File, cookie, PreprocessResultExtension);
-				destinationFile.GetDocument().SetText(message);
+				destinationFile.Location.WriteAllText(message.Replace("\r\n", "\n"));
 				cookie.Commit(progress);
 			});
-			return null;
-		}
 
 		public override string Text => Message;
 	}
