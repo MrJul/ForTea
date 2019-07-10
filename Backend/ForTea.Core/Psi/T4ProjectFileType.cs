@@ -7,7 +7,8 @@ namespace GammaJul.ForTea.Core.Psi {
 	/// <summary>Represents a T4 project file type.</summary>
 	[ProjectFileTypeDefinition(Name)]
 	public class T4ProjectFileType : KnownProjectFileType {
-		public const string MainExtension = ".tt";
+		public const string MainExtensionNoDot = "tt";
+		public const string MainExtension = "." + MainExtensionNoDot;
 
 		/// <summary>Gets an unique instance of <see cref="T4ProjectFileType"/>.</summary>
 		[UsedImplicitly(ImplicitUseKindFlags.Assign)]

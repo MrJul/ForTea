@@ -2,15 +2,15 @@ using System;
 using System.Collections.Generic;
 using GammaJul.ForTea.Core.Tree;
 using JetBrains.Annotations;
+using JetBrains.Application.Progress;
 using JetBrains.Application.Threading;
 using JetBrains.Diagnostics;
 using JetBrains.ReSharper.Psi.Tree;
-using JetBrains.ReSharper.Resources.Shell;
 using Microsoft.CodeAnalysis;
 
 namespace JetBrains.ForTea.RiderPlugin.TemplateProcessing.Managing
 {
-	public readonly struct T4CodeInfo
+	public readonly struct T4TemplateExecutionManagerInfo
 	{
 		public DateTime TimeStamp { get; }
 
@@ -23,17 +23,22 @@ namespace JetBrains.ForTea.RiderPlugin.TemplateProcessing.Managing
 		[NotNull]
 		public IT4File File { get; }
 
-		public T4CodeInfo(
+		[CanBeNull]
+		public IProgressIndicator ProgressIndicator { get; }
+
+		public T4TemplateExecutionManagerInfo(
 			DateTime timeStamp,
 			[NotNull] string code,
 			[NotNull, ItemNotNull] IEnumerable<MetadataReference> references,
-			[NotNull] IT4File file
+			[NotNull] IT4File file,
+			[CanBeNull] IProgressIndicator progressIndicator
 		)
 		{
 			TimeStamp = timeStamp;
 			Code = code;
 			References = references;
 			File = file;
+			ProgressIndicator = progressIndicator;
 		}
 
 		public void AssertFileHasNotChanged()

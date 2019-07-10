@@ -7,6 +7,7 @@ using JetBrains.Diagnostics;
 using JetBrains.DocumentManagers.Transactions;
 using JetBrains.ProjectModel;
 using JetBrains.ReSharper.Psi;
+using JetBrains.Util;
 
 namespace JetBrains.ForTea.RiderPlugin.TemplateProcessing.Managing
 {
@@ -36,6 +37,15 @@ namespace JetBrains.ForTea.RiderPlugin.TemplateProcessing.Managing
 			if (!cookie.CanAddFile(folder, targetLocation, out string reason))
 				throw new InvalidOperationException(reason);
 			return cookie.AddFile(folder, targetLocation);
+		}
+
+		public FileSystemPath GetDestinationPath(IT4File file, string targetExtension = null)
+		{
+			if (targetExtension == null) targetExtension = file.GetTargetExtension(Manager);
+			var sourceFile = file.GetSourceFile().NotNull();
+			string targetFileName = sourceFile.Name.WithOtherExtension(targetExtension);
+			var targetLocation = sourceFile.GetLocation().Parent.Combine(targetFileName);
+			return targetLocation;
 		}
 	}
 }
