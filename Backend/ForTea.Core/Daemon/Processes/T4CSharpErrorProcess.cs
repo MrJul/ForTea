@@ -13,27 +13,29 @@ using JetBrains.ReSharper.Psi.Util;
 using JetBrains.Util;
 
 namespace GammaJul.ForTea.Core.Daemon.Processes {
-
+	
 	public class T4CSharpErrorProcess : CSharpIncrementalDaemonStageProcessBase {
 
 		public override void VisitClassDeclaration(IClassDeclaration classDeclarationParam, IHighlightingConsumer context) {
 			base.VisitClassDeclaration(classDeclarationParam, context);
 
 			if (!classDeclarationParam.IsSynthetic()) return;
-			if (!T4CSharpCodeBehindIntermediateConverter.GeneratedClassNameString.Equals(classDeclarationParam.DeclaredName, StringComparison.Ordinal))
+			if (!T4CSharpCodeBehindIntermediateConverter.GeneratedClassNameString.Equals(
+				classDeclarationParam.DeclaredName, StringComparison.Ordinal))
 				return;
 
-			IDeclaredTypeUsage superTypeUsage = classDeclarationParam.SuperTypeUsageNodes.FirstOrDefault();
-			if (superTypeUsage == null) return;
-			if (T4CSharpCodeBehindIntermediateConverter.GeneratedBaseClassNameString.Equals(superTypeUsage.GetText(), StringComparison.Ordinal))
-				return;
+			ITypeUsage baseClassNode = classDeclarationParam.SuperTypeUsageNodes.FirstOrDefault();
+			if (baseClassNode == null) return;
 
-			ITypeElement typeElement = CSharpTypeFactory.CreateDeclaredType(superTypeUsage).GetTypeElement();
-			if (typeElement == null)
-				return;
-			
-			if (!HasTransformTextMethod(typeElement))
-				context.AddHighlighting(new MissingTransformTextMethodHighlighting(superTypeUsage));
+			if (T4CSharpCodeBehindIntermediateConverter.GeneratedBaseClassNameString.Equals(
+				baseClassNode.GetText(),
+				StringComparison.Ordinal)) return;
+
+			ITypeElement baseClass = classDeclarationParam.SuperTypes.FirstOrDefault()?.GetTypeElement();
+			if (baseClass == null) return;
+
+			if (HasTransformTextMethod(baseClass)) return;
+			context.AddHighlighting(new MissingTransformTextMethodHighlighting(baseClassNode, baseClass));
 		}
 
 		private static bool HasTransformTextMethod([NotNull] ITypeElement typeElement)

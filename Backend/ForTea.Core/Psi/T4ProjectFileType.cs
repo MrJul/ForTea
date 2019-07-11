@@ -12,7 +12,7 @@ namespace GammaJul.ForTea.Core.Psi {
 
 		/// <summary>Gets an unique instance of <see cref="T4ProjectFileType"/>.</summary>
 		[UsedImplicitly(ImplicitUseKindFlags.Assign)]
-		public new static readonly T4ProjectFileType Instance;
+		public new static T4ProjectFileType Instance { get; private set; }
 
 		/// <summary>Gets the name of the file type.</summary>
 		public new const string Name = T4Language.Name;

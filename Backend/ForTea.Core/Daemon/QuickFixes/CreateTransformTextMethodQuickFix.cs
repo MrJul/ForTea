@@ -14,8 +14,6 @@ using JetBrains.ReSharper.Feature.Services.Intentions.Impl.DeclarationBuilders;
 using JetBrains.ReSharper.Feature.Services.Intentions.Impl.LanguageSpecific;
 using JetBrains.ReSharper.Feature.Services.QuickFixes;
 using JetBrains.ReSharper.Psi;
-using JetBrains.ReSharper.Psi.CSharp;
-using JetBrains.ReSharper.Psi.CSharp.Tree;
 using JetBrains.ReSharper.Psi.Tree;
 using JetBrains.TextControl;
 using JetBrains.Util;
@@ -28,28 +26,25 @@ namespace GammaJul.ForTea.Core.Daemon.QuickFixes {
 		[NotNull] private readonly MissingTransformTextMethodHighlighting _highlighting;
 
 		public override bool IsAvailable(IUserDataHolder cache)
-			=> GetTargetTypeDeclaration(_highlighting.DeclaredTypeUsage) != null;
+			=> GetTargetTypeDeclaration(_highlighting.BaseClass) != null;
 
 		public override string Text
 			=> string.Format(CultureInfo.InvariantCulture, "Create method '{0}'", T4CSharpIntermediateConverterBase.TransformTextMethodName);
 
 		[CanBeNull]
-		private static ITypeDeclaration GetTargetTypeDeclaration([NotNull] IDeclaredTypeUsage declaredTypeUsage) {
-			if (!declaredTypeUsage.IsValid())
+		private static ITypeDeclaration GetTargetTypeDeclaration([NotNull] ITypeElement baseClass) {
+			if (!baseClass.IsValid())
 				return null;
 
-			return CSharpTypeFactory
-				.CreateDeclaredType(declaredTypeUsage)
-				.GetTypeElement()
-				?.GetDeclarations()
+			return baseClass
+				.GetDeclarations()
 				.OfType<ITypeDeclaration>()
 				.FirstOrDefault(decl => LanguageManager.Instance.TryGetService<IntentionLanguageSpecific>(decl.Language) != null);
 		}
 
 		protected override Action<ITextControl> ExecutePsiTransaction(ISolution solution, IProgressIndicator progress) {
-			ITypeDeclaration typeDeclaration = GetTargetTypeDeclaration(_highlighting.DeclaredTypeUsage);
-			if (typeDeclaration == null)
-				return null;
+			ITypeDeclaration typeDeclaration = GetTargetTypeDeclaration(_highlighting.BaseClass);
+			if (typeDeclaration == null) return null;
 
 			MemberSignature signature = CreateTransformTextSignature(typeDeclaration);
 			TypeTarget target = CreateTarget(typeDeclaration);

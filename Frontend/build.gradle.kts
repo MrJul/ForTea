@@ -33,11 +33,12 @@ java {
 }
 
 
+val baseVersion = "2019.2"
 version = "0.01"
 
 intellij {
   type = "RD"
-  version = "2019.1.2"
+  version = "$baseVersion-SNAPSHOT"
   instrumentCode = false
   downloadSources = false
   updateSinceUntilBuild = false
@@ -78,8 +79,8 @@ val riderSdkPackageVersion by lazy {
   val regex = Regex("${Regex.escape(sdkPackageName)}\\.([\\d\\.]+.*)\\.nupkg")
   val version = nugetPackagesPath
     .listFiles()
-    .mapNotNull { regex.matchEntire(it.name)?.groupValues?.drop(1)?.first() }
-    .singleOrNull() ?: error("$sdkPackageName package is not found in $nugetPackagesPath (or multiple matches)")
+    ?.mapNotNull { regex.matchEntire(it.name)?.groupValues?.drop(1)?.first() }
+    ?.singleOrNull() ?: error("$sdkPackageName package is not found in $nugetPackagesPath (or multiple matches)")
   println("$sdkPackageName version is $version")
 
   return@lazy version

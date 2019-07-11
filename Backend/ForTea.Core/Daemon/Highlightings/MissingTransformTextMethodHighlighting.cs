@@ -2,6 +2,7 @@ using JetBrains.Annotations;
 using JetBrains.DocumentModel;
 using JetBrains.ProjectModel;
 using JetBrains.ReSharper.Feature.Services.Daemon;
+using JetBrains.ReSharper.Psi;
 using JetBrains.ReSharper.Psi.CSharp.Tree;
 
 namespace GammaJul.ForTea.Core.Daemon.Highlightings {
@@ -16,10 +17,13 @@ namespace GammaJul.ForTea.Core.Daemon.Highlightings {
 	public class MissingTransformTextMethodHighlighting : IHighlighting {
 
 		[NotNull]
-		public IDeclaredTypeUsage DeclaredTypeUsage { get; }
+		public ITypeUsage BaseClassNode { get; }
+
+		[NotNull]
+		public ITypeElement BaseClass { get; }
 
 		public bool IsValid()
-			=> DeclaredTypeUsage.IsValid();
+			=> BaseClassNode.IsValid();
 
 		public string ToolTip
 			=> "Base class doesn't have a valid TransformText method.";
@@ -28,10 +32,15 @@ namespace GammaJul.ForTea.Core.Daemon.Highlightings {
 			=> ToolTip;
 
 		public DocumentRange CalculateRange()
-			=> DeclaredTypeUsage.GetNavigationRange();
+			=> BaseClassNode.GetNavigationRange();
 
-		public MissingTransformTextMethodHighlighting([NotNull] IDeclaredTypeUsage declaredTypeUsage) {
-			DeclaredTypeUsage = declaredTypeUsage;
+		public MissingTransformTextMethodHighlighting(
+			[NotNull] ITypeUsage baseClassNode,
+			[NotNull] ITypeElement baseClass
+		)
+		{
+			BaseClassNode = baseClassNode;
+			BaseClass = baseClass;
 		}
 
 	}
