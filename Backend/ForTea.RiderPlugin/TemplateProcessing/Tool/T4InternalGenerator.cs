@@ -25,6 +25,7 @@ namespace JetBrains.ForTea.RiderPlugin.TemplateProcessing.Tool
 		public string[] Extensions => new[] {T4ProjectFileType.MainExtensionNoDot};
 		public bool IsEnabled => true;
 		public bool IsApplicable(IProjectFile projectFile) => AsT4File(projectFile) != null;
+		public string[] Keywords => new[] {"tt", "t4", "template"};
 
 		public ISingleFileCustomToolExecutionResult Execute(IProjectFile projectFile)
 		{

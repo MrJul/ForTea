@@ -12,7 +12,7 @@ namespace GammaJul.ForTea.Core.Psi {
 
 		/// <summary>Gets an unique instance of <see cref="T4Language"/>.</summary>
 		[UsedImplicitly(ImplicitUseKindFlags.Assign)]
-		public static T4Language Instance;
+		public static T4Language Instance { get; private set; }
 
 		private T4Language()
 			: base(Name, Name) {
