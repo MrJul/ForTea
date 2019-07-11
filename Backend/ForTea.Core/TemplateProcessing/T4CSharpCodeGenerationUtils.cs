@@ -1,10 +1,10 @@
 using System;
 using System.Diagnostics;
 using System.Linq;
-using System.Threading;
 using GammaJul.ForTea.Core.Psi.Directives;
 using GammaJul.ForTea.Core.Tree;
 using JetBrains.Annotations;
+using JetBrains.Application.Progress;
 using JetBrains.ReSharper.Psi.CSharp.Parsing;
 using JetBrains.Util;
 
@@ -83,16 +83,18 @@ namespace GammaJul.ForTea.Core.TemplateProcessing
 			return first.IsEmpty() ? second : first;
 		}
 
-		public static void WaitForExitSpinning([NotNull] this Process process, int interval, CancellationToken token)
+		public static void WaitForExitSpinning(
+			[NotNull] this Process process,
+			int interval,
+			[CanBeNull] IProgressIndicator indicator
+		)
 		{
 			if (process == null) throw new ArgumentNullException(nameof(process));
 			while (!process.WaitForExit(interval))
 			{
-				if (token.IsCancellationRequested)
-				{
-					process.KillTree();
-				}
-				token.ThrowIfCancellationRequested();
+				if (indicator?.IsCanceled != true) continue;
+				process.KillTree();
+				throw new OperationCanceledException();
 			}
 		}
 	}

@@ -203,7 +203,7 @@ namespace JetBrains.ForTea.RiderPlugin.TemplateProcessing.Managing
 			var lifetime = definition.Lifetime;
 			var process = LaunchProcess(lifetime, executablePath);
 			lifetime.ThrowIfNotAlive();
-			process.WaitForExitSpinning(100, lifetime);
+			process.WaitForExitSpinning(100, info.ProgressIndicator);
 			lifetime.ThrowIfNotAlive();
 			string stdout = process.StandardOutput.ReadToEnd();
 			lifetime.ThrowIfNotAlive();
@@ -252,6 +252,7 @@ namespace JetBrains.ForTea.RiderPlugin.TemplateProcessing.Managing
 					{
 						Solution.InvokeUnderTransaction(cookie =>
 						{
+							TargetFileManager.GetOrCreateDestinationFile(info.File, cookie);
 							var destination = TargetFileManager.GetDestinationPath(info.File);
 							// TODO: fix endings!
 							destination.WriteAllText(result.Replace("\r\n", "\n"));
