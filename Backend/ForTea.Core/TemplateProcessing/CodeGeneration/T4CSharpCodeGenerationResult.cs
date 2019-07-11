@@ -7,7 +7,7 @@ using JetBrains.ReSharper.Psi.Impl.Shared;
 using JetBrains.ReSharper.Psi.Tree;
 using JetBrains.Util;
 
-namespace GammaJul.ForTea.Core.Psi {
+namespace GammaJul.ForTea.Core.TemplateProcessing.CodeGeneration {
 
 	/// <summary>Holds a generated result for code-behind generation.</summary>
 	public sealed class T4CSharpCodeGenerationResult {
