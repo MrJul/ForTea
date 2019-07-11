@@ -1,6 +1,4 @@
 using System.Collections.Generic;
-using System.Text;
-using GammaJul.ForTea.Core.Psi;
 using GammaJul.ForTea.Core.TemplateProcessing.CodeCollecting;
 using GammaJul.ForTea.Core.Tree;
 using JetBrains.Annotations;
@@ -21,57 +19,64 @@ namespace GammaJul.ForTea.Core.TemplateProcessing.CodeGeneration.Converters
 		};
 
 		public T4CSharpCodeBehindIntermediateConverter(
-			[NotNull] T4CSharpCodeGenerationIntermediateResult result,
+			[NotNull] T4CSharpCodeGenerationIntermediateResult intermediateResult,
 			[NotNull] IT4File file
-		) : base(result, file)
+		) : base(intermediateResult, file)
 		{
 		}
 
 		protected override string ResourceName => "GammaJul.ForTea.Core.Resources.TemplateBaseStub.cs";
-
 		protected override string GeneratedClassName => GeneratedClassNameString;
 		protected override string GeneratedBaseClassName => GeneratedBaseClassNameString;
 
-		protected override void AppendSyntheticAttribute(T4CSharpCodeGenerationResult result) =>
-			result.AppendLine($"        [{SyntheticAttribute.Name}]");
+		protected override void AppendSyntheticAttribute()
+		{
+			AppendIndent();
+			Result.AppendLine($"[{SyntheticAttribute.Name}]");
+		}
 
 		protected override void AppendParameterInitialization(
-			IReadOnlyCollection<T4ParameterDescription> descriptions,
-			T4CSharpCodeGenerationResult result)
+			IReadOnlyCollection<T4ParameterDescription> descriptions
+		)
 		{
 			// There's no need to initialize parameters in code-behind since this code is never displayed anyway 
 		}
 
-		protected override void AppendParameterDeclaration(
-			T4CSharpCodeGenerationResult result,
-			T4ParameterDescription description
-		)
+		protected override void AppendParameterDeclaration(T4ParameterDescription description)
 		{
 			foreach (string inspection in DisabledPropertyInspections)
 			{
-				AppendDisabledInspections(result, inspection);
+				AppendDisabledInspections(inspection);
 			}
 
-			result.Append("        private global::");
+			Result.Append("        private global::");
 			var type = description.TypeToken;
-			if (CSharpLexer.IsKeyword(type.GetText())) result.Append("@");
-			result.AppendMapped(type);
-			result.Append(" ");
+			if (CSharpLexer.IsKeyword(type.GetText())) Result.Append("@");
+			Result.AppendMapped(type);
+			Result.Append(" ");
 			var name = description.NameToken;
-			if (CSharpLexer.IsKeyword(name.GetText())) result.Append("@");
-			result.AppendMapped(name);
-			result.Append(" => ");
-			result.Append(description.FieldNameString);
-			result.AppendLine(";");
+			if (CSharpLexer.IsKeyword(name.GetText())) Result.Append("@");
+			Result.AppendMapped(name);
+			Result.Append(" => ");
+			Result.Append(description.FieldNameString);
+			Result.AppendLine(";");
 		}
 
-		private void AppendDisabledInspections(
-			[NotNull] T4CSharpCodeGenerationResult result,
-			[NotNull] string inspection
-		)
+		private void AppendDisabledInspections([NotNull] string inspection)
 		{
-			result.Append("        // ReSharper disable once ");
-			result.AppendLine(inspection);
+			Result.Append("        // ReSharper disable once ");
+			Result.AppendLine(inspection);
+		}
+
+		// No indents should be inserted in code-behind file in order to avoid indenting code in code blocks
+		protected override void AppendIndent(int size)
+		{
+		}
+
+		protected override void AppendTransformationPrefix()
+		{
+			AppendIndent();
+			Result.AppendLine("const int __syntheticVariable__thatPreventsIndentation__ = 0;");
 		}
 	}
 }
