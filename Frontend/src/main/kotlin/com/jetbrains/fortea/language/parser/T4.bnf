@@ -12,6 +12,7 @@
   psiVisitorName="T4Visitor"
   tokens=[
     CODE='regexp:foo(?=s)'
+    BAD_CHARACTER
   ]
 }
 
@@ -23,16 +24,14 @@ directive ::= directive_main BLOCK_END
 
 private directive_main ::= DIRECTIVE_START directive_name attribute* {
   pin=1
-  recoverWhile=not_block_end
+  recoverWhile=not_block_end_or_block_start
 }
 
 directive_name ::= TOKEN
 
-attribute ::= attribute_name EQ QUOTE attribute_value QUOTE
+attribute ::= attribute_name EQ QUOTE ATTRIBUTE_VALUE QUOTE
 
 attribute_name ::= TOKEN
-
-attribute_value ::= TOKEN
 
 // ---- ---- blocks ---- ----
 
@@ -46,4 +45,4 @@ feature_block ::= FEATURE_BLOCK_START CODE? BLOCK_END
 
 // ---- ---- Recovery ---- ----
 
-private not_block_end ::= !BLOCK_END
+private not_block_end_or_block_start ::= !BLOCK_END

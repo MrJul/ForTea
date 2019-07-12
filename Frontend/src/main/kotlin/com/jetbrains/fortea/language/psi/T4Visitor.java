@@ -15,10 +15,6 @@ public class T4Visitor extends PsiElementVisitor {
     visitPsiElement(o);
   }
 
-  public void visitAttributeValue(@NotNull T4AttributeValue o) {
-    visitPsiElement(o);
-  }
-
   public void visitBlock(@NotNull T4Block o) {
     visitPsiElement(o);
   }
