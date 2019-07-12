@@ -104,7 +104,7 @@ namespace GammaJul.ForTea.Core.TemplateProcessing.CodeGeneration.Converters
 		protected override void AppendIndent(int size)
 		{
 			// TODO: use user indents?
-			for (int index = 0; index < 10; index += 1)
+			for (int index = 0; index < size; index += 1)
 			{
 				Result.Append("    ");
 			}

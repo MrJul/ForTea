@@ -22,8 +22,13 @@ namespace JetBrains.ForTea.RiderPlugin.TemplateProcessing.Actions
 		{
 		}
 
-		protected override void DoExecute(ISolution solution, IProgressIndicator progress) =>
-			solution.GetComponent<IT4TemplateExecutionManager>().Execute(File.NotNull(), progress);
+		protected override void DoExecute(ISolution solution, IProgressIndicator progress)
+		{
+			string result = solution.GetComponent<IT4TemplateExecutionManager>().Execute(File.NotNull(), progress);
+			var fileManager = solution.GetComponent<IT4TargetFileManager>();
+			fileManager.CreateDestinationFileIfNeeded(File);
+			fileManager.SaveResults(result, File);
+		}
 
 		public override string Text => Message;
 	}

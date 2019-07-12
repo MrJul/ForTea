@@ -3,6 +3,7 @@ using GammaJul.ForTea.Core.Psi;
 using GammaJul.ForTea.Core.Tree;
 using JetBrains.Annotations;
 using JetBrains.Application;
+using JetBrains.Application.Threading;
 using JetBrains.Diagnostics;
 using JetBrains.ForTea.RiderPlugin.TemplateProcessing.Managing;
 using JetBrains.ProjectModel;
@@ -29,14 +30,24 @@ namespace JetBrains.ForTea.RiderPlugin.TemplateProcessing.Tool
 
 		public ISingleFileCustomToolExecutionResult Execute(IProjectFile projectFile)
 		{
+			AssertOperationValidity(projectFile);
+
 			var file = AsT4File(projectFile).NotNull("file != null");
 			var solution = projectFile.GetSolution();
 			var executionManager = solution.GetComponent<IT4TemplateExecutionManager>();
-			executionManager.Execute(file);
-
 			var targetFileManager = solution.GetComponent<IT4TargetFileManager>();
-			var affectedFile = targetFileManager.GetDestinationPath(file);
+			
+			string result = executionManager.Execute(file); // Write to buffer
+			var affectedFile = targetFileManager.SaveResults(result, file); // Write disk entry
+
 			return new SingleFileCustomToolExecutionResult(new[] {affectedFile}, EmptyList<string>.Collection);
+		}
+
+		private static void AssertOperationValidity([NotNull] IProjectFile projectFile)
+		{
+			projectFile.AssertIsValid();
+			projectFile.Locks.AssertReadAccessAllowed();
+			projectFile.GetSolution().GetPsiServices().Files.AssertAllDocumentAreCommitted();
 		}
 
 		[CanBeNull]

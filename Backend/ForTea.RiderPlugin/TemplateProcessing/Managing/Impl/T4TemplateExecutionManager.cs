@@ -13,9 +13,7 @@ using JetBrains.Application.Threading;
 using JetBrains.Diagnostics;
 using JetBrains.Lifetimes;
 using JetBrains.ProjectModel;
-using JetBrains.ReSharper.Host.Features.ProjectModel;
 using JetBrains.ReSharper.Psi;
-using JetBrains.ReSharper.Psi.Files;
 using JetBrains.ReSharper.Psi.Modules;
 using JetBrains.ReSharper.Resources.Shell;
 using JetBrains.Util;
@@ -23,7 +21,7 @@ using JetBrains.Util.Logging;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 
-namespace JetBrains.ForTea.RiderPlugin.TemplateProcessing.Managing
+namespace JetBrains.ForTea.RiderPlugin.TemplateProcessing.Managing.Impl
 {
 	[SolutionComponent]
 	public sealed class T4TemplateExecutionManager : IT4TemplateExecutionManager
@@ -36,12 +34,6 @@ namespace JetBrains.ForTea.RiderPlugin.TemplateProcessing.Managing
 		[NotNull]
 		private T4DirectiveInfoManager DirectiveInfoManager { get; }
 
-		[NotNull]
-		private IT4TargetFileManager TargetFileManager { get; }
-
-		[NotNull]
-		private ISolution Solution { get; }
-
 		private Lifetime SolutionLifetime { get; }
 
 		[NotNull]
@@ -53,18 +45,12 @@ namespace JetBrains.ForTea.RiderPlugin.TemplateProcessing.Managing
 		[NotNull]
 		private ISolutionProcessStartInfoPatcher Patcher { get; }
 
-		[NotNull]
-		private IPsiFiles PsiFiles { get; }
-
 		public T4TemplateExecutionManager(
 			Lifetime solutionLifetime,
 			[NotNull] IShellLocks locks,
 			[NotNull] T4DirectiveInfoManager directiveInfoManager,
 			[NotNull] IPsiModules psiModules,
-			[NotNull] ISolutionProcessStartInfoPatcher patcher,
-			[NotNull] ISolution solution,
-			[NotNull] IT4TargetFileManager targetFileManager,
-			[NotNull] IPsiFiles psiFiles
+			[NotNull] ISolutionProcessStartInfoPatcher patcher
 		)
 		{
 			SolutionLifetime = solutionLifetime;
@@ -72,18 +58,15 @@ namespace JetBrains.ForTea.RiderPlugin.TemplateProcessing.Managing
 			DirectiveInfoManager = directiveInfoManager;
 			PsiModules = psiModules;
 			Patcher = patcher;
-			Solution = solution;
-			TargetFileManager = targetFileManager;
-			PsiFiles = psiFiles;
 		}
 
-		public void Execute(IT4File file, IProgressIndicator progress = null, Lifetime? outerLifetime = null)
+		public string Execute(IT4File file, IProgressIndicator progress = null, Lifetime? outerLifetime = null)
 		{
 			var baseLifetime = outerLifetime ?? SolutionLifetime;
 			var definition = baseLifetime.CreateNested();
 			LaunchProgress(progress);
 			var info = GenerateCode(file, progress);
-			CompileAndRun(definition, info);
+			return CompileAndRun(definition, info);
 		}
 
 		private static void LaunchProgress([CanBeNull] IProgressIndicator indicator)
@@ -130,7 +113,7 @@ namespace JetBrains.ForTea.RiderPlugin.TemplateProcessing.Managing
 			}
 		}
 
-		private void CompileAndRun(LifetimeDefinition definition, T4TemplateExecutionManagerInfo info)
+		private string CompileAndRun(LifetimeDefinition definition, T4TemplateExecutionManagerInfo info)
 		{
 			if (info.ProgressIndicator != null) info.ProgressIndicator.CurrentItemText = "Compiling code";
 			var executablePath = CreateTemporaryExecutable(definition.Lifetime);
@@ -141,13 +124,13 @@ namespace JetBrains.ForTea.RiderPlugin.TemplateProcessing.Managing
 				.ToList();
 			if (!errors.IsEmpty())
 			{
-				ReportError(definition, info, errors);
-				return;
+				MessageBox.ShowError(errors.Select(error => error.ToString()).Join("\n"), "Could not compile template");
+				return ErrorMessage;
 			}
 
 			compilation.Emit(executablePath.FullPath, cancellationToken: definition.Lifetime);
 			CopyAssemblies(info, executablePath);
-			Run(info, definition, executablePath);
+			return Run(info, definition, executablePath);
 		}
 
 		private CSharpCompilation CreateCompilation(T4TemplateExecutionManagerInfo info)
@@ -168,16 +151,6 @@ namespace JetBrains.ForTea.RiderPlugin.TemplateProcessing.Managing
 				references: info.References);
 		}
 
-		private void ReportError(
-			LifetimeDefinition definition,
-			T4TemplateExecutionManagerInfo info,
-			IList<Diagnostic> errors
-		)
-		{
-			MessageBox.ShowError(errors.Select(error => error.ToString()).Join("\n"), "Could not compile template");
-			SaveExecutionResult(definition, info, ErrorMessage);
-		}
-
 		private void CopyAssemblies(
 			T4TemplateExecutionManagerInfo info,
 			[NotNull] FileSystemPath executablePath
@@ -194,7 +167,7 @@ namespace JetBrains.ForTea.RiderPlugin.TemplateProcessing.Managing
 			}
 		}
 
-		private void Run(
+		private string Run(
 			T4TemplateExecutionManagerInfo info,
 			LifetimeDefinition definition,
 			FileSystemPath executablePath
@@ -209,7 +182,8 @@ namespace JetBrains.ForTea.RiderPlugin.TemplateProcessing.Managing
 			lifetime.ThrowIfNotAlive();
 			string stderr = process.StandardError.ReadToEnd();
 			lifetime.ThrowIfNotAlive();
-			SaveExecutionResult(definition, info, stderr.IsNullOrEmpty() ? stdout : ErrorMessage);
+			string result = stderr.IsNullOrEmpty() ? stdout : ErrorMessage;
+			return result;
 		}
 
 		private Process LaunchProcess(Lifetime lifetime, FileSystemPath executablePath)
@@ -238,33 +212,6 @@ namespace JetBrains.ForTea.RiderPlugin.TemplateProcessing.Managing
 				})
 			);
 			return process;
-		}
-
-		private void SaveExecutionResult(LifetimeDefinition definition, T4TemplateExecutionManagerInfo info,
-			[NotNull] string result)
-		{
-			Locks.ExecuteOrQueueReadLockEx(definition.Lifetime, "Saving T4 Template Execution Results", () =>
-			{
-				try
-				{
-					info.AssertFileHasNotChanged();
-					using (WriteLockCookie.Create())
-					{
-						Solution.InvokeUnderTransaction(cookie =>
-						{
-							TargetFileManager.GetOrCreateDestinationFile(info.File, cookie);
-							var destination = TargetFileManager.GetDestinationPath(info.File);
-							// TODO: fix endings!
-							destination.WriteAllText(result.Replace("\r\n", "\n"));
-							cookie.Commit(NullProgressIndicator.Create());
-						});
-					}
-				}
-				finally
-				{
-					definition.Terminate();
-				}
-			});
 		}
 
 		[NotNull]

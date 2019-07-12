@@ -3,12 +3,9 @@ using System.Collections.Generic;
 using GammaJul.ForTea.Core.Tree;
 using JetBrains.Annotations;
 using JetBrains.Application.Progress;
-using JetBrains.Application.Threading;
-using JetBrains.Diagnostics;
-using JetBrains.ReSharper.Psi.Tree;
 using Microsoft.CodeAnalysis;
 
-namespace JetBrains.ForTea.RiderPlugin.TemplateProcessing.Managing
+namespace JetBrains.ForTea.RiderPlugin.TemplateProcessing.Managing.Impl
 {
 	public readonly struct T4TemplateExecutionManagerInfo
 	{
@@ -39,13 +36,6 @@ namespace JetBrains.ForTea.RiderPlugin.TemplateProcessing.Managing
 			References = references;
 			File = file;
 			ProgressIndicator = progressIndicator;
-		}
-
-		public void AssertFileHasNotChanged()
-		{
-			File.GetSolution().Locks.AssertReadAccessAllowed();
-			if (File.GetSourceFile().NotNull().LastWriteTimeUtc != TimeStamp)
-				throw new OperationCanceledException();
 		}
 	}
 }

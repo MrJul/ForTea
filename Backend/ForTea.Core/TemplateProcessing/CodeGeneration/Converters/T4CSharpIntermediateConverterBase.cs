@@ -150,7 +150,6 @@ namespace GammaJul.ForTea.Core.TemplateProcessing.CodeGeneration.Converters
 
 		private void AppendTransformMethod()
 		{
-			AppendIndent();
 			AppendSyntheticAttribute();
 			AppendIndent();
 			Result.Append("public ");

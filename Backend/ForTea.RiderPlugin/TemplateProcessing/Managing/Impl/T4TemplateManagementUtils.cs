@@ -8,7 +8,7 @@ using JetBrains.ReSharper.Resources.Shell;
 using JetBrains.Util.Logging;
 using JetBrains.Util.Threading;
 
-namespace JetBrains.ForTea.RiderPlugin.TemplateProcessing.Managing
+namespace JetBrains.ForTea.RiderPlugin.TemplateProcessing.Managing.Impl
 {
 	public static class T4TemplateManagementUtils
 	{
