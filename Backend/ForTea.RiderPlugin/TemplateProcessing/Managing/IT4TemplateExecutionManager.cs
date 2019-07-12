@@ -7,7 +7,7 @@ namespace JetBrains.ForTea.RiderPlugin.TemplateProcessing.Managing
 {
 	public interface IT4TemplateExecutionManager
 	{
-		void Execute(
+		string Execute(
 			[NotNull] IT4File file,
 			[CanBeNull] IProgressIndicator progress = null,
 			Lifetime? outerLifetime = null

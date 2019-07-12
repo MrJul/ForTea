@@ -6,7 +6,6 @@ using JetBrains.ForTea.RiderPlugin.TemplateProcessing.Managing;
 using JetBrains.ProjectModel;
 using JetBrains.ReSharper.Feature.Services.ContextActions;
 using JetBrains.ReSharper.Host.Features.ProjectModel;
-using JetBrains.Util;
 
 namespace JetBrains.ForTea.RiderPlugin.TemplateProcessing.Actions
 {
@@ -31,10 +30,9 @@ namespace JetBrains.ForTea.RiderPlugin.TemplateProcessing.Actions
 			{
 				var directiveInfoManager = solution.GetComponent<T4DirectiveInfoManager>();
 				string message = new T4CSharpCodeGenerator(File, directiveInfoManager).Generate().RawText;
-				var destinationFile = solution
-					.GetComponent<IT4TargetFileManager>()
-					.GetOrCreateDestinationFile(File, cookie, PreprocessResultExtension);
-				destinationFile.Location.WriteAllText(message.Replace("\r\n", "\n"));
+				var fileManager = solution.GetComponent<IT4TargetFileManager>();
+				fileManager.CreateDestinationFileIfNeeded(File, PreprocessResultExtension);
+				fileManager.SaveResults(message, File, PreprocessResultExtension);
 				cookie.Commit(progress);
 			});
 
