@@ -10,7 +10,6 @@ public interface T4ElementTypes {
 
   IElementType ATTRIBUTE = new T4ElementType("ATTRIBUTE");
   IElementType ATTRIBUTE_NAME = new T4ElementType("ATTRIBUTE_NAME");
-  IElementType ATTRIBUTE_VALUE = new T4ElementType("ATTRIBUTE_VALUE");
   IElementType BLOCK = new T4ElementType("BLOCK");
   IElementType CODE_BLOCK = new T4ElementType("CODE_BLOCK");
   IElementType DIRECTIVE = new T4ElementType("DIRECTIVE");
@@ -18,6 +17,7 @@ public interface T4ElementTypes {
   IElementType EXPRESSION_BLOCK = new T4ElementType("EXPRESSION_BLOCK");
   IElementType FEATURE_BLOCK = new T4ElementType("FEATURE_BLOCK");
 
+  IElementType ATTRIBUTE_VALUE = new T4TokenType("ATTRIBUTE_VALUE");
   IElementType BLOCK_END = new T4TokenType("BLOCK_END");
   IElementType CODE = new T4TokenType("CODE");
   IElementType CODE_BLOCK_START = new T4TokenType("CODE_BLOCK_START");
@@ -37,9 +37,6 @@ public interface T4ElementTypes {
       }
       else if (type == ATTRIBUTE_NAME) {
         return new T4AttributeNameImpl(node);
-      }
-      else if (type == ATTRIBUTE_VALUE) {
-        return new T4AttributeValueImpl(node);
       }
       else if (type == BLOCK) {
         return new T4BlockImpl(node);

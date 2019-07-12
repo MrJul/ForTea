@@ -8,7 +8,6 @@ import static com.intellij.lang.parser.GeneratedParserUtilBase.*;
 import com.intellij.psi.tree.IElementType;
 import com.intellij.psi.tree.IFileElementType;
 import com.intellij.lang.ASTNode;
-import com.intellij.psi.tree.TokenSet;
 import com.intellij.lang.PsiParser;
 import com.intellij.lang.LightPsiParser;
 
@@ -38,16 +37,14 @@ public class GeneratedParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // attribute_name EQ QUOTE attribute_value QUOTE
+  // attribute_name EQ QUOTE ATTRIBUTE_VALUE QUOTE
   public static boolean attribute(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "attribute")) return false;
     if (!nextTokenIs(b, TOKEN)) return false;
     boolean r;
     Marker m = enter_section_(b);
     r = attribute_name(b, l + 1);
-    r = r && consumeTokens(b, 0, EQ, QUOTE);
-    r = r && attribute_value(b, l + 1);
-    r = r && consumeToken(b, QUOTE);
+    r = r && consumeTokens(b, 0, EQ, QUOTE, ATTRIBUTE_VALUE, QUOTE);
     exit_section_(b, m, ATTRIBUTE, r);
     return r;
   }
@@ -61,18 +58,6 @@ public class GeneratedParser implements PsiParser, LightPsiParser {
     Marker m = enter_section_(b);
     r = consumeToken(b, TOKEN);
     exit_section_(b, m, ATTRIBUTE_NAME, r);
-    return r;
-  }
-
-  /* ********************************************************** */
-  // TOKEN
-  public static boolean attribute_value(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "attribute_value")) return false;
-    if (!nextTokenIs(b, TOKEN)) return false;
-    boolean r;
-    Marker m = enter_section_(b);
-    r = consumeToken(b, TOKEN);
-    exit_section_(b, m, ATTRIBUTE_VALUE, r);
     return r;
   }
 
@@ -133,7 +118,7 @@ public class GeneratedParser implements PsiParser, LightPsiParser {
     p = r; // pin = 1
     r = r && report_error_(b, directive_name(b, l + 1));
     r = p && directive_main_2(b, l + 1) && r;
-    exit_section_(b, l, m, r, p, not_block_end_parser_);
+    exit_section_(b, l, m, r, p, not_block_end_or_block_start_parser_);
     return r || p;
   }
 
@@ -204,8 +189,8 @@ public class GeneratedParser implements PsiParser, LightPsiParser {
 
   /* ********************************************************** */
   // !BLOCK_END
-  static boolean not_block_end(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "not_block_end")) return false;
+  static boolean not_block_end_or_block_start(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "not_block_end_or_block_start")) return false;
     boolean r;
     Marker m = enter_section_(b, l, _NOT_);
     r = !consumeToken(b, BLOCK_END);
@@ -235,9 +220,9 @@ public class GeneratedParser implements PsiParser, LightPsiParser {
     return r;
   }
 
-  static final Parser not_block_end_parser_ = new Parser() {
+  static final Parser not_block_end_or_block_start_parser_ = new Parser() {
     public boolean parse(PsiBuilder b, int l) {
-      return not_block_end(b, l + 1);
+      return not_block_end_or_block_start(b, l + 1);
     }
   };
 }

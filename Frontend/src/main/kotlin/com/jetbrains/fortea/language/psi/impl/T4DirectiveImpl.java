@@ -2,23 +2,25 @@
 package com.jetbrains.fortea.language.psi.impl;
 
 import java.util.List;
+
+import com.jetbrains.fortea.language.psi.T4Attribute;
+import com.jetbrains.fortea.language.psi.T4Directive;
+import com.jetbrains.fortea.language.psi.T4DirectiveName;
+import com.jetbrains.fortea.language.psi.T4Visitor;
 import org.jetbrains.annotations.*;
 import com.intellij.lang.ASTNode;
-import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiElementVisitor;
 import com.intellij.psi.util.PsiTreeUtil;
-import static com.jetbrains.fortea.language.psi.T4ElementTypes.*;
 import com.intellij.extapi.psi.ASTWrapperPsiElement;
-import com.jetbrains.fortea.language.psi.*;
 
-public class T4BlockImpl extends ASTWrapperPsiElement implements T4Block {
+public class T4DirectiveImpl extends ASTWrapperPsiElement implements T4Directive {
 
-  public T4BlockImpl(@NotNull ASTNode node) {
+  public T4DirectiveImpl(@NotNull ASTNode node) {
     super(node);
   }
 
   public void accept(@NotNull T4Visitor visitor) {
-    visitor.visitBlock(this);
+    visitor.visitDirective(this);
   }
 
   public void accept(@NotNull PsiElementVisitor visitor) {
@@ -27,21 +29,15 @@ public class T4BlockImpl extends ASTWrapperPsiElement implements T4Block {
   }
 
   @Override
-  @Nullable
-  public T4CodeBlock getCodeBlock() {
-    return findChildByClass(T4CodeBlock.class);
+  @NotNull
+  public List<T4Attribute> getAttributeList() {
+    return PsiTreeUtil.getChildrenOfTypeAsList(this, T4Attribute.class);
   }
 
   @Override
   @Nullable
-  public T4ExpressionBlock getExpressionBlock() {
-    return findChildByClass(T4ExpressionBlock.class);
-  }
-
-  @Override
-  @Nullable
-  public T4FeatureBlock getFeatureBlock() {
-    return findChildByClass(T4FeatureBlock.class);
+  public T4DirectiveName getDirectiveName() {
+    return findChildByClass(T4DirectiveName.class);
   }
 
 }
