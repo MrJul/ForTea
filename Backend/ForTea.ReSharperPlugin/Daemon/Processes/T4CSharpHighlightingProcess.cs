@@ -1,7 +1,7 @@
-using GammaJul.ForTea.Core.Daemon.Highlightings;
 using JetBrains.Annotations;
 using JetBrains.Application.Settings;
 using JetBrains.DocumentModel;
+using JetBrains.ForTea.ReSharperPlugin.Daemon.Highlightings;
 using JetBrains.ReSharper.Daemon.CSharp.Stages;
 using JetBrains.ReSharper.Feature.Services.Daemon;
 using JetBrains.ReSharper.Psi;
@@ -11,7 +11,7 @@ using JetBrains.ReSharper.Psi.ExtensionsAPI.Tree;
 using JetBrains.ReSharper.Psi.Parsing;
 using JetBrains.ReSharper.Psi.Tree;
 
-namespace GammaJul.ForTea.Core.Daemon.Processes {
+namespace JetBrains.ForTea.ReSharperPlugin.Daemon.Processes {
 	
 	/// <summary>
 	/// Highlights C# keywords, identifiers, etc.

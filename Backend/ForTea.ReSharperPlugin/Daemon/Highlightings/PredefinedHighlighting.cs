@@ -4,7 +4,7 @@ using JetBrains.Annotations;
 using JetBrains.DocumentModel;
 using JetBrains.ReSharper.Feature.Services.Daemon;
 
-namespace GammaJul.ForTea.Core.Daemon.Highlightings {
+namespace JetBrains.ForTea.ReSharperPlugin.Daemon.Highlightings {
 
 	/// <summary>Highlighting for T4 and C# that uses a Visual Studio predefined highlighter.</summary>
 	[StaticSeverityHighlighting(
