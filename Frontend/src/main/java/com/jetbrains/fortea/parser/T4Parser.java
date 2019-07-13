@@ -1,5 +1,5 @@
 // This is a generated file. Not intended for manual editing.
-package generated;
+package com.jetbrains.fortea.parser;
 
 import com.intellij.lang.PsiBuilder;
 import com.intellij.lang.PsiBuilder.Marker;
@@ -12,7 +12,7 @@ import com.intellij.lang.PsiParser;
 import com.intellij.lang.LightPsiParser;
 
 @SuppressWarnings({"SimplifiableIfStatement", "UnusedAssignment"})
-public class GeneratedParser implements PsiParser, LightPsiParser {
+public class T4Parser implements PsiParser, LightPsiParser {
 
   public ASTNode parse(IElementType root_, PsiBuilder builder_) {
     parseLight(root_, builder_);

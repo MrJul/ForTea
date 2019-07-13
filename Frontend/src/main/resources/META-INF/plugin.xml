@@ -16,7 +16,7 @@
         implementation="com.jetbrains.fortea.language.T4FileTypeFactory"/>
     <lang.parserDefinition
         language="T4"
-        implementationClass="com.jetbrains.fortea.language.T4ParserDefinition"/>
+        implementationClass="com.jetbrains.fortea.parser.T4ParserDefinition"/>
     <lang.syntaxHighlighterFactory
         language="T4"
         implementationClass="com.jetbrains.fortea.highlighter.T4SyntaxHighlighterProvider"/>

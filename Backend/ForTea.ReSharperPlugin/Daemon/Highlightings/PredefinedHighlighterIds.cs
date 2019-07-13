@@ -1,4 +1,4 @@
-using GammaJul.ForTea.Core.Daemon.Highlightings;
+using JetBrains.ForTea.ReSharperPlugin.Daemon.Highlightings;
 using JetBrains.ReSharper.Feature.Services.Daemon;
 using JetBrains.TextControl.DocumentMarkup;
 
@@ -11,7 +11,7 @@ using JetBrains.TextControl.DocumentMarkup;
 [assembly: RegisterHighlighter(PredefinedHighlighterIds.UserTypeTypeParameter, EffectType = EffectType.TEXT)]
 [assembly: RegisterHighlighter(PredefinedHighlighterIds.UserTypeValueType, EffectType = EffectType.TEXT)]
 
-namespace GammaJul.ForTea.Core.Daemon.Highlightings {
+namespace JetBrains.ForTea.ReSharperPlugin.Daemon.Highlightings {
 	public static class PredefinedHighlighterIds {
 		public const string Comment = HighlightingAttributeIds.COMMENT;
 		public const string AttributeName = HighlightingAttributeIds.HTML_ATTRIBUTE_NAME;

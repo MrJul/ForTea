@@ -1,4 +1,5 @@
 {
+  parserClass="com.jetbrains.fortea.parser.T4Parser"
   extends="com.intellij.extapi.psi.ASTWrapperPsiElement"
 
   psiClassPrefix="T4"

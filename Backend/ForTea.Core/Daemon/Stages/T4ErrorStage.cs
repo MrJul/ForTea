@@ -8,7 +8,7 @@ using JetBrains.ReSharper.Feature.Services.Daemon;
 namespace GammaJul.ForTea.Core.Daemon.Stages {
 
 	/// <summary>Daemon stage that creates processes for adding error and warning highlights.</summary>
-	[DaemonStage(StagesBefore = new[] { typeof(T4HighlightingStage), typeof(CollectUsagesStage) })]
+	[DaemonStage(StagesBefore = new[] { typeof(CollectUsagesStage) })]
 	public class T4ErrorStage : T4DaemonStageBase {
 
 		[NotNull] private readonly T4DirectiveInfoManager _directiveInfoManager;

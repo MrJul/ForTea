@@ -49,7 +49,7 @@ EQ==
 
 %%
 
-/*<YYINITIAL> {ESCAPE}                     { return TEXT; }
+<YYINITIAL> {ESCAPE}                     { return TEXT; }
 <YYINITIAL> {DIRECTIVE_START}            { yybegin(IN_DIRECTIVE); return DIRECTIVE_START; }
 <YYINITIAL> {CODE_BLOCK_START}           { yybegin(IN_BLOCK); return CODE_BLOCK_START; }
 <YYINITIAL> {EXPRESSION_BLOCK_START}     { yybegin(IN_BLOCK); return EXPRESSION_BLOCK_START; }
@@ -70,6 +70,6 @@ EQ==
         }
         return CODE;
       }
-<IN_BLOCK>  {BLOCK_END}                  { yybegin(YYINITIAL); return BLOCK_END; }*/
+<IN_BLOCK>  {BLOCK_END}                  { yybegin(YYINITIAL); return BLOCK_END; }
 
 [^]                                      { return BAD_CHARACTER; }

@@ -1,12 +1,13 @@
-using GammaJul.ForTea.Core.Daemon.Highlightings;
+using GammaJul.ForTea.Core.Daemon.Processes;
 using GammaJul.ForTea.Core.Parsing;
 using GammaJul.ForTea.Core.Tree;
 using JetBrains.Annotations;
 using JetBrains.DocumentModel;
+using JetBrains.ForTea.ReSharperPlugin.Daemon.Highlightings;
 using JetBrains.ReSharper.Feature.Services.Daemon;
 using JetBrains.ReSharper.Psi.Tree;
 
-namespace GammaJul.ForTea.Core.Daemon.Processes {
+namespace JetBrains.ForTea.ReSharperPlugin.Daemon.Processes {
 
 	/// <summary>Process that highlights block tags and missing token errors.</summary>
 	internal sealed class T4HighlightingProcess : T4DaemonStageProcessBase {
