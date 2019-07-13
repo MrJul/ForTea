@@ -1,7 +1,7 @@
 import org.gradle.api.tasks.testing.logging.TestExceptionFormat
-import org.jetbrains.intellij.tasks.PrepareSandboxTask
 import org.jetbrains.grammarkit.tasks.GenerateLexer
 import org.jetbrains.grammarkit.tasks.GenerateParser
+import org.jetbrains.intellij.tasks.PrepareSandboxTask
 import org.jetbrains.kotlin.daemon.common.toHexString
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
@@ -17,7 +17,6 @@ buildscript {
 
 plugins {
   id("org.jetbrains.intellij") version "0.4.9"
-  kotlin("jvm") version "1.3.31"
   id("org.jetbrains.grammarkit") version "2018.1.7"
 }
 
@@ -108,7 +107,6 @@ tasks {
   withType<PrepareSandboxTask> {
     val files = pluginFiles.map { "$it.dll" } + pluginFiles.map { "$it.pdb" }
     val paths = files.map { File(backendPluginPath, it) }
-    logger.lifecycle(paths.toString())
 
     paths.forEach {
       from(it) {
@@ -130,22 +128,23 @@ tasks {
   }
 
   val generateT4Lexer = task<GenerateLexer>("generateT4Lexer") {
-    source = "src/main/kotlin/com/jetbrains/fortea/language/lexer/_T4Lexer.flex"
-    targetDir = "src/main/kotlin/com/jetbrains/fortea/language/lexer"
+    source = "src/main/kotlin/com/jetbrains/fortea/lexer/_T4Lexer.flex"
+    targetDir = "src/main/java/com/jetbrains/fortea/lexer"
     targetClass = "_T4Lexer"
     purgeOldFiles = true
   }
 
-//  val generateT4Parser = task<GenerateParser>("generateT4Parser") {
-//    source = "src"
-//    this.pathToParser = "wefceded"
-//    path = "src/tmp"
-//    purgeOldFiles = true
-//  }
+  val generateT4Parser = task<GenerateParser>("generateT4Parser") {
+    source = "src/main/kotlin/com/jetbrains/fortea/parser/T4.bnf"
+    this.targetRoot = "src/main/java"
+    purgeOldFiles = true
+    this.pathToParser = "fakePathToParser" // I have no idea what should be inserted here, but this works
+    this.pathToPsiRoot = "fakePathToPsiRoot" // same
+  }
 
   withType<KotlinCompile> {
     kotlinOptions.jvmTarget = "1.8"
-    dependsOn(generateT4Lexer)
+    dependsOn(generateT4Parser, generateT4Lexer)
   }
 
   withType<Test> {

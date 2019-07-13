@@ -19,7 +19,7 @@
         implementationClass="com.jetbrains.fortea.language.T4ParserDefinition"/>
     <lang.syntaxHighlighterFactory
         language="T4"
-        implementationClass="com.jetbrains.fortea.language.T4HighlighterProvider"/>
+        implementationClass="com.jetbrains.fortea.highlighter.T4SyntaxHighlighterProvider"/>
 
     <!-- delegation to backend -->
     <lang.documentationProvider
