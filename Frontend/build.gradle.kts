@@ -148,6 +148,7 @@ tasks {
   }
 
   withType<Test> {
+    dependsOn(generateT4Lexer, generateT4Parser)
     useTestNG()
     testLogging {
       showStandardStreams = true
