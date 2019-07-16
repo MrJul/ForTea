@@ -16,7 +16,7 @@ namespace GammaJul.ForTea.Core.Services.CodeCompletion {
 			TokenNodeType tokenType = node.GetTokenType();
 
 			// completion has been triggered by space or quote, insert/replace at the caret (just after the space/quote)
-			if (tokenType == T4TokenNodeTypes.Space || tokenType == T4TokenNodeTypes.Quote) {
+			if (tokenType == T4TokenNodeTypes.WHITE_SPACE || tokenType == T4TokenNodeTypes.QUOTE) {
 				var range = new DocumentRange(context.CaretDocumentOffset, context.CaretDocumentOffset);
 				return new TextLookupRanges(range, range);
 			}

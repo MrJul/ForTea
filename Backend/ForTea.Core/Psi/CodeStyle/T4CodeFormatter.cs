@@ -48,10 +48,10 @@ namespace GammaJul.ForTea.Core.Psi.CodeStyle {
 			=> null;
 
 		public override ITreeNode CreateSpace(string indent, ITreeNode replacedSpace)
-			=> T4TokenNodeTypes.Space.Create(indent);
+			=> T4TokenNodeTypes.WHITE_SPACE.Create(indent);
 
 		public override ITreeNode CreateNewLine(LineEnding lineEnding, NodeType lineBreakType = null)
-			=> T4TokenNodeTypes.NewLine.Create(lineEnding.GetPresentation());
+			=> T4TokenNodeTypes.NEW_LINE.Create(lineEnding.GetPresentation());
 
 		public override ITreeRange Format(
 			ITreeNode firstElement,

@@ -22,11 +22,11 @@ namespace GammaJul.ForTea.Core.Tree.Impl {
 		protected override T4TokenRole GetChildRole(NodeType nodeType) {
 			if (nodeType == T4ElementTypes.T4DirectiveAttribute)
 				return T4TokenRole.Attribute;
-			if (nodeType == T4TokenNodeTypes.BlockEnd)
+			if (nodeType == T4TokenNodeTypes.BLOCK_END)
 				return T4TokenRole.BlockEnd;
-			if (nodeType == T4TokenNodeTypes.DirectiveStart)
+			if (nodeType == T4TokenNodeTypes.DIRECTIVE_START)
 				return T4TokenRole.BlockStart;
-			if (nodeType == T4TokenNodeTypes.Name)
+			if (nodeType == T4TokenNodeTypes.TOKEN)
 				return T4TokenRole.Name;
 			return T4TokenRole.Unknown;
 		}
@@ -64,7 +64,7 @@ namespace GammaJul.ForTea.Core.Tree.Impl {
 				: GetAttributes().FirstOrDefault(att => name.Equals(att.GetName(), StringComparison.OrdinalIgnoreCase));
 
 		private static bool IsEndNode([NotNull] ITreeNode node) {
-			if (node.GetTokenType() == T4TokenNodeTypes.BlockEnd)
+			if (node.GetTokenType() == T4TokenNodeTypes.BLOCK_END)
 				return true;
 
 			return node is MissingTokenErrorElement missingTokenErrorElement
@@ -82,16 +82,16 @@ namespace GammaJul.ForTea.Core.Tree.Impl {
 
 				ITreeNode anchor = IsEndNode(lastNode) ? lastNode.PrevSibling : lastNode;
 				Assertion.AssertNotNull(anchor, "anchor != null");
-				bool addSpaceAfter = anchor.GetTokenType() == T4TokenNodeTypes.Space;
+				bool addSpaceAfter = anchor.GetTokenType() == T4TokenNodeTypes.WHITE_SPACE;
 				bool addSpaceBefore = !addSpaceAfter;
 
 				if (addSpaceBefore)
-					anchor = ModificationUtil.AddChildAfter(anchor, T4TokenNodeTypes.Space.CreateLeafElement());
+					anchor = ModificationUtil.AddChildAfter(anchor, T4TokenNodeTypes.WHITE_SPACE.CreateLeafElement());
 
 				IT4DirectiveAttribute result = ModificationUtil.AddChildAfter(anchor, attribute);
 
 				if (addSpaceAfter)
-					ModificationUtil.AddChildAfter(result, T4TokenNodeTypes.Space.CreateLeafElement());
+					ModificationUtil.AddChildAfter(result, T4TokenNodeTypes.WHITE_SPACE.CreateLeafElement());
 
 				return result;
 			}

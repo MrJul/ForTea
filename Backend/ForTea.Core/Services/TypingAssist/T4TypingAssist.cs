@@ -43,7 +43,7 @@ namespace GammaJul.ForTea.Core.Services.TypingAssist {
 
 			// do nothing if we're not after an attribute name
 			TokenNodeType tokenType = cachingLexer.TokenType;
-			if (tokenType != T4TokenNodeTypes.Name)
+			if (tokenType != T4TokenNodeTypes.TOKEN)
 				return false;
 
 			// insert =
@@ -90,13 +90,13 @@ namespace GammaJul.ForTea.Core.Services.TypingAssist {
 
 			// there is already another quote after the ", swallow the typing
 			TokenNodeType tokenType = cachingLexer.TokenType;
-			if (tokenType == T4TokenNodeTypes.Quote) {
+			if (tokenType == T4TokenNodeTypes.QUOTE) {
 				textControl.Caret.MoveTo(offset + 1, CaretVisualPlacement.DontScrollIfVisible);
 				return true;
 			}
 
 			// we're inside or after an attribute value, simply do nothing and let the " be typed
-			if (tokenType == T4TokenNodeTypes.Value)
+			if (tokenType == T4TokenNodeTypes.RAW_ATTRIBUTE_VALUE)
 				return false;
 
 			// insert the first "

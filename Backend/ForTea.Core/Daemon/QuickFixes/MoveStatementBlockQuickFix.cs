@@ -39,8 +39,8 @@ namespace GammaJul.ForTea.Core.Daemon.QuickFixes {
 				featureBlock = ModificationUtil.AddChildBefore(feature, featureBlock);
 
 				// add a new line before the new statement block if needed
-				if (featurePrevSibling != null && featurePrevSibling.GetTokenType() == T4TokenNodeTypes.NewLine)
-					ModificationUtil.AddChildAfter(featureBlock, T4TokenNodeTypes.NewLine.CreateLeafElement());
+				if (featurePrevSibling != null && featurePrevSibling.GetTokenType() == T4TokenNodeTypes.NEW_LINE)
+					ModificationUtil.AddChildAfter(featureBlock, T4TokenNodeTypes.NEW_LINE.CreateLeafElement());
 
 				ModificationUtil.DeleteChild(statementBlock);
 			}

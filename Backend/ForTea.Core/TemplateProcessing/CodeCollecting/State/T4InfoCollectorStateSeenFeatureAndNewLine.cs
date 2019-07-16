@@ -22,8 +22,8 @@ namespace GammaJul.ForTea.Core.TemplateProcessing.CodeCollecting.State
 					Die();
 					return new T4InfoCollectorStateSeenFeature();
 				default:
-					if (element.NodeType == T4TokenNodeTypes.NewLine) return this;
-					else if (element.NodeType == T4TokenNodeTypes.Text)
+					if (element.NodeType == T4TokenNodeTypes.NEW_LINE) return this;
+					else if (element.NodeType == T4TokenNodeTypes.RAW_TEXT)
 					{
 						Die();
 						return new T4InfoCollectorStateSeenFeatureAndText(Builder);

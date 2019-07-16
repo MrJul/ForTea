@@ -21,12 +21,12 @@ namespace GammaJul.ForTea.Core.Psi {
 		/// <param name="baseLexer">The base T4 lexer.</param>
 		/// <returns>A C# lexer for the current code block, or <c>null</c> if none could be created.</returns>
 		public ILexer TryCreateCodeBehindLexer(ILexer baseLexer) {
-			if (baseLexer.TokenType == T4TokenNodeTypes.Code) {
+			if (baseLexer.TokenType == T4TokenNodeTypes.RAW_CODE) {
 				LanguageService service = _codeBehindLanguage.LanguageService();
 				if (service != null) {
 					var buffer = ProjectedBuffer.Create(
 						_mixedLexer.Buffer,
-						new TextRange(_mixedLexer.PrimaryLexer.TokenStart, _mixedLexer.PrimaryLexer.AdvanceWhile(T4TokenNodeTypes.Code)));
+						new TextRange(_mixedLexer.PrimaryLexer.TokenStart, _mixedLexer.PrimaryLexer.AdvanceWhile(T4TokenNodeTypes.RAW_CODE)));
 					ILexer lexer = service.GetPrimaryLexerFactory().CreateLexer(buffer);
 					lexer.Start();
 					return lexer;

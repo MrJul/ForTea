@@ -28,13 +28,13 @@ namespace JetBrains.ForTea.ReSharperPlugin.Daemon.Processes {
 			if (tokenType.IsTag)
 				return PredefinedHighlighterIds.HtmlServerSideScript;
 
-			if (tokenType == T4TokenNodeTypes.Equal)
+			if (tokenType == T4TokenNodeTypes.EQUAL)
 				return PredefinedHighlighterIds.Operator;
 
-			if (tokenType == T4TokenNodeTypes.Quote || tokenType == T4TokenNodeTypes.Value)
+			if (tokenType == T4TokenNodeTypes.QUOTE || tokenType == T4TokenNodeTypes.RAW_ATTRIBUTE_VALUE)
 				return PredefinedHighlighterIds.AttributeValue;
 
-			if (tokenType == T4TokenNodeTypes.Name) {
+			if (tokenType == T4TokenNodeTypes.TOKEN) {
 				return element.Parent is IT4Directive
 					? PredefinedHighlighterIds.Directive
 					: PredefinedHighlighterIds.AttributeName;

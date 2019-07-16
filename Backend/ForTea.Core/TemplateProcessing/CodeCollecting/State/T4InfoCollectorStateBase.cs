@@ -68,7 +68,7 @@ namespace GammaJul.ForTea.Core.TemplateProcessing.CodeCollecting.State
 
 		[NotNull]
 		protected static string Convert([NotNull] IT4Token token) => StringLiteralConverter.EscapeToRegular(
-			token.NodeType == T4TokenNodeTypes.NewLine
+			token.NodeType == T4TokenNodeTypes.NEW_LINE
 				? Environment.NewLine // todo: use \n and change it to environmental newline later
 				: token.GetText());
 	}

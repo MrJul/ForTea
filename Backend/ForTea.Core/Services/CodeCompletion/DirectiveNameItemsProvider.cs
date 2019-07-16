@@ -30,7 +30,7 @@ namespace GammaJul.ForTea.Core.Services.CodeCompletion {
 
 			TokenNodeType tokenType = node.GetTokenType();
 			IT4Token nameToken = directive.GetNameToken();
-			return tokenType == T4TokenNodeTypes.Name
+			return tokenType == T4TokenNodeTypes.TOKEN
 				? nameToken == node
 				: nameToken == null && node.SelfAndLeftSiblings().All(IsWhitespaceOrDirectiveStart);
 		}
@@ -38,7 +38,7 @@ namespace GammaJul.ForTea.Core.Services.CodeCompletion {
 		private static bool IsWhitespaceOrDirectiveStart(ITreeNode node) {
 			TokenNodeType tokenType = node.GetTokenType();
 			return tokenType == null
-				|| (tokenType.IsWhitespace || tokenType == T4TokenNodeTypes.DirectiveStart);
+				|| (tokenType.IsWhitespace || tokenType == T4TokenNodeTypes.DIRECTIVE_START);
 		}
 
 		protected override bool AddLookupItems(T4CodeCompletionContext context, IItemsCollector collector) {

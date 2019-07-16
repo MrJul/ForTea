@@ -10,11 +10,11 @@ namespace GammaJul.ForTea.Core.Tree.Impl {
 		/// <summary>Gets the role of a child node.</summary>
 		/// <param name="nodeType">The type of the child node</param>
 		protected override T4TokenRole GetChildRole(NodeType nodeType) {
-			if (nodeType == T4TokenNodeTypes.Name)
+			if (nodeType == T4TokenNodeTypes.TOKEN)
 				return T4TokenRole.Name;
-			if (nodeType == T4TokenNodeTypes.Equal)
+			if (nodeType == T4TokenNodeTypes.EQUAL)
 				return T4TokenRole.Separator;
-			if (nodeType == T4TokenNodeTypes.Value)
+			if (nodeType == T4TokenNodeTypes.RAW_ATTRIBUTE_VALUE)
 				return T4TokenRole.Value;
 			return T4TokenRole.Unknown;
 		}

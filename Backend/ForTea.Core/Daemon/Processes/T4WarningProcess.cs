@@ -41,7 +41,7 @@ namespace GammaJul.ForTea.Core.Daemon.Processes
 		private void AnalyzeEscapedKeyword([NotNull] ITreeNode element)
 		{
 			if (!(element is T4Token token)) return;
-			if (token.NodeType != T4TokenNodeTypes.Value) return;
+			if (token.NodeType != T4TokenNodeTypes.RAW_ATTRIBUTE_VALUE) return;
 			if (!(token.Parent is IT4DirectiveAttribute attribute)) return;
 			if (!(attribute.Parent is IT4Directive directive)) return;
 			if (!directive.IsSpecificDirective(Manager.Parameter)) return;

@@ -22,7 +22,7 @@ namespace GammaJul.ForTea.Core.Daemon.QuickFixes {
 			ITreeNode node = _highlighting.AssociatedNode;
 			using (WriteLockCookie.Create(node.IsPhysical())) {
 				ITokenNode nextToken = node.GetNextToken();
-				ITreeNode end = nextToken != null && nextToken.GetTokenType() == T4TokenNodeTypes.NewLine ? nextToken : node;
+				ITreeNode end = nextToken != null && nextToken.GetTokenType() == T4TokenNodeTypes.NEW_LINE ? nextToken : node;
 				ModificationUtil.DeleteChildRange(node, end);
 			}
 			return null;

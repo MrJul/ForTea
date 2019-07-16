@@ -3,19 +3,19 @@ using JetBrains.Annotations;
 namespace GammaJul.ForTea.Core.Parsing {
 	
 	public static class T4TokenNodeTypes {
-		[NotNull] public static readonly T4TokenNodeType Text = new T4TokenNodeType("Text", 1000, null, T4TokenNodeFlag.None);
-		[NotNull] public static readonly T4TokenNodeType StatementStart = new T4TokenNodeType("StatementStart", 1001, "<#", T4TokenNodeFlag.Tag);
-		[NotNull] public static readonly T4TokenNodeType FeatureStart = new T4TokenNodeType("FeatureStart", 1002, "<#+", T4TokenNodeFlag.Tag);
-		[NotNull] public static readonly T4TokenNodeType ExpressionStart = new T4TokenNodeType("ExpressionStart", 1003, "<#=", T4TokenNodeFlag.Tag);
-		[NotNull] public static readonly T4TokenNodeType DirectiveStart = new T4TokenNodeType("DirectiveStart", 1004, "<#@", T4TokenNodeFlag.Tag);
-		[NotNull] public static readonly T4TokenNodeType BlockEnd = new T4TokenNodeType("BlockEnd", 1005, "#>", T4TokenNodeFlag.Tag);
-		[NotNull] public static readonly T4TokenNodeType Space = new T4TokenNodeType("Space", 1006, " ", T4TokenNodeFlag.Whitespace);
-		[NotNull] public static readonly T4TokenNodeType NewLine = new T4TokenNodeType("NewLine", 1007, "\r\n", T4TokenNodeFlag.Whitespace);
-		[NotNull] public static readonly T4TokenNodeType Quote = new T4TokenNodeType("Quote", 1008, "\"", T4TokenNodeFlag.None);
-		[NotNull] public static readonly T4TokenNodeType Equal = new T4TokenNodeType("Equal", 1009, "=", T4TokenNodeFlag.None);
-		[NotNull] public static readonly T4TokenNodeType Name = new T4TokenNodeType("Name", 1010, null, T4TokenNodeFlag.Identifier);
-		[NotNull] public static readonly T4TokenNodeType Value = new T4TokenNodeType("Value", 1011, null, T4TokenNodeFlag.StringLiteral);
-		[NotNull] public static readonly T4TokenNodeType Code = new T4TokenNodeType("Code", 1012, null, T4TokenNodeFlag.None);
+		[NotNull] public static readonly T4TokenNodeType RAW_TEXT = new T4TokenNodeType("RAW_TEXT", 1000, null, T4TokenNodeFlag.None);
+		[NotNull] public static readonly T4TokenNodeType STATEMENT_BLOCK_START = new T4TokenNodeType("STATEMENT_BLOCK_START", 1001, "<#", T4TokenNodeFlag.Tag);
+		[NotNull] public static readonly T4TokenNodeType FEATURE_BLOCK_START = new T4TokenNodeType("FEATURE_BLOCK_START", 1002, "<#+", T4TokenNodeFlag.Tag);
+		[NotNull] public static readonly T4TokenNodeType EXPRESSION_BLOCK_START = new T4TokenNodeType("EXPRESSION_BLOCK_START", 1003, "<#=", T4TokenNodeFlag.Tag);
+		[NotNull] public static readonly T4TokenNodeType DIRECTIVE_START = new T4TokenNodeType("DIRECTIVE_START", 1004, "<#@", T4TokenNodeFlag.Tag);
+		[NotNull] public static readonly T4TokenNodeType BLOCK_END = new T4TokenNodeType("BLOCK_END", 1005, "#>", T4TokenNodeFlag.Tag);
+		[NotNull] public static readonly T4TokenNodeType WHITE_SPACE = new T4TokenNodeType("WHITE_SPACE", 1006, " ", T4TokenNodeFlag.Whitespace);
+		[NotNull] public static readonly T4TokenNodeType NEW_LINE = new T4TokenNodeType("NEW_LINE", 1007, "\r\n", T4TokenNodeFlag.Whitespace);
+		[NotNull] public static readonly T4TokenNodeType QUOTE = new T4TokenNodeType("QUOTE", 1008, "\"", T4TokenNodeFlag.None);
+		[NotNull] public static readonly T4TokenNodeType EQUAL = new T4TokenNodeType("EQUAL", 1009, "=", T4TokenNodeFlag.None);
+		[NotNull] public static readonly T4TokenNodeType TOKEN = new T4TokenNodeType("TOKEN", 1010, null, T4TokenNodeFlag.Identifier);
+		[NotNull] public static readonly T4TokenNodeType RAW_ATTRIBUTE_VALUE = new T4TokenNodeType("RAW_ATTRIBUTE_VALUE", 1011, null, T4TokenNodeFlag.StringLiteral);
+		[NotNull] public static readonly T4TokenNodeType RAW_CODE = new T4TokenNodeType("RAW_CODE", 1012, null, T4TokenNodeFlag.None);
 	}
 
 }
