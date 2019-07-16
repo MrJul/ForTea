@@ -29,11 +29,11 @@ namespace GammaJul.ForTea.Core.Services.CodeCompletion {
 			=> file is IT4File && this.MatchTokenType(file, textControl, IsSupportedTokenType);
 
 		private static bool IsSupportedTokenType(TokenNodeType tokenType)
-			=> tokenType == T4TokenNodeTypes.Name
-			|| tokenType == T4TokenNodeTypes.Space
-			|| tokenType == T4TokenNodeTypes.DirectiveStart
-			|| tokenType == T4TokenNodeTypes.Quote
-			|| tokenType == T4TokenNodeTypes.Value;
+			=> tokenType == T4TokenNodeTypes.TOKEN
+			|| tokenType == T4TokenNodeTypes.WHITE_SPACE
+			|| tokenType == T4TokenNodeTypes.DIRECTIVE_START
+			|| tokenType == T4TokenNodeTypes.QUOTE
+			|| tokenType == T4TokenNodeTypes.RAW_ATTRIBUTE_VALUE;
 
 		public AutopopupType IsEnabledInSettings(IContextBoundSettingsStore settingsStore, ITextControl textControl)
 			=> (AutopopupType) settingsStore.GetValue(_settingsEntry, null);

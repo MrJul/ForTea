@@ -66,7 +66,7 @@ namespace GammaJul.ForTea.Core.Daemon.Processes {
 			}
 
 			// verify that a directive attribute value is valid
-			if (element.GetTokenType() == T4TokenNodeTypes.Value) {
+			if (element.GetTokenType() == T4TokenNodeTypes.RAW_ATTRIBUTE_VALUE) {
 				ProcessAttributeValue((T4Token) element);
 				return;
 			}
@@ -87,7 +87,7 @@ namespace GammaJul.ForTea.Core.Daemon.Processes {
 
 		private void AnalyzeUnsupportedLanguage([NotNull] ITreeNode element)
 		{
-			if (element.NodeType != T4TokenNodeTypes.Value) return;
+			if (element.NodeType != T4TokenNodeTypes.RAW_ATTRIBUTE_VALUE) return;
 			if (!(element.Parent is IT4DirectiveAttribute attribute)) return;
 			if (!(attribute.Parent is T4Directive directive)) return;
 			if (!directive.IsSpecificDirective(_directiveInfoManager.Template)) return;

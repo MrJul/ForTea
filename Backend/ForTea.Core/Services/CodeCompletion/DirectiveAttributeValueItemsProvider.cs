@@ -28,12 +28,12 @@ namespace GammaJul.ForTea.Core.Services.CodeCompletion {
 				return false;
 
 			TokenNodeType tokenType = node.GetTokenType();
-			if (tokenType == T4TokenNodeTypes.Value)
+			if (tokenType == T4TokenNodeTypes.RAW_ATTRIBUTE_VALUE)
 				return true;
 
-			if (tokenType == T4TokenNodeTypes.Quote) {
+			if (tokenType == T4TokenNodeTypes.QUOTE) {
 				ITreeNode leftSibling = node.GetPreviousMeaningfulSibling();
-				if (leftSibling != null && leftSibling.GetTokenType() == T4TokenNodeTypes.Equal)
+				if (leftSibling != null && leftSibling.GetTokenType() == T4TokenNodeTypes.EQUAL)
 					return true;
 			}
 

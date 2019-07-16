@@ -79,7 +79,7 @@ namespace GammaJul.ForTea.Core.Parsing {
 		private void Parse([NotNull] CompositeElement parentElement) {
 			T4TokenNodeType tokenNodeType = GetNonCodeBlockTokenType(parentElement);
 			while (tokenNodeType != null) {
-				if (tokenNodeType == T4TokenNodeTypes.DirectiveStart)
+				if (tokenNodeType == T4TokenNodeTypes.DIRECTIVE_START)
 					ParseDirective(parentElement);
 				else {
 					AppendNewChild(parentElement, tokenNodeType);
@@ -118,11 +118,11 @@ namespace GammaJul.ForTea.Core.Parsing {
 			if (tokenNodeType != null) {
 
 				T4CodeBlock codeBlock;
-				if (tokenNodeType == T4TokenNodeTypes.StatementStart)
+				if (tokenNodeType == T4TokenNodeTypes.STATEMENT_BLOCK_START)
 					codeBlock = new T4StatementBlock();
-				else if (tokenNodeType == T4TokenNodeTypes.ExpressionStart)
+				else if (tokenNodeType == T4TokenNodeTypes.EXPRESSION_BLOCK_START)
 					codeBlock = new T4ExpressionBlock();
-				else if (tokenNodeType == T4TokenNodeTypes.FeatureStart)
+				else if (tokenNodeType == T4TokenNodeTypes.FEATURE_BLOCK_START)
 					codeBlock = new T4FeatureBlock();
 				else
 					codeBlock = null;
@@ -171,7 +171,7 @@ namespace GammaJul.ForTea.Core.Parsing {
 			// appends the code start token (<#/<#+/<#=) to the block
 			AppendNewChild(codeBlock, codeStartTokenNodeType);
 
-			// parse every Code token until a BlockEnd (that is also appended) or EOF is reached
+			// parse every RAW_CODE token until a BLOCK_END (that is also appended) or EOF is reached
 			bool blockEnded = false;
 			do {
 				T4TokenNodeType nextTokenType = Advance();
@@ -180,8 +180,8 @@ namespace GammaJul.ForTea.Core.Parsing {
 					blockEnded = true;
 				}
 				else {
-					if (nextTokenType != T4TokenNodeTypes.Code) {
-						if (nextTokenType == T4TokenNodeTypes.BlockEnd)
+					if (nextTokenType != T4TokenNodeTypes.RAW_CODE) {
+						if (nextTokenType == T4TokenNodeTypes.BLOCK_END)
 							blockEnded = true;
 						else
 							AppendMissingToken(codeBlock, MissingTokenType.BlockEnd);
@@ -198,28 +198,28 @@ namespace GammaJul.ForTea.Core.Parsing {
 			var directive = new T4Directive();
 
 			// appends the directive start token (<#@)
-			AppendNewChild(directive, T4TokenNodeTypes.DirectiveStart);
+			AppendNewChild(directive, T4TokenNodeTypes.DIRECTIVE_START);
 			Advance();
 
 			// builds the directive (name and attributes)
 			var directiveBuilder = new DirectiveBuilder(this);
 			T4TokenNodeType tokenType = GetTokenType();
 			while (tokenType != null && !tokenType.IsTag) {
-				if (tokenType == T4TokenNodeTypes.Name)
+				if (tokenType == T4TokenNodeTypes.TOKEN)
 					directiveBuilder.AddName();
-				else if (tokenType == T4TokenNodeTypes.Equal)
+				else if (tokenType == T4TokenNodeTypes.EQUAL)
 					directiveBuilder.AddEqual();
-				else if (tokenType == T4TokenNodeTypes.Quote)
+				else if (tokenType == T4TokenNodeTypes.QUOTE)
 					directiveBuilder.AddQuote();
-				else if (tokenType == T4TokenNodeTypes.Value)
+				else if (tokenType == T4TokenNodeTypes.RAW_ATTRIBUTE_VALUE)
 					directiveBuilder.AddValue();
 				tokenType = Advance();
 			}
 			directiveBuilder.Complete(directive);
 
 			// appends the block end token if available
-			if (tokenType == T4TokenNodeTypes.BlockEnd) {
-				AppendNewChild(directive, T4TokenNodeTypes.BlockEnd);
+			if (tokenType == T4TokenNodeTypes.BLOCK_END) {
+				AppendNewChild(directive, T4TokenNodeTypes.BLOCK_END);
 				Advance();
 			}
 			else {
@@ -381,7 +381,7 @@ namespace GammaJul.ForTea.Core.Parsing {
 		private static void FixTopLevelSpace([NotNull] CompositeElement file, [NotNull] IEnumerable<T4Directive> notClosedDirectives) {
 			foreach (T4Directive directive in notClosedDirectives) {
 				ITreeNode potentialSpace = directive.NextSibling;
-				if (potentialSpace == null || potentialSpace.GetTokenType() != T4TokenNodeTypes.Space)
+				if (potentialSpace == null || potentialSpace.GetTokenType() != T4TokenNodeTypes.WHITE_SPACE)
 					continue;
 				file.DeleteChildRange(potentialSpace, potentialSpace);
 				Assertion.Assert(directive.LastChild is IErrorElement, "directive.LastChild is IErrorElement");

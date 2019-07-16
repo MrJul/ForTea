@@ -59,8 +59,8 @@ namespace GammaJul.ForTea.Core.Tree.Impl {
 
 				// if the directive was inserted between a new line (or the file start) and the anchor, add another new line after
 				// the directive so that both directives have new lines after them
-				if (directive.PrevSibling == null || directive.PrevSibling.GetTokenType() == T4TokenNodeTypes.NewLine)
-					ModificationUtil.AddChildAfter(directive, T4TokenNodeTypes.NewLine.CreateLeafElement());
+				if (directive.PrevSibling == null || directive.PrevSibling.GetTokenType() == T4TokenNodeTypes.NEW_LINE)
+					ModificationUtil.AddChildAfter(directive, T4TokenNodeTypes.NEW_LINE.CreateLeafElement());
 
 				return directive;
 			}
@@ -79,8 +79,8 @@ namespace GammaJul.ForTea.Core.Tree.Impl {
 				ITreeNode sibling = directive.NextSibling;
 				if (sibling is IT4Include)
 					sibling = sibling.NextSibling;
-				if (sibling != null && sibling.GetTokenType() == T4TokenNodeTypes.NewLine)
-					ModificationUtil.AddChildBefore(directive, T4TokenNodeTypes.NewLine.CreateLeafElement());
+				if (sibling != null && sibling.GetTokenType() == T4TokenNodeTypes.NEW_LINE)
+					ModificationUtil.AddChildBefore(directive, T4TokenNodeTypes.NEW_LINE.CreateLeafElement());
 
 				return directive;
 			}
@@ -98,7 +98,7 @@ namespace GammaJul.ForTea.Core.Tree.Impl {
 				directive = FirstChild != null
 					? ModificationUtil.AddChildBefore(FirstChild, directive)
 					: ModificationUtil.AddChild(this, directive);
-				ModificationUtil.AddChildAfter(directive, T4TokenNodeTypes.NewLine.CreateLeafElement());
+				ModificationUtil.AddChildAfter(directive, T4TokenNodeTypes.NEW_LINE.CreateLeafElement());
 				return directive;
 			}
 		}
@@ -119,7 +119,7 @@ namespace GammaJul.ForTea.Core.Tree.Impl {
 				}
 
 				// remove the optional end line after the directive
-				if (endNode.NextSibling != null && endNode.NextSibling.GetTokenType() == T4TokenNodeTypes.NewLine)
+				if (endNode.NextSibling != null && endNode.NextSibling.GetTokenType() == T4TokenNodeTypes.NEW_LINE)
 					endNode = endNode.NextSibling;
 
 				ModificationUtil.DeleteChildRange(directive, endNode);

@@ -13,7 +13,7 @@ namespace GammaJul.ForTea.Core.Tree.Impl {
 
 		/// <summary>Gets the type of starting token.</summary>
 		protected override TokenNodeType StartTokenNodeType
-			=> T4TokenNodeTypes.StatementStart;
+			=> T4TokenNodeTypes.STATEMENT_BLOCK_START;
 
 	}
 

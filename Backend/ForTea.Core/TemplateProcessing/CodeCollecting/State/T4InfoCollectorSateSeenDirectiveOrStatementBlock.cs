@@ -30,7 +30,7 @@ namespace GammaJul.ForTea.Core.TemplateProcessing.CodeCollecting.State
 
 		protected override void ConsumeTokenSafe(IT4Token token)
 		{
-			if (token.NodeType != T4TokenNodeTypes.NewLine) Builder.Append(Convert(token));
+			if (token.NodeType != T4TokenNodeTypes.NEW_LINE) Builder.Append(Convert(token));
 		}
 
 		protected override string ProduceSafe(ITreeNode lookahead) => null;

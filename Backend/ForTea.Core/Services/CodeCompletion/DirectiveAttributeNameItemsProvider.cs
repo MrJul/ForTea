@@ -30,9 +30,9 @@ namespace GammaJul.ForTea.Core.Services.CodeCompletion {
 				return false;
 
 			if (node.Parent is IT4DirectiveAttribute)
-				return node.GetTokenType() == T4TokenNodeTypes.Name;
+				return node.GetTokenType() == T4TokenNodeTypes.TOKEN;
 
-			return node.GetTokenType() == T4TokenNodeTypes.Space && node.Parent is IT4Directive;
+			return node.GetTokenType() == T4TokenNodeTypes.WHITE_SPACE && node.Parent is IT4Directive;
 		}
 
 		protected override bool AddLookupItems(T4CodeCompletionContext context, IItemsCollector collector) {

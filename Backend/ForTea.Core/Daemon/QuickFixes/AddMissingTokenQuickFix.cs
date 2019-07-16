@@ -37,7 +37,7 @@ namespace GammaJul.ForTea.Core.Daemon.QuickFixes {
 
 				modifiedRange = errorElement.GetTreeTextRange();
 				ITokenNode previousToken = errorElement.GetPreviousToken();
-				if (previousToken != null && previousToken.GetTokenType() == T4TokenNodeTypes.NewLine)
+				if (previousToken != null && previousToken.GetTokenType() == T4TokenNodeTypes.NEW_LINE)
 					modifiedRange = modifiedRange.Join(previousToken.GetTreeTextRange());
 				Assertion.AssertNotNull(file, "file != null");
 

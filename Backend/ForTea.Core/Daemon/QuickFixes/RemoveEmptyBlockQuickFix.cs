@@ -28,7 +28,7 @@ namespace GammaJul.ForTea.Core.Daemon.QuickFixes
 			{
 				var nextToken = node.GetNextToken();
 				ITreeNode end;
-				if (nextToken != null && nextToken.GetTokenType() == T4TokenNodeTypes.NewLine) end = nextToken;
+				if (nextToken != null && nextToken.GetTokenType() == T4TokenNodeTypes.NEW_LINE) end = nextToken;
 				else end = node;
 				ModificationUtil.DeleteChildRange(node, end);
 			}
