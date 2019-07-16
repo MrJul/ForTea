@@ -2,6 +2,7 @@ using GammaJul.ForTea.Core.Tree.Impl;
 using JetBrains.Annotations;
 using JetBrains.Diagnostics;
 using JetBrains.ReSharper.Psi.ExtensionsAPI.Tree;
+using JetBrains.Util.dataStructures;
 
 namespace GammaJul.ForTea.Core.Parsing {
 	
@@ -24,7 +25,7 @@ namespace GammaJul.ForTea.Core.Parsing {
 				[CanBeNull] public TreeElement NameToken;
 				[CanBeNull] public TreeElement EqualToken;
 				[CanBeNull] public TreeElement OpeningQuoteToken;
-				[CanBeNull] public TreeElement ValueToken;
+				public FrugalLocalList<TreeElement> ValueTokens;
 				[CanBeNull] public TreeElement ClosingQuoteToken;
 
 				/// <summary>Gets whether the attribute has only a name.</summary>
@@ -32,7 +33,7 @@ namespace GammaJul.ForTea.Core.Parsing {
 					=> NameToken != null
 					&& EqualToken == null
 					&& OpeningQuoteToken == null
-					&& ValueToken == null
+					&& ValueTokens.IsEmpty
 					&& ClosingQuoteToken == null;
 
 				/// <summary>Creates a new <see cref="T4DirectiveAttribute"/> from the current attribute info.</summary>
@@ -47,7 +48,7 @@ namespace GammaJul.ForTea.Core.Parsing {
 							_builder.AppendNewChild(attribute, EqualToken);
 						else {
 							if (OpeningQuoteToken == null) {
-								Assertion.Assert(ValueToken == null, "ValueToken should be null if there's no opening quote.");
+								Assertion.Assert(ValueTokens.IsEmpty, "ValueTokens should be null if there's no opening quote.");
 								Assertion.Assert(ClosingQuoteToken == null, "ClosingQuoteToken should be null if there's no opening quote.");
 								_builder.AppendMissingToken(attribute, MissingTokenType.EqualSignAndAttributeValue);
 								return attribute;
@@ -63,15 +64,15 @@ namespace GammaJul.ForTea.Core.Parsing {
 						_builder.AppendMissingToken(attribute, MissingTokenType.AttributeNameAndEqualSign);
 
 					if (OpeningQuoteToken == null) {
-						Assertion.Assert(ValueToken == null, "ValueToken should be null if there's no opening quote.");
+						Assertion.Assert(ValueTokens.IsEmpty, "ValueTokens should be null if there's no opening quote.");
 						Assertion.Assert(ClosingQuoteToken == null, "ClosingQuoteToken should be null if there's no opening quote.");
 						_builder.AppendMissingToken(attribute, MissingTokenType.AttributeValue);
 						return attribute;
 					}
 
 					_builder.AppendNewChild(attribute, OpeningQuoteToken);
-					if (ValueToken != null)
-						_builder.AppendNewChild(attribute, ValueToken);
+					if (!ValueTokens.IsEmpty)
+						_builder.AppendNewChild(attribute, ValueTokens);
 					if (ClosingQuoteToken != null)
 						_builder.AppendNewChild(attribute, ClosingQuoteToken);
 					else
@@ -82,6 +83,7 @@ namespace GammaJul.ForTea.Core.Parsing {
 
 				public AttributeInfo(T4TreeBuilder builder) {
 					_builder = builder;
+					ValueTokens = new FrugalLocalList<TreeElement>();
 				}
 
 			}
@@ -123,9 +125,9 @@ namespace GammaJul.ForTea.Core.Parsing {
 
 			/// <summary>Adds a value token from the current token.</summary>
 			public void AddValue() {
-				if (_currentInfo == null || _currentInfo.ValueToken != null)
+				if (_currentInfo == null)
 					_currentInfo = CreateNewInfo();
-				_currentInfo.ValueToken = _treeBuilder.CreateCurrentToken();
+				_currentInfo.ValueTokens.Add(_treeBuilder.CreateCurrentToken());
 			}
 
 			/// <summary>Finishes building the directive by appending its name and all attributes.</summary>

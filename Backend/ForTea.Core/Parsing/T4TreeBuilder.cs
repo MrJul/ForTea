@@ -16,6 +16,7 @@ using JetBrains.ReSharper.Psi.Impl;
 using JetBrains.ReSharper.Psi.Parsing;
 using JetBrains.ReSharper.Psi.Tree;
 using JetBrains.Util;
+using JetBrains.Util.dataStructures;
 
 namespace GammaJul.ForTea.Core.Parsing {
 
@@ -142,6 +143,14 @@ namespace GammaJul.ForTea.Core.Parsing {
 		private void AppendNewChild(CompositeElement parentElement, TreeElement childElement)
 			=> _builderLexer.AppendNewChild(parentElement, childElement);
 
+		private void AppendNewChild(CompositeElement parentElement, FrugalLocalList<TreeElement> childElements)
+		{
+			foreach (var childElement in childElements)
+			{
+				AppendNewChild(parentElement, childElement);
+			}
+		}
+		
 		/// <summary>Creates and appends a new token to the tree.</summary>
 		/// <param name="parentElement">The parent element.</param>
 		/// <param name="tokenNodeType">Type of the token node to create and add.</param>
