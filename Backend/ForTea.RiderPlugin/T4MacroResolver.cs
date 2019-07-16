@@ -26,7 +26,7 @@ namespace JetBrains.ForTea.RiderPlugin
 			Solution = solution;
 			KnownMacros = new Dictionary<string, string>
 			{
-				{"SolutionDir", Solution.SolutionDirectory.FullPath}
+				{"$(SolutionDir)", Solution.SolutionDirectory.FullPath}
 			};
 		}
 	}
