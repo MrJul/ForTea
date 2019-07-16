@@ -1,13 +1,12 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project Sdk="Microsoft.NET.Sdk">
-
   <PropertyGroup>
     <TargetFramework>net461</TargetFramework>
     <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
     <DefineConstants>$(DefineConstants);JET_MODE_ASSERT</DefineConstants>
     <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
     <OutputPath>..\output\ForTea.Core\$(Configuration)</OutputPath>
-    <LangVersion>7.3</LangVersion>
+    <LangVersion>latest</LangVersion>
     <RootNamespace>GammaJul.ForTea.Core</RootNamespace>
   </PropertyGroup>
 
@@ -23,11 +22,51 @@
     <Compile Remove="Resources\TemplateBaseStub.cs" />
     <Compile Remove="Resources\TemplateBaseFull.cs" />
     <Compile Remove="Resources\TemplateBaseFullExecutableSuffix.cs" />
-  </ItemGroup>
 
-  <ItemGroup>
     <EmbeddedResource Include="Resources\TemplateBaseFull.cs" />
     <EmbeddedResource Include="Resources\TemplateBaseFullExecutableSuffix.cs" />
     <EmbeddedResource Include="Resources\TemplateBaseStub.cs" />
+
+    <None Remove="Parsing\T4.lex" />
+
+    <PsiLanguageNames Include="T4">
+      <Visible>False</Visible>
+    </PsiLanguageNames>
+    <CsLex Include="Parsing\Lexing\T4Lexer.lex" />
+    <None Include="Parsing\T4.psi" />
+    <Compile Remove="obj\Debug\CsLex\Parsing\Lexing\T4Lexer_lex.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <_UnmanagedRegistrationCache Remove="obj\ForTea.Core.csproj.UnmanagedRegistration.cache" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <_ResolveComReferenceCache Remove="obj\Debug\ForTea.Core.csproj.ResolveComReference.cache" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <IntermediateAssembly Remove="obj\Debug\ForTea.Core.dll" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <_DebugSymbolsIntermediatePath Remove="obj\Debug\ForTea.Core.pdb" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <_DeploymentManifestEntryPoint Remove="obj\Debug\ForTea.Core.dll" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ApplicationManifest Remove="obj\Debug\Native.ForTea.Core.manifest" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <DeployManifest Remove="obj\Debug\ForTea.Core.application" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Clean Remove="obj\Debug\\TempCA\ForTea.Core.pdb" />
+    <Clean Remove="obj\Debug\\TempCA\ForTea.Core.dll" />
   </ItemGroup>
 </Project>
