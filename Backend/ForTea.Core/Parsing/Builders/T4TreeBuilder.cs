@@ -25,7 +25,6 @@ namespace GammaJul.ForTea.Core.Parsing.Builders
 	internal sealed class T4TreeBuilder
 	{
 		#region Properties
-
 		[NotNull]
 		private List<IT4Include> Includes { get; } = new List<IT4Include>();
 
@@ -217,24 +216,28 @@ namespace GammaJul.ForTea.Core.Parsing.Builders
 
 		internal TreeElement CreateAttributeValue(FrugalLocalList<TreeElement> elements)
 		{
-			var code = new T4Code();
+			var attributeValue = new T4AttributeValue();
 			foreach (var element in elements)
 			{
-				BuilderLexer.AppendNewChild(code, element);
+				BuilderLexer.AppendNewChild(attributeValue, element);
 			}
 
-			return code;
+			return attributeValue;
 		}
 
 		/// <summary>Creates and appends a new token to the tree.</summary>
 		/// <param name="parentElement">The parent element.</param>
 		/// <param name="tokenNodeType">Type of the token node to create and add.</param>
-		private void AppendNewChild([NotNull] CompositeElement parentElement, [NotNull] T4TokenNodeType tokenNodeType)
-		{
-			var token = tokenNodeType.Create(BuilderLexer.Buffer, new TreeOffset(BuilderLexer.TokenStart),
-				new TreeOffset(BuilderLexer.TokenEnd));
-			BuilderLexer.AppendNewChild(parentElement, token);
-		}
+		private void AppendNewChild(
+			[NotNull] CompositeElement parentElement,
+			[NotNull] T4TokenNodeType tokenNodeType
+		) => BuilderLexer.AppendNewChild(parentElement, CreateNewChild(tokenNodeType));
+
+		private LeafElementBase CreateNewChild([NotNull] T4TokenNodeType tokenNodeType) => tokenNodeType.Create(
+			BuilderLexer.Buffer,
+			new TreeOffset(BuilderLexer.TokenStart),
+			new TreeOffset(BuilderLexer.TokenEnd)
+		);
 
 		[NotNull]
 		internal LeafElementBase CreateCurrentToken()
@@ -253,37 +256,39 @@ namespace GammaJul.ForTea.Core.Parsing.Builders
 		/// <param name="codeStartTokenNodeType">The statement start token type.</param>
 		/// <param name="codeBlock">An empty code block that will contain the parsed code block.</param>
 		[NotNull]
-		private T4CodeBlock ParseCodeBlock([NotNull] T4TokenNodeType codeStartTokenNodeType,
-			[NotNull] T4CodeBlock codeBlock)
+		private T4CodeBlock ParseCodeBlock(
+			[NotNull] T4TokenNodeType codeStartTokenNodeType,
+			[NotNull] T4CodeBlock codeBlock
+		)
 		{
 			// appends the code start token (<#/<#+/<#=) to the block
 			AppendNewChild(codeBlock, codeStartTokenNodeType);
 
 			// parse every RAW_CODE token until a BLOCK_END (that is also appended) or EOF is reached
-			bool blockEnded = false;
-			do
+			var code = new T4Code();
+			while (true)
 			{
 				var nextTokenType = Advance();
 				if (nextTokenType == null)
 				{
+					AppendNewChild(codeBlock, code);
 					AppendMissingToken(codeBlock, MissingTokenType.BlockEnd);
-					blockEnded = true;
+					break;
 				}
-				else
-				{
-					if (nextTokenType != T4TokenNodeTypes.RAW_CODE)
-					{
-						if (nextTokenType == T4TokenNodeTypes.BLOCK_END)
-							blockEnded = true;
-						else
-							AppendMissingToken(codeBlock, MissingTokenType.BlockEnd);
-					}
 
-					AppendNewChild(codeBlock, nextTokenType);
+				if (nextTokenType == T4TokenNodeTypes.RAW_CODE)
+				{
+					AppendNewChild(code, T4TokenNodeTypes.RAW_CODE);
+					continue;
+				}
+
+				if (nextTokenType == T4TokenNodeTypes.BLOCK_END)
+				{
+					AppendNewChild(codeBlock, code);
+					AppendNewChild(codeBlock, T4TokenNodeTypes.BLOCK_END);
+					break;
 				}
 			}
-			while (!blockEnded);
-
 			return codeBlock;
 		}
 
