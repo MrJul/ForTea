@@ -31,18 +31,23 @@ TOKEN={LETTER}+
 %state IN_ATTRIBUTE_VALUE
 
 %%
-<YYINITIAL> "<#@"               { yybegin(IN_DIRECTIVE); return T4TokenNodeTypes.DIRECTIVE_START; }
-<YYINITIAL> "<#="               { yybegin(IN_BLOCK); return T4TokenNodeTypes.EXPRESSION_BLOCK_START; }
-<YYINITIAL> "<#+"               { yybegin(IN_BLOCK); return T4TokenNodeTypes.FEATURE_BLOCK_START; }
-<YYINITIAL> "<#"                { yybegin(IN_BLOCK); return T4TokenNodeTypes.STATEMENT_BLOCK_START; }
-<YYINITIAL> "#>"                { return T4TokenNodeTypes.BLOCK_END; }
-<YYINITIAL> [^]                 { myCurrentTokenType = makeToken(T4TokenNodeTypes.RAW_TEXT); return myCurrentTokenType; }
+<YYINITIAL> "<#@"            { yybegin(IN_DIRECTIVE); myCurrentTokenType = makeToken(T4TokenNodeTypes.DIRECTIVE_START); return myCurrentTokenType; }
+<YYINITIAL> "<#="            { yybegin(IN_BLOCK); myCurrentTokenType = makeToken(T4TokenNodeTypes.EXPRESSION_BLOCK_START); return myCurrentTokenType; }
+<YYINITIAL> "<#+"            { yybegin(IN_BLOCK); myCurrentTokenType = makeToken(T4TokenNodeTypes.FEATURE_BLOCK_START); return myCurrentTokenType; }
+<YYINITIAL> "<#"             { yybegin(IN_BLOCK); myCurrentTokenType = makeToken(T4TokenNodeTypes.STATEMENT_BLOCK_START); return myCurrentTokenType; }
+<YYINITIAL> "#>"             { myCurrentTokenType = makeToken(T4TokenNodeTypes.BLOCK_END); return myCurrentTokenType; }
+<YYINITIAL> (\r|\n|\r\n)     { myCurrentTokenType = makeToken(T4TokenNodeTypes.NEW_LINE); return myCurrentTokenType; }
+<YYINITIAL> [^]              { myCurrentTokenType = makeToken(T4TokenNodeTypes.RAW_TEXT); return myCurrentTokenType; }
 
-<IN_DIRECTIVE> {WHITESPACE}     { return T4TokenNodeTypes.WHITE_SPACE; }
-<IN_DIRECTIVE> {TOKEN}          { return T4TokenNodeTypes.TOKEN; }
-<IN_DIRECTIVE> "="              { return T4TokenNodeTypes.EQUAL; }
-<IN_DIRECTIVE> "\""             { yybegin(IN_ATTRIBUTE_VALUE); return T4TokenNodeTypes.QUOTE; }
-<IN_DIRECTIVE> "#>"             { yybegin(YYINITIAL); return T4TokenNodeTypes.BLOCK_END; }
+<IN_DIRECTIVE> {WHITESPACE}  { myCurrentTokenType = makeToken(T4TokenNodeTypes.WHITE_SPACE); return myCurrentTokenType; }
+<IN_DIRECTIVE> {TOKEN}       { myCurrentTokenType = makeToken(T4TokenNodeTypes.TOKEN); return myCurrentTokenType; }
+<IN_DIRECTIVE> "="           { myCurrentTokenType = makeToken(T4TokenNodeTypes.EQUAL); return myCurrentTokenType; }
+<IN_DIRECTIVE> "\""          { yybegin(IN_ATTRIBUTE_VALUE); myCurrentTokenType = makeToken(T4TokenNodeTypes.QUOTE); return myCurrentTokenType; }
+<IN_DIRECTIVE> "#>"          { yybegin(YYINITIAL); myCurrentTokenType = makeToken(T4TokenNodeTypes.BLOCK_END); return myCurrentTokenType; }
+<IN_DIRECTIVE> [^]           { myCurrentTokenType = makeToken(T4TokenNodeTypes.BAD_TOKEN); return myCurrentTokenType; }
 
-<IN_ATTRIBUTE_VALUE> "\""       { yybegin(IN_DIRECTIVE); return T4TokenNodeTypes.QUOTE; }
-<IN_ATTRIBUTE_VALUE> .          { return T4TokenNodeTypes.RAW_ATTRIBUTE_VALUE; }
+<IN_ATTRIBUTE_VALUE> "\""    { yybegin(IN_DIRECTIVE); myCurrentTokenType = makeToken(T4TokenNodeTypes.QUOTE); return myCurrentTokenType; }
+<IN_ATTRIBUTE_VALUE> [^]     { myCurrentTokenType = makeToken(T4TokenNodeTypes.RAW_ATTRIBUTE_VALUE); return myCurrentTokenType; }
+
+<IN_BLOCK> "#>"              { yybegin(YYINITIAL); myCurrentTokenType = makeToken(T4TokenNodeTypes.BLOCK_END); return myCurrentTokenType; }
+<IN_BLOCK> [^]               { myCurrentTokenType = makeToken(T4TokenNodeTypes.RAW_CODE); return myCurrentTokenType; }

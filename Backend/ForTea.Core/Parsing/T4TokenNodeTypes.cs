@@ -2,7 +2,9 @@ using JetBrains.Annotations;
 
 namespace GammaJul.ForTea.Core.Parsing {
 	
-	public static class T4TokenNodeTypes {
+	public static class T4TokenNodeTypes
+	{
+		[NotNull] public static readonly T4TokenNodeType BAD_TOKEN = new T4TokenNodeType("BAD_TOKEN", 999, null, T4TokenNodeFlag.None);
 		[NotNull] public static readonly T4TokenNodeType RAW_TEXT = new T4TokenNodeType("RAW_TEXT", 1000, null, T4TokenNodeFlag.None);
 		[NotNull] public static readonly T4TokenNodeType STATEMENT_BLOCK_START = new T4TokenNodeType("STATEMENT_BLOCK_START", 1001, "<#", T4TokenNodeFlag.Tag);
 		[NotNull] public static readonly T4TokenNodeType FEATURE_BLOCK_START = new T4TokenNodeType("FEATURE_BLOCK_START", 1002, "<#+", T4TokenNodeFlag.Tag);
