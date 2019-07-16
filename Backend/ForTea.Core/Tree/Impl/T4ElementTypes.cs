@@ -13,6 +13,9 @@ namespace GammaJul.ForTea.Core.Tree.Impl {
 		[NotNull] public static readonly CompositeNodeType T4Directive = new T4CompositeNodeType<T4Directive>(2005);
 		[NotNull] public static readonly CompositeNodeType T4DirectiveAttribute = new T4CompositeNodeType<T4DirectiveAttribute>(2006);
 		[NotNull] public static readonly CompositeNodeType T4Include = new T4CompositeNodeType<T4Include>(2007);
+		[NotNull] public static readonly CompositeNodeType T4Code = new T4CompositeNodeType<T4Code>(2008);
+		[NotNull] public static readonly CompositeNodeType T4Text = new T4CompositeNodeType<T4Code>(2009);
+		[NotNull] public static readonly CompositeNodeType T4AttributeValue = new T4CompositeNodeType<T4Code>(2009);
 
 		private sealed class T4CompositeNodeType<T> : CompositeNodeType
 		where T : CompositeElement, new() {
