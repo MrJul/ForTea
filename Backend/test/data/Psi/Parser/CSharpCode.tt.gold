@@ -1,43 +1,48 @@
 ﻿Language: PsiLanguageType:T4
 T4File
   <#@ template language="C#" #>
-    DirectiveStart: <#@
-    Space:  
-    Name: template
-    Space:  
+    DIRECTIVE_START: <#@
+    WHITE_SPACE:  
+    TOKEN: template
+    WHITE_SPACE:  
     T4DirectiveAttribute
-      Name: language
-      Equal: =
-      Quote: "
-      Value: C#
-      Quote: "
-    Space:  
-    BlockEnd: #>
-  NewLine: \n
-  Text: Hello, world!
-  NewLine: \n
+      TOKEN: language
+      EQUAL: =
+      QUOTE: "
+      T4AttributeValue
+        RAW_ATTRIBUTE_VALUE: C#
+      QUOTE: "
+    WHITE_SPACE:  
+    BLOCK_END: #>
+  NEW_LINE: \n
+  RAW_TEXT: Hello, world!
+  NEW_LINE: \n
   T4StatementBlock
-    StatementStart: <#
-    Code:  for (int i = 0; i < 10; i += 1)\n   { 
-    BlockEnd: #>
-  NewLine: \n
-  NewLine: \n
+    STATEMENT_BLOCK_START: <#
+    T4Code
+      RAW_CODE:  for (int i = 0; i < 10; i += 1)\n   { 
+    BLOCK_END: #>
+  NEW_LINE: \n
+  NEW_LINE: \n
   T4ExpressionBlock
-    ExpressionStart: <#=
-    Code:  Foo(i); 
-    BlockEnd: #>
-  NewLine: \n
+    EXPRESSION_BLOCK_START: <#=
+    T4Code
+      RAW_CODE:  Foo(i); 
+    BLOCK_END: #>
+  NEW_LINE: \n
   T4StatementBlock
-    StatementStart: <#
-    Code:  } 
-    BlockEnd: #>
-  NewLine: \n
-  NewLine: \n
-  Text: ---- end ----
-  NewLine: \n
+    STATEMENT_BLOCK_START: <#
+    T4Code
+      RAW_CODE:  } 
+    BLOCK_END: #>
+  NEW_LINE: \n
+  NEW_LINE: \n
+  RAW_TEXT: ---- end ----
+  NEW_LINE: \n
   T4FeatureBlock
-    FeatureStart: <#+
-    Code: \nint Foo(int argument) => argument * 2;\n
-    BlockEnd: #>
-  NewLine: \n
+    FEATURE_BLOCK_START: <#+
+    T4Code
+      RAW_CODE: \nint Foo(int argument) => argument * 2;\n
+    BLOCK_END: #>
+  NEW_LINE: \n
 

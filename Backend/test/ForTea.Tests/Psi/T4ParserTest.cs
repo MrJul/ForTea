@@ -11,10 +11,11 @@ namespace JetBrains.ForTea.Tests.Psi
 
 		[TestCase("Simple")]
 		[TestCase("CSharpCode")]
-		[TestCase("ForgottenBlockEnd2")]
 		public void TestParser(string name) => DoOneTest(name);
 
+		[TestCase("ForgottenBlockEnd")]
+		[TestCase("ForgottenBlockEnd2")]
 		[Test, Ignore("Parser cannot recover from errors well yet.")]
-		public void TestForgottenBlockEnd() => DoNamedTest2();
+		public void TestErrorRecovery(string name) => DoOneTest(name);
 	}
 }
