@@ -71,6 +71,11 @@ namespace JetBrains.ForTea.RiderPlugin.Features.Folding
 				directiveStart = null;
 				directiveEnd = null;
 			}
+
+			if (directiveStart == null) yield break;
+			yield return new DocumentRange(
+				file.GetSourceFile().NotNull().Document,
+				new TextRange(directiveStart.Value, directiveEnd.Value));
 		}
 
 		private DocumentRange? FindFeatureFoldings([NotNull] IT4File file)
