@@ -1,4 +1,4 @@
-package com.jetbrains.fortea.highlighter
+package com.jetbrains.fortea.highlighting
 
 import com.intellij.openapi.editor.DefaultLanguageHighlighterColors
 import com.intellij.openapi.editor.colors.TextAttributesKey
@@ -9,8 +9,9 @@ import com.jetbrains.fortea.lexer.T4Lexer
 import com.jetbrains.fortea.psi.T4ElementTypes
 
 object T4SyntaxHighlighter : SyntaxHighlighterBase() {
-  val ATTRIBUTE_VALUE = createTextAttributesKey("T4_ATTRIBUTE_VALUE", DefaultLanguageHighlighterColors.STRING)
-  val BLOCK_MARKER = createTextAttributesKey("T4_BLOCK_MARKER", DefaultLanguageHighlighterColors.METADATA) // ?
+  val ATTRIBUTE_VALUE =
+    createTextAttributesKey("T4_ATTRIBUTE_VALUE", DefaultLanguageHighlighterColors.STRING) // also added by annotator
+  val BLOCK_MARKER = createTextAttributesKey("T4_BLOCK_MARKER", DefaultLanguageHighlighterColors.METADATA)
   val EQUAL = createTextAttributesKey("T4_DIRECTIVE_EQ_SIGN", DefaultLanguageHighlighterColors.OPERATION_SIGN)
 
   val QUOTE = createTextAttributesKey("T4_DIRECTIVE_QUOTE", DefaultLanguageHighlighterColors.STRING)

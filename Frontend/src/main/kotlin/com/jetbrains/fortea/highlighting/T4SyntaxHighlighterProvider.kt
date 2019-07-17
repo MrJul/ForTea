@@ -1,4 +1,4 @@
-package com.jetbrains.fortea.highlighter
+package com.jetbrains.fortea.highlighting
 
 import com.intellij.openapi.fileTypes.FileType
 import com.intellij.openapi.fileTypes.SyntaxHighlighter
