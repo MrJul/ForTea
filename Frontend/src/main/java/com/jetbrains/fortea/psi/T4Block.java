@@ -11,9 +11,6 @@ public interface T4Block extends PsiElement {
   T4CodeBlock getCodeBlock();
 
   @Nullable
-  T4ExpressionBlock getExpressionBlock();
-
-  @Nullable
-  T4FeatureBlock getFeatureBlock();
+  T4Directive getDirective();
 
 }

@@ -29,8 +29,14 @@ public class T4Parser implements PsiParser, LightPsiParser {
     else if (root_ == ATTRIBUTE_NAME) {
       result_ = attribute_name(builder_, 0);
     }
+    else if (root_ == ATTRIBUTE_VALUE) {
+      result_ = attribute_value(builder_, 0);
+    }
     else if (root_ == BLOCK) {
       result_ = block(builder_, 0);
+    }
+    else if (root_ == CODE) {
+      result_ = code(builder_, 0);
     }
     else if (root_ == CODE_BLOCK) {
       result_ = code_block(builder_, 0);
@@ -47,6 +53,12 @@ public class T4Parser implements PsiParser, LightPsiParser {
     else if (root_ == FEATURE_BLOCK) {
       result_ = feature_block(builder_, 0);
     }
+    else if (root_ == STATEMENT_BLOCK) {
+      result_ = statement_block(builder_, 0);
+    }
+    else if (root_ == TEXT) {
+      result_ = text(builder_, 0);
+    }
     else {
       result_ = parse_root_(root_, builder_, 0);
     }
@@ -58,14 +70,16 @@ public class T4Parser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // attribute_name EQ QUOTE ATTRIBUTE_VALUE QUOTE
+  // attribute_name EQUAL QUOTE attribute_value QUOTE
   public static boolean attribute(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "attribute")) return false;
     if (!nextTokenIs(builder_, TOKEN)) return false;
     boolean result_;
     Marker marker_ = enter_section_(builder_);
     result_ = attribute_name(builder_, level_ + 1);
-    result_ = result_ && consumeTokens(builder_, 0, EQ, QUOTE, ATTRIBUTE_VALUE, QUOTE);
+    result_ = result_ && consumeTokens(builder_, 0, EQUAL, QUOTE);
+    result_ = result_ && attribute_value(builder_, level_ + 1);
+    result_ = result_ && consumeToken(builder_, QUOTE);
     exit_section_(builder_, marker_, ATTRIBUTE, result_);
     return result_;
   }
@@ -83,37 +97,59 @@ public class T4Parser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // code_block|expression_block|feature_block
+  // RAW_ATTRIBUTE_VALUE*
+  public static boolean attribute_value(PsiBuilder builder_, int level_) {
+    if (!recursion_guard_(builder_, level_, "attribute_value")) return false;
+    Marker marker_ = enter_section_(builder_, level_, _NONE_, ATTRIBUTE_VALUE, "<attribute value>");
+    while (true) {
+      int pos_ = current_position_(builder_);
+      if (!consumeToken(builder_, RAW_ATTRIBUTE_VALUE)) break;
+      if (!empty_element_parsed_guard_(builder_, "attribute_value", pos_)) break;
+    }
+    exit_section_(builder_, level_, marker_, true, false, null);
+    return true;
+  }
+
+  /* ********************************************************** */
+  // directive | code_block
   public static boolean block(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "block")) return false;
     boolean result_;
     Marker marker_ = enter_section_(builder_, level_, _NONE_, BLOCK, "<block>");
-    result_ = code_block(builder_, level_ + 1);
-    if (!result_) result_ = expression_block(builder_, level_ + 1);
-    if (!result_) result_ = feature_block(builder_, level_ + 1);
+    result_ = directive(builder_, level_ + 1);
+    if (!result_) result_ = code_block(builder_, level_ + 1);
     exit_section_(builder_, level_, marker_, result_, false, null);
     return result_;
   }
 
   /* ********************************************************** */
-  // CODE_BLOCK_START CODE? BLOCK_END
-  public static boolean code_block(PsiBuilder builder_, int level_) {
-    if (!recursion_guard_(builder_, level_, "code_block")) return false;
-    if (!nextTokenIs(builder_, CODE_BLOCK_START)) return false;
+  // RAW_CODE+
+  public static boolean code(PsiBuilder builder_, int level_) {
+    if (!recursion_guard_(builder_, level_, "code")) return false;
+    if (!nextTokenIs(builder_, RAW_CODE)) return false;
     boolean result_;
     Marker marker_ = enter_section_(builder_);
-    result_ = consumeToken(builder_, CODE_BLOCK_START);
-    result_ = result_ && code_block_1(builder_, level_ + 1);
-    result_ = result_ && consumeToken(builder_, BLOCK_END);
-    exit_section_(builder_, marker_, CODE_BLOCK, result_);
+    result_ = consumeToken(builder_, RAW_CODE);
+    while (result_) {
+      int pos_ = current_position_(builder_);
+      if (!consumeToken(builder_, RAW_CODE)) break;
+      if (!empty_element_parsed_guard_(builder_, "code", pos_)) break;
+    }
+    exit_section_(builder_, marker_, CODE, result_);
     return result_;
   }
 
-  // CODE?
-  private static boolean code_block_1(PsiBuilder builder_, int level_) {
-    if (!recursion_guard_(builder_, level_, "code_block_1")) return false;
-    consumeToken(builder_, CODE);
-    return true;
+  /* ********************************************************** */
+  // statement_block|expression_block|feature_block
+  public static boolean code_block(PsiBuilder builder_, int level_) {
+    if (!recursion_guard_(builder_, level_, "code_block")) return false;
+    boolean result_;
+    Marker marker_ = enter_section_(builder_, level_, _NONE_, CODE_BLOCK, "<code block>");
+    result_ = statement_block(builder_, level_ + 1);
+    if (!result_) result_ = expression_block(builder_, level_ + 1);
+    if (!result_) result_ = feature_block(builder_, level_ + 1);
+    exit_section_(builder_, level_, marker_, result_, false, null);
+    return result_;
   }
 
   /* ********************************************************** */
@@ -167,45 +203,31 @@ public class T4Parser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // EXPRESSION_BLOCK_START CODE? BLOCK_END
+  // EXPRESSION_BLOCK_START code BLOCK_END
   public static boolean expression_block(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "expression_block")) return false;
     if (!nextTokenIs(builder_, EXPRESSION_BLOCK_START)) return false;
     boolean result_;
     Marker marker_ = enter_section_(builder_);
     result_ = consumeToken(builder_, EXPRESSION_BLOCK_START);
-    result_ = result_ && expression_block_1(builder_, level_ + 1);
+    result_ = result_ && code(builder_, level_ + 1);
     result_ = result_ && consumeToken(builder_, BLOCK_END);
     exit_section_(builder_, marker_, EXPRESSION_BLOCK, result_);
     return result_;
   }
 
-  // CODE?
-  private static boolean expression_block_1(PsiBuilder builder_, int level_) {
-    if (!recursion_guard_(builder_, level_, "expression_block_1")) return false;
-    consumeToken(builder_, CODE);
-    return true;
-  }
-
   /* ********************************************************** */
-  // FEATURE_BLOCK_START CODE? BLOCK_END
+  // FEATURE_BLOCK_START code BLOCK_END
   public static boolean feature_block(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "feature_block")) return false;
     if (!nextTokenIs(builder_, FEATURE_BLOCK_START)) return false;
     boolean result_;
     Marker marker_ = enter_section_(builder_);
     result_ = consumeToken(builder_, FEATURE_BLOCK_START);
-    result_ = result_ && feature_block_1(builder_, level_ + 1);
+    result_ = result_ && code(builder_, level_ + 1);
     result_ = result_ && consumeToken(builder_, BLOCK_END);
     exit_section_(builder_, marker_, FEATURE_BLOCK, result_);
     return result_;
-  }
-
-  // CODE?
-  private static boolean feature_block_1(PsiBuilder builder_, int level_) {
-    if (!recursion_guard_(builder_, level_, "feature_block_1")) return false;
-    consumeToken(builder_, CODE);
-    return true;
   }
 
   /* ********************************************************** */
@@ -220,7 +242,21 @@ public class T4Parser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // (TEXT|directive|block)*
+  // STATEMENT_BLOCK_START code BLOCK_END
+  public static boolean statement_block(PsiBuilder builder_, int level_) {
+    if (!recursion_guard_(builder_, level_, "statement_block")) return false;
+    if (!nextTokenIs(builder_, STATEMENT_BLOCK_START)) return false;
+    boolean result_;
+    Marker marker_ = enter_section_(builder_);
+    result_ = consumeToken(builder_, STATEMENT_BLOCK_START);
+    result_ = result_ && code(builder_, level_ + 1);
+    result_ = result_ && consumeToken(builder_, BLOCK_END);
+    exit_section_(builder_, marker_, STATEMENT_BLOCK, result_);
+    return result_;
+  }
+
+  /* ********************************************************** */
+  // (text|NEW_LINE|block)*
   static boolean t4File(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "t4File")) return false;
     while (true) {
@@ -231,13 +267,30 @@ public class T4Parser implements PsiParser, LightPsiParser {
     return true;
   }
 
-  // TEXT|directive|block
+  // text|NEW_LINE|block
   private static boolean t4File_0(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "t4File_0")) return false;
     boolean result_;
-    result_ = consumeToken(builder_, TEXT);
-    if (!result_) result_ = directive(builder_, level_ + 1);
+    result_ = text(builder_, level_ + 1);
+    if (!result_) result_ = consumeToken(builder_, NEW_LINE);
     if (!result_) result_ = block(builder_, level_ + 1);
+    return result_;
+  }
+
+  /* ********************************************************** */
+  // RAW_TEXT+
+  public static boolean text(PsiBuilder builder_, int level_) {
+    if (!recursion_guard_(builder_, level_, "text")) return false;
+    if (!nextTokenIs(builder_, RAW_TEXT)) return false;
+    boolean result_;
+    Marker marker_ = enter_section_(builder_);
+    result_ = consumeToken(builder_, RAW_TEXT);
+    while (result_) {
+      int pos_ = current_position_(builder_);
+      if (!consumeToken(builder_, RAW_TEXT)) break;
+      if (!empty_element_parsed_guard_(builder_, "text", pos_)) break;
+    }
+    exit_section_(builder_, marker_, TEXT, result_);
     return result_;
   }
 

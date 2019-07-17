@@ -7,7 +7,7 @@ import com.intellij.psi.PsiElement;
 
 public interface T4FeatureBlock extends PsiElement {
 
-  @Nullable
-  PsiElement getCode();
+  @NotNull
+  T4Code getCode();
 
 }

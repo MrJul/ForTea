@@ -32,4 +32,10 @@ public class T4AttributeImpl extends ASTWrapperPsiElement implements T4Attribute
     return findNotNullChildByClass(T4AttributeName.class);
   }
 
+  @Override
+  @NotNull
+  public T4AttributeValue getAttributeValue() {
+    return findNotNullChildByClass(T4AttributeValue.class);
+  }
+
 }

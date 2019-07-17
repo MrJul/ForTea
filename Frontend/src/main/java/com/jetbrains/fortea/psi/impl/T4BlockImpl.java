@@ -34,14 +34,8 @@ public class T4BlockImpl extends ASTWrapperPsiElement implements T4Block {
 
   @Override
   @Nullable
-  public T4ExpressionBlock getExpressionBlock() {
-    return findChildByClass(T4ExpressionBlock.class);
-  }
-
-  @Override
-  @Nullable
-  public T4FeatureBlock getFeatureBlock() {
-    return findChildByClass(T4FeatureBlock.class);
+  public T4Directive getDirective() {
+    return findChildByClass(T4Directive.class);
   }
 
 }

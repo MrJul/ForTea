@@ -15,7 +15,15 @@ public class T4Visitor extends PsiElementVisitor {
     visitPsiElement(o);
   }
 
+  public void visitAttributeValue(@NotNull T4AttributeValue o) {
+    visitPsiElement(o);
+  }
+
   public void visitBlock(@NotNull T4Block o) {
+    visitPsiElement(o);
+  }
+
+  public void visitCode(@NotNull T4Code o) {
     visitPsiElement(o);
   }
 
@@ -36,6 +44,14 @@ public class T4Visitor extends PsiElementVisitor {
   }
 
   public void visitFeatureBlock(@NotNull T4FeatureBlock o) {
+    visitPsiElement(o);
+  }
+
+  public void visitStatementBlock(@NotNull T4StatementBlock o) {
+    visitPsiElement(o);
+  }
+
+  public void visitText(@NotNull T4Text o) {
     visitPsiElement(o);
   }
 

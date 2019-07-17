@@ -28,8 +28,20 @@ public class T4CodeBlockImpl extends ASTWrapperPsiElement implements T4CodeBlock
 
   @Override
   @Nullable
-  public PsiElement getCode() {
-    return findChildByType(CODE);
+  public T4ExpressionBlock getExpressionBlock() {
+    return findChildByClass(T4ExpressionBlock.class);
+  }
+
+  @Override
+  @Nullable
+  public T4FeatureBlock getFeatureBlock() {
+    return findChildByClass(T4FeatureBlock.class);
+  }
+
+  @Override
+  @Nullable
+  public T4StatementBlock getStatementBlock() {
+    return findChildByClass(T4StatementBlock.class);
   }
 
 }

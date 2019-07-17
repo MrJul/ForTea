@@ -58,8 +58,8 @@ class _T4Lexer implements FlexLexer {
 
   /* The ZZ_CMAP_A table has 256 entries */
   static final char ZZ_CMAP_A[] = zzUnpackCMap(
-    "\11\0\2\1\1\0\2\1\22\0\1\1\1\0\1\12\1\4\7\0\1\10\20\0\1\3\1\7\1\5\1\0\1\6"+
-    "\32\11\1\0\1\2\2\0\1\11\1\0\32\11\205\0");
+    "\11\0\1\1\1\6\1\0\1\1\1\14\22\0\1\1\1\0\1\10\1\3\7\0\1\13\20\0\1\5\1\12\1"+
+    "\4\1\0\1\11\32\2\1\0\1\7\2\0\1\2\1\0\32\2\205\0");
 
   /** 
    * Translates DFA states to action switch labels.
@@ -67,12 +67,12 @@ class _T4Lexer implements FlexLexer {
   private static final int [] ZZ_ACTION = zzUnpackAction();
 
   private static final String ZZ_ACTION_PACKED_0 =
-    "\1\0\1\1\1\2\1\0\3\3\1\1\1\4\1\3"+
-    "\1\5\1\6\1\7\1\3\1\0\1\10\1\0\1\11"+
-    "\1\12\1\13\1\14\1\15";
+    "\4\0\3\1\1\2\1\1\1\2\1\3\1\4\1\5"+
+    "\1\3\1\6\1\7\2\10\1\11\1\12\1\0\1\13"+
+    "\1\14\1\0\1\15\1\0\1\16\1\17\1\20";
 
   private static int [] zzUnpackAction() {
-    int [] result = new int[22];
+    int [] result = new int[29];
     int offset = 0;
     offset = zzUnpackAction(ZZ_ACTION_PACKED_0, offset, result);
     return result;
@@ -97,12 +97,13 @@ class _T4Lexer implements FlexLexer {
   private static final int [] ZZ_ROWMAP = zzUnpackRowMap();
 
   private static final String ZZ_ROWMAP_PACKED_0 =
-    "\0\0\0\13\0\26\0\41\0\54\0\67\0\102\0\115"+
-    "\0\115\0\130\0\115\0\143\0\54\0\156\0\171\0\204"+
-    "\0\217\0\54\0\54\0\54\0\54\0\54";
+    "\0\0\0\15\0\32\0\47\0\64\0\101\0\116\0\133"+
+    "\0\150\0\165\0\133\0\133\0\202\0\217\0\133\0\133"+
+    "\0\234\0\251\0\266\0\133\0\303\0\64\0\320\0\335"+
+    "\0\133\0\352\0\133\0\133\0\133";
 
   private static int [] zzUnpackRowMap() {
-    int [] result = new int[22];
+    int [] result = new int[29];
     int offset = 0;
     offset = zzUnpackRowMap(ZZ_ROWMAP_PACKED_0, offset, result);
     return result;
@@ -125,16 +126,20 @@ class _T4Lexer implements FlexLexer {
   private static final int [] ZZ_TRANS = zzUnpackTrans();
 
   private static final String ZZ_TRANS_PACKED_0 =
-    "\2\5\1\6\1\7\7\5\1\10\1\11\2\10\1\12"+
-    "\1\5\1\10\1\13\1\10\1\14\1\15\4\5\1\16"+
-    "\21\5\16\0\1\17\13\0\1\20\6\0\4\10\1\21"+
-    "\1\0\4\10\1\0\5\10\1\22\4\10\1\0\4\10"+
-    "\1\21\1\0\3\10\1\14\6\0\1\22\11\0\1\23"+
-    "\14\0\1\24\1\25\1\26\2\0\5\10\1\0\4\10"+
-    "\1\0";
+    "\3\5\1\6\1\5\1\7\1\10\1\11\4\5\1\12"+
+    "\1\13\1\14\1\15\1\16\2\13\1\14\1\13\1\17"+
+    "\1\13\1\20\1\13\1\14\3\21\1\22\11\21\10\23"+
+    "\1\24\4\23\5\5\1\25\1\0\1\11\4\5\1\0"+
+    "\4\5\1\26\1\25\1\0\1\11\4\5\1\0\3\5"+
+    "\1\27\1\5\1\25\1\0\5\5\16\0\5\5\1\30"+
+    "\1\0\1\11\4\5\7\0\1\10\10\0\1\15\16\0"+
+    "\1\31\10\0\3\21\1\32\14\21\1\32\1\31\10\21"+
+    "\10\23\1\0\4\23\3\5\1\0\1\5\1\25\1\0"+
+    "\5\5\12\0\1\33\1\34\1\35\1\0\5\5\1\25"+
+    "\1\0\5\5\1\0\3\21\1\32\1\0\10\21";
 
   private static int [] zzUnpackTrans() {
-    int [] result = new int[154];
+    int [] result = new int[247];
     int offset = 0;
     offset = zzUnpackTrans(ZZ_TRANS_PACKED_0, offset, result);
     return result;
@@ -172,11 +177,11 @@ class _T4Lexer implements FlexLexer {
   private static final int [] ZZ_ATTRIBUTE = zzUnpackAttribute();
 
   private static final String ZZ_ATTRIBUTE_PACKED_0 =
-    "\1\0\2\1\1\0\1\11\7\1\1\11\1\1\1\0"+
-    "\1\1\1\0\5\11";
+    "\4\0\3\1\1\11\2\1\2\11\2\1\2\11\3\1"+
+    "\1\11\1\0\2\1\1\0\1\11\1\0\3\11";
 
   private static int [] zzUnpackAttribute() {
-    int [] result = new int[22];
+    int [] result = new int[29];
     int offset = 0;
     offset = zzUnpackAttribute(ZZ_ATTRIBUTE_PACKED_0, offset, result);
     return result;
@@ -232,16 +237,11 @@ class _T4Lexer implements FlexLexer {
   private boolean zzEOFDone;
 
   /* user code: */
-// prevents IntelliJ from optimizing imports and causing compilation errors
-private static final FlexLexer HACK = null;
-public _T4Lexer() {
-  this(null);
-}
-
-private boolean isBlockEndAhead() {
-  // TODO: handle invalid block ends as well
-  return (yycharat(zzCurrentPos) == '#' &&  yycharat(zzCurrentPos + 1) == '>');
-}
+  private IElementType myCurrentTokenType;
+  private IElementType makeToken(IElementType token) {
+    myCurrentTokenType = token;
+    return myCurrentTokenType;
+  }
 
 
   /**
@@ -250,6 +250,7 @@ private boolean isBlockEndAhead() {
    * @param   in  the java.io.Reader to read input from.
    */
   _T4Lexer(java.io.Reader in) {
+    myCurrentTokenType = null;
     this.zzReader = in;
   }
 
@@ -484,78 +485,92 @@ private boolean isBlockEndAhead() {
 
       if (zzInput == YYEOF && zzStartRead == zzCurrentPos) {
         zzAtEOF = true;
-        return null;
+          {     myCurrentTokenType = null;
+    return null;
+ }
       }
       else {
         switch (zzAction < 0 ? zzAction : ZZ_ACTION[zzAction]) {
           case 1: 
-            { yybegin(IN_DIRECTIVE); return ATTRIBUTE_VALUE;
-            } 
-            // fall through
-          case 14: break;
-          case 2: 
-            { while (!this.isBlockEndAhead()) {
-          zzCurrentPos += 1;
-        }
-        return CODE;
-            } 
-            // fall through
-          case 15: break;
-          case 3: 
-            { return BAD_CHARACTER;
-            } 
-            // fall through
-          case 16: break;
-          case 4: 
-            { return WHITE_SPACE;
+            { myCurrentTokenType = makeToken(RAW_TEXT); return myCurrentTokenType;
             } 
             // fall through
           case 17: break;
-          case 5: 
-            { return EQ;
+          case 2: 
+            { myCurrentTokenType = makeToken(NEW_LINE); return myCurrentTokenType;
             } 
             // fall through
           case 18: break;
-          case 6: 
-            { return TOKEN;
+          case 3: 
+            { myCurrentTokenType = makeToken(BAD_CHARACTER); return myCurrentTokenType;
             } 
             // fall through
           case 19: break;
-          case 7: 
-            { yybegin(IN_ATTRIBUTE_VALUE); return QUOTE;
+          case 4: 
+            { myCurrentTokenType = makeToken(WHITE_SPACE); return myCurrentTokenType;
             } 
             // fall through
           case 20: break;
-          case 8: 
-            { yybegin(IN_BLOCK); return CODE_BLOCK_START;
+          case 5: 
+            { myCurrentTokenType = makeToken(TOKEN); return myCurrentTokenType;
             } 
             // fall through
           case 21: break;
-          case 9: 
-            { yybegin(YYINITIAL); return BLOCK_END;
+          case 6: 
+            { yybegin(IN_ATTRIBUTE_VALUE); myCurrentTokenType = makeToken(QUOTE); return myCurrentTokenType;
             } 
             // fall through
           case 22: break;
-          case 10: 
-            { return TEXT;
+          case 7: 
+            { myCurrentTokenType = makeToken(EQUAL); return myCurrentTokenType;
             } 
             // fall through
           case 23: break;
-          case 11: 
-            { yybegin(IN_DIRECTIVE); return DIRECTIVE_START;
+          case 8: 
+            { myCurrentTokenType = makeToken(RAW_CODE); return myCurrentTokenType;
             } 
             // fall through
           case 24: break;
-          case 12: 
-            { yybegin(IN_BLOCK); return EXPRESSION_BLOCK_START;
+          case 9: 
+            { myCurrentTokenType = makeToken(RAW_ATTRIBUTE_VALUE); return myCurrentTokenType;
             } 
             // fall through
           case 25: break;
-          case 13: 
-            { yybegin(IN_BLOCK); return FEATURE_BLOCK_START;
+          case 10: 
+            { yybegin(IN_DIRECTIVE); myCurrentTokenType = makeToken(QUOTE); return myCurrentTokenType;
             } 
             // fall through
           case 26: break;
+          case 11: 
+            { myCurrentTokenType = makeToken(BLOCK_END); return myCurrentTokenType;
+            } 
+            // fall through
+          case 27: break;
+          case 12: 
+            { yybegin(IN_BLOCK); myCurrentTokenType = makeToken(STATEMENT_BLOCK_START); return myCurrentTokenType;
+            } 
+            // fall through
+          case 28: break;
+          case 13: 
+            { yybegin(YYINITIAL); myCurrentTokenType = makeToken(BLOCK_END); return myCurrentTokenType;
+            } 
+            // fall through
+          case 29: break;
+          case 14: 
+            { yybegin(IN_DIRECTIVE); myCurrentTokenType = makeToken(DIRECTIVE_START); return myCurrentTokenType;
+            } 
+            // fall through
+          case 30: break;
+          case 15: 
+            { yybegin(IN_BLOCK); myCurrentTokenType = makeToken(EXPRESSION_BLOCK_START); return myCurrentTokenType;
+            } 
+            // fall through
+          case 31: break;
+          case 16: 
+            { yybegin(IN_BLOCK); myCurrentTokenType = makeToken(FEATURE_BLOCK_START); return myCurrentTokenType;
+            } 
+            // fall through
+          case 32: break;
           default:
             zzScanError(ZZ_NO_MATCH);
           }
