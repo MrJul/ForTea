@@ -10,66 +10,61 @@ import static com.jetbrains.fortea.psi.T4ElementTypes.*;
 %%
 
 %{
-// prevents IntelliJ from optimizing imports and causing compilation errors
-private static final FlexLexer HACK = null;
-public _T4Lexer() {
-  this(null);
-}
-
-private boolean isBlockEndAhead() {
-  // TODO: handle invalid block ends as well
-  return (yycharat(zzCurrentPos) == '#' &&  yycharat(zzCurrentPos + 1) == '>');
-}
+  private IElementType myCurrentTokenType;
+  private IElementType makeToken(IElementType token) {
+    myCurrentTokenType = token;
+    return myCurrentTokenType;
+  }
 %}
 
 %class _T4Lexer
 %implements FlexLexer
-%unicode
-%function advance
 %type IElementType
+%init{
+  myCurrentTokenType = null;
+%init}
+
+%function advance
+%unicode
+
+%eofval{
+    myCurrentTokenType = null;
+    return null;
+%eofval}
 
 WHITESPACE=[\ \n\r\t\f]
-
-ESCAPE=\\<#
-BLOCK_END=#>
-DIRECTIVE_START=<#@
-CODE_BLOCK_START=<#
-EXPRESSION_BLOCK_START=<#=
-FEATURE_BLOCK_START=<#\+
-
 LETTER=[A-Za-z_]
-QUOTE=\"
 TOKEN={LETTER}+
-ATTRIBUTE_VALUE=([^\"#>]|#[^>\"])*
-EQ==
+
+RAW_CODE=([^#]|(#+[^#>]))+
+RAW_TEXT=([^<\r\n]|(<+[^<#\r\n])|(\\<#))+
+RAW_ATTRIBUTE_VALUE=[^\"]+
 
 %state IN_DIRECTIVE
 %state IN_BLOCK
 %state IN_ATTRIBUTE_VALUE
 
 %%
+<YYINITIAL> "<#@"                           { yybegin(IN_DIRECTIVE); myCurrentTokenType = makeToken(DIRECTIVE_START); return myCurrentTokenType; }
+<YYINITIAL> "<#="                           { yybegin(IN_BLOCK); myCurrentTokenType = makeToken(EXPRESSION_BLOCK_START); return myCurrentTokenType; }
+<YYINITIAL> "<#+"                           { yybegin(IN_BLOCK); myCurrentTokenType = makeToken(FEATURE_BLOCK_START); return myCurrentTokenType; }
+<YYINITIAL> "<#"                            { yybegin(IN_BLOCK); myCurrentTokenType = makeToken(STATEMENT_BLOCK_START); return myCurrentTokenType; }
+<YYINITIAL> "#>"                            { myCurrentTokenType = makeToken(BLOCK_END); return myCurrentTokenType; }
+<YYINITIAL> (\r|\n|\r\n)                    { myCurrentTokenType = makeToken(NEW_LINE); return myCurrentTokenType; }
+<YYINITIAL> {RAW_TEXT}                      { myCurrentTokenType = makeToken(RAW_TEXT); return myCurrentTokenType; }
+<YYINITIAL> [^]                             { myCurrentTokenType = makeToken(RAW_TEXT); return myCurrentTokenType; }
 
-<YYINITIAL> {ESCAPE}                     { return TEXT; }
-<YYINITIAL> {DIRECTIVE_START}            { yybegin(IN_DIRECTIVE); return DIRECTIVE_START; }
-<YYINITIAL> {CODE_BLOCK_START}           { yybegin(IN_BLOCK); return CODE_BLOCK_START; }
-<YYINITIAL> {EXPRESSION_BLOCK_START}     { yybegin(IN_BLOCK); return EXPRESSION_BLOCK_START; }
-<YYINITIAL> {FEATURE_BLOCK_START}        { yybegin(IN_BLOCK); return FEATURE_BLOCK_START; }
+<IN_DIRECTIVE> {WHITESPACE}                 { myCurrentTokenType = makeToken(WHITE_SPACE); return myCurrentTokenType; }
+<IN_DIRECTIVE> {TOKEN}                      { myCurrentTokenType = makeToken(TOKEN); return myCurrentTokenType; }
+<IN_DIRECTIVE> "="                          { myCurrentTokenType = makeToken(EQUAL); return myCurrentTokenType; }
+<IN_DIRECTIVE> "\""                         { yybegin(IN_ATTRIBUTE_VALUE); myCurrentTokenType = makeToken(QUOTE); return myCurrentTokenType; }
+<IN_DIRECTIVE> "#>"                         { yybegin(YYINITIAL); myCurrentTokenType = makeToken(BLOCK_END); return myCurrentTokenType; }
+<IN_DIRECTIVE> [^]                          { myCurrentTokenType = makeToken(BAD_CHARACTER); return myCurrentTokenType; }
 
-<IN_DIRECTIVE> {WHITESPACE}              { return WHITE_SPACE; }
-<IN_DIRECTIVE> {TOKEN}                   { return TOKEN; }
-<IN_DIRECTIVE> {EQ}                      { return EQ; }
-<IN_DIRECTIVE> {QUOTE}                   { yybegin(IN_ATTRIBUTE_VALUE); return QUOTE; }
-<IN_DIRECTIVE> {BLOCK_END}               { yybegin(YYINITIAL); return BLOCK_END; }
+<IN_ATTRIBUTE_VALUE> "\""                   { yybegin(IN_DIRECTIVE); myCurrentTokenType = makeToken(QUOTE); return myCurrentTokenType; }
+<IN_ATTRIBUTE_VALUE> {RAW_ATTRIBUTE_VALUE}  { myCurrentTokenType = makeToken(RAW_ATTRIBUTE_VALUE); return myCurrentTokenType; }
+<IN_ATTRIBUTE_VALUE> [^]                    { myCurrentTokenType = makeToken(RAW_ATTRIBUTE_VALUE); return myCurrentTokenType; }
 
-<IN_DIRECTIVE> {ATTRIBUTE_VALUE}         { yybegin(IN_DIRECTIVE); return ATTRIBUTE_VALUE; }
-
-<IN_BLOCK> ""
-      {
-        while (!this.isBlockEndAhead()) {
-          zzCurrentPos += 1;
-        }
-        return CODE;
-      }
-<IN_BLOCK>  {BLOCK_END}                  { yybegin(YYINITIAL); return BLOCK_END; }
-
-[^]                                      { return BAD_CHARACTER; }
+<IN_BLOCK> "#>"                             { yybegin(YYINITIAL); myCurrentTokenType = makeToken(BLOCK_END); return myCurrentTokenType; }
+<IN_BLOCK> {RAW_CODE}                       { myCurrentTokenType = makeToken(RAW_CODE); return myCurrentTokenType; }
+<IN_BLOCK> [^]                              { myCurrentTokenType = makeToken(RAW_CODE); return myCurrentTokenType; }

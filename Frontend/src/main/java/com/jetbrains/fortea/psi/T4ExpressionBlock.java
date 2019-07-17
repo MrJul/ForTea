@@ -7,7 +7,7 @@ import com.intellij.psi.PsiElement;
 
 public interface T4ExpressionBlock extends PsiElement {
 
-  @Nullable
-  PsiElement getCode();
+  @NotNull
+  T4Code getCode();
 
 }

@@ -8,6 +8,12 @@ import com.intellij.psi.PsiElement;
 public interface T4CodeBlock extends PsiElement {
 
   @Nullable
-  PsiElement getCode();
+  T4ExpressionBlock getExpressionBlock();
+
+  @Nullable
+  T4FeatureBlock getFeatureBlock();
+
+  @Nullable
+  T4StatementBlock getStatementBlock();
 
 }

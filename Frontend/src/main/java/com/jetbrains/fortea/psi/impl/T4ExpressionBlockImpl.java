@@ -27,9 +27,9 @@ public class T4ExpressionBlockImpl extends ASTWrapperPsiElement implements T4Exp
   }
 
   @Override
-  @Nullable
-  public PsiElement getCode() {
-    return findChildByType(CODE);
+  @NotNull
+  public T4Code getCode() {
+    return findNotNullChildByClass(T4Code.class);
   }
 
 }

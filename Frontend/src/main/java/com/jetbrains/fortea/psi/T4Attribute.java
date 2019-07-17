@@ -10,4 +10,7 @@ public interface T4Attribute extends PsiElement {
   @NotNull
   T4AttributeName getAttributeName();
 
+  @NotNull
+  T4AttributeValue getAttributeValue();
+
 }

@@ -11,13 +11,21 @@
   elementTypeClass="com.jetbrains.fortea.psi.T4ElementType"
   tokenTypeClass="com.jetbrains.fortea.psi.T4TokenType"
   psiVisitorName="T4Visitor"
-  tokens=[
-    CODE='regexp:foo(?=s)'
-    BAD_CHARACTER
-  ]
 }
 
-t4File ::= (TEXT|directive|block)*
+t4File ::= (text|NEW_LINE|block)*
+
+block ::= directive | code_block
+
+// ---- ---- blocks ---- ----
+
+code_block ::= statement_block|expression_block|feature_block
+
+statement_block ::= STATEMENT_BLOCK_START code BLOCK_END
+
+expression_block ::= EXPRESSION_BLOCK_START code BLOCK_END
+
+feature_block ::= FEATURE_BLOCK_START code BLOCK_END
 
 // ---- ---- Directive ---- ----
 
@@ -30,19 +38,17 @@ private directive_main ::= DIRECTIVE_START directive_name attribute* {
 
 directive_name ::= TOKEN
 
-attribute ::= attribute_name EQ QUOTE ATTRIBUTE_VALUE QUOTE
+attribute ::= attribute_name EQUAL QUOTE attribute_value QUOTE
 
 attribute_name ::= TOKEN
 
-// ---- ---- blocks ---- ----
+// ---- ---- Raw ---- ----
 
-block ::= code_block|expression_block|feature_block
+text ::= RAW_TEXT+
 
-code_block ::= CODE_BLOCK_START CODE? BLOCK_END
+code ::= RAW_CODE+
 
-expression_block ::= EXPRESSION_BLOCK_START CODE? BLOCK_END
-
-feature_block ::= FEATURE_BLOCK_START CODE? BLOCK_END
+attribute_value ::= RAW_ATTRIBUTE_VALUE*
 
 // ---- ---- Recovery ---- ----
 
