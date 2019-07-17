@@ -167,7 +167,7 @@ namespace GammaJul.ForTea.Core.Psi {
 		protected override ITreeNode GetSuperClassNodeFromOriginalFile(IFile originalFile) {
 			var t4File = (IT4File) originalFile;
 			foreach (IT4Directive templateDirective in t4File.GetDirectives(_directiveInfoManager.Template)) {
-				IT4Token inheritsToken = templateDirective.GetAttributeValueToken(_directiveInfoManager.Template.InheritsAttribute.Name);
+				var inheritsToken = templateDirective.GetAttributeValueToken(_directiveInfoManager.Template.InheritsAttribute.Name);
 				if (inheritsToken != null)
 					return inheritsToken;
 			}

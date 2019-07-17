@@ -14,7 +14,7 @@ namespace GammaJul.ForTea.Core.Tree.Impl {
 				return T4TokenRole.Name;
 			if (nodeType == T4TokenNodeTypes.EQUAL)
 				return T4TokenRole.Separator;
-			if (nodeType == T4TokenNodeTypes.RAW_ATTRIBUTE_VALUE)
+			if (nodeType == T4ElementTypes.T4AttributeValue)
 				return T4TokenRole.Value;
 			return T4TokenRole.Unknown;
 		}
@@ -35,8 +35,8 @@ namespace GammaJul.ForTea.Core.Tree.Impl {
 
 		/// <summary>Gets the token representing the value of this attribute.</summary>
 		/// <returns>A value token, or <c>null</c> if none is available.</returns>
-		public IT4Token GetValueToken()
-			=> (IT4Token) FindChildByRole((short) T4TokenRole.Value);
+		public TreeElement GetValueToken()
+			=> FindChildByRole((short) T4TokenRole.Value);
 
 		/// <summary>Gets the name of the node.</summary>
 		/// <returns>The node name, or <c>null</c> if none is available.</returns>

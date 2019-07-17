@@ -14,7 +14,7 @@ namespace GammaJul.ForTea.Core.Tree {
 	public static class T4TreeExtensions {
 
 		[CanBeNull]
-		public static IT4Token GetAttributeValueToken([CanBeNull] this IT4Directive directive, [CanBeNull] string attributeName) {
+		public static ITreeNode GetAttributeValueToken([CanBeNull] this IT4Directive directive, [CanBeNull] string attributeName) {
 			if (String.IsNullOrEmpty(attributeName))
 				return null;
 
@@ -25,16 +25,16 @@ namespace GammaJul.ForTea.Core.Tree {
 		public static string GetAttributeValue([CanBeNull] this IT4Directive directive, [CanBeNull] string attributeName)
 			=> directive.GetAttributeValueToken(attributeName)?.GetText();
 
-		public static Pair<IT4Token, string> GetAttributeValueIgnoreOnlyWhitespace([CanBeNull] this IT4Directive directive, [CanBeNull] string attributeName) {
-			IT4Token valueToken = directive.GetAttributeValueToken(attributeName);
+		public static Pair<ITreeNode, string> GetAttributeValueIgnoreOnlyWhitespace([CanBeNull] this IT4Directive directive, [CanBeNull] string attributeName) {
+			var valueToken = directive.GetAttributeValueToken(attributeName);
 			if (valueToken == null)
-				return new Pair<IT4Token, string>();
+				return new Pair<ITreeNode, string>();
 
 			string value = valueToken.GetText();
 			if (value.IsNullOrWhitespace())
-				return new Pair<IT4Token, string>();
+				return new Pair<ITreeNode, string>();
 
-			return new Pair<IT4Token, string>(valueToken, value);
+			return new Pair<ITreeNode, string>(valueToken, value);
 		}
 
 		public static bool IsSpecificDirective([CanBeNull] this IT4Directive directive, [CanBeNull] DirectiveInfo directiveInfo)

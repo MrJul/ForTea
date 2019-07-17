@@ -8,6 +8,7 @@ using NUnit.Framework;
 
 namespace JetBrains.ForTea.Tests.Highlighting
 {
+	[Ignore("Highlighting is delegated to frontend")]
 	[TestFileExtension(T4ProjectFileType.MainExtension)]
 	public sealed class T4HighlightingTest : HighlightingTestBase
 	{
