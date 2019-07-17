@@ -20,6 +20,9 @@
     <lang.syntaxHighlighterFactory
         language="T4"
         implementationClass="com.jetbrains.fortea.highlighting.T4SyntaxHighlighterProvider"/>
+    <annotator
+        language="T4"
+        implementationClass="com.jetbrains.fortea.highlighting.T4Annotator"/>
 
     <!-- delegation to backend -->
     <lang.documentationProvider
