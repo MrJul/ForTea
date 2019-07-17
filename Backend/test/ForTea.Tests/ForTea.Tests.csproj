@@ -10,6 +10,8 @@
     <ProjectReference Include="..\..\ForTea.RiderPlugin\ForTea.RiderPlugin.csproj" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="JetBrains.Rider.SDK.Tests" Version="$(RiderSDKVersion)" />
+    <PackageReference Include="JetBrains.Rider.SDK.Tests" Version="$(RiderSDKVersion)">
+      <PrivateAssets>all</PrivateAssets>
+    </PackageReference>
   </ItemGroup>
 </Project>
