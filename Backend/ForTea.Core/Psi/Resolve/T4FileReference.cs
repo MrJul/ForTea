@@ -2,26 +2,27 @@ using GammaJul.ForTea.Core.Tree;
 using JetBrains.Annotations;
 using JetBrains.ReSharper.Psi;
 using JetBrains.ReSharper.Psi.Resolve;
+using JetBrains.ReSharper.Psi.Tree;
 using JetBrains.ReSharper.Psi.Util;
 using JetBrains.ReSharper.Psi.Web.References;
 using JetBrains.Util;
 
 namespace GammaJul.ForTea.Core.Psi.Resolve
 {
-	public sealed class T4FileReference : PathReferenceBase<IT4DirectiveAttribute, IT4Token>
+	public sealed class T4FileReference : PathReferenceBase<IT4DirectiveAttribute, ITreeNode>
 	{
 		[NotNull]
 		private FileSystemPath Path { get; }
 
 		public T4FileReference(
 			[NotNull] IT4DirectiveAttribute owner,
-			[NotNull] IT4Token token,
+			[NotNull] ITreeNode node,
 			[NotNull] FileSystemPath path
 		) : base(
 			owner,
 			null,
-			token,
-			SelectRange(token)
+			node,
+			SelectRange(node)
 		) => Path = path;
 
 		public override FileSystemPath GetBasePath() => Path.Parent;
@@ -29,6 +30,6 @@ namespace GammaJul.ForTea.Core.Psi.Resolve
 		protected override IReference BindToInternal(IDeclaredElement declaredElement, ISubstitution substitution) =>
 			this;
 
-		private static TreeTextRange SelectRange(IT4Token token) => token.GetUnquotedRangeWithin();
+		private static TreeTextRange SelectRange(ITreeNode node) => node.GetUnquotedRangeWithin();
 	}
 }

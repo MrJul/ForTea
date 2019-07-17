@@ -5,17 +5,17 @@ using JetBrains.Util;
 
 %%
 
-%unicode
+%namespace GammaJul.ForTea.Core.Parsing.Lexing
+%class T4LexerGenerated
+%implements IIncrementalLexer
+%type TokenNodeType
 
 %init{
   myCurrentTokenType = null;
 %init}
 
-%namespace GammaJul.ForTea.Core.Parsing.Lexing
-%class T4LexerGenerated
-%implements IIncrementalLexer
 %function advance
-%type TokenNodeType
+%unicode
 
 %eofval{
   myCurrentTokenType = null;
@@ -26,9 +26,9 @@ WHITESPACE=[\ \n\r\t\f]
 LETTER=[A-Za-z_]
 TOKEN={LETTER}+
 
-RAW_CODE=([^#]|(#+[^#>]))*
-RAW_TEXT=([^<\r\n]|(<+[^<#\r\n])|(\\<#))*
-RAW_ATTRIBUTE_VALUE=[^\"]*
+RAW_CODE=([^#]|(#+[^#>]))+
+RAW_TEXT=([^<\r\n]|(<+[^<#\r\n])|(\\<#))+
+RAW_ATTRIBUTE_VALUE=[^\"]+
 
 %state IN_DIRECTIVE
 %state IN_BLOCK

@@ -23,7 +23,7 @@ namespace GammaJul.ForTea.Core.Daemon.QuickFixes
 		protected override Action<ITextControl> ExecutePsiTransaction(ISolution solution, IProgressIndicator progress)
 		{
 			var token = Highlighting.AssociatedNode;
-			var newToken = T4ElementFactory.CreateToken(TemplateDirectiveInfo.CSharpLanguageAttributeValue);
+			var newToken = T4ElementFactory.CreateAttributeValue(TemplateDirectiveInfo.CSharpLanguageAttributeValue);
 			var file = token.GetContainingFile();
 			Assertion.AssertNotNull(file, "file != null");
 

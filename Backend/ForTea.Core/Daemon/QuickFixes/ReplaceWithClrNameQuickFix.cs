@@ -32,7 +32,7 @@ namespace GammaJul.ForTea.Core.Daemon.QuickFixes
 			Assertion.Assert(CSharpLexer.IsKeyword(keyword), "CSharpLexer.IsKeyword(text)");
 			
 			var qualified = CSharpTypeFactory.GetFullyQualifiedNameByKeyword(keyword).NotNull();
-			var newNode = T4ElementFactory.CreateToken(qualified.FullName);
+			var newNode = T4ElementFactory.CreateAttributeValue(qualified.FullName);
 			var file = node.GetContainingFile().NotNull();
 			
 			using (WriteLockCookie.Create(file.IsPhysical()))

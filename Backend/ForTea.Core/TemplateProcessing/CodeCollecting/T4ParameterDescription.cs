@@ -1,6 +1,7 @@
 using GammaJul.ForTea.Core.Psi.Directives;
 using GammaJul.ForTea.Core.Tree;
 using JetBrains.Annotations;
+using JetBrains.ReSharper.Psi.Tree;
 using JetBrains.Util;
 
 namespace GammaJul.ForTea.Core.TemplateProcessing.CodeCollecting
@@ -8,10 +9,10 @@ namespace GammaJul.ForTea.Core.TemplateProcessing.CodeCollecting
 	public class T4ParameterDescription
 	{
 		[NotNull]
-		public IT4Token TypeToken { get; }
+		public ITreeNode TypeToken { get; }
 
 		[NotNull]
-		public IT4Token NameToken { get; }
+		public ITreeNode NameToken { get; }
 
 		[NotNull]
 		public string TypeString { get; }
@@ -23,8 +24,8 @@ namespace GammaJul.ForTea.Core.TemplateProcessing.CodeCollecting
 		public string FieldNameString { get; }
 
 		private T4ParameterDescription(
-			[NotNull] IT4Token typeToken,
-			[NotNull] IT4Token nameToken,
+			[NotNull] ITreeNode typeToken,
+			[NotNull] ITreeNode nameToken,
 			[NotNull] string typeString,
 			[NotNull] string nameString)
 		{

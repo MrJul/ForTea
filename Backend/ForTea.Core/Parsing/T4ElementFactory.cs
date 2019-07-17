@@ -53,7 +53,7 @@ namespace GammaJul.ForTea.Core.Parsing {
 			return (T4Directive) CreateTreeAndGetFirstChild(builder.ToString());
 		}
 
-		public static IT4Token CreateToken([NotNull] string text) =>
+		public static ITreeNode CreateAttributeValue([NotNull] string text) =>
 			CreateDirectiveAttribute("attributeName", text).GetValueToken();
 
 		/// <summary>Creates a new directive attribute.</summary>
