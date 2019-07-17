@@ -7,6 +7,7 @@ using GammaJul.ForTea.Core.Tree.Impl;
 using JetBrains.Annotations;
 using JetBrains.Application;
 using JetBrains.ReSharper.Psi;
+using JetBrains.ReSharper.Psi.ExtensionsAPI.Tree;
 using JetBrains.ReSharper.Psi.Tree;
 using JetBrains.Util;
 
@@ -181,7 +182,7 @@ namespace GammaJul.ForTea.Core.TemplateProcessing.CodeCollecting
 
 		private void AppendExpressionWriting(
 			[NotNull] T4CSharpCodeGenerationResult result,
-			[NotNull] IT4Token token
+			[NotNull] TreeElement token
 		)
 		{
 			result.Append("            this.Write(");
@@ -211,6 +212,6 @@ namespace GammaJul.ForTea.Core.TemplateProcessing.CodeCollecting
 
 		protected abstract void AppendCode(
 			[NotNull] T4CSharpCodeGenerationResult result,
-			[NotNull] IT4Token token);
+			[NotNull] TreeElement token);
 	}
 }

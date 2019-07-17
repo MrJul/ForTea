@@ -1,4 +1,5 @@
 using JetBrains.Annotations;
+using JetBrains.ReSharper.Psi.ExtensionsAPI.Tree;
 
 namespace GammaJul.ForTea.Core.Tree {
 
@@ -13,7 +14,7 @@ namespace GammaJul.ForTea.Core.Tree {
 		/// <summary>Gets the code token.</summary>
 		/// <returns>The code token, or <c>null</c> if none is available.</returns>
 		[CanBeNull]
-		IT4Token GetCodeToken();
+		TreeElement GetCodeToken();
 
 	}
 
