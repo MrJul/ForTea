@@ -1,3 +1,4 @@
+using System;
 using GammaJul.ForTea.Core.Parsing;
 using JetBrains.Annotations;
 using JetBrains.Application.CommandProcessing;
@@ -40,7 +41,7 @@ namespace GammaJul.ForTea.Core.Psi.Formatting
 		{
 		}
 
-		protected override bool IsSupported(ITextControl textControl) => false;
+		protected override bool IsSupported(ITextControl textControl) => true;
 
 		public override bool QuickCheckAvailability(ITextControl textControl, IPsiSourceFile projectFile) =>
 		    projectFile.LanguageType.Is<T4ProjectFileType>();
@@ -52,11 +53,7 @@ namespace GammaJul.ForTea.Core.Psi.Formatting
 			return base.IsStopperTokenForStringLiteral(tokenType);
 		}
 
-		protected override string GetLineTextBeforeOffset(ITextControl textControl, int lexerOffset)
-		{
-			return "          ";
-			var indent = base.GetLineTextBeforeOffset(textControl, lexerOffset);
-			return GetCodeBehindIndent(this, textControl, lexerOffset, indent);
-		}
+		protected override string GetLineTextBeforeOffset(ITextControl textControl, int lexerOffset) =>
+			throw new NotImplementedException();
 	}
 }
