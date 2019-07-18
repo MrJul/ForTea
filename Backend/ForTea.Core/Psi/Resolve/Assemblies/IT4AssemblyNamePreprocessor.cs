@@ -2,7 +2,7 @@ using System;
 using JetBrains.Annotations;
 using JetBrains.ProjectModel;
 
-namespace GammaJul.ForTea.Core.Common
+namespace GammaJul.ForTea.Core.Psi.Resolve.Assemblies
 {
 	public interface IT4AssemblyNamePreprocessor
 	{

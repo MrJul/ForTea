@@ -1,10 +1,10 @@
 using System.Collections.Generic;
 using System.Linq;
-using GammaJul.ForTea.Core.Psi;
+using GammaJul.ForTea.Core.Psi.Resolve.Assemblies;
 using JetBrains.Annotations;
 using JetBrains.ProjectModel;
 
-namespace GammaJul.ForTea.Core.Common
+namespace GammaJul.ForTea.Core.Psi.Resolve.Macros
 {
 	public abstract class T4MacroResolverBase : IT4MacroResolver
 	{

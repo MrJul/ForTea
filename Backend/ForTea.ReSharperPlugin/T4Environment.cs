@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Globalization;
-using GammaJul.ForTea.Core.Common;
+using GammaJul.ForTea.Core;
 using JetBrains.Annotations;
 using JetBrains.Application;
 using JetBrains.Application.platforms;

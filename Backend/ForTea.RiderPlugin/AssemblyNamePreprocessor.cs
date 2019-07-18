@@ -1,6 +1,6 @@
 using System;
 using System.IO;
-using GammaJul.ForTea.Core.Common;
+using GammaJul.ForTea.Core.Psi.Resolve.Assemblies;
 using JetBrains.Application;
 using JetBrains.DataFlow;
 using JetBrains.Diagnostics;

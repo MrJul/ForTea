@@ -1,5 +1,5 @@
 using System.Collections.Generic;
-using GammaJul.ForTea.Core.Common;
+using GammaJul.ForTea.Core.Psi.Resolve.Macros;
 using JetBrains.Annotations;
 using JetBrains.Application.changes;
 using JetBrains.Application.Threading;

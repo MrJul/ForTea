@@ -1,6 +1,6 @@
 using System.Collections.Generic;
-using GammaJul.ForTea.Core.Common;
-using GammaJul.ForTea.Core.Psi;
+using GammaJul.ForTea.Core.Psi.Resolve.Assemblies;
+using GammaJul.ForTea.Core.Psi.Resolve.Macros;
 using JetBrains.Annotations;
 using JetBrains.ProjectModel;
 

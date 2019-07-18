@@ -1,4 +1,4 @@
-using GammaJul.ForTea.Core.Common;
+using GammaJul.ForTea.Core;
 using JetBrains.Application.Components;
 using JetBrains.Application.StdApplicationUI.TaskBar;
 using JetBrains.TestFramework;

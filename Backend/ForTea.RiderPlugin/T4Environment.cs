@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using GammaJul.ForTea.Core.Common;
+using GammaJul.ForTea.Core;
 using JetBrains.Application;
 using JetBrains.Application.platforms;
 using JetBrains.ReSharper.Psi.CSharp;

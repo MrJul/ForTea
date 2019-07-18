@@ -1,9 +1,8 @@
 using System.Collections.Generic;
-using GammaJul.ForTea.Core.Psi;
 using JetBrains.Annotations;
 using JetBrains.ProjectModel;
 
-namespace GammaJul.ForTea.Core.Common
+namespace GammaJul.ForTea.Core.Psi.Resolve.Macros
 {
 	public interface IT4MacroResolver
 	{
