@@ -26,7 +26,6 @@ namespace JetBrains.ForTea.RiderPlugin.TemplateProcessing.Actions
 		{
 			string result = solution.GetComponent<IT4TemplateExecutionManager>().Execute(File.NotNull(), progress);
 			var fileManager = solution.GetComponent<IT4TargetFileManager>();
-			fileManager.CreateDestinationFileIfNeeded(File);
 			fileManager.SaveResults(result, File);
 		}
 
