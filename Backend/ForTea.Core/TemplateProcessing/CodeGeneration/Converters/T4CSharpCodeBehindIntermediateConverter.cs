@@ -72,12 +72,5 @@ namespace GammaJul.ForTea.Core.TemplateProcessing.CodeGeneration.Converters
 		protected override void AppendIndent(int size)
 		{
 		}
-
-		protected override void AppendTransformationPrefix()
-		{
-			AppendSyntheticAttribute();
-			AppendIndent();
-			Result.AppendLine("const int __syntheticVariable__thatPreventsIndentation__ = 0;");
-		}
 	}
 }
