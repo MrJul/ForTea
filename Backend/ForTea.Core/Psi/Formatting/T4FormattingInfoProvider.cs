@@ -7,7 +7,7 @@ using JetBrains.ReSharper.Psi.CodeStyle;
 using JetBrains.ReSharper.Psi.Impl.CodeStyle;
 using JetBrains.ReSharper.Psi.Tree;
 
-namespace GammaJul.ForTea.Core.Psi.CodeStyle
+namespace GammaJul.ForTea.Core.Psi.Formatting
 {
 	[Language(typeof(T4Language))]
 	public class

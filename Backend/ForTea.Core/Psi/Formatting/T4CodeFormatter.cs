@@ -10,7 +10,7 @@ using JetBrains.ReSharper.Psi.Impl.CodeStyle;
 using JetBrains.ReSharper.Psi.Tree;
 using JetBrains.Util.Text;
 
-namespace GammaJul.ForTea.Core.Psi.CodeStyle
+namespace GammaJul.ForTea.Core.Psi.Formatting
 {
 	[Language(typeof(T4Language))]
 	public sealed class T4CodeFormatter : CodeFormatterBase<T4FormatterSettingsKey>

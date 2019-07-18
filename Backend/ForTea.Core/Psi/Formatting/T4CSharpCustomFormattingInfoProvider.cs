@@ -7,7 +7,7 @@ using JetBrains.ReSharper.Psi.CSharp.Tree;
 using JetBrains.ReSharper.Psi.Impl.CodeStyle;
 using JetBrains.ReSharper.Psi.Tree;
 
-namespace GammaJul.ForTea.Core.Psi.CodeStyle
+namespace GammaJul.ForTea.Core.Psi.Formatting
 {
 	[ShellComponent]
 	public class T4CSharpCustomFormattingInfoProvider : DummyCSharpCustomFormattingInfoProvider

@@ -6,7 +6,7 @@ using JetBrains.ReSharper.Psi.CSharp.Tree;
 using JetBrains.ReSharper.Psi.Format;
 using JetBrains.ReSharper.Psi.Tree;
 
-namespace GammaJul.ForTea.Core.Psi.CodeStyle
+namespace GammaJul.ForTea.Core.Psi.Formatting
 {
 	public class T4CSharpIndentHelper
 	{
