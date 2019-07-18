@@ -18,7 +18,6 @@ namespace GammaJul.ForTea.Core.Psi.Formatting
 		)
 		{
 			var cSharpFormatSettings = settings.Settings.Clone();
-			int OMG = settings.Settings.INDENT_SIZE; // TODO: Figure out why this is 2 instead of 4!
 			cSharpFormatSettings.INDENT_SIZE = 4; // TODO: remove!
 			cSharpFormatSettings.OLD_ENGINE = true;
 			return settings.ChangeMainSettings(cSharpFormatSettings, true);
@@ -35,14 +34,6 @@ namespace GammaJul.ForTea.Core.Psi.Formatting
 			{
 				if (ctx.Parent is IClassBody)
 				{
-					// This doesn't works, because GetBlockSpaceType is called only when right child is comment or inside block.
-					// Here we're inside class, not block. Should be fixed in major version.
-					/*var statementEnd = leftChild.RightSiblings().FirstOrDefault(n => n is ICommentNode && n.GetText() == AspCSharpCodeBehindGenerator.TRAILING_COMMENT);
-					if (statementEnd == null)
-					  return SpaceType.Horizontal;
-		  
-					if (leftChild.HasLineFeedsTo(statementEnd))
-					  return SpaceType.Vertical;*/
 					return SpaceType.Vertical;
 				}
 
@@ -67,8 +58,7 @@ namespace GammaJul.ForTea.Core.Psi.Formatting
 
 				if (leftChild.HasLineFeedsTo(rightChild, context.CodeFormatter))
 					return SpaceType.Vertical;
-				else
-					return SpaceType.Horizontal;
+				return SpaceType.Horizontal;
 			}
 
 			return SpaceType.Default;

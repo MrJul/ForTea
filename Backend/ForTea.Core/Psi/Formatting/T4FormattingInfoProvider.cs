@@ -3,15 +3,14 @@ using JetBrains.Application.Settings;
 using JetBrains.Diagnostics;
 using JetBrains.ProjectModel;
 using JetBrains.ReSharper.Psi;
-using JetBrains.ReSharper.Psi.CodeStyle;
 using JetBrains.ReSharper.Psi.Impl.CodeStyle;
 using JetBrains.ReSharper.Psi.Tree;
 
 namespace GammaJul.ForTea.Core.Psi.Formatting
 {
 	[Language(typeof(T4Language))]
-	public class
-		T4FormattingInfoProvider : FormatterInfoProviderWithFluentApi<CodeFormattingContext, T4FormatterSettingsKey>
+	public class T4FormattingInfoProvider :
+		FormatterInfoProviderWithFluentApi<CodeFormattingContext, T4FormatterSettingsKey>
 	{
 		public T4FormattingInfoProvider(ISettingsSchema settingsSchema) : base(settingsSchema)
 		{
@@ -37,12 +36,7 @@ namespace GammaJul.ForTea.Core.Psi.Formatting
 			IIndentingStage<T4FormatterSettingsKey> callback, IndentType indentType)
 		{
 			var t4IndentingStage = callback as T4IndentingStage;
-			indent = t4IndentingStage.NotNull("wrong callback").CalcCustomIndent(
-				nodeToIndent,
-				indent,
-				callback.Settings.Settings.GetIndentWhitespace(),
-				indentType
-			);
+			indent = t4IndentingStage.NotNull("wrong callback").CalcCustomIndent();
 
 			base.ModifyIndent(nodeToIndent,
 				ref indent,
