@@ -5,6 +5,7 @@ using GammaJul.ForTea.Core.Services.CodeCompletion;
 using JetBrains.Annotations;
 using JetBrains.Application.CommandProcessing;
 using JetBrains.Application.Settings;
+using JetBrains.Application.UI.ActionSystem.Text;
 using JetBrains.Lifetimes;
 using JetBrains.ProjectModel;
 using JetBrains.ReSharper.Feature.Services.CodeCompletion;
@@ -148,7 +149,7 @@ namespace GammaJul.ForTea.Core.Services.TypingAssist {
 			{
 				using (CommandProcessor.UsingCommand("Inserting T4 Code Block"))
 				{
-					textControl.Document.InsertText(offset + 1, " #>");
+					textControl.Document.InsertText(offset + 1, "#>");
 					textControl.Caret.MoveTo(offset + 1, CaretVisualPlacement.DontScrollIfVisible);
 				}
 			});
@@ -224,6 +225,38 @@ namespace GammaJul.ForTea.Core.Services.TypingAssist {
 			return null;
 		}
 
+		private bool OnEnterPressed(IActionContext context)
+		{
+			var textControl = context.TextControl;
+			int charPos;
+			var lexer = GetCachingLexer(textControl);
+			if (lexer == null) return false;
+			if (!CheckAndDeleteSelectionIfNeeded(textControl,
+				selection =>
+				{
+					charPos = TextControlToLexer(textControl, selection.StartOffset);
+					if (charPos <= 0) return false;
+					if (!lexer.FindTokenAt(charPos - 1)) return false;
+					if (!IsBlockStart(lexer)) return false;
+					if (!lexer.FindTokenAt(charPos)) return false;
+					if (!IsBlockEnd(lexer)) return false;
+					return true;
+				})
+			) return false;
+			int offset = textControl.GetOffset();
+			var psiSourceFile = textControl.Document.GetPsiSourceFile(Solution);
+			// Only insert one newline, as another gets inserted automatically
+			textControl.Document.InsertText(offset, GetNewLineText(psiSourceFile));
+			return false;
+		}
+
+		private bool IsBlockEnd(CachingLexer lexer) => lexer.TokenType == T4TokenNodeTypes.BLOCK_END;
+
+		private bool IsBlockStart([NotNull] CachingLexer lexer) =>
+			lexer.TokenType == T4TokenNodeTypes.STATEMENT_BLOCK_START ||
+			lexer.TokenType == T4TokenNodeTypes.EXPRESSION_BLOCK_START ||
+			lexer.TokenType == T4TokenNodeTypes.FEATURE_BLOCK_START;
+
 		public T4TypingAssist(
 			Lifetime lifetime,
 			[NotNull] ISolution solution,
@@ -243,6 +276,7 @@ namespace GammaJul.ForTea.Core.Services.TypingAssist {
 			typingAssistManager.AddTypingHandler(lifetime, '=', this, OnEqualTyped, IsTypingSmartParenthesisHandlerAvailable);
 			typingAssistManager.AddTypingHandler(lifetime, '"', this, OnQuoteTyped, IsTypingSmartParenthesisHandlerAvailable);
 			typingAssistManager.AddTypingHandler(lifetime, '#', this, OnOctothorpeTyped, IsTypingSmartParenthesisHandlerAvailable);
+			typingAssistManager.AddActionHandler(lifetime, TextControlActions.ActionIds.Enter, this, OnEnterPressed, IsActionHandlerAvailable);
 		}
 
 	}
