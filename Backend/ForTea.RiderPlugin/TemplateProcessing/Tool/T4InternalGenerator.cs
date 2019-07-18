@@ -25,7 +25,15 @@ namespace JetBrains.ForTea.RiderPlugin.TemplateProcessing.Tool
 		public string[] CustomTools => new[] {"T4 Generator Custom Tool"};
 		public string[] Extensions => new[] {T4ProjectFileType.MainExtensionNoDot};
 		public bool IsEnabled => true;
-		public bool IsApplicable(IProjectFile projectFile) => AsT4File(projectFile) != null;
+
+		public bool IsApplicable(IProjectFile projectFile)
+		{
+			using (projectFile.Locks.UsingReadLock())
+			{
+				return projectFile.LanguageType.Is<T4ProjectFileType>();
+			}
+		}
+
 		public string[] Keywords => new[] {"tt", "t4", "template"};
 
 		public ISingleFileCustomToolExecutionResult Execute(IProjectFile projectFile)
