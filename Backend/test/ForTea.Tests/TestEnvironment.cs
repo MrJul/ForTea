@@ -1,5 +1,5 @@
 using System.Threading;
-using GammaJul.ForTea.Core.Common;
+using GammaJul.ForTea.Core;
 using JetBrains.Application.BuildScript.Application.Zones;
 using JetBrains.ForTea.RiderPlugin;
 using JetBrains.ReSharper.Host.Env;

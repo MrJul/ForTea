@@ -1,5 +1,5 @@
 using System;
-using GammaJul.ForTea.Core.Common;
+using GammaJul.ForTea.Core.Psi.Resolve.Assemblies;
 using JetBrains.Annotations;
 using JetBrains.Application;
 using JetBrains.Application.Components;

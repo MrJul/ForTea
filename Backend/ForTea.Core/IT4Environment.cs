@@ -3,7 +3,7 @@ using JetBrains.ReSharper.Psi.CSharp;
 using JetBrains.Util;
 using JetBrains.Util.Dotnet.TargetFrameworkIds;
 
-namespace GammaJul.ForTea.Core.Common
+namespace GammaJul.ForTea.Core
 {
 	public interface IT4Environment
 	{
