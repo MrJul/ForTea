@@ -15,7 +15,7 @@ using JetBrains.ReSharper.Psi.Impl.CodeStyle;
 using JetBrains.ReSharper.Psi.Tree;
 using JetBrains.ReSharper.Psi.Web.CodeBehindSupport;
 
-namespace GammaJul.ForTea.Core.Psi.CodeStyle
+namespace GammaJul.ForTea.Core.Psi.Formatting
 {
 	[ShellComponent]
 	public class T4CSharpCustomIndentHandler : ICustomIndentHandler

@@ -12,7 +12,7 @@ using JetBrains.ReSharper.Psi.CachingLexers;
 using JetBrains.ReSharper.Psi.Parsing;
 using JetBrains.TextControl;
 
-namespace GammaJul.ForTea.Core.Psi.CodeStyle
+namespace GammaJul.ForTea.Core.Psi.Formatting
 {
 	[SolutionComponent]
 	public sealed class T4CSharpTypingAssist : CSharpTypingAssistBase

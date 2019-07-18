@@ -13,7 +13,7 @@ using JetBrains.ReSharper.Psi.Web.CodeBehindSupport;
 using JetBrains.ReSharper.Psi.Web.Util;
 using JetBrains.ReSharper.Resources.Shell;
 
-namespace GammaJul.ForTea.Core.Psi.CodeStyle
+namespace GammaJul.ForTea.Core.Psi.Formatting
 {
 	public class T4IndentingStage : IndentingStage<CodeFormattingContext, T4FormatterSettingsKey>
 	{
