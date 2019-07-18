@@ -247,6 +247,7 @@ namespace GammaJul.ForTea.Core.Services.TypingAssist {
 			var psiSourceFile = textControl.Document.GetPsiSourceFile(Solution);
 			// Only insert one newline, as another gets inserted automatically
 			textControl.Document.InsertText(offset, GetNewLineText(psiSourceFile));
+			textControl.Caret.MoveTo(offset, CaretVisualPlacement.DontScrollIfVisible);
 			return false;
 		}
 
