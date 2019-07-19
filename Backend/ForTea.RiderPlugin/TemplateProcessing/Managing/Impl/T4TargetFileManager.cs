@@ -5,6 +5,7 @@ using JetBrains.Annotations;
 using JetBrains.Application.Threading;
 using JetBrains.Diagnostics;
 using JetBrains.DocumentManagers.Transactions;
+using JetBrains.ForTea.RiderPlugin.Psi.Resolve.Macros;
 using JetBrains.ProjectModel;
 using JetBrains.ReSharper.Host.Features.ProjectModel;
 using JetBrains.ReSharper.Psi;
@@ -46,12 +47,19 @@ namespace JetBrains.ForTea.RiderPlugin.TemplateProcessing.Managing.Impl
 			var projectFile = file.GetSourceFile().ToProjectFile().NotNull();
 			var folder = projectFile.ParentFolder.NotNull();
 			if (folder.GetSubItems(targetFileName).SingleItem() is IProjectFile result) return result;
+			return CreateDestinationFile(cookie, projectFile, targetFileName);
+		}
 
+		private static IProjectFile CreateDestinationFile(
+			IProjectModelTransactionCookie cookie,
+			IProjectFile projectFile,
+			string targetFileName
+		)
+		{
+			var folder = projectFile.ParentFolder.NotNull();
 			var targetLocation = folder.Location.Combine(targetFileName);
-			Assertion.Assert(
-				cookie.CanAddFile(folder, targetLocation, out string reason),
-				$"Could not add file to project model: {reason}");
-			return cookie.AddFile(folder, targetLocation);
+			var parameters = T4MSBuildProjectUtil.CreateTemplateMetadata(projectFile);
+			return cookie.AddFile(folder, targetLocation, parameters);
 		}
 
 		public FileSystemPath SaveResults(string result, IT4File file, string targetExtension = null)
