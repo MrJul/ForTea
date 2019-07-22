@@ -5,7 +5,7 @@ using JetBrains.Application.Progress;
 using JetBrains.ForTea.RiderPlugin.TemplateProcessing.Managing;
 using JetBrains.ProjectModel;
 using JetBrains.ReSharper.Feature.Services.ContextActions;
-using JetBrains.ReSharper.Host.Features.ProjectModel;
+using JetBrains.ReSharper.Resources.Shell;
 
 namespace JetBrains.ForTea.RiderPlugin.TemplateProcessing.Actions
 {
@@ -30,7 +30,10 @@ namespace JetBrains.ForTea.RiderPlugin.TemplateProcessing.Actions
 			var directiveInfoManager = solution.GetComponent<T4DirectiveInfoManager>();
 			string message = new T4CSharpCodeGenerator(File, directiveInfoManager).Generate().RawText;
 			var fileManager = solution.GetComponent<IT4TargetFileManager>();
-			fileManager.SaveResults(message, File, PreprocessResultExtension);
+			using (WriteLockCookie.Create())
+			{
+				fileManager.SaveResults(message, File, PreprocessResultExtension);
+			}
 		}
 
 		public override string Text => Message;

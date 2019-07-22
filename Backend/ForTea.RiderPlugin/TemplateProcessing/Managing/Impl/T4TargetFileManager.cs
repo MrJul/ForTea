@@ -1,14 +1,23 @@
+using System.Collections.Generic;
 using GammaJul.ForTea.Core.Psi.Directives;
 using GammaJul.ForTea.Core.TemplateProcessing;
 using GammaJul.ForTea.Core.Tree;
 using JetBrains.Annotations;
+using JetBrains.Application.changes;
+using JetBrains.Application.Progress;
 using JetBrains.Application.Threading;
 using JetBrains.Diagnostics;
 using JetBrains.DocumentManagers.Transactions;
 using JetBrains.ForTea.RiderPlugin.Psi.Resolve.Macros;
 using JetBrains.ProjectModel;
+using JetBrains.ReSharper.Host.Features;
+using JetBrains.ReSharper.Host.Features.Documents;
 using JetBrains.ReSharper.Host.Features.ProjectModel;
 using JetBrains.ReSharper.Psi;
+using JetBrains.ReSharper.Psi.Caches;
+using JetBrains.ReSharper.Psi.Caches.SymbolCache;
+using JetBrains.ReSharper.Resources.Shell;
+using JetBrains.Rider.Model;
 using JetBrains.Util;
 
 namespace JetBrains.ForTea.RiderPlugin.TemplateProcessing.Managing.Impl
@@ -62,17 +71,66 @@ namespace JetBrains.ForTea.RiderPlugin.TemplateProcessing.Managing.Impl
 			return cookie.AddFile(folder, targetLocation, parameters);
 		}
 
+		private FileSystemPath SelectDestination([NotNull] IT4File file, [CanBeNull] string targetExtension)
+		{
+			string targetFileName = GetTargetFileName(file, targetExtension);
+			return file.GetSourceFile().ToProjectFile()?.ParentFolder?.Location.Combine(targetFileName);
+		}
+
 		public FileSystemPath SaveResults(string result, IT4File file, string targetExtension = null)
 		{
-			FileSystemPath destinationLocation = null;
-			file.GetSourceFile()?.GetSolution().InvokeUnderTransaction(cookie =>
+			var solution = file.GetSourceFile()?.GetSolution();
+			if (solution?.Locks.IsWriteAccessAllowed() == true)
 			{
-				var destination = CreateDestinationFileIfNeeded(cookie, file, targetExtension);
-				destinationLocation = destination.Location;
-				// TODO: fix endings!
-				destinationLocation.WriteAllText(result.Replace("\r\n", "\n"));
-			});
-			return destinationLocation.NotNull("Could not ");
+				// We are being invoked from context action
+				// and are responsible for performing transaction and invalidating caches
+				FileSystemPath destinationLocation = null;
+				IProjectFile destination = null;
+				solution.InvokeUnderTransaction(cookie =>
+				{
+					destination = CreateDestinationFileIfNeeded(cookie, file, targetExtension);
+					destinationLocation = destination.Location;
+					destinationLocation.WriteAllText(result);
+				});
+				solution.GetComponent<DocumentHost>().SyncDocumentsWithFiles(destinationLocation);
+				var sourceFile = destination.ToSourceFile();
+				if (sourceFile != null) SyncSymbolCaches(sourceFile);
+				RefreshFiles(solution, destinationLocation);
+				return destinationLocation;
+			}
+
+			// We are being called from
+			// JetBrains.ReSharper.Host.Features.ProjectModel.CustomTools.SingleFileCustomToolManager,
+			// that will take care of caches
+			var destination1 = SelectDestination(file, targetExtension);
+			destination1.WriteAllText(result);
+			return destination1;
+		}
+
+		private static void RefreshFiles(ISolution solution, FileSystemPath destinationLocation)
+		{
+			var fileSystemModel = solution.GetProtocolSolution().GetFileSystemModel();
+			solution.GetProtocolSolution()
+				.Editors
+				.SaveFiles
+				.Start(new List<string> {destinationLocation.FullPath});
+			fileSystemModel
+				.RefreshPaths
+				.Start(new RdRefreshRequest(new List<string> {destinationLocation.FullPath}, true));
+		}
+
+		private void SyncSymbolCaches([NotNull] IPsiSourceFile changedFile)
+		{
+			var changeManager = Solution.GetPsiServices().GetComponent<ChangeManager>();
+			var invalidateCacheChange = new InvalidateCacheChange(
+				Solution.GetComponent<SymbolCache>(),
+				new[] {changedFile},
+				true);
+
+			using (WriteLockCookie.Create())
+			{
+				changeManager.OnProviderChanged(Solution, invalidateCacheChange, SimpleTaskExecutor.Instance);
+			}
 		}
 	}
 }
