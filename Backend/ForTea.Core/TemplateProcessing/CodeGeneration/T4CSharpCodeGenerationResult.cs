@@ -58,10 +58,8 @@ namespace GammaJul.ForTea.Core.TemplateProcessing.CodeGeneration {
 
 		/// <summary>Appends another <see cref="T4CSharpCodeGenerationResult"/> to this result.</summary>
 		/// <param name="otherResult">The other result to append.</param>
-		public void Append([CanBeNull] T4CSharpCodeGenerationResult otherResult) {
-			if (otherResult == null || otherResult.Builder.Length == 0)
-				return;
-
+		public void Append([NotNull] T4CSharpCodeGenerationResult otherResult) {
+			if (otherResult.Builder.Length == 0) return;
 			int offset = Builder.Length;
 			Builder.Append(otherResult.Builder);
 			GeneratedRangeMap.AppendWithShiftToGenerated(otherResult.GeneratedRangeMap, offset);

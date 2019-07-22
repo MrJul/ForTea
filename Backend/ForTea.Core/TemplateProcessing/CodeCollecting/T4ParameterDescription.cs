@@ -23,6 +23,9 @@ namespace GammaJul.ForTea.Core.TemplateProcessing.CodeCollecting
 		[NotNull]
 		public string FieldNameString { get; }
 
+		public bool IsVisible { get; private set; }
+		public void MakeInvisible() => IsVisible = false;
+
 		private T4ParameterDescription(
 			[NotNull] ITreeNode typeToken,
 			[NotNull] ITreeNode nameToken,
@@ -34,6 +37,7 @@ namespace GammaJul.ForTea.Core.TemplateProcessing.CodeCollecting
 			TypeString = typeString.EscapeKeyword();
 			NameString = nameString.EscapeKeyword();
 			FieldNameString = $"_{nameString}Field";
+			IsVisible = true;
 		}
 
 		[CanBeNull]
