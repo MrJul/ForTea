@@ -1,21 +1,18 @@
 using System;
 using System.Collections.Generic;
-using System.Globalization;
-using System.Linq;
 using GammaJul.ForTea.Core.Psi;
 using GammaJul.ForTea.Core.Psi.Directives;
-using GammaJul.ForTea.Core.Psi.Modules;
+using GammaJul.ForTea.Core.Psi.Resolve.Macros;
+using GammaJul.ForTea.Core.Psi.Resolve.Macros.Impl;
 using GammaJul.ForTea.Core.Tree;
 using GammaJul.ForTea.Core.Tree.Impl;
 using JetBrains.Annotations;
 using JetBrains.Diagnostics;
-using JetBrains.ProjectModel;
 using JetBrains.ReSharper.Psi;
 using JetBrains.ReSharper.Psi.ExtensionsAPI.Tree;
 using JetBrains.ReSharper.Psi.Impl;
 using JetBrains.ReSharper.Psi.Parsing;
 using JetBrains.ReSharper.Psi.Tree;
-using JetBrains.Util;
 using JetBrains.Util.dataStructures;
 
 namespace GammaJul.ForTea.Core.Parsing.Builders
@@ -39,14 +36,8 @@ namespace GammaJul.ForTea.Core.Parsing.Builders
 		[CanBeNull]
 		private IPsiSourceFile SourceFile { get; }
 
-		[CanBeNull]
-		private ISolution Solution { get; }
-
-		[CanBeNull]
-		private IT4FilePsiModule MacroResolveModule { get; }
-
 		[NotNull]
-		private HashSet<FileSystemPath> ExistingIncludePaths { get; }
+		private HashSet<IT4PathWithMacros> ExistingIncludePaths { get; }
 
 		[CanBeNull]
 		private List<T4Directive> NotClosedDirectives { get; set; }
@@ -56,36 +47,14 @@ namespace GammaJul.ForTea.Core.Parsing.Builders
 			[NotNull] IT4Environment environment,
 			[NotNull] T4DirectiveInfoManager directiveInfoManager,
 			[NotNull] ILexer lexer,
-			[CanBeNull] IPsiSourceFile sourceFile = null
-		) : this(
-			environment,
-			directiveInfoManager,
-			lexer,
-			sourceFile,
-			new HashSet<FileSystemPath>(),
-			sourceFile?.GetSolution(),
-			sourceFile?.PsiModule as IT4FilePsiModule
-		)
-		{
-		}
-
-		private T4TreeBuilder(
-			[NotNull] IT4Environment environment,
-			[NotNull] T4DirectiveInfoManager directiveInfoManager,
-			[NotNull] ILexer lexer,
-			[CanBeNull] IPsiSourceFile sourceFile,
-			[NotNull] HashSet<FileSystemPath> existingIncludePaths,
-			[CanBeNull] ISolution solution,
-			[CanBeNull] IT4FilePsiModule macroResolveModule
+			[CanBeNull] IPsiSourceFile sourceFile
 		)
 		{
 			Environment = environment;
 			DirectiveInfoManager = directiveInfoManager;
 			BuilderLexer = new PsiBuilderLexer(lexer, tnt => tnt.IsWhitespace);
-			ExistingIncludePaths = existingIncludePaths;
+			ExistingIncludePaths = new HashSet<IT4PathWithMacros>();
 			SourceFile = sourceFile;
-			Solution = solution;
-			MacroResolveModule = macroResolveModule;
 		}
 
 		/// <summary>Advances the lexer to the next token.</summary>
@@ -120,19 +89,6 @@ namespace GammaJul.ForTea.Core.Parsing.Builders
 			}
 
 			return file;
-		}
-
-		[NotNull]
-		private T4Include CreateIncludeT4Tree()
-		{
-			BuilderLexer.Start();
-			var include = new T4Include();
-			Parse(include);
-
-			if (SourceFile != null)
-				include.DocumentRangeTranslator = new T4DocumentRangeTranslator(include, SourceFile, Includes);
-
-			return include;
 		}
 
 		private void Parse([NotNull] CompositeElement parentElement)
@@ -369,128 +325,62 @@ namespace GammaJul.ForTea.Core.Parsing.Builders
 			bool once
 		)
 		{
-			var includePath = ResolveInclude(includeFileName);
-			if (includePath.IsEmpty)
-			{
-				fileAttr.ValueError =
-					String.Format(CultureInfo.InvariantCulture, "Unresolved file \"{0}\"", includePath);
-				return;
-			}
-
-			fileAttr.Reference = includePath;
-
-			if (!ExistingIncludePaths.Add(includePath))
-			{
-				if (!once)
-					fileAttr.ValueError = String.Format(CultureInfo.InvariantCulture, "Already included file \"{0}\"",
-						includePath);
-				return;
-			}
-
-			var sourceLocation = SourceFile.GetLocation();
-			if (includePath == sourceLocation)
-			{
-				fileAttr.ValueError = "Recursive include";
-				ExistingIncludePaths.Add(includePath);
-				return;
-			}
-
-			if (!includePath.ExistsFile)
-			{
-				fileAttr.ValueError =
-					String.Format(CultureInfo.InvariantCulture, "File \"{0}\" not found", includePath);
-				return;
-			}
-
-			// find the matching include in the existing solution source files
-			// or create a new one if the include file is outside the solution
-			var includeSourceFile =
-				includePath.FindSourceFileInSolution(Solution) ?? CreateIncludeSourceFile(includePath);
-			if (includeSourceFile == null)
-			{
-				fileAttr.ValueError = "No current solution";
-				return;
-			}
-
-			var includeLexer = CreateLexer(includeSourceFile);
-			var builder = new T4TreeBuilder(Environment, DirectiveInfoManager, includeLexer, includeSourceFile,
-				ExistingIncludePaths, Solution, MacroResolveModule);
-			var include = builder.CreateIncludeT4Tree();
-			include.Path = includePath;
+			var path = CreateIncludePath(includeFileName);
+			if (AnalyzeInclude(fileAttr, path, once)) return;
+			var include = new T4Include {Path = path};
 			Includes.Add(include);
-
 			// do not use AppendNewChild, we don't want the PsiBuilderLexer to move line breaks from the include into the main file.
 			parentElement.AddChild(include);
 		}
 
-		[CanBeNull]
-		private IPsiSourceFile CreateIncludeSourceFile([NotNull] FileSystemPath path)
-			=> Solution?.TryGetComponent<T4OutsideSolutionSourceFileManager>()?.GetOrCreateSourceFile(path);
-
-		[NotNull]
-		private static ILexer CreateLexer([NotNull] IPsiSourceFile includeSourceFile)
+		// TODO: move to problem analyzer
+		/// <summary>
+		/// Checks whether include contains problems
+		/// </summary>
+		/// <returns>Whether any problems found</returns>
+		private bool AnalyzeInclude(
+			[NotNull] T4DirectiveAttribute fileAttr,
+			[NotNull] IT4PathWithMacros path,
+			bool once
+		)
 		{
-			var languageService = T4Language.Instance.LanguageService();
-			Assertion.AssertNotNull(languageService, "languageService != null");
-			return languageService.GetPrimaryLexerFactory().CreateLexer(includeSourceFile.Document.Buffer);
+			if (path.IsEmpty)
+			{
+				fileAttr.ValueError = $@"Unresolved file ""{path}""";
+				return true;
+			}
+
+			fileAttr.Reference = path;
+			if (!ExistingIncludePaths.Add(path))
+			{
+				if (!once) fileAttr.ValueError = $@"Already included file ""{path}""";
+				return true;
+			}
+
+			if (path.ResolvePath() == SourceFile.GetLocation())
+			{
+				fileAttr.ValueError = "Recursive include";
+				ExistingIncludePaths.Add(path);
+				return true;
+			}
+
+			if (!path.ResolvePath().ExistsFile)
+			{
+				fileAttr.ValueError = $@"File ""{path}"" not found";
+				return true;
+			}
+
+			return false;
 		}
 
-		[NotNull]
-		private FileSystemPath ResolveInclude([CanBeNull] string fileName)
+		private IT4PathWithMacros CreateIncludePath(
+			[CanBeNull] string includeFileName
+		)
 		{
-			if (string.IsNullOrEmpty(fileName))
-				return FileSystemPath.Empty;
-
-			try
-			{
-				// an include path can contain environment variables and visual studio macros
-				fileName = System.Environment.ExpandEnvironmentVariables(fileName);
-				fileName = ExpandVisualStudioMacros(fileName);
-
-				// absolute file path, nothing to search for
-				var path = FileSystemPath.TryParse(fileName);
-				if (path.IsEmpty)
-					return FileSystemPath.Empty;
-				if (path.IsAbsolute)
-					return path;
-
-				// search relative to the current file
-				var sourceLocation = SourceFile.GetLocation();
-				FileSystemPath currentDirIncludePath;
-				if (!sourceLocation.IsEmpty)
-				{
-					currentDirIncludePath = sourceLocation.Directory.Combine(fileName);
-					if (currentDirIncludePath.ExistsFile)
-						return currentDirIncludePath;
-				}
-				else
-					currentDirIncludePath = FileSystemPath.Empty;
-
-				// search in global include paths
-				return Environment
-					       .IncludePaths
-					       .Select(includePath => includePath.Combine(fileName))
-					       .FirstOrDefault(resultPath => resultPath.ExistsFile)
-				       ?? currentDirIncludePath;
-			}
-			catch (InvalidPathException)
-			{
-			}
-			catch (ArgumentException)
-			{
-			}
-
-			return FileSystemPath.Empty;
+			if (includeFileName == null) return T4EmptyPathWithMacros.Instance;
+			if (SourceFile == null) return T4EmptyPathWithMacros.Instance;
+			return new T4PathWithMacros(includeFileName, SourceFile);
 		}
-
-		/// <summary>Expands the Visual Studio macros inside a filename, eg $(SolutionDir).</summary>
-		/// <param name="fileName">The file name to expand.</param>
-		/// <returns><paramref name="fileName"/> with expanded macros.</returns>
-		[NotNull]
-		private string ExpandVisualStudioMacros([NotNull] string fileName)
-			=> SourceFile != null
-				? VsBuildMacroHelper.ResolveMacros(fileName, MacroResolveModule)
-				: fileName;
 
 		/// <summary>
 		/// Unclosed directives may have trailing spaces that are skipped then added at file level by the <see cref="PsiBuilderLexer"/>.

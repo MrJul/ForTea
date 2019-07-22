@@ -6,6 +6,7 @@ using JetBrains.Annotations;
 
 namespace GammaJul.ForTea.Core.Psi {
 
+	[Obsolete]
 	public static class VsBuildMacroHelper {
 
 		[NotNull] private static readonly Regex _vsMacroRegEx = new Regex(@"\$\((\w+)\)", RegexOptions.Compiled | RegexOptions.IgnorePatternWhitespace);
