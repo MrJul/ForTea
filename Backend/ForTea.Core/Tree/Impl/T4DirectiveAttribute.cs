@@ -1,4 +1,5 @@
 using GammaJul.ForTea.Core.Parsing;
+using GammaJul.ForTea.Core.Psi.Resolve.Macros;
 using JetBrains.ReSharper.Psi.ExtensionsAPI.Tree;
 using JetBrains.Util;
 
@@ -51,7 +52,7 @@ namespace GammaJul.ForTea.Core.Tree.Impl {
 		/// <summary>Gets or sets the error associated with the value that have been identified at parsing time.</summary>
 		public string ValueError { get; set; }
 
-		public FileSystemPath Reference { get; set; }
+		public IT4PathWithMacros Reference { get; set; }
 	}
 
 }

@@ -31,8 +31,8 @@ namespace GammaJul.ForTea.Core.Tree.Impl {
 
 		public IEnumerable<FileSystemPath> GetNonEmptyIncludePaths()
 			=> GetIncludes()
-				.Select(include => include.Path)
-				.Where(path => path != null && !path.IsEmpty);
+				.Select(include => include.Path.ResolvePath())
+				.Where(path => !path.IsEmpty);
 
 		/// <summary>Gets a list of directives contained in the file.</summary>
 		/// <returns>A collection of <see cref="IT4Directive"/>.</returns>

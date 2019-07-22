@@ -15,7 +15,7 @@ namespace GammaJul.ForTea.Core.Psi.Resolve
 			if (path == null) return ReferenceCollection.Empty;
 			var value = attribute.GetValueToken();
 			if (value == null) return ReferenceCollection.Empty;
-			return new ReferenceCollection(new T4FileReference(attribute, value, path));
+			return new ReferenceCollection(new T4FileReference(attribute, value, path.ResolvePath()));
 		}
 
 		public bool HasReference(ITreeNode element, IReferenceNameContainer names) => true;

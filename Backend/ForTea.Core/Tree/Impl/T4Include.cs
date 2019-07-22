@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using GammaJul.ForTea.Core.Psi.Resolve.Macros;
 using JetBrains.ReSharper.Psi.ExtensionsAPI.Tree;
 using JetBrains.ReSharper.Psi.Files;
 using JetBrains.ReSharper.Psi.Tree;
@@ -12,7 +13,7 @@ namespace GammaJul.ForTea.Core.Tree.Impl {
 		public override NodeType NodeType
 			=> T4ElementTypes.T4Include;
 
-		public FileSystemPath Path { get; set; }
+		public IT4PathWithMacros Path { get; set; }
 
 		/// <summary>Gets a list of direct includes.</summary>
 		/// <returns>A list of <see cref="IT4Include"/>.</returns>

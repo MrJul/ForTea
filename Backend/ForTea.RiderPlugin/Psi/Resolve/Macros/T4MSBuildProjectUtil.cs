@@ -32,6 +32,7 @@ namespace JetBrains.ForTea.RiderPlugin.Psi.Resolve.Macros
 				case MSBuildProjectUtil.OutputTypeWinMd: return ".winmdobj";
 				case MSBuildProjectUtil.OutputTypeAppContainerExe: return ".exe";
 				case MSBuildProjectUtil.OutputTypeModule: return ".netmodule";
+				default: return ".exe";
 			}
 		}
 	}

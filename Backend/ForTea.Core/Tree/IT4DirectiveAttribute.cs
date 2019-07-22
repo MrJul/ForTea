@@ -1,3 +1,4 @@
+using GammaJul.ForTea.Core.Psi.Resolve.Macros;
 using JetBrains.Annotations;
 using JetBrains.ReSharper.Psi.ExtensionsAPI.Tree;
 using JetBrains.Util;
@@ -27,6 +28,6 @@ namespace GammaJul.ForTea.Core.Tree
 		string ValueError { get; }
 
 		[CanBeNull]
-		FileSystemPath Reference { get; }
+		IT4PathWithMacros Reference { get; }
 	}
 }

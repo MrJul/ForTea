@@ -1,13 +1,19 @@
 using System;
 using System.Collections.Generic;
+using GammaJul.ForTea.Core.Parsing.Builders;
+using GammaJul.ForTea.Core.Psi;
 using GammaJul.ForTea.Core.Psi.Directives;
 using GammaJul.ForTea.Core.TemplateProcessing.CodeGeneration;
 using GammaJul.ForTea.Core.Tree;
 using GammaJul.ForTea.Core.Tree.Impl;
 using JetBrains.Annotations;
 using JetBrains.Application;
+using JetBrains.Diagnostics;
+using JetBrains.ProjectModel;
 using JetBrains.ReSharper.Psi;
 using JetBrains.ReSharper.Psi.ExtensionsAPI.Tree;
+using JetBrains.ReSharper.Psi.Files;
+using JetBrains.ReSharper.Psi.Parsing;
 using JetBrains.ReSharper.Psi.Tree;
 using JetBrains.Util;
 
@@ -47,7 +53,6 @@ namespace GammaJul.ForTea.Core.TemplateProcessing.CodeCollecting
 			Results.Push(new T4CSharpCodeGenerationIntermediateResult(File));
 			File.ProcessDescendants(this);
 			string suffix = Result.State.ProduceBeforeEof();
-			// ReSharper disable once AssignNullToNotNullAttribute
 			if (!suffix.IsNullOrEmpty()) AppendTransformation(suffix);
 			return Results.Pop();
 		}
@@ -57,10 +62,22 @@ namespace GammaJul.ForTea.Core.TemplateProcessing.CodeCollecting
 
 		public void ProcessBeforeInterior(ITreeNode element)
 		{
-			if (element is IT4Include)
-			{
-				Results.Push(new T4CSharpCodeGenerationIntermediateResult(File));
-			}
+			if (!(element is IT4Include include)) return;
+			Results.Push(new T4CSharpCodeGenerationIntermediateResult(File));
+			var target = include.Path.Resolve();
+
+			if (target?.LanguageType.Is<T4ProjectFileType>() == true)
+				target.GetPrimaryPsiFile()?.ProcessDescendants(this);
+			else BuildT4Tree(target).ProcessDescendants(this);
+		}
+
+		private IT4File BuildT4Tree(IPsiSourceFile target)
+		{
+			var languageService = T4Language.Instance.LanguageService();
+			Assertion.AssertNotNull(languageService, "languageService != null");
+			var lexer = languageService.GetPrimaryLexerFactory().CreateLexer(target.Document.Buffer);
+			var environment = File.GetSolution().GetComponent<IT4Environment>();
+			return new T4TreeBuilder(environment, Manager, lexer, target).CreateT4Tree();
 		}
 
 		public void ProcessAfterInterior(ITreeNode element)
@@ -69,6 +86,8 @@ namespace GammaJul.ForTea.Core.TemplateProcessing.CodeCollecting
 			switch (element)
 			{
 				case IT4Include _:
+					string suffix = Result.State.ProduceBeforeEof();
+					if (!suffix.IsNullOrEmpty()) AppendTransformation(suffix);
 					var intermediateResults = Results.Pop();
 					Result.Append(intermediateResults);
 					return; // Do not advance state here
@@ -82,6 +101,7 @@ namespace GammaJul.ForTea.Core.TemplateProcessing.CodeCollecting
 					Result.State.ConsumeToken(token);
 					break;
 			}
+
 			Result.AdvanceState(element);
 		}
 
