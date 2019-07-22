@@ -87,15 +87,12 @@ namespace GammaJul.ForTea.Core.TemplateProcessing.CodeGeneration.Converters
 
 		protected override void AppendParameterDeclaration(T4ParameterDescription description)
 		{
+			// Range maps of this converter are ignored, so it's safe to use Append instead of AppendMapped
 			AppendIndent();
 			Result.Append("private ");
-			var type = description.TypeToken;
-			if (CSharpLexer.IsKeyword(type.GetText())) Result.Append("@");
-			Result.AppendMapped(type);
+			Result.Append(description.TypeString);
 			Result.Append(" ");
-			var name = description.NameToken;
-			if (CSharpLexer.IsKeyword(name.GetText())) Result.Append("@");
-			Result.AppendMapped(name);
+			Result.Append(description.NameString);
 			Result.Append(" => ");
 			Result.Append(description.FieldNameString);
 			Result.AppendLine(";");
