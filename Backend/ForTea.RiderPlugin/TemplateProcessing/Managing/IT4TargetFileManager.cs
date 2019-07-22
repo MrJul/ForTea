@@ -7,6 +7,10 @@ namespace JetBrains.ForTea.RiderPlugin.TemplateProcessing.Managing
 	public interface IT4TargetFileManager
 	{
 		[NotNull]
-		FileSystemPath SaveResults(string result, [NotNull] IT4File file, [CanBeNull] string targetExtension = null);
+		FileSystemPath SaveResults(
+			[NotNull] string result,
+			[NotNull] IT4File file,
+			[CanBeNull] string targetExtension = null
+		);
 	}
 }
