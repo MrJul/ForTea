@@ -23,12 +23,13 @@ namespace GammaJul.ReSharper.ForTea.Daemon {
 			|| !T4CSharpCodeGenerator.ClassName.Equals(classDeclarationParam.DeclaredName, StringComparison.Ordinal))
 				return;
 
-			IDeclaredTypeUsage superTypeUsage = classDeclarationParam.SuperTypeUsageNodes.FirstOrDefault();
+			IUserTypeUsage superTypeUsage = classDeclarationParam.SuperTypeUsageNodes.OfType<IUserTypeUsage>().FirstOrDefault();
 			if (superTypeUsage == null
 			|| T4CSharpCodeGenerator.DefaultBaseClassName.Equals(superTypeUsage.GetText(), StringComparison.Ordinal))
 				return;
 
-			ITypeElement typeElement = CSharpTypeFactory.CreateDeclaredType(superTypeUsage).GetTypeElement();
+			NullableAnnotation nullableAnnotation = NullableTypeUsageNavigator.GetByUnderlyingType(superTypeUsage) != null ? NullableAnnotation.Annotated : NullableAnnotation.NotAnnotated;
+			ITypeElement typeElement = CSharpTypeFactory.CreateDeclaredType(superTypeUsage.ScalarTypeName, nullableAnnotation).GetTypeElement();
 			if (typeElement == null)
 				return;
 			

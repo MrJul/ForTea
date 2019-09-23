@@ -16,7 +16,7 @@ namespace GammaJul.ReSharper.ForTea.Daemon.Highlightings {
 	public class MissingTransformTextMethodHighlighting : IHighlighting {
 
 		[NotNull]
-		public IDeclaredTypeUsage DeclaredTypeUsage { get; }
+		public IUserTypeUsage DeclaredTypeUsage { get; }
 
 		public bool IsValid()
 			=> DeclaredTypeUsage.IsValid();
@@ -30,7 +30,7 @@ namespace GammaJul.ReSharper.ForTea.Daemon.Highlightings {
 		public DocumentRange CalculateRange()
 			=> DeclaredTypeUsage.GetNavigationRange();
 
-		public MissingTransformTextMethodHighlighting([NotNull] IDeclaredTypeUsage declaredTypeUsage) {
+		public MissingTransformTextMethodHighlighting([NotNull] IUserTypeUsage declaredTypeUsage) {
 			DeclaredTypeUsage = declaredTypeUsage;
 		}
 

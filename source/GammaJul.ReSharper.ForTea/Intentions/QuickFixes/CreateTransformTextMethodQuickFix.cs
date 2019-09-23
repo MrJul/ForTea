@@ -34,12 +34,13 @@ namespace GammaJul.ReSharper.ForTea.Intentions.QuickFixes {
 			=> String.Format(CultureInfo.InvariantCulture, "Create method '{0}'", T4CSharpCodeGenerator.TransformTextMethodName);
 
 		[CanBeNull]
-		private static ITypeDeclaration GetTargetTypeDeclaration([NotNull] IDeclaredTypeUsage declaredTypeUsage) {
+		private static ITypeDeclaration GetTargetTypeDeclaration([NotNull] IUserTypeUsage declaredTypeUsage) {
 			if (!declaredTypeUsage.IsValid())
 				return null;
 
+			NullableAnnotation nullableAnnotation = NullableTypeUsageNavigator.GetByUnderlyingType(declaredTypeUsage) != null ? NullableAnnotation.Annotated : NullableAnnotation.NotAnnotated;
 			return CSharpTypeFactory
-				.CreateDeclaredType(declaredTypeUsage)
+				.CreateDeclaredType(declaredTypeUsage.ScalarTypeName, nullableAnnotation)
 				.GetTypeElement()
 				?.GetDeclarations()
 				.OfType<ITypeDeclaration>()
