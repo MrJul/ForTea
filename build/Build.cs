@@ -116,7 +116,9 @@ internal class Build : NukeBuild {
 
 	private string GetWaveVersion()
 		=> NuGetPackageResolver.GetLocalInstalledPackages(MainProjectDirectory / (MainProjectName + ".csproj"))
-			.SingleOrDefault(x => x.Id == "Wave")
+			.Where(x => x.Id == "Wave")
+			.OrderByDescending(x => x.Version.Version)
+			.FirstOrDefault()
 			.NotNull("fullWaveVersion != null")
 			.Version
 			.Version
