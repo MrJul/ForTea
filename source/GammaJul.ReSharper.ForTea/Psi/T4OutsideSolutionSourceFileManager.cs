@@ -66,7 +66,7 @@ namespace GammaJul.ReSharper.ForTea.Psi {
 			_psiProjectFileTypeCoordinator = psiProjectFileTypeCoordinator;
 			_documentManager = documentManager;
 			_sourceFiles = new StrongToWeakDictionary<FileSystemPath, IPsiSourceFile>(lifetime);
-			_psiModule = new PsiModuleOnFileSystemPaths(solution, "T4OutsideSolution", Guid.NewGuid().ToString(), t4Environment.TargetFrameworkId, fileSystemTracker, lifetime);
+			_psiModule = new PsiModuleOnFileSystemPaths(solution, "T4OutsideSolution", Guid.NewGuid().ToString(), t4Environment.TargetFrameworkId, fileSystemTracker, lifetime, true);
 			lifetime.OnTermination(_sourceFiles);
 		}
 
