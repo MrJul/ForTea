@@ -49,3 +49,8 @@ Visual Basic T4 files aren't supported yet.
 Custom T4 directives aren't supported yet.  
 
 Licensed under [Apache License 2.0](http://www.apache.org/licenses/LICENSE-2.0)
+
+
+JetBrains
+----
+This plugin has been forked and is now maintained by JetBrains [here](https://github.com/jetbrains/fortea).
