@@ -1,6 +1,10 @@
 ![ForTea Logo](https://raw.github.com/MrJul/ForTea/master/Logo/ForTea%2032x32.png "ForTea Logo") ForTea
 ======
 
+JetBrains
+----
+**This plugin has been forked and is now maintained by JetBrains [here](https://github.com/jetbrains/fortea).**
+
 What's ForTea?
 --------------
 ForTea is a a plugin for [JetBrains ReSharper](http://www.jetbrains.com/resharper/) that adds support for editing T4 (.tt) files.  
@@ -50,7 +54,3 @@ Custom T4 directives aren't supported yet.
 
 Licensed under [Apache License 2.0](http://www.apache.org/licenses/LICENSE-2.0)
 
-
-JetBrains
-----
-This plugin has been forked and is now maintained by JetBrains [here](https://github.com/jetbrains/fortea).
